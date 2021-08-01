@@ -1,0 +1,119 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+static String generateBuildTime() {
+    return new Date().format("yyyy_MM_dd_HH_mm_ss", TimeZone.getTimeZone('Asia/Shanghai'))
+}
+
+static String generateBuildConfigTime() {
+    return new Date().format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone('Asia/Shanghai'))
+}
+
+void generateBuildConfigField(String type, String fieldName, Object value) {
+    if (type == "String") {
+        android.defaultConfig.buildConfigField(type, fieldName, "\"$value\"")
+    } else if (type == "boolean") {
+        android.defaultConfig.buildConfigField(type, fieldName, Boolean.parseBoolean(value))
+    } else {
+        android.defaultConfig.buildConfigField(type, fieldName, value)
+    }
+}
+
+def keyAliasExt = "leavesc"
+def keyPasswordExt = "123456"
+def storePasswordExt = "123456"
+
+android {
+    compileSdk 30
+    buildToolsVersion "30.0.3"
+    defaultConfig {
+        applicationId "github.leavesc.compose_chat"
+        minSdk 21
+        targetSdk 30
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+        applicationVariants.all { variant ->
+            variant.outputs.all {
+                outputFileName = "chat_${variant.name}_versionCode_${versionCode}_versionName_${versionName}_${generateBuildTime()}.apk"
+            }
+        }
+        generateBuildConfigField("String", "BUILD_TIME", generateBuildConfigTime())
+        generateBuildConfigField("String", "VERSION_NAME", versionName)
+    }
+    signingConfigs {
+        releaseConfig {
+            storeFile file("..\\key.jks")
+            keyAlias keyAliasExt
+            storePassword keyPasswordExt
+            keyPassword storePasswordExt
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.releaseConfig
+            minifyEnabled false
+            shrinkResources false
+            zipAlignEnabled false
+            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            signingConfig signingConfigs.releaseConfig
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            ndk {
+                abiFilters 'arm64-v8a'
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+        useIR = true
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerVersion kotlin_version
+    }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'androidx.appcompat:appcompat:1.4.0-alpha03'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1'
+    implementation 'androidx.activity:activity-compose:1.3.0'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-beta01"
+    implementation "androidx.navigation:navigation-compose:2.4.0-alpha04"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    implementation "com.google.accompanist:accompanist-insets:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-coil:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
+    implementation project(path: ':base')
+    implementation project(path: ':proxy')
+}
