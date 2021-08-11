@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.Compose_chat" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.ComposeChat" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:windowBackground">@android:color/white</item>
     </style>

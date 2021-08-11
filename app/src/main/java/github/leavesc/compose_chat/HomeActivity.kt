@@ -8,8 +8,8 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.model.HomeScreenTab
+import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.chat.ChatScreen
 import github.leavesc.compose_chat.ui.friend.FriendProfileScreen
 import github.leavesc.compose_chat.ui.home.HomeScreen

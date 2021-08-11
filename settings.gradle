@@ -6,7 +6,6 @@ dependencyResolutionManagement {
         jcenter() // Warning: this repository is going to shut down soon
     }
 }
-rootProject.name = "compose_chat"
 include ':app'
 include ':base'
 include ':proxy'
