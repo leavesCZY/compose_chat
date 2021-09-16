@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdk 31
     buildToolsVersion "30.0.3"
     defaultConfig {
         minSdk 21
@@ -23,8 +23,8 @@ android {
 dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1'
-    implementation 'com.tencent.imsdk:imsdk-plus:5.5.897'
+    implementation 'com.tencent.imsdk:imsdk-plus:5.6.1202'
     implementation project(path: ':base')
 }
