@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.navigationBarsWithImePadding
 
@@ -27,34 +28,25 @@ import com.google.accompanist.insets.navigationBarsWithImePadding
 fun ChatScreenBottomBord(
     sendMessage: (String) -> Unit
 ) {
-//    val ime = LocalWindowInsets.current.ime
-//    val navBars = LocalWindowInsets.current.navigationBars
-//    val insets = remember(ime, navBars) { derivedWindowInsetsTypeOf(ime, navBars) }
-//    val paddingValues = rememberInsetsPaddingValues(
-//        insets = insets,
-//        applyStart = true,
-//        applyEnd = true,
-//        applyBottom = true
-//    )
-//    Log.e("TAG", "insets.layoutInsets.bottom: " + insets.layoutInsets.bottom)
     Row(
         modifier = Modifier
             .background(color = MaterialTheme.colors.background)
             .navigationBarsWithImePadding(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        var message by remember { mutableStateOf("") }
+        val message = remember { mutableStateOf(TextFieldValue()) }
         var enabledSend by remember {
             mutableStateOf(false)
         }
 
         fun send() {
-            if (message.isBlank()) {
+            val text = message.value.text
+            if (text.isBlank()) {
                 return
             }
-            sendMessage(message)
-            message = ""
-            enabledSend = message.trim().isNotEmpty()
+            sendMessage(text)
+            message.value = TextFieldValue()
+            enabledSend = false
         }
         OutlinedTextField(
             modifier = Modifier
@@ -63,14 +55,15 @@ fun ChatScreenBottomBord(
                 .padding(
                     start = 8.dp, bottom = 8.dp, top = 8.dp
                 ),
-            value = message,
+            value = message.value,
             onValueChange = {
-                message = if (it.length > 200) {
-                    it.substring(0, 200)
+                val msg = it.text
+                if (msg.length < 200) {
+                    message.value = it
                 } else {
-                    it
+                    message.value = TextFieldValue(text = msg.substring(0, 200))
                 }
-                enabledSend = message.trim().isNotEmpty()
+                enabledSend = message.value.text.trim().isNotEmpty()
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = {

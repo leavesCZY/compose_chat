@@ -3,14 +3,18 @@ package github.leavesc.compose_chat
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import github.leavesc.compose_chat.logic.HomeViewModel
 import github.leavesc.compose_chat.model.AppTheme
 import github.leavesc.compose_chat.model.HomeScreenTab
@@ -49,16 +53,30 @@ class HomeActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     private fun NavigationView(appTheme: AppTheme, switchToNextTheme: () -> Unit) {
-        val navController = rememberNavController()
+        val navController = rememberAnimatedNavController()
         var screenSelected by remember {
             mutableStateOf(HomeScreenTab.Conversation)
         }
-        ProvideWindowInsets {
-            NavHost(
+        ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
+            AnimatedNavHost(
                 navController = navController,
-                startDestination = Screen.LoginScreen.route
+                startDestination = Screen.LoginScreen.route,
+                enterTransition = { _, _ ->
+                    slideInHorizontally(
+                        initialOffsetX = {
+                            -it
+                        }, animationSpec = tween(400)
+                    )
+                },
+                exitTransition = { _, _ ->
+                    fadeOut(
+                        targetAlpha = 0.7f,
+                        animationSpec = tween(700)
+                    )
+                },
             ) {
                 composable(Screen.LoginScreen.route) {
                     LoginScreen(navController = navController)

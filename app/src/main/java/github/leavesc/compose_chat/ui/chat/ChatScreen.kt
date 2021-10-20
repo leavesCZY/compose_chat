@@ -115,41 +115,43 @@ fun ChatScreen(
                 })
         }
     ) { contentPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 20.dp)
-                .nestedScroll(connection = rememberImeNestedScrollConnection()),
-            state = listState,
-            reverseLayout = true,
-            contentPadding = contentPadding,
-            verticalArrangement = Arrangement.Top,
-        ) {
-            for (message in chatScreenState.messageList) {
-                item(key = message.msgId) {
-                    MessageItem(
-                        message = message,
-                        onClickSelfAvatar = {
+        Column {
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(bottom = 20.dp)
+                    .nestedScroll(connection = rememberImeNestedScrollConnection()),
+                state = listState,
+                reverseLayout = true,
+                contentPadding = contentPadding,
+                verticalArrangement = Arrangement.Top,
+            ) {
+                for (message in chatScreenState.messageList) {
+                    item(key = message.msgId) {
+                        MessageItem(
+                            message = message,
+                            onClickSelfAvatar = {
 
-                        },
-                        onClickFriendAvatar = {
-                            navController.navigate(
-                                Screen.FriendProfileScreen(friendId = it)
-                            )
-                        },
-                        onLongPressMessage = {
-                            val msg = (message as? TextMessage)?.msg
-                            if (!msg.isNullOrBlank()) {
-                                clipboardManager.setText(AnnotatedString(msg))
-                                showToast("已复制")
-                            }
-                        },
-                    )
+                            },
+                            onClickFriendAvatar = {
+                                navController.navigate(
+                                    Screen.FriendProfileScreen(friendId = it)
+                                )
+                            },
+                            onLongPressMessage = {
+                                val msg = (message as? TextMessage)?.msg
+                                if (!msg.isNullOrBlank()) {
+                                    clipboardManager.setText(AnnotatedString(msg))
+                                    showToast("已复制")
+                                }
+                            },
+                        )
+                    }
                 }
-            }
-            if (chatScreenState.showLoadMore) {
-                item {
-                    LoadMoreMessageItem()
+                if (chatScreenState.showLoadMore) {
+                    item {
+                        LoadMoreMessageItem()
+                    }
                 }
             }
         }

@@ -114,8 +114,7 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     implementation "com.google.accompanist:accompanist-insets:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
-//    implementation "com.google.accompanist:accompanist-navigation-material:$accompanist_version"
-//    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
     implementation project(path: ':base')
     implementation project(path: ':proxy')
 }
