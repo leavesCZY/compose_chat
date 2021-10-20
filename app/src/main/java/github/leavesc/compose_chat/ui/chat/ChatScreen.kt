@@ -94,7 +94,7 @@ fun ChatScreen(
                 friendProfile = friendProfile,
                 onClickBackMenu = {
                     textInputService?.hideSoftwareKeyboard()
-                    navController.popBackStack()
+                    navController.navigateUp()
                 },
                 onClickMoreMenu = {
                     val userId = friendProfile.userId

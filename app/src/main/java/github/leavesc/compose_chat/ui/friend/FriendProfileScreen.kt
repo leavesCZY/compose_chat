@@ -13,7 +13,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.imePadding
 import github.leavesc.compose_chat.base.model.PersonProfile
-import github.leavesc.compose_chat.extend.navigateSingleTop
+import github.leavesc.compose_chat.extend.navigateWithBack
 import github.leavesc.compose_chat.logic.FriendProfileViewModel
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.common.CommonButton
@@ -81,8 +81,9 @@ fun FriendProfileScreen(
                     personProfile = friendProfile
                 )
                 CommonButton(text = "去聊天吧") {
-                    navController.navigateSingleTop(
-                        Screen.ChatScreen(friendId = friendProfile.userId)
+                    navController.navigateWithBack(
+                        currentScreen = Screen.FriendProfileScreen(),
+                        targetScreen = Screen.ChatScreen(friendId = friendProfile.userId)
                     )
                 }
                 CommonButton(text = "设置备注") {

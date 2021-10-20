@@ -4,9 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
@@ -68,15 +70,29 @@ class HomeActivity : ComponentActivity() {
                     slideInHorizontally(
                         initialOffsetX = {
                             -it
-                        }, animationSpec = tween(400)
+                        }, animationSpec = tween(durationMillis = 400, easing = LinearEasing)
                     )
                 },
                 exitTransition = { _, _ ->
-                    fadeOut(
-                        targetAlpha = 0.7f,
-                        animationSpec = tween(700)
+                    slideOutHorizontally(
+                        targetOffsetX = {
+                            it
+                        }, animationSpec = tween(durationMillis = 400, easing = LinearEasing)
                     )
                 },
+                popEnterTransition = { _, _ ->
+                    fadeIn(
+                        initialAlpha = 1f,
+                        animationSpec = tween(durationMillis = 400, easing = LinearEasing)
+                    )
+                },
+                popExitTransition = { _, _ ->
+                    slideOutHorizontally(
+                        targetOffsetX = {
+                            it
+                        }, animationSpec = tween(durationMillis = 400, easing = LinearEasing)
+                    )
+                }
             ) {
                 composable(Screen.LoginScreen.route) {
                     LoginScreen(navController = navController)

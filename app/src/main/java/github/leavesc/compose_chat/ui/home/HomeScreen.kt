@@ -47,9 +47,15 @@ fun HomeScreen(
                 if (it == ServerState.KickedOffline) {
                     showToast("本账号已在其它客户端登陆，请重新登陆")
                     AccountInfoCache.onUserLogout()
-                    navController.navigateWithBack(Screen.LoginScreen)
+                    navController.navigateWithBack(
+                        currentScreen = Screen.HomeScreen,
+                        targetScreen = Screen.LoginScreen
+                    )
                 } else if (it == ServerState.Logout) {
-                    navController.navigateWithBack(Screen.LoginScreen)
+                    navController.navigateWithBack(
+                        currentScreen = Screen.HomeScreen,
+                        targetScreen = Screen.LoginScreen
+                    )
                 }
             }
         }

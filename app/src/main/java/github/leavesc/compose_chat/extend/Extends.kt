@@ -18,18 +18,14 @@ import github.leavesc.compose_chat.model.Screen
  * @Github：https://github.com/leavesC
  */
 fun NavController.navigate(screen: Screen) {
-    navigate(screen.route)
+    navigate(route = screen.route)
 }
 
-fun NavController.navigateWithBack(screen: Screen) {
-    popBackStack()
-    navigate(screen.route)
-}
-
-fun NavController.navigateSingleTop(screen: Screen) {
-    popBackStack()
-    navigate(screen.route) {
-        launchSingleTop = true
+fun NavController.navigateWithBack(currentScreen: Screen, targetScreen: Screen) {
+    navigate(route = targetScreen.route) {
+        popUpTo(route = currentScreen.route) {
+            inclusive = true
+        }
     }
 }
 
