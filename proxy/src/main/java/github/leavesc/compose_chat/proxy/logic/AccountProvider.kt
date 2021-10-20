@@ -23,7 +23,7 @@ import kotlin.coroutines.resume
  */
 class AccountProvider : IAccountProvider, Converters {
 
-    override val userProfile = MutableStateFlow(PersonProfile.Empty)
+    override val personProfile = MutableStateFlow(PersonProfile.Empty)
 
     override val serverConnectState = MutableSharedFlow<ServerState>(
         replay = 0,
@@ -31,47 +31,47 @@ class AccountProvider : IAccountProvider, Converters {
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
-    private fun dispatchServerState(serverState: ServerState) {
-        GlobalScope.launch(Dispatchers.Main) {
-            serverConnectState.emit(serverState)
-        }
-    }
-
     override fun init(context: Context) {
         val config = V2TIMSDKConfig()
         config.logLevel = V2TIMSDKConfig.V2TIM_LOG_WARN
-        V2TIMManager.getInstance()
-            .initSDK(context, AppConst.APP_ID, config, object : V2TIMSDKListener() {
+        V2TIMManager.getInstance().addIMSDKListener(object : V2TIMSDKListener() {
 
-                override fun onConnecting() {
-                    log("onConnecting")
-                    dispatchServerState(ServerState.Connecting)
-                }
+            override fun onConnecting() {
+                log("onConnecting")
+                dispatchServerState(ServerState.Connecting)
+            }
 
-                override fun onConnectSuccess() {
-                    log("onConnectSuccess")
-                    dispatchServerState(ServerState.ConnectSuccess)
-                }
+            override fun onConnectSuccess() {
+                log("onConnectSuccess")
+                dispatchServerState(ServerState.ConnectSuccess)
+            }
 
-                override fun onConnectFailed(code: Int, error: String) {
-                    log("onConnectFailed")
-                    dispatchServerState(ServerState.ConnectFailed)
-                }
+            override fun onConnectFailed(code: Int, error: String) {
+                log("onConnectFailed")
+                dispatchServerState(ServerState.ConnectFailed)
+            }
 
-                override fun onUserSigExpired() {
-                    log("onUserSigExpired")
-                    dispatchServerState(ServerState.UserSigExpired)
-                }
+            override fun onUserSigExpired() {
+                log("onUserSigExpired")
+                dispatchServerState(ServerState.UserSigExpired)
+            }
 
-                override fun onKickedOffline() {
-                    log("onKickedOffline")
-                    dispatchServerState(ServerState.KickedOffline)
-                }
+            override fun onKickedOffline() {
+                log("onKickedOffline")
+                dispatchServerState(ServerState.KickedOffline)
+            }
 
-                override fun onSelfInfoUpdated(info: V2TIMUserFullInfo) {
-                    getUserProfile()
-                }
-            })
+            override fun onSelfInfoUpdated(info: V2TIMUserFullInfo) {
+                refreshPersonProfile()
+            }
+        })
+        V2TIMManager.getInstance().initSDK(context, AppConst.APP_ID, config)
+    }
+
+    private fun dispatchServerState(serverState: ServerState) {
+        coroutineScope.launch(Dispatchers.Main) {
+            serverConnectState.emit(serverState)
+        }
     }
 
     override suspend fun login(userId: String): ActionResult {
@@ -110,28 +110,18 @@ class AccountProvider : IAccountProvider, Converters {
         }
     }
 
-    override fun getUserProfile() {
-        GlobalScope.launch(Dispatchers.Main) {
+    override fun refreshPersonProfile() {
+        coroutineScope.launch(Dispatchers.Main) {
             getSelfProfileOrigin()?.let {
-                convertProfile(it)
+                convertPersonProfile(it)
             }?.let {
-                AppConst.userProfile.value = it
-                userProfile.value = it
+                AppConst.personProfile.value = it
+                personProfile.value = it
             }
         }
     }
 
-    private fun convertProfile(timUserFullInfo: V2TIMUserFullInfo): PersonProfile {
-        return PersonProfile(
-            userId = timUserFullInfo.userID ?: "",
-            nickname = timUserFullInfo.nickName ?: "",
-            remark = timUserFullInfo.nickName ?: "",
-            faceUrl = timUserFullInfo.faceUrl ?: "",
-            signature = timUserFullInfo.selfSignature ?: ""
-        )
-    }
-
-    override suspend fun updateProfile(
+    override suspend fun updatePersonProfile(
         faceUrl: String,
         nickname: String,
         signature: String

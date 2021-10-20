@@ -15,6 +15,6 @@ internal object AppConst {
 
     const val APP_SECRET_KEY = "36b54858b7422f77243c595d0dc07a7a72d60e224c833d9d02687493a1e38a40"
 
-    val userProfile = MutableStateFlow(PersonProfile.Empty)
+    val personProfile = MutableStateFlow(PersonProfile.Empty)
 
 }

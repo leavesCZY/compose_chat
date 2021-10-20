@@ -5,8 +5,11 @@ import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.base.provider.IC2CMessageProvider
 import github.leavesc.compose_chat.proxy.consts.AppConst
 import github.leavesc.compose_chat.proxy.utils.RandomUtils
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import java.lang.ref.SoftReference
 import kotlin.coroutines.resume
 
@@ -96,13 +99,13 @@ class C2CMessageProvider : IC2CMessageProvider, Converters {
         val sendingMessage = TextMessage.SelfTextMessage(
             msgId = messageId, state = MessageState.Sending,
             timestamp = V2TIMManager.getInstance().serverTime, msg = text,
-            sender = AppConst.userProfile.value,
+            sender = AppConst.personProfile.value,
         )
         channel.send(sendingMessage)
         V2TIMManager.getInstance()
             .sendC2CTextMessage(text, friendId, object : V2TIMValueCallback<V2TIMMessage> {
                 override fun onSuccess(t: V2TIMMessage) {
-                    GlobalScope.launch(Dispatchers.Main) {
+                    coroutineScope.launch(Dispatchers.Main) {
                         val msg = convertMessage(t) as? TextMessage
                         if (msg == null) {
                             channel.send(sendingMessage.copy(state = MessageState.SendFailed))
@@ -115,7 +118,7 @@ class C2CMessageProvider : IC2CMessageProvider, Converters {
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    GlobalScope.launch(Dispatchers.Main) {
+                    coroutineScope.launch(Dispatchers.Main) {
                         channel.send(sendingMessage.copy(state = MessageState.SendFailed).apply {
                             tag = "code: $code desc: $desc"
                         })

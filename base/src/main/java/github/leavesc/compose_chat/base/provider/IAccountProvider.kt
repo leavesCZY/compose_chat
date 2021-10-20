@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
  */
 interface IAccountProvider {
 
-    val userProfile: StateFlow<PersonProfile>
+    val personProfile: StateFlow<PersonProfile>
 
     val serverConnectState: SharedFlow<ServerState>
 
@@ -25,8 +25,8 @@ interface IAccountProvider {
 
     suspend fun logout(): ActionResult
 
-    fun getUserProfile()
+    fun refreshPersonProfile()
 
-    suspend fun updateProfile(faceUrl: String, nickname: String, signature: String): Boolean
+    suspend fun updatePersonProfile(faceUrl: String, nickname: String, signature: String): Boolean
 
 }

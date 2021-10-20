@@ -5,8 +5,11 @@ import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.GroupMemberProfile
 import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.base.provider.IGroupProvider
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 
 /**
@@ -53,7 +56,7 @@ class GroupProvider : IGroupProvider, Converters {
     }
 
     override fun getJoinedGroupList() {
-        GlobalScope.launch(Dispatchers.Main) {
+        coroutineScope.launch(Dispatchers.Main) {
             joinedGroupList.value = getJoinedGroupListOrigin()
         }
     }

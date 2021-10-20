@@ -1,7 +1,7 @@
 package github.leavesc.compose_chat.ui.theme
 
 import androidx.compose.ui.graphics.Color
-import github.leavesc.compose_chat.cache.AppThemeHolder
+import github.leavesc.compose_chat.cache.AppThemeCache
 import github.leavesc.compose_chat.model.AppTheme
 
 val BackgroundColorLight = Color(0xFFFFFFFF)
@@ -32,7 +32,7 @@ val selfMsgBgColorPink = PrimaryColorPink.copy(alpha = 0.8f)
 
 val friendMsgBgColor: Color
     get() {
-        return when (AppThemeHolder.currentTheme) {
+        return when (AppThemeCache.currentTheme) {
             AppTheme.Light -> friendMsgBgColorLight
             AppTheme.Dark -> friendMsgBgColorDark
             AppTheme.Pink -> friendMsgBgColorPink
@@ -41,7 +41,7 @@ val friendMsgBgColor: Color
 
 val selfMsgBgColor: Color
     get() {
-        return when (AppThemeHolder.currentTheme) {
+        return when (AppThemeCache.currentTheme) {
             AppTheme.Light -> selfMsgBgColorLight
             AppTheme.Dark -> selfMsgBgColorDark
             AppTheme.Pink -> selfMsgBgColorPink

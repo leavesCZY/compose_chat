@@ -50,7 +50,7 @@ class ChatViewModel(private val friendId: String) : ViewModel() {
 
     init {
         Chat.c2cMessageProvider.startReceive(friendId = friendId, messageListener = messageListener)
-        Chat.accountProvider.getUserProfile()
+        Chat.accountProvider.refreshPersonProfile()
         getFriendProfile()
         markC2CMessageAsRead()
     }

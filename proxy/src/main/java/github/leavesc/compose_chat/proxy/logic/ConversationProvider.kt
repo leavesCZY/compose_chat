@@ -22,7 +22,7 @@ class ConversationProvider : IConversationProvider, Converters {
 
     init {
         V2TIMManager.getConversationManager()
-            .setConversationListener(object : V2TIMConversationListener() {
+            .addConversationListener(object : V2TIMConversationListener() {
                 override fun onConversationChanged(conversationList: MutableList<V2TIMConversation>) {
                     getConversationList()
                 }
@@ -38,7 +38,7 @@ class ConversationProvider : IConversationProvider, Converters {
     }
 
     override fun getConversationList() {
-        GlobalScope.launch(Dispatchers.Main) {
+        coroutineScope.launch(Dispatchers.Main) {
             dispatchConversationList(getConversationListOrigin())
         }
     }

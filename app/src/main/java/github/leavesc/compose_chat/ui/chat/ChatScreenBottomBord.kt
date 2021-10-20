@@ -1,5 +1,6 @@
 package github.leavesc.compose_chat.ui.chat
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.navigationBarsWithImePadding
 
 /**
  * @Author: leavesC
@@ -25,7 +27,22 @@ import androidx.compose.ui.unit.dp
 fun ChatScreenBottomBord(
     sendMessage: (String) -> Unit
 ) {
-    Row(modifier = Modifier.wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
+//    val ime = LocalWindowInsets.current.ime
+//    val navBars = LocalWindowInsets.current.navigationBars
+//    val insets = remember(ime, navBars) { derivedWindowInsetsTypeOf(ime, navBars) }
+//    val paddingValues = rememberInsetsPaddingValues(
+//        insets = insets,
+//        applyStart = true,
+//        applyEnd = true,
+//        applyBottom = true
+//    )
+//    Log.e("TAG", "insets.layoutInsets.bottom: " + insets.layoutInsets.bottom)
+    Row(
+        modifier = Modifier
+            .background(color = MaterialTheme.colors.background)
+            .navigationBarsWithImePadding(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         var message by remember { mutableStateOf("") }
         var enabledSend by remember {
             mutableStateOf(false)

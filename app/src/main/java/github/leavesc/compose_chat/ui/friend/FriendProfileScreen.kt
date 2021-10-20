@@ -6,23 +6,19 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.imePadding
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.extend.navigateSingleTop
 import github.leavesc.compose_chat.logic.FriendProfileViewModel
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.common.CommonButton
-import github.leavesc.compose_chat.ui.common.SetSystemBarsColor
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
-import github.leavesc.compose_chat.ui.theme.ChatTheme
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -38,78 +34,70 @@ fun FriendProfileScreen(
     navController: NavHostController,
     friendId: String
 ) {
-    ChatTheme {
-        ProvideWindowInsets {
-            SetSystemBarsColor(
-                statusBarColor = Color.Transparent,
-                navigationBarColor = Color.Transparent
-            )
-            val friendProfileViewModel = viewModel<FriendProfileViewModel>(factory = object :
-                ViewModelProvider.NewInstanceFactory() {
-                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    return FriendProfileViewModel(friendId) as T
-                }
-            })
-            LaunchedEffect(Unit) {
-                launch {
-                    friendProfileViewModel.onDeleteFriendSuccess.collect {
-                        if (it) {
-                            navController.popBackStack()
-                        }
-                    }
-                }
-                friendProfileViewModel.getFriendProfile()
-            }
-            val friendProfile by friendProfileViewModel.friendProfile.collectAsState()
-            val coroutineScope = rememberCoroutineScope()
-            val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-
-            fun expandSheetContent() {
-                coroutineScope.launch {
-                    sheetState.animateTo(targetValue = ModalBottomSheetValue.Expanded)
+    val friendProfileViewModel = viewModel<FriendProfileViewModel>(factory = object :
+        ViewModelProvider.NewInstanceFactory() {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return FriendProfileViewModel(friendId) as T
+        }
+    })
+    LaunchedEffect(Unit) {
+        launch {
+            friendProfileViewModel.onDeleteFriendSuccess.collect {
+                if (it) {
+                    navController.popBackStack()
                 }
             }
+        }
+        friendProfileViewModel.getFriendProfile()
+    }
+    val friendProfile by friendProfileViewModel.friendProfile.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
-            ModalBottomSheetLayout(
-                sheetState = sheetState,
-                sheetShape = BottomSheetShape,
-                sheetContent = {
-                    SetFriendRemarkScreen(friendProfile = friendProfile,
-                        modalBottomSheetState = sheetState,
-                        onSetRemark = { friendId, remark ->
-                            friendProfileViewModel.setFriendRemark(
-                                friendId = friendId,
-                                remark = remark
-                            )
-                        })
+    fun expandSheetContent() {
+        coroutineScope.launch {
+            sheetState.animateTo(targetValue = ModalBottomSheetValue.Expanded)
+        }
+    }
+
+    ModalBottomSheetLayout(
+        sheetState = sheetState,
+        sheetShape = BottomSheetShape,
+        sheetContent = {
+            SetFriendRemarkScreen(friendProfile = friendProfile,
+                modalBottomSheetState = sheetState,
+                onSetRemark = { friendId, remark ->
+                    friendProfileViewModel.setFriendRemark(
+                        friendId = friendId,
+                        remark = remark
+                    )
+                })
+        }
+    ) {
+        var openDeleteFriendDialog by remember { mutableStateOf(false) }
+        Scaffold(modifier = Modifier.fillMaxSize()) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                ProfileScreen(
+                    personProfile = friendProfile
+                )
+                CommonButton(text = "去聊天吧") {
+                    navController.navigateSingleTop(
+                        Screen.ChatScreen(friendId = friendProfile.userId)
+                    )
                 }
-            ) {
-                var openDeleteFriendDialog by remember { mutableStateOf(false) }
-                Scaffold(modifier = Modifier.fillMaxSize()) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        ProfileScreen(
-                            personProfile = friendProfile
-                        )
-                        CommonButton(text = "去聊天吧") {
-                            navController.navigateSingleTop(
-                                Screen.ChatScreen(friendId = friendProfile.userId)
-                            )
-                        }
-                        CommonButton(text = "设置备注") {
-                            expandSheetContent()
-                        }
-                        CommonButton(text = "删除好友") {
-                            openDeleteFriendDialog = true
-                        }
-                    }
-                    if (openDeleteFriendDialog) {
-                        DeleteFriendDialog(friendProfile = friendProfile, onDeleteFriend = {
-                            friendProfileViewModel.deleteFriend(friendId = it)
-                        }, onDismissRequest = {
-                            openDeleteFriendDialog = false
-                        })
-                    }
+                CommonButton(text = "设置备注") {
+                    expandSheetContent()
                 }
+                CommonButton(text = "删除好友") {
+                    openDeleteFriendDialog = true
+                }
+            }
+            if (openDeleteFriendDialog) {
+                DeleteFriendDialog(friendProfile = friendProfile, onDeleteFriend = {
+                    friendProfileViewModel.deleteFriend(friendId = it)
+                }, onDismissRequest = {
+                    openDeleteFriendDialog = false
+                })
             }
         }
     }

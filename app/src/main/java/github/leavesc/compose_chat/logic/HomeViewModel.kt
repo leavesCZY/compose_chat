@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.Conversation
-import github.leavesc.compose_chat.cache.AccountHolder
-import github.leavesc.compose_chat.cache.AppThemeHolder
+import github.leavesc.compose_chat.cache.AccountInfoCache
+import github.leavesc.compose_chat.cache.AppThemeCache
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
  */
 class HomeViewModel : ViewModel() {
 
-    val appTheme = MutableStateFlow(AppThemeHolder.currentTheme)
+    val appTheme = MutableStateFlow(AppThemeCache.currentTheme)
 
     val conversationList = Chat.conversationProvider.conversationList
 
@@ -27,14 +27,14 @@ class HomeViewModel : ViewModel() {
 
     val fiendList = Chat.friendshipProvider.friendList
 
-    val userProfile = Chat.accountProvider.userProfile
+    val personProfile = Chat.accountProvider.personProfile
 
     val serverConnectState = Chat.accountProvider.serverConnectState
 
     fun init() {
         Chat.conversationProvider.getConversationList()
         Chat.friendshipProvider.getFriendList()
-        Chat.accountProvider.getUserProfile()
+        Chat.accountProvider.refreshPersonProfile()
     }
 
     fun deleteConversation(conversation: Conversation) {
@@ -63,7 +63,7 @@ class HomeViewModel : ViewModel() {
         signature: String
     ) {
         viewModelScope.launch(Dispatchers.Main) {
-            val updateProfile = Chat.accountProvider.updateProfile(
+            val updateProfile = Chat.accountProvider.updatePersonProfile(
                 faceUrl = faceUrl,
                 nickname = nickname,
                 signature = signature
@@ -90,7 +90,7 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.Main) {
             when (val result = Chat.accountProvider.logout()) {
                 is ActionResult.Success -> {
-                    AccountHolder.onUserLogout()
+                    AccountInfoCache.onUserLogout()
                 }
                 is ActionResult.Failed -> {
                     showToast(result.reason)
@@ -101,7 +101,7 @@ class HomeViewModel : ViewModel() {
 
     fun switchToNextTheme() {
         val nextTheme = appTheme.value.nextTheme()
-        AppThemeHolder.onAppThemeChanged(nextTheme)
+        AppThemeCache.onAppThemeChanged(nextTheme)
         appTheme.value = nextTheme
     }
 

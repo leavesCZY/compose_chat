@@ -9,13 +9,13 @@ import github.leavesc.compose_chat.utils.ContextHolder
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-object AccountHolder {
+object AccountInfoCache {
 
     private const val KEY_GROUP = "AccountGroup"
 
     private const val KEY_LAST_LOGIN_USER_ID = "keyLastLoginUserId"
 
-    private const val KEY_CAN_AUTO_LOGIN = "keyCanAutoLogin"
+    private const val KEY_AUTO_LOGIN = "keyAutoLogin"
 
     private val preferences by lazy {
         ContextHolder.context.getSharedPreferences(KEY_GROUP, Context.MODE_PRIVATE)
@@ -25,15 +25,15 @@ object AccountHolder {
         get() = preferences.getString(KEY_LAST_LOGIN_USER_ID, "") ?: ""
 
     val canAutoLogin: Boolean
-        get() = preferences.getBoolean(KEY_CAN_AUTO_LOGIN, true)
+        get() = preferences.getBoolean(KEY_AUTO_LOGIN, true)
 
     fun onUserLogin(userId: String) {
         preferences.edit().putString(KEY_LAST_LOGIN_USER_ID, userId).apply()
-        preferences.edit().putBoolean(KEY_CAN_AUTO_LOGIN, true).apply()
+        preferences.edit().putBoolean(KEY_AUTO_LOGIN, true).apply()
     }
 
     fun onUserLogout() {
-        preferences.edit().putBoolean(KEY_CAN_AUTO_LOGIN, false).apply()
+        preferences.edit().putBoolean(KEY_AUTO_LOGIN, false).apply()
     }
 
 }

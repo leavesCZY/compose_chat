@@ -19,7 +19,7 @@ class FriendshipProvider : IFriendshipProvider, Converters {
     override val friendList = MutableStateFlow<List<PersonProfile>>(emptyList())
 
     init {
-        V2TIMManager.getFriendshipManager().setFriendListener(object : V2TIMFriendshipListener() {
+        V2TIMManager.getFriendshipManager().addFriendListener(object : V2TIMFriendshipListener() {
             override fun onFriendInfoChanged(infoList: MutableList<V2TIMFriendInfo>) {
                 getFriendList()
             }
@@ -30,7 +30,7 @@ class FriendshipProvider : IFriendshipProvider, Converters {
 
             override fun onFriendListDeleted(userList: MutableList<String>) {
                 getFriendList()
-                GlobalScope.launch {
+                coroutineScope.launch(Dispatchers.Main) {
                     userList.forEach {
                         deleteC2CConversation(it)
                     }
@@ -40,14 +40,14 @@ class FriendshipProvider : IFriendshipProvider, Converters {
     }
 
     override fun getFriendList() {
-        GlobalScope.launch(Dispatchers.Main) {
+        coroutineScope.launch(Dispatchers.Main) {
             friendList.value = getFriendListOrigin() ?: emptyList()
         }
     }
 
     override suspend fun getFriendProfile(friendId: String): PersonProfile? {
         return getFriendInfo(friendId)?.let {
-            convertFriend(it.friendInfo)
+            convertFriendProfile(it.friendInfo)
         }
     }
 
@@ -68,18 +68,8 @@ class FriendshipProvider : IFriendshipProvider, Converters {
         }
     }
 
-    private fun convertFriend(v2TIMFriendInfo: V2TIMFriendInfo): PersonProfile {
-        return PersonProfile(
-            userId = v2TIMFriendInfo.userID ?: "",
-            nickname = v2TIMFriendInfo.userProfile?.nickName ?: "",
-            remark = v2TIMFriendInfo.friendRemark ?: "",
-            faceUrl = v2TIMFriendInfo.userProfile?.faceUrl ?: "",
-            signature = v2TIMFriendInfo.userProfile?.selfSignature ?: ""
-        )
-    }
-
     private fun convertFriend(friendInfoList: List<V2TIMFriendInfo>): List<PersonProfile> {
-        return friendInfoList.map { convertFriend(it) }.sortedBy { it.showName }
+        return friendInfoList.map { convertFriendProfile(it) }.sortedBy { it.showName }
     }
 
     private suspend fun getFriendInfo(friendId: String): V2TIMFriendInfoResult? {

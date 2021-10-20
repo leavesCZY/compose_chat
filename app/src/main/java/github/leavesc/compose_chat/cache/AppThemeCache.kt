@@ -10,7 +10,7 @@ import github.leavesc.compose_chat.utils.ContextHolder
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-object AppThemeHolder {
+object AppThemeCache {
 
     private const val KEY_GROUP = "AppThemeGroup"
 

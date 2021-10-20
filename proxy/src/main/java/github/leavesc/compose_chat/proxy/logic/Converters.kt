@@ -1,9 +1,9 @@
 package github.leavesc.compose_chat.proxy.logic
 
-import com.tencent.imsdk.v2.V2TIMCallback
-import com.tencent.imsdk.v2.V2TIMManager
-import com.tencent.imsdk.v2.V2TIMMessage
+import com.tencent.imsdk.v2.*
 import github.leavesc.compose_chat.base.model.*
+import github.leavesc.compose_chat.proxy.coroutineScope.ChatCoroutineScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -16,6 +16,35 @@ import kotlin.coroutines.resume
  * @Github：https://github.com/leavesC
  */
 internal interface Converters {
+
+    companion object {
+
+        private val chatCoroutineScope: CoroutineScope = ChatCoroutineScope()
+
+    }
+
+    val coroutineScope: CoroutineScope
+        get() = chatCoroutineScope
+
+    fun convertPersonProfile(timUserFullInfo: V2TIMUserFullInfo): PersonProfile {
+        return PersonProfile(
+            userId = timUserFullInfo.userID ?: "",
+            nickname = timUserFullInfo.nickName ?: "",
+            remark = timUserFullInfo.nickName ?: "",
+            faceUrl = timUserFullInfo.faceUrl ?: "",
+            signature = timUserFullInfo.selfSignature ?: ""
+        )
+    }
+
+    fun convertFriendProfile(v2TIMFriendInfo: V2TIMFriendInfo): PersonProfile {
+        return PersonProfile(
+            userId = v2TIMFriendInfo.userID ?: "",
+            nickname = v2TIMFriendInfo.userProfile?.nickName ?: "",
+            remark = v2TIMFriendInfo.friendRemark ?: "",
+            faceUrl = v2TIMFriendInfo.userProfile?.faceUrl ?: "",
+            signature = v2TIMFriendInfo.userProfile?.selfSignature ?: ""
+        )
+    }
 
     suspend fun deleteConversation(id: String): ActionResult {
         return withContext(Dispatchers.Main) {
@@ -54,44 +83,43 @@ internal interface Converters {
     }
 
     fun convertMessage(timMessage: V2TIMMessage?): Message? {
-        val messageType = timMessage?.message?.messageType
-        if (messageType == com.tencent.imsdk.message.Message.MESSAGE_TYPE_C2C
-            || messageType == com.tencent.imsdk.message.Message.MESSAGE_TYPE_GROUP
-        ) {
-            return when (timMessage.elemType) {
-                V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> {
-                    val senderProfile = PersonProfile(
-                        userId = timMessage.sender,
-                        faceUrl = timMessage.faceUrl ?: "",
-                        nickname = timMessage.nickName ?: "",
-                        remark = timMessage.friendRemark ?: "",
-                        signature = ""
-                    )
-                    if (timMessage.isSelf) {
-                        TextMessage.SelfTextMessage(
-                            msgId = timMessage.msgID ?: "",
-                            msg = timMessage.textElem?.text ?: "",
-                            state = convertMessageState(timMessage.status),
-                            timestamp = timMessage.timestamp,
-                            sender = senderProfile
-                        )
-                    } else {
-                        TextMessage.FriendTextMessage(
-                            msgId = timMessage.msgID ?: "",
-                            msg = timMessage.textElem?.text ?: "",
-                            timestamp = timMessage.timestamp,
-                            sender = senderProfile
-                        )
-                    }
-                }
-                else -> {
-                    null
-                }
-            }?.apply {
-                tag = timMessage
-            }
+        val groupId = timMessage?.groupID
+        val userId = timMessage?.userID
+        if (groupId.isNullOrBlank() && userId.isNullOrBlank()) {
+            return null
         }
-        return null
+        return when (timMessage.elemType) {
+            V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> {
+                val senderProfile = PersonProfile(
+                    userId = timMessage.sender,
+                    faceUrl = timMessage.faceUrl ?: "",
+                    nickname = timMessage.nickName ?: "",
+                    remark = timMessage.friendRemark ?: "",
+                    signature = ""
+                )
+                if (timMessage.isSelf) {
+                    TextMessage.SelfTextMessage(
+                        msgId = timMessage.msgID ?: "",
+                        msg = timMessage.textElem?.text ?: "",
+                        state = convertMessageState(timMessage.status),
+                        timestamp = timMessage.timestamp,
+                        sender = senderProfile
+                    )
+                } else {
+                    TextMessage.FriendTextMessage(
+                        msgId = timMessage.msgID ?: "",
+                        msg = timMessage.textElem?.text ?: "",
+                        timestamp = timMessage.timestamp,
+                        sender = senderProfile
+                    )
+                }
+            }
+            else -> {
+                null
+            }
+        }?.apply {
+            tag = timMessage
+        }
     }
 
     private fun convertMessageState(state: Int): MessageState {
