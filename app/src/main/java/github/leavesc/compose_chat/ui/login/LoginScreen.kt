@@ -38,8 +38,7 @@ fun LoginScreen(navController: NavHostController) {
             loginViewModel.loginScreenState.collect {
                 if (it.loginSuccess) {
                     navController.navigateWithBack(
-                        currentScreen = Screen.LoginScreen,
-                        targetScreen = Screen.HomeScreen
+                        screen = Screen.HomeScreen
                     )
                     return@collect
                 }

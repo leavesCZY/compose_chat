@@ -23,7 +23,7 @@ object AppThemeCache {
     var currentTheme = AppTheme.Light
         private set
 
-    fun initTheme() {
+    fun init() {
         currentTheme = getAppTheme()
     }
 

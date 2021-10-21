@@ -1,7 +1,6 @@
 package github.leavesc.compose_chat.utils
 
-import android.annotation.SuppressLint
-import android.content.Context
+import android.app.Application
 
 /**
  * @Author: leavesC
@@ -9,9 +8,13 @@ import android.content.Context
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-@SuppressLint("StaticFieldLeak")
 object ContextHolder {
 
-    lateinit var context: Context
+    lateinit var context: Application
+        private set
+
+    fun init(context: Application) {
+        this.context = context
+    }
 
 }

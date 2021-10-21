@@ -16,10 +16,10 @@ class ChatApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        ContextHolder.context = this
-        AppThemeCache.initTheme()
-        CoilImageLoader.initImageLoader(context = this)
+        ContextHolder.init(context = this)
+        CoilImageLoader.init(context = this)
         Chat.accountProvider.init(context = this)
+        AppThemeCache.init()
     }
 
 }

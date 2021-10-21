@@ -48,13 +48,11 @@ fun HomeScreen(
                     showToast("本账号已在其它客户端登陆，请重新登陆")
                     AccountInfoCache.onUserLogout()
                     navController.navigateWithBack(
-                        currentScreen = Screen.HomeScreen,
-                        targetScreen = Screen.LoginScreen
+                        screen = Screen.LoginScreen
                     )
                 } else if (it == ServerState.Logout) {
                     navController.navigateWithBack(
-                        currentScreen = Screen.HomeScreen,
-                        targetScreen = Screen.LoginScreen
+                        screen = Screen.LoginScreen
                     )
                 }
             }
@@ -169,7 +167,7 @@ fun HomeScreen(
                         paddingValues = paddingValues,
                         conversationList = conversationList,
                         onClickConversation = {
-                            navController.navigate(Screen.ChatScreen(friendId = it.id))
+                            navController.navigate(screen = Screen.ChatScreen(friendId = it.id))
                         },
                         onDeleteConversation = {
                             homeViewModel.deleteConversation(it)
@@ -188,7 +186,7 @@ fun HomeScreen(
                         friendList = friendList,
                         onClickFriend = {
                             navController.navigate(
-                                Screen.FriendProfileScreen(friendId = it.userId)
+                                screen = Screen.FriendProfileScreen(friendId = it.userId)
                             )
                         },
                     )

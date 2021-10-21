@@ -14,7 +14,7 @@ import github.leavesc.compose_chat.R
 
 object CoilImageLoader {
 
-    fun initImageLoader(context: Context) {
+    fun init(context: Context) {
         Coil.setImageLoader {
             ImageLoader.Builder(context)
                 .crossfade(false)

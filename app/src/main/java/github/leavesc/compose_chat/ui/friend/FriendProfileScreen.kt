@@ -81,10 +81,7 @@ fun FriendProfileScreen(
                     personProfile = friendProfile
                 )
                 CommonButton(text = "去聊天吧") {
-                    navController.navigateWithBack(
-                        currentScreen = Screen.FriendProfileScreen(),
-                        targetScreen = Screen.ChatScreen(friendId = friendProfile.userId)
-                    )
+                    navController.navigateWithBack(screen = Screen.ChatScreen(friendId = friendProfile.userId))
                 }
                 CommonButton(text = "设置备注") {
                     expandSheetContent()

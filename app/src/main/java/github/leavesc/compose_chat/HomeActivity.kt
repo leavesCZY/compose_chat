@@ -3,16 +3,17 @@ package github.leavesc.compose_chat
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -65,39 +66,14 @@ class HomeActivity : ComponentActivity() {
         ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
             AnimatedNavHost(
                 navController = navController,
-                startDestination = Screen.LoginScreen.route,
-                enterTransition = { _, _ ->
-                    slideInHorizontally(
-                        initialOffsetX = {
-                            -it
-                        }, animationSpec = tween(durationMillis = 400, easing = LinearEasing)
-                    )
-                },
-                exitTransition = { _, _ ->
-                    slideOutHorizontally(
-                        targetOffsetX = {
-                            it
-                        }, animationSpec = tween(durationMillis = 400, easing = LinearEasing)
-                    )
-                },
-                popEnterTransition = { _, _ ->
-                    fadeIn(
-                        initialAlpha = 1f,
-                        animationSpec = tween(durationMillis = 400, easing = LinearEasing)
-                    )
-                },
-                popExitTransition = { _, _ ->
-                    slideOutHorizontally(
-                        targetOffsetX = {
-                            it
-                        }, animationSpec = tween(durationMillis = 400, easing = LinearEasing)
-                    )
-                }
+                startDestination = Screen.LoginScreen.route
             ) {
-                composable(Screen.LoginScreen.route) {
+                animatedComposable(
+                    screen = Screen.LoginScreen,
+                ) {
                     LoginScreen(navController = navController)
                 }
-                composable(Screen.HomeScreen.route) {
+                animatedComposable(screen = Screen.HomeScreen) {
                     HomeScreen(
                         navController = navController,
                         appTheme = appTheme,
@@ -108,19 +84,53 @@ class HomeActivity : ComponentActivity() {
                         }
                     )
                 }
-                composable(Screen.FriendProfileScreen().route) { backStackEntry ->
+                animatedComposable(screen = Screen.FriendProfileScreen()) { backStackEntry ->
                     FriendProfileScreen(
                         navController = navController,
                         friendId = Screen.FriendProfileScreen.getArgument(backStackEntry)
                     )
                 }
-                composable(Screen.ChatScreen().route) { backStackEntry ->
+                animatedComposable(screen = Screen.ChatScreen()) { backStackEntry ->
                     ChatScreen(
                         navController = navController,
                         friendId = Screen.ChatScreen.getArgument(backStackEntry),
                     )
                 }
             }
+        }
+    }
+
+    @OptIn(ExperimentalAnimationApi::class)
+    private fun NavGraphBuilder.animatedComposable(
+        screen: Screen,
+        content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
+    ) {
+        composable(
+            route = screen.route,
+            enterTransition = { _, _ ->
+                slideInHorizontally(
+                    initialOffsetX = {
+                        -it
+                    },
+                    animationSpec = tween(500)
+                )
+            },
+            exitTransition = { _, _ ->
+                fadeOut(targetAlpha = 0f, animationSpec = tween(500))
+            },
+            popEnterTransition = { _, _ ->
+                slideInHorizontally(
+                    initialOffsetX = {
+                        0
+                    },
+                    animationSpec = tween(500)
+                )
+            },
+            popExitTransition = { _, _ ->
+                fadeOut(targetAlpha = 0.6f, animationSpec = tween(500))
+            },
+        ) { backStackEntry ->
+            content(backStackEntry)
         }
     }
 

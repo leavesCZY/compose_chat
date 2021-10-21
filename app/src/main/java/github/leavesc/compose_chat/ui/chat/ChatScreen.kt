@@ -1,5 +1,6 @@
 package github.leavesc.compose_chat.ui.chat
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -58,6 +59,7 @@ fun ChatScreen(
     val clipboardManager = LocalClipboardManager.current
     val textInputService = LocalTextInputService.current
     val listState = rememberLazyListState()
+    Log.e("TAg", "listState: " + listState)
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(listState) {
         launch {
@@ -100,7 +102,7 @@ fun ChatScreen(
                     val userId = friendProfile.userId
                     if (userId.isNotBlank()) {
                         navController.navigate(
-                            Screen.FriendProfileScreen(friendId = userId)
+                            screen = Screen.FriendProfileScreen(friendId = userId)
                         )
                     }
                 }
@@ -115,43 +117,40 @@ fun ChatScreen(
                 })
         }
     ) { contentPadding ->
-        Column {
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(bottom = 20.dp)
-                    .nestedScroll(connection = rememberImeNestedScrollConnection()),
-                state = listState,
-                reverseLayout = true,
-                contentPadding = contentPadding,
-                verticalArrangement = Arrangement.Top,
-            ) {
-                for (message in chatScreenState.messageList) {
-                    item(key = message.msgId) {
-                        MessageItem(
-                            message = message,
-                            onClickSelfAvatar = {
+        LazyColumn(
+            modifier = Modifier
+                .padding(bottom = 20.dp)
+                .nestedScroll(connection = rememberImeNestedScrollConnection()),
+            state = listState,
+            reverseLayout = true,
+            contentPadding = contentPadding,
+            verticalArrangement = Arrangement.Top,
+        ) {
+            for (message in chatScreenState.messageList) {
+                item(key = message.msgId) {
+                    MessageItem(
+                        message = message,
+                        onClickSelfAvatar = {
 
-                            },
-                            onClickFriendAvatar = {
-                                navController.navigate(
-                                    Screen.FriendProfileScreen(friendId = it)
-                                )
-                            },
-                            onLongPressMessage = {
-                                val msg = (message as? TextMessage)?.msg
-                                if (!msg.isNullOrBlank()) {
-                                    clipboardManager.setText(AnnotatedString(msg))
-                                    showToast("已复制")
-                                }
-                            },
-                        )
-                    }
+                        },
+                        onClickFriendAvatar = {
+                            navController.navigate(
+                                screen = Screen.FriendProfileScreen(friendId = it)
+                            )
+                        },
+                        onLongPressMessage = {
+                            val msg = (message as? TextMessage)?.msg
+                            if (!msg.isNullOrBlank()) {
+                                clipboardManager.setText(AnnotatedString(msg))
+                                showToast("已复制")
+                            }
+                        },
+                    )
                 }
-                if (chatScreenState.showLoadMore) {
-                    item {
-                        LoadMoreMessageItem()
-                    }
+            }
+            if (chatScreenState.showLoadMore) {
+                item {
+                    LoadMoreMessageItem()
                 }
             }
         }
