@@ -3,11 +3,9 @@ package github.leavesc.compose_chat
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
@@ -91,8 +89,10 @@ class HomeActivity : ComponentActivity() {
                     )
                 }
                 animatedComposable(screen = Screen.ChatScreen()) { backStackEntry ->
+                    val listState = rememberLazyListState()
                     ChatScreen(
                         navController = navController,
+                        listState = listState,
                         friendId = Screen.ChatScreen.getArgument(backStackEntry),
                     )
                 }
@@ -112,22 +112,24 @@ class HomeActivity : ComponentActivity() {
                     initialOffsetX = {
                         -it
                     },
-                    animationSpec = tween(500)
-                )
+                    animationSpec = tween(400)
+                ) + fadeIn(initialAlpha = 0.6f, animationSpec = tween(400))
             },
             exitTransition = { _, _ ->
-                fadeOut(targetAlpha = 0f, animationSpec = tween(500))
+                fadeOut(targetAlpha = 0.9f, animationSpec = tween(400))
             },
             popEnterTransition = { _, _ ->
                 slideInHorizontally(
                     initialOffsetX = {
                         0
                     },
-                    animationSpec = tween(500)
-                )
+                    animationSpec = tween(10)
+                ) + fadeIn(initialAlpha = 0.7f, animationSpec = tween(200))
             },
             popExitTransition = { _, _ ->
-                fadeOut(targetAlpha = 0.6f, animationSpec = tween(500))
+                slideOutHorizontally(targetOffsetX = {
+                    it
+                }, animationSpec = tween(400))
             },
         ) { backStackEntry ->
             content(backStackEntry)

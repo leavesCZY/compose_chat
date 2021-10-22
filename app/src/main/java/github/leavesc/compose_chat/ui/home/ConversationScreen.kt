@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -31,6 +32,7 @@ import github.leavesc.compose_chat.ui.common.NetworkImage
  */
 @Composable
 fun ConversationScreen(
+    listState: LazyListState,
     paddingValues: PaddingValues,
     conversationList: List<Conversation>,
     onClickConversation: (Conversation) -> Unit,
@@ -45,7 +47,7 @@ fun ConversationScreen(
         if (conversationList.isEmpty()) {
             EmptyView()
         } else {
-            LazyColumn {
+            LazyColumn(state = listState) {
                 conversationList.forEach {
                     item(key = it.id) {
                         ConversationItem(

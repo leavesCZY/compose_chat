@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -30,6 +31,7 @@ import github.leavesc.compose_chat.ui.common.NetworkImage
  */
 @Composable
 fun FriendshipScreen(
+    listState: LazyListState,
     paddingValues: PaddingValues,
     friendList: List<PersonProfile>,
     onClickFriend: (PersonProfile) -> Unit
@@ -42,7 +44,7 @@ fun FriendshipScreen(
         if (friendList.isEmpty()) {
             EmptyView()
         } else {
-            LazyColumn {
+            LazyColumn(state = listState) {
                 friendList.forEach {
                     item(key = it.userId) {
                         FriendshipItem(personProfile = it, onClickFriend = onClickFriend)

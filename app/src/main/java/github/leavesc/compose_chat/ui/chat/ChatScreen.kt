@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -45,6 +45,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ChatScreen(
     navController: NavHostController,
+    listState: LazyListState,
     friendId: String
 ) {
     val chatViewModel = viewModel<ChatViewModel>(factory = object :
@@ -53,13 +54,12 @@ fun ChatScreen(
             return ChatViewModel(friendId) as T
         }
     })
+    Log.e("chatViewModel: ", "chatViewModel: " + chatViewModel)
     val friendProfile by chatViewModel.friendProfile.collectAsState()
     val chatScreenState by chatViewModel.chatScreenState.collectAsState()
     val loadFinish by rememberUpdatedState(newValue = chatScreenState.loadFinish)
     val clipboardManager = LocalClipboardManager.current
     val textInputService = LocalTextInputService.current
-    val listState = rememberLazyListState()
-    Log.e("TAg", "listState: " + listState)
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(listState) {
         launch {
@@ -77,7 +77,10 @@ fun ChatScreen(
         }
         launch {
             chatViewModel.mushScrollToBottom.collect {
-                listState.animateScrollToItem(index = 0)
+                if (it) {
+                    chatViewModel.mushScrollToBottom.emit(false)
+                    listState.animateScrollToItem(index = 0)
+                }
             }
         }
     }
@@ -96,7 +99,7 @@ fun ChatScreen(
                 friendProfile = friendProfile,
                 onClickBackMenu = {
                     textInputService?.hideSoftwareKeyboard()
-                    navController.navigateUp()
+                    navController.popBackStack()
                 },
                 onClickMoreMenu = {
                     val userId = friendProfile.userId

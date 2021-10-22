@@ -47,10 +47,16 @@ fun ChatTheme(
             PinkColorPalette
         }
     }
-    val typography = if (appTheme.isDarkTheme()) {
-        DarkTypography
-    } else {
-        LightTypography
+    val typography = when (appTheme) {
+        AppTheme.Light -> {
+            LightTypography
+        }
+        AppTheme.Dark -> {
+            DarkTypography
+        }
+        AppTheme.Pink -> {
+            PinkTypography
+        }
     }
     MaterialTheme(
         colors = colors,

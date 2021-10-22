@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -34,98 +35,106 @@ fun HomeScreenTopBar(
     if (screenSelected == HomeScreenTab.UserProfile) {
         return
     }
-    val topBarPadding = 18.dp
     var menuExpanded by remember {
         mutableStateOf(false)
     }
-    ConstraintLayout(
+    TopAppBar(
         modifier = Modifier
-            .fillMaxWidth()
             .background(color = MaterialTheme.colors.primaryVariant)
-            .statusBarsPadding()
-            .padding(top = topBarPadding)
+            .statusBarsPadding(),
+        backgroundColor = Color.Transparent,
+        contentColor = Color.Transparent,
+        elevation = 0.dp,
+        contentPadding = PaddingValues(
+            all = 0.dp
+        ),
     ) {
-        val (drawerIcon, appLogo, menuIcon, menu, divider) = createRefs()
-        Icon(
+        ConstraintLayout(
             modifier = Modifier
-                .constrainAs(ref = drawerIcon) {
-                    start.linkTo(anchor = parent.start)
-                    top.linkTo(anchor = parent.top)
-                }
-                .padding(start = 6.dp)
-                .size(size = 28.dp)
-                .clickable(onClick = openDrawer),
-            imageVector = Icons.Filled.Menu,
-            contentDescription = null,
-            tint = MaterialTheme.colors.surface
-        )
-        Icon(
-            modifier = Modifier
-                .constrainAs(ref = appLogo) {
-                    start.linkTo(anchor = drawerIcon.end)
-                    top.linkTo(anchor = drawerIcon.top)
-                    bottom.linkTo(anchor = drawerIcon.bottom)
-                }
-                .padding(start = 12.dp)
-                .size(size = 28.dp)
-                .clickable {
-                    openDrawer()
-                },
-            painter = painterResource(id = R.drawable.ic_crane_logo),
-            contentDescription = null,
-            tint = MaterialTheme.colors.surface
-        )
-        Icon(
-            modifier = Modifier
-                .constrainAs(ref = menuIcon) {
-                    end.linkTo(anchor = parent.end)
-                    top.linkTo(anchor = appLogo.top)
-                    bottom.linkTo(anchor = appLogo.bottom)
-                }
-                .padding(end = 12.dp)
-                .size(size = 28.dp)
-                .clickable {
-                    menuExpanded = true
-                },
-            imageVector = Icons.Default.MoreVert,
-            contentDescription = null,
-            tint = MaterialTheme.colors.surface
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentSize(align = Alignment.TopEnd)
-                .padding(end = 20.dp)
-                .constrainAs(ref = menu) {
-                    top.linkTo(anchor = menuIcon.bottom)
-                }
+                .fillMaxSize()
         ) {
-            DropdownMenu(
-                modifier = Modifier.background(color = MaterialTheme.colors.background),
-                expanded = menuExpanded,
-                onDismissRequest = {
-                    menuExpanded = false
-                }
+            val (drawerIcon, appLogo, menuIcon, menu, divider) = createRefs()
+            Icon(
+                modifier = Modifier
+                    .constrainAs(ref = drawerIcon) {
+                        start.linkTo(anchor = parent.start)
+                        top.linkTo(anchor = parent.top)
+                        bottom.linkTo(anchor = parent.bottom)
+                    }
+                    .size(size = 28.dp)
+                    .clickable(onClick = openDrawer),
+                imageVector = Icons.Filled.Menu,
+                contentDescription = null,
+                tint = MaterialTheme.colors.surface
+            )
+            Icon(
+                modifier = Modifier
+                    .constrainAs(ref = appLogo) {
+                        start.linkTo(anchor = drawerIcon.end)
+                        top.linkTo(anchor = drawerIcon.top)
+                        bottom.linkTo(anchor = drawerIcon.bottom)
+                    }
+                    .padding(start = 12.dp)
+                    .size(size = 28.dp)
+                    .clickable {
+                        openDrawer()
+                    },
+                painter = painterResource(id = R.drawable.ic_crane_logo),
+                contentDescription = null,
+                tint = MaterialTheme.colors.surface
+            )
+            Icon(
+                modifier = Modifier
+                    .constrainAs(ref = menuIcon) {
+                        end.linkTo(anchor = parent.end)
+                        top.linkTo(anchor = appLogo.top)
+                        bottom.linkTo(anchor = appLogo.bottom)
+                    }
+                    .padding(end = 12.dp)
+                    .size(size = 28.dp)
+                    .clickable {
+                        menuExpanded = true
+                    },
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = null,
+                tint = MaterialTheme.colors.surface
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize(align = Alignment.TopEnd)
+                    .padding(end = 20.dp)
+                    .constrainAs(ref = menu) {
+                        top.linkTo(anchor = menuIcon.bottom)
+                    }
             ) {
-                DropdownMenuItem(onClick = {
-                    menuExpanded = false
-                    onAddFriend()
-                }) {
-                    Text(text = "添加好友", modifier = Modifier)
-                }
-                DropdownMenuItem(onClick = {
-                    menuExpanded = false
-                    onCreateGroup()
-                }) {
-                    Text(text = "创建群组", modifier = Modifier)
+                DropdownMenu(
+                    modifier = Modifier.background(color = MaterialTheme.colors.background),
+                    expanded = menuExpanded,
+                    onDismissRequest = {
+                        menuExpanded = false
+                    }
+                ) {
+                    DropdownMenuItem(onClick = {
+                        menuExpanded = false
+                        onAddFriend()
+                    }) {
+                        Text(text = "添加好友", modifier = Modifier)
+                    }
+                    DropdownMenuItem(onClick = {
+                        menuExpanded = false
+                        onCreateGroup()
+                    }) {
+                        Text(text = "创建群组", modifier = Modifier)
+                    }
                 }
             }
+            CommonDivider(modifier = Modifier
+                .constrainAs(ref = divider) {
+                    start.linkTo(anchor = parent.start)
+                    end.linkTo(anchor = parent.end)
+                    bottom.linkTo(anchor = parent.bottom)
+                })
         }
-        CommonDivider(modifier = Modifier
-            .constrainAs(ref = divider) {
-                start.linkTo(anchor = parent.start)
-                end.linkTo(anchor = parent.end)
-                top.linkTo(anchor = appLogo.bottom, margin = topBarPadding)
-            })
     }
 }

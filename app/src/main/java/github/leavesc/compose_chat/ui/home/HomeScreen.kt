@@ -1,5 +1,6 @@
 package github.leavesc.compose_chat.ui.home
 
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -68,6 +69,9 @@ fun HomeScreen(
     val totalUnreadCount by homeViewModel.totalUnreadCount.collectAsState()
     val friendList by homeViewModel.fiendList.collectAsState()
     val userProfile by homeViewModel.personProfile.collectAsState()
+
+    val conversationListState = rememberLazyListState()
+    val friendShipListState = rememberLazyListState()
 
     fun sheetContentAnimateTo(targetValue: ModalBottomSheetValue) {
         coroutineScope.launch {
@@ -164,6 +168,7 @@ fun HomeScreen(
             when (screenSelected) {
                 HomeScreenTab.Conversation -> {
                     ConversationScreen(
+                        listState = conversationListState,
                         paddingValues = paddingValues,
                         conversationList = conversationList,
                         onClickConversation = {
@@ -182,6 +187,7 @@ fun HomeScreen(
                 }
                 HomeScreenTab.Friendship -> {
                     FriendshipScreen(
+                        listState = friendShipListState,
                         paddingValues = paddingValues,
                         friendList = friendList,
                         onClickFriend = {

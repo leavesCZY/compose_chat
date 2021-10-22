@@ -115,7 +115,7 @@ class ChatViewModel(private val friendId: String) : ViewModel() {
                     MessageState.Sending -> {
                         sendingMessage = message
                         addMessageToHeader(newMessage = message)
-                        mushScrollToBottom.emit(!mushScrollToBottom.value)
+                        mushScrollToBottom.emit(true)
                     }
                     MessageState.Completed, MessageState.SendFailed -> {
                         val sending = sendingMessage ?: return@launch

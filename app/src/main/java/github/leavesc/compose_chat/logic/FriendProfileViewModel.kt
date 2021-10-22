@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.PersonProfile
+import github.leavesc.compose_chat.logic.Chat
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import github.leavesc.compose_chat.base.model.PersonProfile
@@ -39,8 +38,7 @@ fun ChatScreenTopBar(
         backgroundColor = MaterialTheme.colors.primaryVariant,
         elevation = 0.dp,
         contentPadding = PaddingValues(
-            top = 0.dp,
-            bottom = 0.dp,
+            all = 0.dp
         ),
     ) {
         ConstraintLayout(
@@ -72,8 +70,7 @@ fun ChatScreenTopBar(
                         width = Dimension.fillToConstraints
                     }
                     .padding(start = 20.dp, end = 20.dp),
-                style = MaterialTheme.typography.subtitle1,
-                fontSize = 19.sp,
+                style = MaterialTheme.typography.caption,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
