@@ -10,7 +10,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -27,28 +27,23 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-
 @Composable
 fun SetSystemBarsColor(
-    key: Any = Unit,
-    statusBarColor: Color = MaterialTheme.colors.background,
-    navigationBarColor: Color = MaterialTheme.colors.background
+    statusBarColor: Color = Color.Transparent,
+    navigationBarColor: Color = Color.Transparent,
+    isLightTheme: Boolean = MaterialTheme.colors.isLight
 ) {
     val systemUiController = rememberSystemUiController()
-    val isLight = MaterialTheme.colors.isLight
-    DisposableEffect(key1 = key) {
+    SideEffect {
         systemUiController.setStatusBarColor(
             color = statusBarColor,
-            darkIcons = isLight
+            darkIcons = isLightTheme
         )
         systemUiController.setNavigationBarColor(
             color = navigationBarColor,
-            darkIcons = isLight
+            darkIcons = isLightTheme
         )
-        systemUiController.systemBarsDarkContentEnabled = isLight
-        onDispose {
-
-        }
+        systemUiController.systemBarsDarkContentEnabled = isLightTheme
     }
 }
 

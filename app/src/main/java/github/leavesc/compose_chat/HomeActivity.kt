@@ -7,7 +7,6 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
@@ -42,11 +41,7 @@ class HomeActivity : ComponentActivity() {
             val homeViewModel = viewModel<HomeViewModel>()
             val appTheme by homeViewModel.appTheme.collectAsState()
             ChatTheme(appTheme = appTheme) {
-                SetSystemBarsColor(
-                    key = appTheme,
-                    statusBarColor = Color.Transparent,
-                    navigationBarColor = Color.Transparent
-                )
+                SetSystemBarsColor()
                 NavigationView(appTheme = appTheme) {
                     homeViewModel.switchToNextTheme()
                 }

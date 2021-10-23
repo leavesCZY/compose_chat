@@ -22,6 +22,7 @@ import github.leavesc.compose_chat.model.HomeDrawerViewState
 import github.leavesc.compose_chat.model.HomeScreenTab
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
+import github.leavesc.compose_chat.utils.log
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -41,19 +42,26 @@ fun HomeScreen(
     onTabSelected: (HomeScreenTab) -> Unit
 ) {
     val homeViewModel = viewModel<HomeViewModel>()
+    log(log = "homeViewModel: $homeViewModel")
     LaunchedEffect(Unit) {
         launch {
             homeViewModel.serverConnectState.collect {
-                if (it == ServerState.KickedOffline) {
-                    showToast("本账号已在其它客户端登陆，请重新登陆")
-                    AccountInfoCache.onUserLogout()
-                    navController.navigateWithBack(
-                        screen = Screen.LoginScreen
-                    )
-                } else if (it == ServerState.Logout) {
-                    navController.navigateWithBack(
-                        screen = Screen.LoginScreen
-                    )
+                when (it) {
+                    ServerState.KickedOffline -> {
+                        showToast("本账号已在其它客户端登陆，请重新登陆")
+                        AccountInfoCache.onUserLogout()
+                        navController.navigateWithBack(
+                            screen = Screen.LoginScreen
+                        )
+                    }
+                    ServerState.Logout -> {
+                        navController.navigateWithBack(
+                            screen = Screen.LoginScreen
+                        )
+                    }
+                    else -> {
+                        showToast("Connect State Changed : $it")
+                    }
                 }
             }
         }

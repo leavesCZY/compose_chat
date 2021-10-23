@@ -1,6 +1,5 @@
 package github.leavesc.compose_chat.ui.chat
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,6 +27,7 @@ import github.leavesc.compose_chat.base.model.TimeMessage
 import github.leavesc.compose_chat.extend.navigate
 import github.leavesc.compose_chat.logic.ChatViewModel
 import github.leavesc.compose_chat.model.Screen
+import github.leavesc.compose_chat.utils.log
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -52,7 +52,7 @@ fun ChatScreen(
             return ChatViewModel(friendId) as T
         }
     })
-    Log.e("chatViewModel: ", "chatViewModel: " + chatViewModel)
+    log(log = "chatViewModel: $chatViewModel")
     val friendProfile by chatViewModel.friendProfile.collectAsState()
     val chatScreenState by chatViewModel.chatScreenState.collectAsState()
     val loadFinish by rememberUpdatedState(newValue = chatScreenState.loadFinish)

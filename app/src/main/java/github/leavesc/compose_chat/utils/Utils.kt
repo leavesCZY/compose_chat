@@ -1,5 +1,6 @@
 package github.leavesc.compose_chat.utils
 
+import android.util.Log
 import android.widget.Toast
 
 /**
@@ -10,4 +11,8 @@ import android.widget.Toast
  */
 fun showToast(msg: Any?) {
     Toast.makeText(ContextHolder.context, msg.toString(), Toast.LENGTH_SHORT).show()
+}
+
+fun log(tag: String = "TAG", log: Any) {
+    Log.e(tag, log.toString())
 }

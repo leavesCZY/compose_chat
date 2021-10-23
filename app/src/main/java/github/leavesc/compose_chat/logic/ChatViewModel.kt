@@ -207,4 +207,8 @@ class ChatViewModel(private val friendId: String) : ViewModel() {
         Chat.c2cMessageProvider.markC2CMessageAsRead(friendId = friendId)
     }
 
+    override fun onCleared() {
+        super.onCleared()
+    }
+
 }
