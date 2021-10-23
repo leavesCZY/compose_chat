@@ -20,7 +20,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.rememberImeNestedScrollConnection
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.base.model.Message
@@ -41,7 +40,6 @@ import kotlinx.coroutines.launch
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-@OptIn(ExperimentalAnimatedInsets::class)
 @Composable
 fun ChatScreen(
     navController: NavHostController,

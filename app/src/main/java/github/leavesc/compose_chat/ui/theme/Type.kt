@@ -20,6 +20,12 @@ val LightTypography = Typography(
         fontSize = 14.sp,
         color = Color.Black.copy(alpha = 0.5f),
     ),
+    body1 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        color = Color.Black.copy(alpha = 0.5f),
+    ),
     body2 = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -29,8 +35,8 @@ val LightTypography = Typography(
     button = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        color = Color.Black.copy(alpha = 0.8f),
+        fontSize = 16.sp,
+        color = Color.White.copy(alpha = 1f),
     ),
     caption = TextStyle(
         fontFamily = FontFamily.Default,
@@ -40,14 +46,14 @@ val LightTypography = Typography(
     )
 )
 
-val DarkTypography = Typography(
+val DarkTypography = LightTypography.copy(
     subtitle1 = LightTypography.subtitle1.copy(color = Color.White.copy(alpha = 0.8f)),
     subtitle2 = LightTypography.subtitle2.copy(color = Color.White.copy(alpha = 0.5f)),
+    body1 = LightTypography.body1.copy(color = Color.White.copy(alpha = 0.5f)),
     body2 = LightTypography.body2.copy(color = Color.White.copy(alpha = 0.5f)),
-    button = LightTypography.button.copy(color = Color.White.copy(alpha = 0.8f)),
     caption = LightTypography.caption.copy(color = Color.White.copy(alpha = 0.8f)),
 )
 
 val PinkTypography = LightTypography.copy(
-    caption = LightTypography.caption.copy(color = Color.White.copy(alpha = 1f)),
+    body1 = LightTypography.body1.copy(color = Color.Black.copy(alpha = 0.5f)),
 )

@@ -54,7 +54,6 @@ class HomeActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     private fun NavigationView(appTheme: AppTheme, switchToNextTheme: () -> Unit) {
         val navController = rememberAnimatedNavController()
@@ -100,7 +99,6 @@ class HomeActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalAnimationApi::class)
     private fun NavGraphBuilder.animatedComposable(
         screen: Screen,
         content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit

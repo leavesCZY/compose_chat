@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeDrawerScreen(
     drawerState: DrawerState,
@@ -119,7 +118,6 @@ private fun AlterProfile(homeDrawerViewState: HomeDrawerViewState) {
             )
         OutlinedTextField(
             modifier = textFieldModifier,
-            textStyle = MaterialTheme.typography.subtitle1,
             value = faceUrl,
             maxLines = 4,
             label = {
@@ -129,7 +127,6 @@ private fun AlterProfile(homeDrawerViewState: HomeDrawerViewState) {
         )
         OutlinedTextField(
             modifier = textFieldModifier,
-            textStyle = MaterialTheme.typography.subtitle1,
             value = nickname,
             onValueChange = {
                 if (it.length > 16) {
@@ -143,7 +140,6 @@ private fun AlterProfile(homeDrawerViewState: HomeDrawerViewState) {
         )
         OutlinedTextField(
             modifier = textFieldModifier,
-            textStyle = MaterialTheme.typography.subtitle1,
             value = signature,
             onValueChange = {
                 if (it.length > 50) {

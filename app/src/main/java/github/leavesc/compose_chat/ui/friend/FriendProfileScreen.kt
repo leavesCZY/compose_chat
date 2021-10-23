@@ -14,8 +14,8 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.insets.imePadding
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.extend.navToChatScreen
-import github.leavesc.compose_chat.ui.common.CommonButton
 import github.leavesc.compose_chat.logic.FriendProfileViewModel
+import github.leavesc.compose_chat.ui.common.CommonButton
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
 import kotlinx.coroutines.flow.collect
@@ -27,7 +27,6 @@ import kotlinx.coroutines.launch
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FriendProfileScreen(
     navController: NavHostController,
@@ -137,7 +136,6 @@ fun DeleteFriendDialog(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SetFriendRemarkScreen(
     friendProfile: PersonProfile,

@@ -72,8 +72,7 @@ fun CommonButton(
             onClick()
         }) {
         Text(
-            text = text,
-            style = MaterialTheme.typography.subtitle1,
+            text = text
         )
     }
 }

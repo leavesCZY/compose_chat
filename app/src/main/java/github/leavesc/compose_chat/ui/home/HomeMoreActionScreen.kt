@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeMoreActionScreen(
     modalBottomSheetState: ModalBottomSheetState,

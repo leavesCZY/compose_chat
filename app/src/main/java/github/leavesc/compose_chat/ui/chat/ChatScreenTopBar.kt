@@ -70,7 +70,7 @@ fun ChatScreenTopBar(
                         width = Dimension.fillToConstraints
                     }
                     .padding(start = 20.dp, end = 20.dp),
-                style = MaterialTheme.typography.caption,
+                style = MaterialTheme.typography.caption.copy(color = MaterialTheme.colors.surface),
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
