@@ -141,7 +141,7 @@ fun ChatScreen(
                         },
                         onLongPressMessage = {
                             val msg = (message as? TextMessage)?.msg
-                            if (!msg.isNullOrBlank()) {
+                            if (!msg.isNullOrEmpty()) {
                                 clipboardManager.setText(AnnotatedString(msg))
                                 showToast("已复制")
                             }

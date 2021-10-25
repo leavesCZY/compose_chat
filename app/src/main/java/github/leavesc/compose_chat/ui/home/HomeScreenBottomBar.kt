@@ -34,7 +34,7 @@ fun HomeScreenBottomBar(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .background(color = MaterialTheme.colors.primaryVariant)
+            .background(color = MaterialTheme.colors.background)
     ) {
         CommonDivider()
         Row {
@@ -62,7 +62,7 @@ private fun BottomNavigationItem(
     unreadMessageCount: Long,
     onClickTab: () -> Unit,
 ) {
-    val selectedContentColor = MaterialTheme.colors.surface
+    val selectedContentColor = MaterialTheme.colors.primary
     val unselectedContentColor = selectedContentColor.copy(alpha = 0.5f)
     val color = if (tabSelected) selectedContentColor else unselectedContentColor
     Column(modifier = modifier.clickable {

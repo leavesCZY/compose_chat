@@ -1,22 +1,28 @@
 package github.leavesc.compose_chat.ui.chat
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalTextInputService
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.navigationBarsWithImePadding
+import androidx.compose.ui.unit.sp
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.derivedWindowInsetsTypeOf
+import com.google.accompanist.insets.rememberInsetsPaddingValues
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 
 /**
  * @Author: leavesC
@@ -24,59 +30,169 @@ import com.google.accompanist.insets.navigationBarsWithImePadding
  * @Desc:
  * @Github：https://github.com/leavesC
  */
+@Preview(showBackground = true)
+@Composable
+fun ChatScreenBottomBordPreview() {
+    ChatScreenBottomBord(sendMessage = {})
+}
+
+enum class InputSelector {
+    NONE,
+    EMOJI,
+    Picture,
+}
+
 @Composable
 fun ChatScreenBottomBord(
     sendMessage: (String) -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .background(color = MaterialTheme.colors.background)
-            .navigationBarsWithImePadding(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        val message = remember { mutableStateOf(TextFieldValue()) }
-        var enabledSend by remember {
-            mutableStateOf(false)
-        }
+    val textInputService = LocalTextInputService.current
+    var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
+    var message by remember { mutableStateOf(TextFieldValue()) }
+    var sendMessageEnabled by remember {
+        mutableStateOf(false)
+    }
 
-        fun send() {
-            val text = message.value.text
-            if (text.isBlank()) {
-                return
+    val onSelectorChange: (InputSelector) -> Unit = remember {
+        {
+            currentInputSelector = if (it == currentInputSelector) {
+                InputSelector.NONE
+            } else {
+                it
             }
-            sendMessage(text)
-            message.value = TextFieldValue()
-            enabledSend = false
+            if (currentInputSelector == InputSelector.NONE) {
+                textInputService?.showSoftwareKeyboard()
+            } else {
+                textInputService?.hideSoftwareKeyboard()
+            }
         }
-        OutlinedTextField(
+    }
+
+    if (currentInputSelector != InputSelector.NONE) {
+        BackPressHandler(onBackPressed = {
+            onSelectorChange(InputSelector.NONE)
+        })
+    }
+
+    fun checkSendMessageEnabled() {
+        sendMessageEnabled = message.text.isNotEmpty()
+    }
+
+    fun onMessageSent() {
+        val text = message.text
+        if (text.isNotEmpty()) {
+            sendMessage(text)
+            message = TextFieldValue()
+        }
+        checkSendMessageEnabled()
+    }
+
+    val ime = LocalWindowInsets.current.ime
+    val navBars = LocalWindowInsets.current.navigationBars
+    val insets = remember(key1 = ime, key2 = navBars) { derivedWindowInsetsTypeOf(ime, navBars) }
+    val navigationBarsWithImePadding = rememberInsetsPaddingValues(
+        insets = insets,
+        applyStart = true,
+        applyEnd = true,
+        applyBottom = true
+    )
+    var navigationBarsWithImeHeight by remember {
+        mutableStateOf(0.dp)
+    }
+    var bottomTableMinHeight by remember {
+        mutableStateOf(0.dp)
+    }
+
+    LaunchedEffect(key1 = ime, key2 = navBars) {
+        snapshotFlow {
+            navigationBarsWithImePadding.calculateBottomPadding()
+        }.distinctUntilChanged().filter {
+            bottomTableMinHeight = if (currentInputSelector == InputSelector.NONE) {
+                if (ime.isVisible) {
+                    navigationBarsWithImeHeight
+                } else {
+                    0.dp
+                }
+            } else {
+                navigationBarsWithImeHeight
+            }
+            it > navigationBarsWithImeHeight
+        }.collect {
+            navigationBarsWithImeHeight = it
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .background(color = MaterialTheme.colors.secondary),
+    ) {
+        BasicTextField(
             modifier = Modifier
-                .weight(1f)
-                .wrapContentHeight()
+                .fillMaxWidth()
                 .padding(
-                    start = 8.dp, bottom = 8.dp, top = 8.dp
-                ),
-            value = message.value,
+                    start = 12.dp, end = 12.dp, top = 12.dp
+                )
+                .background(
+                    color = MaterialTheme.colors.background,
+                    shape = MaterialTheme.shapes.small
+                )
+                .padding(all = 8.dp),
+            value = message,
             onValueChange = {
                 val msg = it.text
-                if (msg.length < 200) {
-                    message.value = it
+                message = if (msg.length < 200) {
+                    it
                 } else {
-                    message.value = TextFieldValue(text = msg.substring(0, 200))
+                    TextFieldValue(text = msg.substring(0, 200))
                 }
-                enabledSend = message.value.text.trim().isNotEmpty()
+                checkSendMessageEnabled()
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = {
-                send()
+                onMessageSent()
             }),
-            textStyle = MaterialTheme.typography.subtitle1,
-            maxLines = 4,
+            textStyle = MaterialTheme.typography.subtitle1.copy(letterSpacing = 2.sp),
+            cursorBrush = SolidColor(MaterialTheme.colors.primary),
+            maxLines = 6,
         )
-        Button(modifier = Modifier.padding(all = 8.dp), enabled = enabledSend,
-            onClick = {
-                send()
-            }) {
-            Text(text = "发送", style = MaterialTheme.typography.subtitle1)
+
+        UserInputSelector(
+            currentInputSelector = currentInputSelector,
+            sendMessageEnabled = sendMessageEnabled,
+            onInputSelectorChange = onSelectorChange,
+            onMessageSent = {
+                onMessageSent()
+            },
+        )
+
+        Box(modifier = Modifier.sizeIn(minHeight = bottomTableMinHeight)) {
+            val input: Unit = when (currentInputSelector) {
+                InputSelector.NONE -> {
+
+                }
+                InputSelector.EMOJI -> {
+                    EmojiTable(
+                        onTextAdded = {
+                            val currentText = message.text
+                            val currentSelection = message.selection.end
+                            val currentSelectedText = currentText.substring(0, currentSelection)
+                            val messageAppend = currentSelectedText + it
+                            val selectedAppend = messageAppend.length
+                            message = TextFieldValue(
+                                text = messageAppend + currentText.substring(
+                                    currentSelection,
+                                    currentText.length
+                                ),
+                                selection = TextRange(index = selectedAppend)
+                            )
+                            checkSendMessageEnabled()
+                        }
+                    )
+                }
+                InputSelector.Picture -> {
+
+                }
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ private val LightColorPalette = lightColors(
     primary = PrimaryColorLight,
     primaryVariant = PrimaryVariantColorLight,
     surface = SurfaceColorLight,
-    secondary = DivideColorLight,
+    secondary = SecondaryColorLight,
 )
 
 private val DarkColorPalette = darkColors(
@@ -20,7 +20,7 @@ private val DarkColorPalette = darkColors(
     primary = PrimaryColorDark,
     primaryVariant = PrimaryVariantColorDark,
     surface = SurfaceColorDark,
-    secondary = DivideColorDark,
+    secondary = SecondaryColorDark,
 )
 
 private val PinkColorPalette = lightColors(
@@ -28,7 +28,7 @@ private val PinkColorPalette = lightColors(
     primary = PrimaryColorPink,
     primaryVariant = PrimaryVariantColorPink,
     surface = SurfaceColorPink,
-    secondary = DivideColorPink,
+    secondary = SecondaryColorPink,
 )
 
 @Composable

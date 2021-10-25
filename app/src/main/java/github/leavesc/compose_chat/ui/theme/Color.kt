@@ -8,19 +8,19 @@ val BackgroundColorLight = Color(0xFFFFFFFF)
 val PrimaryColorLight = Color(0xFFEF5350)//按钮背景色
 val PrimaryVariantColorLight = Color(0xFFFFFFFF)//标题栏、导航栏背景色
 val SurfaceColorLight = Color(0xFFEF5350)//图标着色
-val DivideColorLight = Color(0xE6AEAEAE)//分割线颜色
+val SecondaryColorLight = Color(0xFFF4F4F4)
 
 val BackgroundColorDark = Color(0xFF222222)
 val PrimaryColorDark = Color(0xFFE05E55)
 val PrimaryVariantColorDark = Color(0xFF222222)
 val SurfaceColorDark = Color(0xFFE05E55)
-val DivideColorDark = Color(0xE6727272)
+val SecondaryColorDark = Color(0xFF0E0E0F)
 
 val BackgroundColorPink = Color(0xFFFFFFFF)
 val PrimaryColorPink = Color(0xFFEC407A)
 val PrimaryVariantColorPink = Color(0xFFEC407A)
 val SurfaceColorPink = Color(0xFFFFFFFF)
-val DivideColorPink = Color(0xE6AEAEAE)
+val SecondaryColorPink = Color(0xFFF4F4F4)
 
 val friendMsgBgColorLight = Color(0x80009688)
 val friendMsgBgColorDark = Color(0x4D009688)

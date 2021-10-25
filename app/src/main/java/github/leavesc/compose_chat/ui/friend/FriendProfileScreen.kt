@@ -1,6 +1,7 @@
 package github.leavesc.compose_chat.ui.friend
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -14,11 +15,11 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.insets.imePadding
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.extend.navToChatScreen
+import github.leavesc.compose_chat.extend.navToHomeScreen
 import github.leavesc.compose_chat.logic.FriendProfileViewModel
 import github.leavesc.compose_chat.ui.common.CommonButton
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
@@ -39,13 +40,6 @@ fun FriendProfileScreen(
         }
     })
     LaunchedEffect(Unit) {
-        launch {
-            friendProfileViewModel.onDeleteFriendSuccess.collect {
-                if (it) {
-                    navController.popBackStack()
-                }
-            }
-        }
         friendProfileViewModel.getFriendProfile()
     }
     val friendProfile by friendProfileViewModel.friendProfile.collectAsState()
@@ -91,6 +85,7 @@ fun FriendProfileScreen(
             if (openDeleteFriendDialog) {
                 DeleteFriendDialog(friendProfile = friendProfile, onDeleteFriend = {
                     friendProfileViewModel.deleteFriend(friendId = it)
+                    navController.navToHomeScreen()
                 }, onDismissRequest = {
                     openDeleteFriendDialog = false
                 })
@@ -106,29 +101,34 @@ fun DeleteFriendDialog(
     onDismissRequest: () -> Unit
 ) {
     AlertDialog(
-        modifier = Modifier.fillMaxWidth(fraction = 0.85f),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(all = 20.dp),
         backgroundColor = MaterialTheme.colors.background,
         title = {
             Text(text = "确认删除好友吗？")
         },
         confirmButton = {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
-                    onDeleteFriend(friendProfile.userId)
-                }
-            ) {
-                Text("删除")
-            }
+            Text(
+                modifier = Modifier
+                    .padding(all = 20.dp)
+                    .clickable {
+                        onDismissRequest()
+                        onDeleteFriend(friendProfile.userId)
+                    },
+                text = "删除",
+                color = MaterialTheme.colors.primary
+            )
         },
         dismissButton = {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
-                }
-            ) {
-                Text("取消")
-            }
+            Text(
+                modifier = Modifier
+                    .padding(all = 20.dp)
+                    .clickable {
+                        onDismissRequest()
+                    },
+                text = "取消"
+            )
         },
         onDismissRequest = {
             onDismissRequest()

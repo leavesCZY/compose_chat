@@ -106,7 +106,7 @@ class ChatViewModel(private val friendId: String) : ViewModel() {
                 Chat.c2cMessageProvider.send(
                     channel = messageChannel,
                     friendId = friendId,
-                    text = text.trim()
+                    text = text
                 )
             }
             var sendingMessage: Message? = null

@@ -27,6 +27,10 @@ fun NavController.navToChatScreen(friendId: String) {
     }
 }
 
+fun NavController.navToHomeScreen() {
+    popBackStack(route = Screen.HomeScreen.route, inclusive = false)
+}
+
 fun NavBackStackEntry.getArgument(key: String): String {
     return arguments?.getString(key)
         ?: throw IllegalArgumentException()
