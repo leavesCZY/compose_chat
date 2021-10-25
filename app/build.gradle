@@ -106,6 +106,14 @@ android {
         kotlinCompilerExtensionVersion compose_version
         kotlinCompilerVersion kotlin_version
     }
+    packagingOptions {
+        exclude 'META-INF/com/android/build/gradle/*.properties'
+        exclude 'META-INF/*.properties'
+        exclude 'META-INF/*.version'
+        exclude 'META-INF/{AL2.0,LGPL2.1}'
+        exclude 'META-INF/*.md'
+        exclude 'META-INF/CHANGES'
+    }
 }
 
 dependencies {

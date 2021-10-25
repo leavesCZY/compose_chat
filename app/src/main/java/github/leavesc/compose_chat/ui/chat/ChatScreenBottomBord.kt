@@ -42,6 +42,8 @@ enum class InputSelector {
     Picture,
 }
 
+private const val TEXT_MSG_MAX_LENGTH = 200
+
 @Composable
 fun ChatScreenBottomBord(
     sendMessage: (String) -> Unit
@@ -140,10 +142,10 @@ fun ChatScreenBottomBord(
             value = message,
             onValueChange = {
                 val msg = it.text
-                message = if (msg.length < 200) {
+                message = if (msg.length <= TEXT_MSG_MAX_LENGTH) {
                     it
                 } else {
-                    TextFieldValue(text = msg.substring(0, 200))
+                    message.copy(text = msg.substring(0, TEXT_MSG_MAX_LENGTH))
                 }
                 checkSendMessageEnabled()
             },

@@ -21,7 +21,7 @@ import github.leavesc.compose_chat.base.model.Message
 import github.leavesc.compose_chat.base.model.MessageState
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.base.model.TextMessage
-import github.leavesc.compose_chat.ui.common.NetworkImage
+import github.leavesc.compose_chat.ui.common.CoilImage
 import github.leavesc.compose_chat.ui.theme.friendMsgBgColor
 import github.leavesc.compose_chat.ui.theme.selfMsgBgColor
 
@@ -97,7 +97,7 @@ fun FriendTextMessageItem(
             .fillMaxWidth()
             .padding(start = itemPaddingStart, top = itemPaddingTop, bottom = itemPaddingBottom)
     ) {
-        NetworkImage(
+        CoilImage(
             data = textMessage.sender.faceUrl,
             modifier = Modifier
                 .size(size = avatarSize)
@@ -202,7 +202,7 @@ fun SelfTextMessageItem(
             style = MaterialTheme.typography.subtitle1,
             textAlign = TextAlign.Left,
         )
-        NetworkImage(
+        CoilImage(
             data = textMessage.sender.faceUrl,
             modifier = Modifier
                 .size(size = avatarSize)

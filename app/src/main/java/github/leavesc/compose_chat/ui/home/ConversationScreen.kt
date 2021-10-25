@@ -22,7 +22,7 @@ import androidx.constraintlayout.compose.Dimension
 import github.leavesc.compose_chat.base.model.Conversation
 import github.leavesc.compose_chat.ui.common.CommonDivider
 import github.leavesc.compose_chat.ui.common.EmptyView
-import github.leavesc.compose_chat.ui.common.NetworkImage
+import github.leavesc.compose_chat.ui.common.CoilImage
 
 /**
  * @Author: leavesC
@@ -100,7 +100,7 @@ fun ConversationItem(
             .padding(top = padding),
     ) {
         val (avatar, unreadMessageCount, nickname, lastMsg, time, divider, dropdownMenu) = createRefs()
-        NetworkImage(
+        CoilImage(
             data = conversation.faceUrl,
             modifier = Modifier
                 .padding(start = padding * 1.5f)

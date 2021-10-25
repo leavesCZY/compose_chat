@@ -10,7 +10,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.text.AnnotatedString
@@ -19,7 +18,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.google.accompanist.insets.rememberImeNestedScrollConnection
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.base.model.Message
 import github.leavesc.compose_chat.base.model.TextMessage
@@ -120,8 +118,7 @@ fun ChatScreen(
     ) { contentPadding ->
         LazyColumn(
             modifier = Modifier
-                .padding(bottom = 20.dp)
-                .nestedScroll(connection = rememberImeNestedScrollConnection()),
+                .padding(bottom = 20.dp),
             state = listState,
             reverseLayout = true,
             contentPadding = contentPadding,

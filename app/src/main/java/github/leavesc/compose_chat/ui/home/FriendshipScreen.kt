@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import github.leavesc.compose_chat.base.model.PersonProfile
+import github.leavesc.compose_chat.ui.common.CoilImage
 import github.leavesc.compose_chat.ui.common.CommonDivider
 import github.leavesc.compose_chat.ui.common.EmptyView
-import github.leavesc.compose_chat.ui.common.NetworkImage
 
 /**
  * @Author: leavesC
@@ -83,7 +83,7 @@ fun FriendshipItem(personProfile: PersonProfile, onClickFriend: (PersonProfile) 
             },
     ) {
         val (avatar, showName, signature, divider) = createRefs()
-        NetworkImage(
+        CoilImage(
             data = personProfile.faceUrl,
             modifier = Modifier
                 .padding(start = padding * 1.5f, top = padding, bottom = padding)

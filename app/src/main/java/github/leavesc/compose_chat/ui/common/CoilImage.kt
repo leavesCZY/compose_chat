@@ -5,48 +5,36 @@ import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import coil.Coil
 import coil.ImageLoader
 import coil.compose.rememberImagePainter
-import coil.imageLoader
 import github.leavesc.compose_chat.R
 
 object CoilImageLoader {
 
     fun init(context: Context) {
-        Coil.setImageLoader {
-            ImageLoader.Builder(context)
-                .crossfade(false)
-                .allowHardware(true)
-                .placeholder(R.drawable.icon_logo)
-                .fallback(R.drawable.icon_logo)
-                .error(R.drawable.icon_logo)
-                .build().apply {
-                    Coil.setImageLoader(this)
-                }
-        }
+        val imageLoader = ImageLoader.Builder(context)
+            .crossfade(true)
+            .allowHardware(true)
+            .placeholder(R.drawable.icon_logo)
+            .fallback(R.drawable.icon_logo)
+            .error(R.drawable.icon_logo)
+            .build()
+        Coil.setImageLoader(imageLoader)
     }
 
 }
 
 @Composable
-fun NetworkImage(
+fun CoilImage(
     modifier: Modifier = Modifier,
     data: Any,
     contentDescription: String? = null,
     contentScale: ContentScale = ContentScale.Crop,
 ) {
-    val imagePainter = rememberImagePainter(
-        data = data,
-        imageLoader = LocalContext.current.imageLoader,
-        builder = {
-            placeholder(R.drawable.icon_logo)
-        }
-    )
     Image(
         modifier = modifier,
-        painter = imagePainter,
+        painter = rememberImagePainter(data = data),
         contentDescription = contentDescription,
         contentScale = contentScale,
     )

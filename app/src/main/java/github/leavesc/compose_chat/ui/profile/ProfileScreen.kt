@@ -24,7 +24,7 @@ import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.base.model.PersonProfile
-import github.leavesc.compose_chat.ui.common.NetworkImage
+import github.leavesc.compose_chat.ui.common.CoilImage
 import github.leavesc.compose_chat.ui.common.OutlinedAvatar
 import github.leavesc.compose_chat.ui.common.scrim
 import github.leavesc.compose_chat.ui.theme.BezierShape
@@ -56,7 +56,7 @@ fun ProfileScreen(personProfile: PersonProfile) {
             ),
         )
         val (background, id, avatar, nickname, signature) = createRefs()
-        NetworkImage(
+        CoilImage(
             data = userFaceUrl,
             modifier = Modifier
                 .constrainAs(ref = background) {

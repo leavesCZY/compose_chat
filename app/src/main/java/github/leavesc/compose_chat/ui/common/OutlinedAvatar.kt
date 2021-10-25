@@ -26,7 +26,7 @@ fun OutlinedAvatar(
             shape = CircleShape
         )
     ) {
-        NetworkImage(
+        CoilImage(
             data = data,
             modifier = Modifier
                 .padding(outlineSize)
