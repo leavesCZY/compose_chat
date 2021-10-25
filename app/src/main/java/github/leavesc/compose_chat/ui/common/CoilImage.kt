@@ -15,7 +15,7 @@ object CoilImageLoader {
     fun init(context: Context) {
         val imageLoader = ImageLoader.Builder(context)
             .crossfade(true)
-            .allowHardware(true)
+            .allowHardware(false)
             .placeholder(R.drawable.icon_logo)
             .fallback(R.drawable.icon_logo)
             .error(R.drawable.icon_logo)

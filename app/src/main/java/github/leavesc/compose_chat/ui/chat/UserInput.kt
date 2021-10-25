@@ -80,6 +80,7 @@ fun UserInputSelector(
             enabled = sendMessageEnabled,
             onClick = onMessageSent,
             colors = buttonColors,
+            shape = MaterialTheme.shapes.large,
             contentPadding = PaddingValues(0.dp)
         ) {
             Text(
@@ -134,7 +135,7 @@ fun EmojiTable(
                                 onTextAdded(emoji)
                             })
                             .weight(weight = 1f)
-                            .padding(vertical = 12.dp),
+                            .padding(vertical = 14.dp),
                         text = emoji,
                         style = TextStyle(
                             fontFamily = FontFamily.Default,

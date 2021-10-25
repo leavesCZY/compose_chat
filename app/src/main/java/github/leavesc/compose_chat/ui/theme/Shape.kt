@@ -12,9 +12,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
 val AppShapes = Shapes(
-    small = RoundedCornerShape(10.dp),
-    medium = RoundedCornerShape(14.dp),
-    large = RoundedCornerShape(18.dp)
+    small = RoundedCornerShape(4.dp),
+    medium = RoundedCornerShape(8.dp),
+    large = RoundedCornerShape(12.dp)
 )
 
 val BottomSheetShape = RoundedCornerShape(

@@ -7,7 +7,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalTextInputService
@@ -16,6 +15,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.derivedWindowInsetsTypeOf
@@ -23,6 +23,7 @@ import com.google.accompanist.insets.rememberInsetsPaddingValues
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesC
@@ -49,7 +50,7 @@ fun ChatScreenBottomBord(
     sendMessage: (String) -> Unit
 ) {
     val textInputService = LocalTextInputService.current
-    var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
+    var currentInputSelector by remember { mutableStateOf(InputSelector.NONE) }
     var message by remember { mutableStateOf(TextFieldValue()) }
     var sendMessageEnabled by remember {
         mutableStateOf(false)
@@ -104,23 +105,31 @@ fun ChatScreenBottomBord(
     var bottomTableMinHeight by remember {
         mutableStateOf(0.dp)
     }
-
     LaunchedEffect(key1 = ime, key2 = navBars) {
-        snapshotFlow {
-            navigationBarsWithImePadding.calculateBottomPadding()
-        }.distinctUntilChanged().filter {
-            bottomTableMinHeight = if (currentInputSelector == InputSelector.NONE) {
-                if (ime.isVisible) {
-                    navigationBarsWithImeHeight
-                } else {
-                    0.dp
-                }
-            } else {
-                navigationBarsWithImeHeight
+        launch {
+            snapshotFlow {
+                navigationBarsWithImePadding.calculateBottomPadding()
+            }.filter {
+                bottomTableMinHeight =
+                    if (currentInputSelector != InputSelector.NONE || ime.isVisible) {
+                        max(navigationBarsWithImeHeight, it)
+                    } else {
+                        0.dp
+                    }
+                it > navigationBarsWithImeHeight
+            }.collect {
+                navigationBarsWithImeHeight = it
             }
-            it > navigationBarsWithImeHeight
-        }.collect {
-            navigationBarsWithImeHeight = it
+        }
+
+        launch {
+            snapshotFlow {
+                ime.isVisible
+            }.distinctUntilChanged().collect {
+                if (it && currentInputSelector != InputSelector.NONE) {
+                    currentInputSelector = InputSelector.NONE
+                }
+            }
         }
     }
 
@@ -168,7 +177,7 @@ fun ChatScreenBottomBord(
         )
 
         Box(modifier = Modifier.sizeIn(minHeight = bottomTableMinHeight)) {
-            val input: Unit = when (currentInputSelector) {
+            when (currentInputSelector) {
                 InputSelector.NONE -> {
 
                 }
