@@ -14,11 +14,11 @@ import github.leavesc.compose_chat.ui.profile.ProfileScreen
  * @Github：https://github.com/leavesC
  */
 @Composable
-fun UserProfileScreen(userProfile: PersonProfile) {
+fun PersonProfileScreen(personProfile: PersonProfile) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        ProfileScreen(personProfile = userProfile)
+        ProfileScreen(personProfile = personProfile)
     }
 }

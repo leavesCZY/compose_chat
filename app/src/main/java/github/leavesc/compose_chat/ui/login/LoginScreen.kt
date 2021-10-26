@@ -16,7 +16,7 @@ import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.extend.navigateWithBack
 import github.leavesc.compose_chat.logic.LoginViewModel
 import github.leavesc.compose_chat.model.Screen
-import github.leavesc.compose_chat.ui.common.CommonButton
+import github.leavesc.compose_chat.ui.weigets.CommonButton
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 

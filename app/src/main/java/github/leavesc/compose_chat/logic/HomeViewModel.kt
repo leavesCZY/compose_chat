@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.Conversation
-import github.leavesc.compose_chat.cache.AccountInfoCache
+import github.leavesc.compose_chat.cache.AccountCache
 import github.leavesc.compose_chat.cache.AppThemeCache
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.Dispatchers
@@ -90,7 +90,7 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.Main) {
             when (val result = Chat.accountProvider.logout()) {
                 is ActionResult.Success -> {
-                    AccountInfoCache.onUserLogout()
+                    AccountCache.onUserLogout()
                 }
                 is ActionResult.Failed -> {
                     showToast(result.reason)

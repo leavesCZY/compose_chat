@@ -24,10 +24,10 @@ import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.base.model.PersonProfile
-import github.leavesc.compose_chat.ui.common.CoilImage
-import github.leavesc.compose_chat.ui.common.OutlinedAvatar
-import github.leavesc.compose_chat.ui.common.scrim
+import github.leavesc.compose_chat.extend.scrim
 import github.leavesc.compose_chat.ui.theme.BezierShape
+import github.leavesc.compose_chat.ui.weigets.CoilImage
+import github.leavesc.compose_chat.ui.weigets.OutlinedAvatar
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

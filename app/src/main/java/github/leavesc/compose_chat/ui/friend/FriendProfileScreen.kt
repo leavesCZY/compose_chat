@@ -17,7 +17,7 @@ import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.extend.navToChatScreen
 import github.leavesc.compose_chat.extend.navToHomeScreen
 import github.leavesc.compose_chat.logic.FriendProfileViewModel
-import github.leavesc.compose_chat.ui.common.CommonButton
+import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
 import kotlinx.coroutines.launch

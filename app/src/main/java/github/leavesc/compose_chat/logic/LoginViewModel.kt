@@ -3,7 +3,7 @@ package github.leavesc.compose_chat.logic
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.ActionResult
-import github.leavesc.compose_chat.cache.AccountInfoCache
+import github.leavesc.compose_chat.cache.AccountCache
 import github.leavesc.compose_chat.model.LoginScreenState
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.Dispatchers
@@ -30,8 +30,8 @@ class LoginViewModel : ViewModel() {
     )
 
     fun autoLogin() {
-        val lastLoginUserId = AccountInfoCache.lastLoginUserId
-        if (lastLoginUserId.isBlank() || !AccountInfoCache.canAutoLogin) {
+        val lastLoginUserId = AccountCache.lastLoginUserId
+        if (lastLoginUserId.isBlank() || !AccountCache.canAutoLogin) {
             dispatchViewState(
                 LoginScreenState(
                     showLogo = true,
@@ -93,7 +93,7 @@ class LoginViewModel : ViewModel() {
 //                    if (time < minTime) {
 //                        delay(minTime - time)
 //                    }
-                    AccountInfoCache.onUserLogin(userId = formatUserId)
+                    AccountCache.onUserLogin(userId = formatUserId)
                     dispatchViewState(
                         LoginScreenState(
                             showLogo = false,

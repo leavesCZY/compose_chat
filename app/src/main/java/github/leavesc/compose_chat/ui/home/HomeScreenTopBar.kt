@@ -17,7 +17,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.R
 import github.leavesc.compose_chat.model.HomeScreenTab
-import github.leavesc.compose_chat.ui.common.CommonDivider
+import github.leavesc.compose_chat.ui.weigets.CommonDivider
 
 /**
  * @Author: leavesC
@@ -32,7 +32,7 @@ fun HomeScreenTopBar(
     onAddFriend: () -> Unit,
     onCreateGroup: () -> Unit,
 ) {
-    if (screenSelected == HomeScreenTab.UserProfile) {
+    if (screenSelected == HomeScreenTab.PersonProfile) {
         return
     }
     var menuExpanded by remember {

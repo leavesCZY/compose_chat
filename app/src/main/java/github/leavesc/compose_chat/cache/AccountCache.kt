@@ -9,7 +9,7 @@ import github.leavesc.compose_chat.utils.ContextHolder
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-object AccountInfoCache {
+object AccountCache {
 
     private const val KEY_GROUP = "AccountGroup"
 

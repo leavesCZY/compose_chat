@@ -20,11 +20,11 @@ import github.leavesc.compose_chat.model.AppTheme
 import github.leavesc.compose_chat.model.HomeScreenTab
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.chat.ChatScreen
-import github.leavesc.compose_chat.ui.common.SetSystemBarsColor
 import github.leavesc.compose_chat.ui.friend.FriendProfileScreen
 import github.leavesc.compose_chat.ui.home.HomeScreen
 import github.leavesc.compose_chat.ui.login.LoginScreen
 import github.leavesc.compose_chat.ui.theme.ChatTheme
+import github.leavesc.compose_chat.ui.weigets.SetSystemBarsColor
 
 /**
  * @Author: leavesC

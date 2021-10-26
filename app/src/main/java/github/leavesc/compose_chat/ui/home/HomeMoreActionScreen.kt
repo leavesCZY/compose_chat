@@ -7,7 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.imePadding
-import github.leavesc.compose_chat.ui.common.CommonButton
+import github.leavesc.compose_chat.ui.weigets.CommonButton
 import kotlinx.coroutines.launch
 
 /**

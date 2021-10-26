@@ -14,7 +14,7 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.insets.imePadding
 import com.google.accompanist.insets.navigationBarsPadding
 import github.leavesc.compose_chat.base.model.ServerState
-import github.leavesc.compose_chat.cache.AccountInfoCache
+import github.leavesc.compose_chat.cache.AccountCache
 import github.leavesc.compose_chat.extend.navigate
 import github.leavesc.compose_chat.extend.navigateWithBack
 import github.leavesc.compose_chat.logic.HomeViewModel
@@ -22,6 +22,8 @@ import github.leavesc.compose_chat.model.AppTheme
 import github.leavesc.compose_chat.model.HomeDrawerViewState
 import github.leavesc.compose_chat.model.HomeScreenTab
 import github.leavesc.compose_chat.model.Screen
+import github.leavesc.compose_chat.ui.conversation.ConversationScreen
+import github.leavesc.compose_chat.ui.friend.FriendshipScreen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
 import github.leavesc.compose_chat.utils.log
 import github.leavesc.compose_chat.utils.showToast
@@ -50,7 +52,7 @@ fun HomeScreen(
                 when (it) {
                     ServerState.KickedOffline -> {
                         showToast("本账号已在其它客户端登陆，请重新登陆")
-                        AccountInfoCache.onUserLogout()
+                        AccountCache.onUserLogout()
                         navController.navigateWithBack(
                             screen = Screen.LoginScreen
                         )
@@ -76,7 +78,7 @@ fun HomeScreen(
     val conversationList by homeViewModel.conversationList.collectAsState()
     val totalUnreadCount by homeViewModel.totalUnreadCount.collectAsState()
     val friendList by homeViewModel.fiendList.collectAsState()
-    val userProfile by homeViewModel.personProfile.collectAsState()
+    val personProfile by homeViewModel.personProfile.collectAsState()
 
     val conversationListState = rememberLazyListState()
     val friendShipListState = rememberLazyListState()
@@ -142,7 +144,7 @@ fun HomeScreen(
                     drawerState = drawerState,
                     homeDrawerViewState = HomeDrawerViewState(
                         appTheme = appTheme,
-                        userProfile = userProfile,
+                        userProfile = personProfile,
                         switchToNextTheme = switchToNextTheme,
                         updateProfile = { faceUrl: String, nickname: String, signature: String ->
                             homeViewModel.updateProfile(
@@ -206,9 +208,9 @@ fun HomeScreen(
                         },
                     )
                 }
-                HomeScreenTab.UserProfile -> {
-                    UserProfileScreen(
-                        userProfile = userProfile
+                HomeScreenTab.PersonProfile -> {
+                    PersonProfileScreen(
+                        personProfile = personProfile
                     )
                 }
             }

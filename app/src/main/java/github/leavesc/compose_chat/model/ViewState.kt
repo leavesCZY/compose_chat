@@ -84,7 +84,7 @@ enum class HomeScreenTab(
     Friendship(
         icon = Icons.Filled.Album,
     ),
-    UserProfile(
+    PersonProfile(
         icon = Icons.Filled.Flare,
     );
 }

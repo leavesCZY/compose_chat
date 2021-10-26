@@ -1,4 +1,4 @@
-package github.leavesc.compose_chat.ui.home
+package github.leavesc.compose_chat.ui.conversation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import github.leavesc.compose_chat.base.model.Conversation
-import github.leavesc.compose_chat.ui.common.CommonDivider
-import github.leavesc.compose_chat.ui.common.EmptyView
-import github.leavesc.compose_chat.ui.common.CoilImage
+import github.leavesc.compose_chat.ui.weigets.CoilImage
+import github.leavesc.compose_chat.ui.weigets.CommonDivider
+import github.leavesc.compose_chat.ui.weigets.EmptyView
 
 /**
  * @Author: leavesC

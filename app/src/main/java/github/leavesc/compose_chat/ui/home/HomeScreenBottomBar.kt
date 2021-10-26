@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesc.compose_chat.model.HomeScreenTab
-import github.leavesc.compose_chat.ui.common.CommonDivider
+import github.leavesc.compose_chat.ui.weigets.CommonDivider
 
 /**
  * @Author: leavesC

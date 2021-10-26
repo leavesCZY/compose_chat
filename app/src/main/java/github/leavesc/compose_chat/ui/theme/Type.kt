@@ -7,39 +7,45 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+private const val smallAlpha = 0.1f
+
+private const val mediumAlpha = 0.3f
+
+private const val largeAlpha = 0.8f
+
 val LightTypography = Typography(
     subtitle1 = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.Light,
         fontSize = 16.sp,
         color = Color.Black,
     ),
     subtitle2 = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.Light,
         fontSize = 14.sp,
         color = Color.Black,
     ),
     body1 = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.Light,
         fontSize = 16.sp,
         color = Color.Black,
     ),
     body2 = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.Light,
         fontSize = 14.sp,
         color = Color.Black,
     ),
     button = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.Light,
         fontSize = 16.sp,
         color = Color.White,
     ),
     caption = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.Light,
         fontSize = 19.sp,
         color = Color.Black,

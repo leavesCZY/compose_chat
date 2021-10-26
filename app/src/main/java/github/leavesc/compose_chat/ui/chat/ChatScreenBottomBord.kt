@@ -1,5 +1,6 @@
 package github.leavesc.compose_chat.ui.chat
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -71,11 +72,9 @@ fun ChatScreenBottomBord(
         }
     }
 
-    if (currentInputSelector != InputSelector.NONE) {
-        BackPressHandler(onBackPressed = {
-            onSelectorChange(InputSelector.NONE)
-        })
-    }
+    BackHandler(enabled = currentInputSelector != InputSelector.NONE, onBack = {
+        onSelectorChange(InputSelector.NONE)
+    })
 
     fun checkSendMessageEnabled() {
         sendMessageEnabled = message.text.isNotEmpty()
@@ -87,6 +86,41 @@ fun ChatScreenBottomBord(
             sendMessage(text)
             message = TextFieldValue()
         }
+        checkSendMessageEnabled()
+    }
+
+    fun onInputChanged(input: TextFieldValue) {
+        message = if (message.text.length >= TEXT_MSG_MAX_LENGTH) {
+            if (input.text.length > TEXT_MSG_MAX_LENGTH) {
+                return
+            }
+            input
+        } else {
+            if (input.text.length > TEXT_MSG_MAX_LENGTH) {
+                message.copy(text = input.text.substring(0, TEXT_MSG_MAX_LENGTH))
+            } else {
+                input
+            }
+        }
+        checkSendMessageEnabled()
+    }
+
+    fun onEmojiAppend(emoji: String) {
+        if (message.text.length + emoji.length > TEXT_MSG_MAX_LENGTH) {
+            return
+        }
+        val currentText = message.text
+        val currentSelection = message.selection.end
+        val currentSelectedText = currentText.substring(0, currentSelection)
+        val messageAppend = currentSelectedText + emoji
+        val selectedAppend = messageAppend.length
+        message = TextFieldValue(
+            text = messageAppend + currentText.substring(
+                currentSelection,
+                currentText.length
+            ),
+            selection = TextRange(index = selectedAppend)
+        )
         checkSendMessageEnabled()
     }
 
@@ -150,13 +184,7 @@ fun ChatScreenBottomBord(
                 .padding(all = 8.dp),
             value = message,
             onValueChange = {
-                val msg = it.text
-                message = if (msg.length <= TEXT_MSG_MAX_LENGTH) {
-                    it
-                } else {
-                    message.copy(text = msg.substring(0, TEXT_MSG_MAX_LENGTH))
-                }
-                checkSendMessageEnabled()
+                onInputChanged(it)
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = {
@@ -184,19 +212,7 @@ fun ChatScreenBottomBord(
                 InputSelector.EMOJI -> {
                     EmojiTable(
                         onTextAdded = {
-                            val currentText = message.text
-                            val currentSelection = message.selection.end
-                            val currentSelectedText = currentText.substring(0, currentSelection)
-                            val messageAppend = currentSelectedText + it
-                            val selectedAppend = messageAppend.length
-                            message = TextFieldValue(
-                                text = messageAppend + currentText.substring(
-                                    currentSelection,
-                                    currentText.length
-                                ),
-                                selection = TextRange(index = selectedAppend)
-                            )
-                            checkSendMessageEnabled()
+                            onEmojiAppend(it)
                         }
                     )
                 }

@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import github.leavesc.compose_chat.base.model.PersonProfile
-import github.leavesc.compose_chat.ui.common.CommonDivider
+import github.leavesc.compose_chat.ui.weigets.CommonDivider
 
 /**
  * @Author: leavesC

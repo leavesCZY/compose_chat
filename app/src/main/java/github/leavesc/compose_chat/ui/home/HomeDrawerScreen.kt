@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesc.compose_chat.BuildConfig
 import github.leavesc.compose_chat.model.HomeDrawerViewState
-import github.leavesc.compose_chat.ui.common.CommonButton
+import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import kotlinx.coroutines.launch
 
