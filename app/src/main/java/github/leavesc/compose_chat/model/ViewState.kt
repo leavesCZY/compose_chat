@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Flare
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavBackStackEntry
+import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.base.model.Message
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.extend.getArgument
@@ -20,10 +21,12 @@ sealed class Screen(val route: String) {
 
     private companion object {
         private const val keyUserId = "keyUserId"
+        private const val keyGroupId = "keyGroupId"
         private const val loginScreen = "loginScreen"
         private const val homeScreen = "homeScreen"
         private const val baseFriendProfileScreen = "friendProfileScreen"
-        private const val baseChatScreen = "chatScreen"
+        private const val baseChatFriendScreen = "chatFriendScreen"
+        private const val baseChatGroupScreen = "chatGroupScreen"
     }
 
     object LoginScreen : Screen(route = loginScreen)
@@ -51,13 +54,13 @@ sealed class Screen(val route: String) {
 
     }
 
-    class ChatScreen(friendId: String = "") :
+    class ChatFriendScreen(friendId: String = "") :
         Screen(route = generateRoute(friendId = friendId)) {
 
         companion object {
 
             private fun generateRoute(friendId: String): String {
-                return baseChatScreen + if (friendId.isBlank()) {
+                return baseChatFriendScreen + if (friendId.isBlank()) {
                     "/{${keyUserId}}"
                 } else {
                     "/${friendId}"
@@ -66,6 +69,27 @@ sealed class Screen(val route: String) {
 
             fun getArgument(entry: NavBackStackEntry): String {
                 return entry.getArgument(key = keyUserId)
+            }
+
+        }
+
+    }
+
+    class ChatGroupScreen(groupId: String = "") :
+        Screen(route = generateRoute(groupId = groupId)) {
+
+        companion object {
+
+            private fun generateRoute(groupId: String): String {
+                return baseChatGroupScreen + if (groupId.isBlank()) {
+                    "/{${keyGroupId}}"
+                } else {
+                    "/${groupId}"
+                }
+            }
+
+            fun getArgument(entry: NavBackStackEntry): String {
+                return entry.getArgument(key = keyGroupId)
             }
 
         }
@@ -88,13 +112,22 @@ enum class HomeScreenTab(
     );
 }
 
-class ChatScreenState(
+class ChatFriendScreenState(
     val friendProfile: PersonProfile,
     val messageList: List<Message>,
     val mushScrollToBottom: Boolean,
     val showLoadMore: Boolean,
     val loadFinish: Boolean,
 )
+
+class ChatGroupScreenState(
+    val groupProfile: GroupProfile,
+    val messageList: List<Message>,
+    val mushScrollToBottom: Boolean,
+    val showLoadMore: Boolean,
+    val loadFinish: Boolean,
+)
+
 
 data class HomeDrawerViewState(
     val appTheme: AppTheme,

@@ -77,6 +77,11 @@ fun ConversationItem(
     var menuExpanded by remember {
         mutableStateOf(false)
     }
+    val bgColor = if (conversation.isPinned) {
+        Color.Gray.copy(alpha = 0.1f)
+    } else {
+        MaterialTheme.colors.background
+    }
     ConstraintLayout(
         modifier = Modifier
             .pointerInput(key1 = Unit) {
@@ -90,13 +95,7 @@ fun ConversationItem(
                 )
             }
             .fillMaxWidth()
-            .apply {
-                if (conversation.isPinned) {
-                    background(color = Color.Gray.copy(alpha = 0.1f))
-                } else {
-                    background(color = MaterialTheme.colors.background)
-                }
-            }
+            .background(color = bgColor)
             .padding(top = padding),
     ) {
         val (avatar, unreadMessageCount, nickname, lastMsg, time, divider, dropdownMenu) = createRefs()

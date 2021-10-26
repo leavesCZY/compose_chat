@@ -111,38 +111,8 @@ class GroupProvider : IGroupProvider, Converters {
         }
     }
 
-    private fun convertGroupMember(memberFullInfo: V2TIMGroupMemberFullInfo?): GroupMemberProfile? {
-        memberFullInfo ?: return null
-        return GroupMemberProfile(
-            userId = memberFullInfo.userID ?: "",
-            faceUrl = memberFullInfo.faceUrl ?: "",
-            nickname = memberFullInfo.nickName ?: "",
-            remark = memberFullInfo.friendRemark ?: "",
-            signature = "",
-            role = convertRole(memberFullInfo.role),
-            joinTime = memberFullInfo.joinTime,
-        )
-    }
-
-    private fun convertRole(roleType: Int): String {
-        return when (roleType) {
-            V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_MEMBER -> {
-                "群成员"
-            }
-            V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_ADMIN -> {
-                "群管理员"
-            }
-            V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_OWNER -> {
-                "群主"
-            }
-            else -> {
-                "unknown"
-            }
-        }
-    }
-
     private fun convertGroupMember(groupMemberList: List<V2TIMGroupMemberFullInfo>?): List<GroupMemberProfile> {
-        return groupMemberList?.mapNotNull { convertGroupMember(it) } ?: emptyList()
+        return groupMemberList?.map { convertGroupMember(it) } ?: emptyList()
     }
 
 }

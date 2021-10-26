@@ -15,7 +15,8 @@ import github.leavesc.compose_chat.base.model.Message
 import github.leavesc.compose_chat.base.model.TextMessage
 import github.leavesc.compose_chat.base.model.TimeMessage
 import github.leavesc.compose_chat.extend.navigate
-import github.leavesc.compose_chat.model.ChatScreenState
+import github.leavesc.compose_chat.model.ChatFriendScreenState
+import github.leavesc.compose_chat.model.ChatGroupScreenState
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.utils.showToast
 
@@ -28,7 +29,7 @@ import github.leavesc.compose_chat.utils.showToast
 @Composable
 fun MessageScreen(
     navController: NavController,
-    chatScreenState: ChatScreenState,
+    chatFriendScreenState: ChatFriendScreenState,
     listState: LazyListState,
     contentPadding: PaddingValues
 ) {
@@ -41,7 +42,7 @@ fun MessageScreen(
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.Top,
     ) {
-        for (message in chatScreenState.messageList) {
+        for (message in chatFriendScreenState.messageList) {
             item(key = message.msgId) {
                 MessageItem(
                     message = message,
@@ -66,7 +67,56 @@ fun MessageScreen(
                 )
             }
         }
-        if (chatScreenState.showLoadMore) {
+        if (chatFriendScreenState.showLoadMore) {
+            item {
+                LoadMoreMessageItem()
+            }
+        }
+    }
+}
+
+@Composable
+fun MessageGroupScreen(
+    navController: NavController,
+    chatFriendScreenState: ChatGroupScreenState,
+    listState: LazyListState,
+    contentPadding: PaddingValues
+) {
+    val clipboardManager = LocalClipboardManager.current
+    LazyColumn(
+        modifier = Modifier
+            .padding(bottom = 20.dp),
+        state = listState,
+        reverseLayout = true,
+        contentPadding = contentPadding,
+        verticalArrangement = Arrangement.Top,
+    ) {
+        for (message in chatFriendScreenState.messageList) {
+            item(key = message.msgId) {
+                MessageItem(
+                    message = message,
+                    onClickSelfAvatar = {
+
+                    },
+                    onClickFriendAvatar = {
+                        val messageSenderId = (it as? TextMessage)?.sender?.userId
+                        if (!messageSenderId.isNullOrBlank()) {
+                            navController.navigate(
+                                screen = Screen.FriendProfileScreen(friendId = messageSenderId)
+                            )
+                        }
+                    },
+                    onLongPressMessage = {
+                        val msg = (message as? TextMessage)?.msg
+                        if (!msg.isNullOrEmpty()) {
+                            clipboardManager.setText(AnnotatedString(msg))
+                            showToast("已复制")
+                        }
+                    },
+                )
+            }
+        }
+        if (chatFriendScreenState.showLoadMore) {
             item {
                 LoadMoreMessageItem()
             }

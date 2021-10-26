@@ -10,6 +10,7 @@ import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * @Author: leavesC
@@ -27,12 +28,15 @@ class HomeViewModel : ViewModel() {
 
     val fiendList = Chat.friendshipProvider.friendList
 
+    val joinedGroupList = Chat.groupProvider.joinedGroupList
+
     val personProfile = Chat.accountProvider.personProfile
 
     val serverConnectState = Chat.accountProvider.serverConnectState
 
     fun init() {
         Chat.conversationProvider.getConversationList()
+        Chat.groupProvider.getJoinedGroupList()
         Chat.friendshipProvider.getFriendList()
         Chat.accountProvider.refreshPersonProfile()
     }
@@ -83,6 +87,12 @@ class HomeViewModel : ViewModel() {
                     showToast(result.reason)
                 }
             }
+        }
+    }
+
+    suspend fun joinGroup(groupId: String): ActionResult {
+        return withContext(Dispatchers.Main) {
+            Chat.groupProvider.joinGroup(groupId)
         }
     }
 

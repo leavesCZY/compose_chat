@@ -1,4 +1,4 @@
-package github.leavesc.compose_chat.ui.home
+package github.leavesc.compose_chat.ui.person
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface

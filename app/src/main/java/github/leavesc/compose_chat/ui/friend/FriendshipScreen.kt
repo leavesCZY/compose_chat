@@ -1,6 +1,6 @@
 package github.leavesc.compose_chat.ui.friend
 
-import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,12 +12,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.ui.weigets.CoilImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
@@ -33,7 +33,9 @@ import github.leavesc.compose_chat.ui.weigets.EmptyView
 fun FriendshipScreen(
     listState: LazyListState,
     paddingValues: PaddingValues,
+    joinedGroupList: List<GroupProfile>,
     friendList: List<PersonProfile>,
+    onClickGroup: (GroupProfile) -> Unit,
     onClickFriend: (PersonProfile) -> Unit
 ) {
     Scaffold(
@@ -41,10 +43,15 @@ fun FriendshipScreen(
             .padding(bottom = paddingValues.calculateBottomPadding())
             .fillMaxSize()
     ) {
-        if (friendList.isEmpty()) {
+        if (joinedGroupList.isEmpty() && friendList.isEmpty()) {
             EmptyView()
         } else {
             LazyColumn(state = listState) {
+                joinedGroupList.forEach {
+                    item(key = it.id) {
+                        GroupItem(groupProfile = it, onClickGroup = onClickGroup)
+                    }
+                }
                 friendList.forEach {
                     item(key = it.userId) {
                         FriendshipItem(personProfile = it, onClickFriend = onClickFriend)
@@ -58,18 +65,54 @@ fun FriendshipScreen(
     }
 }
 
-@Preview(
-    showBackground = true,
-    device = Devices.PIXEL_4,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
 @Composable
-fun PreviewFriendshipItem() {
-    FriendshipItem(personProfile = PersonProfile.Empty.copy(
-        nickname = "业志陈", signature = "喜欢写又长又臭的文章，希望对你有所帮助 \uD83E\uDD23\uD83E\uDD23"
-    ), onClickFriend = {
-
-    })
+fun GroupItem(groupProfile: GroupProfile, onClickGroup: (GroupProfile) -> Unit) {
+    val padding = 12.dp
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color.Gray.copy(alpha = 0.1f))
+            .clickable {
+                onClickGroup(groupProfile)
+            },
+    ) {
+        val (avatar, showName, divider) = createRefs()
+        CoilImage(
+            data = groupProfile.faceUrl,
+            modifier = Modifier
+                .padding(start = padding * 1.5f, top = padding, bottom = padding)
+                .size(size = 50.dp)
+                .clip(shape = CircleShape)
+                .constrainAs(ref = avatar) {
+                    start.linkTo(anchor = parent.start)
+                    top.linkTo(anchor = parent.top)
+                }
+        )
+        Text(
+            text = groupProfile.name,
+            style = MaterialTheme.typography.subtitle1,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            modifier = Modifier
+                .padding(start = padding, end = padding)
+                .constrainAs(ref = showName) {
+                    start.linkTo(anchor = avatar.end)
+                    top.linkTo(anchor = parent.top)
+                    bottom.linkTo(anchor = parent.bottom)
+                    end.linkTo(anchor = parent.end)
+                    width = Dimension.fillToConstraints
+                }
+        )
+        CommonDivider(
+            modifier = Modifier
+                .constrainAs(ref = divider) {
+                    start.linkTo(anchor = avatar.end, margin = padding)
+                    end.linkTo(anchor = parent.end)
+                    top.linkTo(anchor = avatar.bottom)
+                    width = Dimension.fillToConstraints
+                }
+        )
+    }
 }
 
 @Composable

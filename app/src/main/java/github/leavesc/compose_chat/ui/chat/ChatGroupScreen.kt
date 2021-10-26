@@ -12,39 +12,37 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.statusBarsPadding
-import github.leavesc.compose_chat.extend.navigate
-import github.leavesc.compose_chat.logic.ChatViewModel
-import github.leavesc.compose_chat.model.Screen
+import github.leavesc.compose_chat.logic.ChatGroupViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesC
- * @Date: 2021/7/3 23:53
+ * @Date: 2021/10/27 0:04
  * @Desc:
  * @Github：https://github.com/leavesC
  */
 @Composable
-fun ChatScreen(
+fun ChatGroupScreen(
     navController: NavHostController,
     listState: LazyListState,
-    friendId: String
+    groupId: String
 ) {
-    val chatViewModel = viewModel<ChatViewModel>(factory = object :
+    val chatGroupViewModel = viewModel<ChatGroupViewModel>(factory = object :
         ViewModelProvider.NewInstanceFactory() {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return ChatViewModel(friendId) as T
+            return ChatGroupViewModel(groupId) as T
         }
     })
 
-    val chatScreenState by chatViewModel.chatScreenState.collectAsState()
+    val chatScreenState by chatGroupViewModel.chatGroupScreenState.collectAsState()
 
     if (chatScreenState.mushScrollToBottom) {
         LaunchedEffect(key1 = chatScreenState.mushScrollToBottom) {
             if (chatScreenState.mushScrollToBottom) {
                 listState.animateScrollToItem(index = 0)
-                chatViewModel.alreadyScrollToBottom()
+                chatGroupViewModel.alreadyScrollToBottom()
             }
         }
     }
@@ -56,7 +54,7 @@ fun ChatScreen(
             }.filter {
                 !chatScreenState.loadFinish
             }.collect {
-                chatViewModel.loadMoreMessage()
+                chatGroupViewModel.loadMoreMessage()
             }
         }
     }
@@ -69,13 +67,11 @@ fun ChatScreen(
         topBar = {
             ChatScreenTopBar(
                 navController = navController,
-                friendProfile = chatScreenState.friendProfile,
+                title = chatScreenState.groupProfile.name,
                 onClickMoreMenu = {
-                    val userId = chatScreenState.friendProfile.userId
-                    if (userId.isNotBlank()) {
-                        navController.navigate(
-                            screen = Screen.FriendProfileScreen(friendId = userId)
-                        )
+                    val groupId = chatScreenState.groupProfile.id
+                    if (groupId.isNotBlank()) {
+
                     }
                 }
             )
@@ -83,13 +79,13 @@ fun ChatScreen(
         bottomBar = {
             ChatScreenBottomBord(
                 sendMessage = {
-                    chatViewModel.sendMessage(it)
+                    chatGroupViewModel.sendMessage(it)
                 })
         }
     ) { contentPadding ->
-        MessageScreen(
+        MessageGroupScreen(
             navController = navController,
-            chatScreenState = chatScreenState,
+            chatFriendScreenState = chatScreenState,
             listState = listState,
             contentPadding = contentPadding,
         )

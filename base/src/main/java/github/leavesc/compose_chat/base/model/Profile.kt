@@ -6,12 +6,26 @@ package github.leavesc.compose_chat.base.model
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-data class PersonProfile(
+open class BaseProfile(
     val userId: String,
     val faceUrl: String,
     val nickname: String,
     val remark: String,
     val signature: String,
+)
+
+class PersonProfile(
+    userId: String,
+    faceUrl: String,
+    nickname: String,
+    remark: String,
+    signature: String,
+) : BaseProfile(
+    userId = userId,
+    faceUrl = faceUrl,
+    nickname = nickname,
+    remark = remark,
+    signature = signature
 ) {
 
     companion object {
@@ -30,14 +44,20 @@ data class PersonProfile(
 
 }
 
-data class GroupMemberProfile(
-    val userId: String,
-    val faceUrl: String,
-    val nickname: String,
-    val remark: String,
-    val signature: String,
+class GroupMemberProfile(
+    userId: String,
+    faceUrl: String,
+    nickname: String,
+    remark: String,
+    signature: String,
     val role: String,
     val joinTime: Long
+) : BaseProfile(
+    userId = userId,
+    faceUrl = faceUrl,
+    nickname = nickname,
+    remark = remark,
+    signature = signature
 )
 
 data class GroupProfile(
@@ -45,4 +65,12 @@ data class GroupProfile(
     val faceUrl: String,
     val name: String,
     val notification: String
-)
+) {
+
+    companion object {
+
+        val Empty = GroupProfile(id = "", faceUrl = "", name = "", notification = "")
+
+    }
+
+}

@@ -11,14 +11,18 @@ import github.leavesc.compose_chat.proxy.logic.*
  */
 object Chat {
 
+    const val groupId = "@TGS#3Y6Y6MRHG"
+
     val accountProvider: IAccountProvider = AccountProvider()
 
     val conversationProvider: IConversationProvider = ConversationProvider()
 
-    val c2cMessageProvider: IC2CMessageProvider = C2CMessageProvider()
+    val fiendMessageProvider: IMessageProvider = FriendMessageProvider()
 
     val friendshipProvider: IFriendshipProvider = FriendshipProvider()
 
     val groupProvider: IGroupProvider = GroupProvider()
+
+    val groupMessageProvider: IMessageProvider = GroupMessageProvider()
 
 }

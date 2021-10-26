@@ -10,7 +10,7 @@ import kotlinx.coroutines.channels.Channel
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-interface IC2CMessageProvider {
+interface IMessageProvider {
 
     interface MessageListener {
 
@@ -18,17 +18,17 @@ interface IC2CMessageProvider {
 
     }
 
-    fun markC2CMessageAsRead(friendId: String)
+    fun markMessageAsRead(partyId: String)
 
-    suspend fun getHistoryMessageList(friendId: String, lastMessage: Message?): LoadMessageResult
+    suspend fun getHistoryMessage(partyId: String, lastMessage: Message?): LoadMessageResult
 
     suspend fun send(
         channel: Channel<Message>,
-        friendId: String,
+        partyId: String,
         text: String
     )
 
-    fun startReceive(friendId: String, messageListener: MessageListener)
+    fun startReceive(partyId: String, messageListener: MessageListener)
 
     fun stopReceive(messageListener: MessageListener)
 

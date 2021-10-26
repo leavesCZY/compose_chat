@@ -13,10 +13,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.imePadding
 import com.google.accompanist.insets.navigationBarsPadding
+import github.leavesc.compose_chat.base.model.ActionResult
+import github.leavesc.compose_chat.base.model.Conversation
 import github.leavesc.compose_chat.base.model.ServerState
 import github.leavesc.compose_chat.cache.AccountCache
 import github.leavesc.compose_chat.extend.navigate
 import github.leavesc.compose_chat.extend.navigateWithBack
+import github.leavesc.compose_chat.logic.Chat
 import github.leavesc.compose_chat.logic.HomeViewModel
 import github.leavesc.compose_chat.model.AppTheme
 import github.leavesc.compose_chat.model.HomeDrawerViewState
@@ -24,6 +27,7 @@ import github.leavesc.compose_chat.model.HomeScreenTab
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.conversation.ConversationScreen
 import github.leavesc.compose_chat.ui.friend.FriendshipScreen
+import github.leavesc.compose_chat.ui.person.PersonProfileScreen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
 import github.leavesc.compose_chat.utils.log
 import github.leavesc.compose_chat.utils.showToast
@@ -78,6 +82,7 @@ fun HomeScreen(
     val conversationList by homeViewModel.conversationList.collectAsState()
     val totalUnreadCount by homeViewModel.totalUnreadCount.collectAsState()
     val friendList by homeViewModel.fiendList.collectAsState()
+    val joinedGroupList by homeViewModel.joinedGroupList.collectAsState()
     val personProfile by homeViewModel.personProfile.collectAsState()
 
     val conversationListState = rememberLazyListState()
@@ -124,9 +129,18 @@ fun HomeScreen(
                     onAddFriend = {
                         sheetContentAnimateTo(targetValue = ModalBottomSheetValue.Expanded)
                     },
-                    onCreateGroup = {
+                    onJoinGroup = {
                         coroutineScope.launch {
-                            scaffoldState.snackbarHostState.showSnackbar(message = "功能尚未开发")
+                            val groupId = Chat.groupId
+                            when (val result = homeViewModel.joinGroup(groupId)) {
+                                is ActionResult.Success -> {
+                                    showToast("加入成功")
+                                    navController.navigate(screen = Screen.ChatGroupScreen(groupId = groupId))
+                                }
+                                is ActionResult.Failed -> {
+                                    showToast(result.reason)
+                                }
+                            }
                         }
                     }
                 )
@@ -183,7 +197,14 @@ fun HomeScreen(
                         paddingValues = paddingValues,
                         conversationList = conversationList,
                         onClickConversation = {
-                            navController.navigate(screen = Screen.ChatScreen(friendId = it.id))
+                            when (it) {
+                                is Conversation.C2CConversation -> {
+                                    navController.navigate(screen = Screen.ChatFriendScreen(friendId = it.id))
+                                }
+                                is Conversation.GroupConversation -> {
+                                    navController.navigate(screen = Screen.ChatGroupScreen(groupId = it.id))
+                                }
+                            }
                         },
                         onDeleteConversation = {
                             homeViewModel.deleteConversation(it)
@@ -200,7 +221,11 @@ fun HomeScreen(
                     FriendshipScreen(
                         listState = friendShipListState,
                         paddingValues = paddingValues,
+                        joinedGroupList = joinedGroupList,
                         friendList = friendList,
+                        onClickGroup = {
+                            navController.navigate(screen = Screen.ChatGroupScreen(groupId = it.id))
+                        },
                         onClickFriend = {
                             navController.navigate(
                                 screen = Screen.FriendProfileScreen(friendId = it.userId)

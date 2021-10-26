@@ -22,7 +22,7 @@ sealed class Message(
     val msgId: String,
     val timestamp: Long,
     val state: MessageState,
-    val sender: PersonProfile,
+    val sender: BaseProfile,
 ) {
 
     val conversationTime by lazy {
@@ -54,7 +54,7 @@ sealed class TextMessage(
     msgId: String,
     timestamp: Long,
     state: MessageState,
-    sender: PersonProfile,
+    sender: BaseProfile,
     val msg: String,
 ) : Message(
     msgId = msgId,
@@ -67,7 +67,7 @@ sealed class TextMessage(
         msgId: String,
         state: MessageState,
         timestamp: Long,
-        sender: PersonProfile,
+        sender: BaseProfile,
         msg: String,
     ) : TextMessage(
         msgId = msgId,
@@ -80,7 +80,7 @@ sealed class TextMessage(
     class FriendTextMessage(
         msgId: String,
         timestamp: Long,
-        sender: PersonProfile,
+        sender: BaseProfile,
         msg: String,
     ) : TextMessage(
         msgId = msgId,
@@ -95,7 +95,7 @@ sealed class TextMessage(
         msg: String = this.msg,
         timestamp: Long = this.timestamp,
         state: MessageState = this.state,
-        sender: PersonProfile = this.sender
+        sender: BaseProfile = this.sender
     ): TextMessage {
         return when (this) {
             is FriendTextMessage -> {

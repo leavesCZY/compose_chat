@@ -46,6 +46,35 @@ internal interface Converters {
         )
     }
 
+    fun convertGroupMember(memberFullInfo: V2TIMGroupMemberInfo): GroupMemberProfile {
+        return GroupMemberProfile(
+            userId = memberFullInfo.userID ?: "",
+            faceUrl = memberFullInfo.faceUrl ?: "",
+            nickname = memberFullInfo.nickName ?: "",
+            remark = memberFullInfo.friendRemark ?: "",
+            signature = "",
+            role = convertRole((memberFullInfo as? V2TIMGroupMemberFullInfo)?.role ?: -11111),
+            joinTime = (memberFullInfo as? V2TIMGroupMemberFullInfo)?.joinTime ?: 0,
+        )
+    }
+
+    private fun convertRole(roleType: Int): String {
+        return when (roleType) {
+            V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_MEMBER -> {
+                "群成员"
+            }
+            V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_ADMIN -> {
+                "群管理员"
+            }
+            V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_OWNER -> {
+                "群主"
+            }
+            else -> {
+                "unknown"
+            }
+        }
+    }
+
     suspend fun deleteConversation(id: String): ActionResult {
         return withContext(Dispatchers.Main) {
             suspendCancellableCoroutine { continuation ->
@@ -80,6 +109,10 @@ internal interface Converters {
                 String.format("group_%s", conversation.id)
             }
         }
+    }
+
+    fun convertMessage(messageList: List<V2TIMMessage>?): List<Message> {
+        return messageList?.mapNotNull { convertMessage(it) } ?: emptyList()
     }
 
     fun convertMessage(timMessage: V2TIMMessage?): Message? {

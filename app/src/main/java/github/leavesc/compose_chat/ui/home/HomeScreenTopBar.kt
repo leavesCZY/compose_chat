@@ -30,7 +30,7 @@ fun HomeScreenTopBar(
     screenSelected: HomeScreenTab,
     openDrawer: () -> Unit,
     onAddFriend: () -> Unit,
-    onCreateGroup: () -> Unit,
+    onJoinGroup: () -> Unit,
 ) {
     if (screenSelected == HomeScreenTab.PersonProfile) {
         return
@@ -123,9 +123,9 @@ fun HomeScreenTopBar(
                     }
                     DropdownMenuItem(onClick = {
                         menuExpanded = false
-                        onCreateGroup()
+                        onJoinGroup()
                     }) {
-                        Text(text = "创建群组", modifier = Modifier)
+                        Text(text = "加入交流群", modifier = Modifier)
                     }
                 }
             }

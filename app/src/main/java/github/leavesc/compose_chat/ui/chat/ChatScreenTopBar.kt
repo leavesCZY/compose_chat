@@ -34,7 +34,7 @@ import github.leavesc.compose_chat.ui.weigets.CommonDivider
 @Composable
 fun ChatScreenTopBar(
     navController: NavHostController,
-    friendProfile: PersonProfile,
+    title: String,
     onClickBackMenu: (() -> Unit)? = null,
     onClickMoreMenu: () -> Unit,
 ) {
@@ -76,7 +76,7 @@ fun ChatScreenTopBar(
                 tint = MaterialTheme.colors.surface
             )
             Text(
-                text = friendProfile.showName,
+                text = title,
                 modifier = Modifier
                     .constrainAs(ref = showName) {
                         start.linkTo(anchor = backMenu.end)

@@ -19,9 +19,9 @@ fun NavController.navigateWithBack(screen: Screen) {
     navigate(route = screen.route)
 }
 
-fun NavController.navToChatScreen(friendId: String) {
-    navigate(route = Screen.ChatScreen(friendId = friendId).route) {
-        popUpTo(route = Screen.ChatScreen().route) {
+fun NavController.navToChatFriendScreen(friendId: String) {
+    navigate(route = Screen.ChatFriendScreen(friendId = friendId).route) {
+        popUpTo(route = Screen.ChatFriendScreen().route) {
             inclusive = true
         }
     }
