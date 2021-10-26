@@ -110,7 +110,7 @@ fun FriendshipItem(personProfile: PersonProfile, onClickFriend: (PersonProfile) 
         )
         Text(
             text = personProfile.signature,
-            style = MaterialTheme.typography.subtitle2,
+            style = MaterialTheme.typography.body2,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             modifier = Modifier

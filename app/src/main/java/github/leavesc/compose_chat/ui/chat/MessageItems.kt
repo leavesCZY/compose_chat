@@ -148,7 +148,8 @@ fun FriendTextMessageItem(
                     bottom = messageInnerPadding
                 ),
             text = textMessage.msg,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.body1,
+            letterSpacing = 2.sp,
             textAlign = TextAlign.Left,
         )
         Box(
@@ -217,7 +218,8 @@ fun SelfTextMessageItem(
                     bottom = messageInnerPadding
                 ),
             text = textMessage.msg,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.body1,
+            letterSpacing = 2.sp,
             textAlign = TextAlign.Left,
         )
         CoilImage(
@@ -240,8 +242,7 @@ fun TimeMessageItem(timeMessage: TimeMessage) {
     ) {
         Text(
             text = timeMessage.chatTime,
-            style = MaterialTheme.typography.subtitle1,
-            fontSize = 13.sp,
+            style = MaterialTheme.typography.subtitle2,
             modifier = Modifier
                 .background(Color.Gray.copy(alpha = 0.2f))
                 .padding(all = 4.dp)

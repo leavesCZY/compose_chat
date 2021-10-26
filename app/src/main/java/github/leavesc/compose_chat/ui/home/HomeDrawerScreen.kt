@@ -8,13 +8,14 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesc.compose_chat.BuildConfig
 import github.leavesc.compose_chat.model.HomeDrawerViewState
-import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
+import github.leavesc.compose_chat.ui.weigets.CommonButton
 import kotlinx.coroutines.launch
 
 /**
@@ -73,7 +74,8 @@ fun HomeDrawerScreen(
                             "buildTime: " + BuildConfig.BUILD_TIME,
                     style = MaterialTheme.typography.subtitle2,
                     textAlign = TextAlign.Center,
-                    letterSpacing = 2.sp
+                    letterSpacing = 2.sp,
+                    fontFamily = FontFamily.Serif,
                 )
             }
         },

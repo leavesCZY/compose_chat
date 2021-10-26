@@ -90,11 +90,11 @@ fun ConversationItem(
                 )
             }
             .fillMaxWidth()
-            .let {
+            .apply {
                 if (conversation.isPinned) {
-                    it.background(color = Color.Gray.copy(alpha = 0.1f))
+                    background(color = Color.Gray.copy(alpha = 0.1f))
                 } else {
-                    it.background(color = MaterialTheme.colors.background)
+                    background(color = MaterialTheme.colors.background)
                 }
             }
             .padding(top = padding),
@@ -148,7 +148,7 @@ fun ConversationItem(
         )
         Text(
             text = conversation.lastMessage.conversationTime,
-            style = MaterialTheme.typography.subtitle2,
+            style = MaterialTheme.typography.body2,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             modifier = Modifier
