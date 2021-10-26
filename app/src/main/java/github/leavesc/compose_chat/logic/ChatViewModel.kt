@@ -20,8 +20,6 @@ import kotlinx.coroutines.launch
  */
 class ChatViewModel(private val friendId: String) : ViewModel() {
 
-    val friendProfile = MutableStateFlow(PersonProfile.Empty)
-
     private var loadMessageJob: Job? = null
 
     private val allMessage = mutableListOf<Message>()
@@ -33,20 +31,20 @@ class ChatViewModel(private val friendId: String) : ViewModel() {
 
     private val messageListener = object : IC2CMessageProvider.MessageListener {
         override fun onReceiveMessage(message: Message) {
-            addMessageToHeader(newMessage = message)
+            attachNewMessage(newMessage = message)
             markC2CMessageAsRead()
         }
     }
 
     val chatScreenState = MutableStateFlow(
         ChatScreenState(
+            friendProfile = PersonProfile.Empty,
+            messageList = emptyList(),
             showLoadMore = false,
             loadFinish = false,
-            messageList = emptyList()
+            mushScrollToBottom = false
         )
     )
-
-    val mushScrollToBottom = MutableStateFlow(false)
 
     init {
         Chat.c2cMessageProvider.startReceive(friendId = friendId, messageListener = messageListener)
@@ -58,12 +56,12 @@ class ChatViewModel(private val friendId: String) : ViewModel() {
     private fun getFriendProfile() {
         viewModelScope.launch(Dispatchers.Main) {
             Chat.friendshipProvider.getFriendProfile(friendId)?.let {
-                friendProfile.emit(it)
+                refreshViewState(friendProfile = it)
             }
         }
     }
 
-    fun onLoadMoreMessage() {
+    fun loadMoreMessage() {
         if (loadMessageJob != null || chatScreenState.value.loadFinish) {
             return
         }
@@ -114,8 +112,7 @@ class ChatViewModel(private val friendId: String) : ViewModel() {
                 when (message.state) {
                     MessageState.Sending -> {
                         sendingMessage = message
-                        addMessageToHeader(newMessage = message)
-                        mushScrollToBottom.emit(true)
+                        attachNewMessage(newMessage = message)
                     }
                     MessageState.Completed, MessageState.SendFailed -> {
                         val sending = sendingMessage ?: return@launch
@@ -123,7 +120,7 @@ class ChatViewModel(private val friendId: String) : ViewModel() {
                             allMessage.indexOfFirst { it.msgId == sending.msgId }
                         if (sendingMessageIndex > -1) {
                             allMessage[sendingMessageIndex] = message
-                            refreshViewState()
+                            refreshViewState(mushScrollToBottom = true)
                         }
                         if (message.state == MessageState.SendFailed) {
                             (message.tag as? String)?.let {
@@ -136,21 +133,13 @@ class ChatViewModel(private val friendId: String) : ViewModel() {
         }
     }
 
-    private fun addMessageToHeader(
-        newMessage: Message,
-        showLoadMore: Boolean = chatScreenState.value.showLoadMore,
-        loadFinish: Boolean = chatScreenState.value.loadFinish
-    ) {
+    private fun attachNewMessage(newMessage: Message) {
         val firstMessage = allMessage.getOrNull(0)
         if (firstMessage == null || newMessage.timestamp - firstMessage.timestamp > 60) {
             allMessage.add(0, TimeMessage(targetMessage = newMessage))
         }
         allMessage.add(0, newMessage)
-        chatScreenState.value = ChatScreenState(
-            showLoadMore = showLoadMore,
-            loadFinish = loadFinish,
-            messageList = allMessage.toList()
-        )
+        refreshViewState()
     }
 
     private fun addMessageToFooter(
@@ -180,31 +169,36 @@ class ChatViewModel(private val friendId: String) : ViewModel() {
                 }
             }
         }
-        chatScreenState.value = ChatScreenState(
-            showLoadMore = showLoadMore,
-            loadFinish = loadFinish,
-            messageList = allMessage.toList()
-        )
+        refreshViewState(showLoadMore = showLoadMore, loadFinish = loadFinish)
     }
 
     private fun refreshViewState(
+        friendProfile: PersonProfile = chatScreenState.value.friendProfile,
         showLoadMore: Boolean = chatScreenState.value.showLoadMore,
-        loadFinish: Boolean = chatScreenState.value.loadFinish
+        loadFinish: Boolean = chatScreenState.value.loadFinish,
+        mushScrollToBottom: Boolean = false,
     ) {
         chatScreenState.value = ChatScreenState(
+            friendProfile = friendProfile,
+            messageList = allMessage.toList(),
             showLoadMore = showLoadMore,
             loadFinish = loadFinish,
-            messageList = allMessage.toList()
+            mushScrollToBottom = mushScrollToBottom
         )
     }
 
-    fun onDispose() {
-        markC2CMessageAsRead()
-        Chat.c2cMessageProvider.stopReceive(messageListener = messageListener)
+    fun alreadyScrollToBottom() {
+        refreshViewState()
     }
 
     private fun markC2CMessageAsRead() {
         Chat.c2cMessageProvider.markC2CMessageAsRead(friendId = friendId)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Chat.c2cMessageProvider.stopReceive(messageListener = messageListener)
+        markC2CMessageAsRead()
     }
 
 }

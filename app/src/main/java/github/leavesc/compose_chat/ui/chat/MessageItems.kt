@@ -105,70 +105,6 @@ private const val messageWidthWeight = 3.5f
 private const val messageStateWidthWeight = 1f
 
 @Composable
-fun FriendTextMessageItem(
-    textMessage: TextMessage,
-    onClickFriendAvatar: (String) -> Unit,
-    onLongPressMessage: (Message) -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = itemPaddingStart, top = itemPaddingTop, bottom = itemPaddingBottom)
-    ) {
-        CoilImage(
-            data = textMessage.sender.faceUrl,
-            modifier = Modifier
-                .size(size = avatarSize)
-                .clip(shape = CircleShape)
-                .clickable {
-                    onClickFriendAvatar(textMessage.sender.userId)
-                }
-        )
-        Text(
-            modifier = Modifier
-                .weight(weight = messageWidthWeight, fill = false)
-                .padding(
-                    start = messageStartPadding,
-                    top = messageTopPadding,
-                    end = messageEndPadding
-                )
-                .clip(shape = messageShape)
-                .background(color = friendMsgBgColor)
-                .pointerInput(key1 = Unit) {
-                    detectTapGestures(
-                        onLongPress = {
-                            onLongPressMessage(textMessage)
-                        },
-                    )
-                }
-                .padding(
-                    start = messageInnerPadding,
-                    top = messageInnerPadding,
-                    end = messageInnerPadding,
-                    bottom = messageInnerPadding
-                ),
-            text = textMessage.msg,
-            style = MaterialTheme.typography.body1,
-            letterSpacing = 2.sp,
-            textAlign = TextAlign.Left,
-        )
-        Box(
-            modifier = Modifier
-                .weight(weight = messageStateWidthWeight, fill = true)
-                .padding(
-                    top = messageTopPadding,
-                )
-                .align(alignment = Alignment.CenterVertically)
-        ) {
-            MessageStateItem(
-                modifier = Modifier,
-                messageState = textMessage.state,
-            )
-        }
-    }
-}
-
-@Composable
 fun SelfTextMessageItem(
     textMessage: TextMessage,
     onClickSelfAvatar: () -> Unit,
@@ -233,6 +169,70 @@ fun SelfTextMessageItem(
 }
 
 @Composable
+fun FriendTextMessageItem(
+    textMessage: TextMessage,
+    onClickFriendAvatar: (Message) -> Unit,
+    onLongPressMessage: (Message) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = itemPaddingStart, top = itemPaddingTop, bottom = itemPaddingBottom)
+    ) {
+        CoilImage(
+            data = textMessage.sender.faceUrl,
+            modifier = Modifier
+                .size(size = avatarSize)
+                .clip(shape = CircleShape)
+                .clickable {
+                    onClickFriendAvatar(textMessage)
+                }
+        )
+        Text(
+            modifier = Modifier
+                .weight(weight = messageWidthWeight, fill = false)
+                .padding(
+                    start = messageStartPadding,
+                    top = messageTopPadding,
+                    end = messageEndPadding
+                )
+                .clip(shape = messageShape)
+                .background(color = friendMsgBgColor)
+                .pointerInput(key1 = Unit) {
+                    detectTapGestures(
+                        onLongPress = {
+                            onLongPressMessage(textMessage)
+                        },
+                    )
+                }
+                .padding(
+                    start = messageInnerPadding,
+                    top = messageInnerPadding,
+                    end = messageInnerPadding,
+                    bottom = messageInnerPadding
+                ),
+            text = textMessage.msg,
+            style = MaterialTheme.typography.body1,
+            letterSpacing = 2.sp,
+            textAlign = TextAlign.Left,
+        )
+        Box(
+            modifier = Modifier
+                .weight(weight = messageStateWidthWeight, fill = true)
+                .padding(
+                    top = messageTopPadding,
+                )
+                .align(alignment = Alignment.CenterVertically)
+        ) {
+            MessageStateItem(
+                modifier = Modifier,
+                messageState = textMessage.state,
+            )
+        }
+    }
+}
+
+@Composable
 fun TimeMessageItem(timeMessage: TimeMessage) {
     Box(
         modifier = Modifier
@@ -271,5 +271,12 @@ fun MessageStateItem(modifier: Modifier, messageState: MessageState) {
                 strokeWidth = 2.dp
             )
         }
+    }
+}
+
+@Composable
+fun LoadMoreMessageItem() {
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
+        CircularProgressIndicator()
     }
 }

@@ -14,11 +14,14 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.navigation.NavHostController
+import com.google.accompanist.insets.LocalWindowInsets
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 
@@ -30,10 +33,13 @@ import github.leavesc.compose_chat.ui.weigets.CommonDivider
  */
 @Composable
 fun ChatScreenTopBar(
+    navController: NavHostController,
     friendProfile: PersonProfile,
-    onClickBackMenu: () -> Unit,
+    onClickBackMenu: (() -> Unit)? = null,
     onClickMoreMenu: () -> Unit,
 ) {
+    val textInputService = LocalTextInputService.current
+    val ime = LocalWindowInsets.current.ime
     TopAppBar(
         backgroundColor = MaterialTheme.colors.primaryVariant,
         elevation = 0.dp,
@@ -54,7 +60,17 @@ fun ChatScreenTopBar(
                         top.linkTo(anchor = parent.top)
                         bottom.linkTo(anchor = parent.bottom)
                     }
-                    .clickable(onClick = onClickBackMenu),
+                    .clickable(onClick = {
+                        if (onClickBackMenu != null) {
+                            onClickBackMenu.invoke()
+                        } else {
+                            if (ime.isVisible) {
+                                textInputService?.hideSoftwareKeyboard()
+                            } else {
+                                navController.popBackStack()
+                            }
+                        }
+                    }),
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = null,
                 tint = MaterialTheme.colors.surface

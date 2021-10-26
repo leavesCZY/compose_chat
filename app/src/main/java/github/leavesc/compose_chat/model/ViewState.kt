@@ -4,7 +4,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Flare
-import androidx.compose.material.icons.filled.Pets
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavBackStackEntry
 import github.leavesc.compose_chat.base.model.Message
@@ -90,9 +89,11 @@ enum class HomeScreenTab(
 }
 
 class ChatScreenState(
+    val friendProfile: PersonProfile,
+    val messageList: List<Message>,
+    val mushScrollToBottom: Boolean,
     val showLoadMore: Boolean,
     val loadFinish: Boolean,
-    val messageList: List<Message>,
 )
 
 data class HomeDrawerViewState(
