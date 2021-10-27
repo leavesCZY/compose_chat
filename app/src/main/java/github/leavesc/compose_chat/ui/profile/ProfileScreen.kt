@@ -40,7 +40,7 @@ import kotlin.math.roundToInt
  */
 @Preview
 @Composable
-fun PreviewProfileScreen() {
+private fun PreviewProfileScreen() {
     ProfileScreen(personProfile = PersonProfile.Empty)
 }
 

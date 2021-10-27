@@ -67,7 +67,7 @@ fun ConversationScreen(
 }
 
 @Composable
-fun ConversationItem(
+private fun ConversationItem(
     conversation: Conversation,
     onClickConversation: (Conversation) -> Unit,
     onDeleteConversation: (Conversation) -> Unit,

@@ -46,6 +46,13 @@ internal interface Converters {
         )
     }
 
+    fun convertFriendProfile(v2TIMFriendInfo: V2TIMFriendInfoResult): PersonProfile {
+        return convertFriendProfile(v2TIMFriendInfo.friendInfo).copy(
+            isFriend = v2TIMFriendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_BOTH_WAY ||
+                    v2TIMFriendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_IN_MY_FRIEND_LIST
+        )
+    }
+
     fun convertGroupMember(memberFullInfo: V2TIMGroupMemberInfo): GroupMemberProfile {
         return GroupMemberProfile(
             userId = memberFullInfo.userID ?: "",

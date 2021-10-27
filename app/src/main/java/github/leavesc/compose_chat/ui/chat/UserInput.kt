@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
  */
 @Preview(showBackground = true)
 @Composable
-fun EmojiTablePreview() {
+private fun EmojiTablePreview() {
     UserInputSelector(currentInputSelector = InputSelector.EMOJI,
         onInputSelectorChange = {
 

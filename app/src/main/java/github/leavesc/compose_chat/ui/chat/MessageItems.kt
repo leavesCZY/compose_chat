@@ -244,6 +244,7 @@ fun TimeMessageItem(timeMessage: TimeMessage) {
             text = timeMessage.chatTime,
             style = MaterialTheme.typography.subtitle2,
             modifier = Modifier
+                .clip(shape = RoundedCornerShape(size = 3.dp))
                 .background(Color.Gray.copy(alpha = 0.2f))
                 .padding(all = 4.dp)
         )

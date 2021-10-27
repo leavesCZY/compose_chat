@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CommonDivider(modifier: Modifier = Modifier) {
     Divider(
-        modifier = modifier, thickness = 0.3.dp,
+        modifier = modifier, thickness = 0.6.dp,
     )
 }
 

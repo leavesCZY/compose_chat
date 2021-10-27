@@ -93,6 +93,7 @@ class HomeActivity : ComponentActivity() {
                 }
                 animatedComposable(screen = Screen.GroupProfileScreen) { backStackEntry ->
                     GroupProfileScreen(
+                        navController = navController,
                         groupId = Screen.GroupProfileScreen.getArgument(backStackEntry),
                     )
                 }

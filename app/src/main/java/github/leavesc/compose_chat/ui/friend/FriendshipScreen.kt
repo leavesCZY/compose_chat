@@ -66,7 +66,7 @@ fun FriendshipScreen(
 }
 
 @Composable
-fun GroupItem(groupProfile: GroupProfile, onClickGroup: (GroupProfile) -> Unit) {
+private fun GroupItem(groupProfile: GroupProfile, onClickGroup: (GroupProfile) -> Unit) {
     val padding = 12.dp
     ConstraintLayout(
         modifier = Modifier
@@ -116,7 +116,7 @@ fun GroupItem(groupProfile: GroupProfile, onClickGroup: (GroupProfile) -> Unit) 
 }
 
 @Composable
-fun FriendshipItem(personProfile: PersonProfile, onClickFriend: (PersonProfile) -> Unit) {
+private fun FriendshipItem(personProfile: PersonProfile, onClickFriend: (PersonProfile) -> Unit) {
     val padding = 12.dp
     ConstraintLayout(
         modifier = Modifier

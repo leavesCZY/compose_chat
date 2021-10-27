@@ -9,11 +9,11 @@ import github.leavesc.compose_chat.base.utils.TimeUtil
  * @Github：https://github.com/leavesC
  */
 open class BaseProfile(
-    val userId: String,
-    val faceUrl: String,
-    val nickname: String,
-    val remark: String,
-    val signature: String,
+    open val userId: String,
+    open val faceUrl: String,
+    open val nickname: String,
+    open val remark: String,
+    open val signature: String,
 ) {
 
     val showName: String
@@ -25,12 +25,13 @@ open class BaseProfile(
 
 }
 
-class PersonProfile(
-    userId: String,
-    faceUrl: String,
-    nickname: String,
-    remark: String,
-    signature: String,
+data class PersonProfile(
+    override val userId: String,
+    override val faceUrl: String,
+    override val nickname: String,
+    override val remark: String,
+    override val signature: String,
+    val isFriend: Boolean = false
 ) : BaseProfile(
     userId = userId,
     faceUrl = faceUrl,
@@ -42,18 +43,25 @@ class PersonProfile(
     companion object {
 
         val Empty =
-            PersonProfile(userId = "", faceUrl = "", nickname = "", remark = "", signature = "")
+            PersonProfile(
+                userId = "",
+                faceUrl = "",
+                nickname = "",
+                remark = "",
+                signature = "",
+                isFriend = false
+            )
 
     }
 
 }
 
-class GroupMemberProfile(
-    userId: String,
-    faceUrl: String,
-    nickname: String,
-    remark: String,
-    signature: String,
+data class GroupMemberProfile(
+    override val userId: String,
+    override val faceUrl: String,
+    override val nickname: String,
+    override val remark: String,
+    override val signature: String,
     val role: String,
     val joinTime: Long
 ) : BaseProfile(
@@ -62,7 +70,12 @@ class GroupMemberProfile(
     nickname = nickname,
     remark = remark,
     signature = signature
-)
+) {
+
+    val joinTimeFormat =
+        TimeUtil.formatTime(time = joinTime * 1000, format = TimeUtil.YYYY_MM_DD_HH_MM_SS)
+
+}
 
 data class GroupProfile(
     val id: String,

@@ -47,7 +47,7 @@ class FriendshipProvider : IFriendshipProvider, Converters {
 
     override suspend fun getFriendProfile(friendId: String): PersonProfile? {
         return getFriendInfo(friendId)?.let {
-            convertFriendProfile(it.friendInfo)
+            convertFriendProfile(it)
         }
     }
 

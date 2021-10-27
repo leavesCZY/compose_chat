@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
  */
 @Preview(showBackground = true)
 @Composable
-fun ChatScreenBottomBordPreview() {
+private fun ChatScreenBottomBordPreview() {
     ChatScreenBottomBord(sendMessage = {})
 }
 

@@ -72,14 +72,16 @@ fun FriendProfileScreen(
                 ProfileScreen(
                     personProfile = friendProfile
                 )
-                CommonButton(text = "去聊天吧") {
-                    navController.navToC2CChatScreen(friendId = friendProfile.userId)
-                }
-                CommonButton(text = "设置备注") {
-                    expandSheetContent()
-                }
-                CommonButton(text = "删除好友") {
-                    openDeleteFriendDialog = true
+                if (friendProfile.isFriend){
+                    CommonButton(text = "去聊天吧") {
+                        navController.navToC2CChatScreen(friendId = friendProfile.userId)
+                    }
+                    CommonButton(text = "设置备注") {
+                        expandSheetContent()
+                    }
+                    CommonButton(text = "删除好友") {
+                        openDeleteFriendDialog = true
+                    }
                 }
             }
             if (openDeleteFriendDialog) {
@@ -95,7 +97,7 @@ fun FriendProfileScreen(
 }
 
 @Composable
-fun DeleteFriendDialog(
+private fun DeleteFriendDialog(
     friendProfile: PersonProfile,
     onDeleteFriend: (String) -> Unit,
     onDismissRequest: () -> Unit
@@ -137,7 +139,7 @@ fun DeleteFriendDialog(
 }
 
 @Composable
-fun SetFriendRemarkScreen(
+private fun SetFriendRemarkScreen(
     friendProfile: PersonProfile,
     modalBottomSheetState: ModalBottomSheetState,
     onSetRemark: (userId: String, remark: String) -> Unit
