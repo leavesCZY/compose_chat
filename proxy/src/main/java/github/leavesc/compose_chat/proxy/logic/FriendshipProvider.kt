@@ -41,7 +41,9 @@ class FriendshipProvider : IFriendshipProvider, Converters {
 
     override fun getFriendList() {
         coroutineScope.launch(Dispatchers.Main) {
-            friendList.value = getFriendListOrigin()?.sortedBy { it.showName } ?: emptyList()
+            friendList.value =
+                getFriendListOrigin()?.sortedBy { it.showName.first().uppercaseChar() }
+                    ?: emptyList()
         }
     }
 
@@ -69,7 +71,7 @@ class FriendshipProvider : IFriendshipProvider, Converters {
     }
 
     private fun convertFriend(friendInfoList: List<V2TIMFriendInfo>): List<PersonProfile> {
-        return friendInfoList.map { convertFriendProfile(it) }.sortedBy { it.showName }
+        return friendInfoList.map { convertFriendProfile(it) }
     }
 
     private suspend fun getFriendInfo(friendId: String): V2TIMFriendInfoResult? {
