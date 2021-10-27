@@ -107,7 +107,7 @@ private const val messageStateWidthWeight = 1f
 @Composable
 fun SelfTextMessageItem(
     textMessage: TextMessage,
-    onClickSelfAvatar: () -> Unit,
+    onClickSelfAvatar: (Message) -> Unit,
     onLongPressMessage: (Message) -> Unit,
 ) {
     Row(
@@ -163,7 +163,9 @@ fun SelfTextMessageItem(
             modifier = Modifier
                 .size(size = avatarSize)
                 .clip(shape = CircleShape)
-                .clickable(onClick = onClickSelfAvatar)
+                .clickable(onClick = {
+                    onClickSelfAvatar(textMessage)
+                })
         )
     }
 }

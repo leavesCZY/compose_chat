@@ -22,7 +22,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.LocalWindowInsets
-import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 
 /**

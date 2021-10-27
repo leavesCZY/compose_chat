@@ -20,7 +20,6 @@ import github.leavesc.compose_chat.cache.AccountCache
 import github.leavesc.compose_chat.extend.navToC2CChatScreen
 import github.leavesc.compose_chat.extend.navToGroupChatScreen
 import github.leavesc.compose_chat.extend.navigateWithBack
-import github.leavesc.compose_chat.logic.ComposeChat
 import github.leavesc.compose_chat.logic.HomeViewModel
 import github.leavesc.compose_chat.model.AppTheme
 import github.leavesc.compose_chat.model.HomeDrawerViewState
@@ -104,6 +103,22 @@ fun HomeScreen(
                 modalBottomSheetState = sheetState,
                 onAddFriend = {
                     homeViewModel.addFriend(userId = it)
+                }, onJoinGroup = {
+                    coroutineScope.launch {
+                        when (val result = homeViewModel.joinGroup(groupId = it)) {
+                            is ActionResult.Success -> {
+                                showToast("加入成功")
+                                navController.navToGroupChatScreen(groupId = it)
+                            }
+                            is ActionResult.Failed -> {
+                                if (result.code == 10013) {
+                                    navController.navToGroupChatScreen(groupId = it)
+                                } else {
+                                    showToast(result.reason)
+                                }
+                            }
+                        }
+                    }
                 })
         }
     ) {
@@ -131,18 +146,7 @@ fun HomeScreen(
                         sheetContentAnimateTo(targetValue = ModalBottomSheetValue.Expanded)
                     },
                     onJoinGroup = {
-                        coroutineScope.launch {
-                            val groupId = ComposeChat.groupId
-                            when (val result = homeViewModel.joinGroup(groupId)) {
-                                is ActionResult.Success -> {
-                                    showToast("加入成功")
-                                    navController.navToGroupChatScreen(groupId = groupId)
-                                }
-                                is ActionResult.Failed -> {
-                                    showToast(result.reason)
-                                }
-                            }
-                        }
+                        sheetContentAnimateTo(targetValue = ModalBottomSheetValue.Expanded)
                     }
                 )
             },

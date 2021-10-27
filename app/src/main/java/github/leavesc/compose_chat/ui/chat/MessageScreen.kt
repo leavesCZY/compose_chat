@@ -45,7 +45,12 @@ fun MessageScreen(
                 MessageItem(
                     message = message,
                     onClickSelfAvatar = {
-
+                        val messageSenderId = (it as? TextMessage)?.sender?.userId
+                        if (!messageSenderId.isNullOrBlank()) {
+                            navController.navigate(
+                                route = Screen.FriendProfileScreen.generateRoute(friendId = messageSenderId)
+                            )
+                        }
                     },
                     onClickFriendAvatar = {
                         val messageSenderId = (it as? TextMessage)?.sender?.userId
@@ -76,7 +81,7 @@ fun MessageScreen(
 @Composable
 private fun MessageItem(
     message: Message,
-    onClickSelfAvatar: () -> Unit,
+    onClickSelfAvatar: (Message) -> Unit,
     onClickFriendAvatar: (Message) -> Unit,
     onLongPressMessage: (Message) -> Unit,
 ) {

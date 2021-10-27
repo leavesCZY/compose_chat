@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.imePadding
+import github.leavesc.compose_chat.logic.ComposeChat
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import kotlinx.coroutines.launch
 
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 fun HomeMoreActionScreen(
     modalBottomSheetState: ModalBottomSheetState,
     onAddFriend: (userId: String) -> Unit,
+    onJoinGroup: (groupId: String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -84,6 +86,15 @@ fun HomeMoreActionScreen(
                     }
                 }
             )
+            CommonButton(text = "加入 compose_chat 交流群 - A") {
+                onJoinGroup(ComposeChat.groupIdA)
+            }
+            CommonButton(text = "加入 compose_chat 交流群 - B") {
+                onJoinGroup(ComposeChat.groupIdB)
+            }
+            CommonButton(text = "加入 compose_chat 交流群 - C") {
+                onJoinGroup(ComposeChat.groupIdC)
+            }
         }
     }
 }
@@ -116,5 +127,4 @@ private fun InputItem(
     CommonButton(text = buttonText) {
         onConfirm(value)
     }
-
 }

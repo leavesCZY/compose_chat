@@ -84,7 +84,7 @@ private fun BottomNavigationItem(
             )
             if (unreadMessageCount > 0 && screen == HomeScreenTab.Conversation) {
                 Text(
-                    text = unreadMessageCount.toString(),
+                    text = if (unreadMessageCount > 99) "99+" else unreadMessageCount.toString(),
                     color = Color.White,
                     fontSize = 12.sp,
                     textAlign = TextAlign.Center,

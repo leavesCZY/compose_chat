@@ -72,7 +72,7 @@ fun FriendProfileScreen(
                 ProfileScreen(
                     personProfile = friendProfile
                 )
-                if (friendProfile.isFriend){
+                if (friendProfile.isFriend) {
                     CommonButton(text = "去聊天吧") {
                         navController.navToC2CChatScreen(friendId = friendProfile.userId)
                     }

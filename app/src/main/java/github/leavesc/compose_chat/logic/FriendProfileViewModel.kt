@@ -43,7 +43,10 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
     fun setFriendRemark(friendId: String, remark: String) {
         viewModelScope.launch(Dispatchers.Main) {
             when (val result =
-                ComposeChat.friendshipProvider.setFriendRemark(friendId = friendId, remark = remark)) {
+                ComposeChat.friendshipProvider.setFriendRemark(
+                    friendId = friendId,
+                    remark = remark
+                )) {
                 is ActionResult.Success -> {
                     showToast("设置成功")
                     getFriendProfile()

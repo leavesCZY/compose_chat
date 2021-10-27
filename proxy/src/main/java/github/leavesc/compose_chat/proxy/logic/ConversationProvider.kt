@@ -53,7 +53,12 @@ class ConversationProvider : IConversationProvider, Converters {
                         }
 
                         override fun onError(code: Int, desc: String?) {
-                            continuation.resume(ActionResult.Failed(desc ?: ""))
+                            continuation.resume(
+                                ActionResult.Failed(
+                                    code = code,
+                                    reason = desc ?: ""
+                                )
+                            )
                         }
                     })
             }

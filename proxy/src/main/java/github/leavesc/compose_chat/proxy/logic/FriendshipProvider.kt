@@ -41,7 +41,7 @@ class FriendshipProvider : IFriendshipProvider, Converters {
 
     override fun getFriendList() {
         coroutineScope.launch(Dispatchers.Main) {
-            friendList.value = getFriendListOrigin() ?: emptyList()
+            friendList.value = getFriendListOrigin()?.sortedBy { it.showName } ?: emptyList()
         }
     }
 
@@ -92,10 +92,10 @@ class FriendshipProvider : IFriendshipProvider, Converters {
     override suspend fun addFriend(friendId: String): ActionResult {
         val formatUserId = friendId.lowercase()
         if (formatUserId.isBlank()) {
-            return ActionResult.Failed("请输入 UserID")
+            return ActionResult.Failed(reason = "请输入 UserID")
         }
         if (formatUserId == V2TIMManager.getInstance().loginUser ?: "") {
-            return ActionResult.Failed("别玩啦~")
+            return ActionResult.Failed(reason = "别玩啦~")
         }
         return withContext(Dispatchers.Main) {
             suspendCancellableCoroutine { continuation ->
@@ -108,7 +108,12 @@ class FriendshipProvider : IFriendshipProvider, Converters {
                         }
 
                         override fun onError(code: Int, desc: String?) {
-                            continuation.resume(ActionResult.Failed(desc ?: ""))
+                            continuation.resume(
+                                ActionResult.Failed(
+                                    code = code,
+                                    reason = desc ?: ""
+                                )
+                            )
                         }
                     }
                 )
@@ -127,7 +132,12 @@ class FriendshipProvider : IFriendshipProvider, Converters {
                         }
 
                         override fun onError(code: Int, desc: String?) {
-                            continuation.resume(ActionResult.Failed(desc ?: ""))
+                            continuation.resume(
+                                ActionResult.Failed(
+                                    code = code,
+                                    reason = desc ?: ""
+                                )
+                            )
                         }
                     }
                 )
@@ -148,7 +158,12 @@ class FriendshipProvider : IFriendshipProvider, Converters {
                         }
 
                         override fun onError(code: Int, desc: String?) {
-                            continuation.resume(ActionResult.Failed(desc ?: ""))
+                            continuation.resume(
+                                ActionResult.Failed(
+                                    code = code,
+                                    reason = desc ?: ""
+                                )
+                            )
                         }
                     }
                     )
