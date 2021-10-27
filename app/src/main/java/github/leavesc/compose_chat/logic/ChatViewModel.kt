@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.base.provider.IMessageProvider
-import github.leavesc.compose_chat.model.ChatGroupScreenState
+import github.leavesc.compose_chat.model.ChatScreenState
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,11 +14,11 @@ import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesC
- * @Date: 2021/10/26 23:11
+ * @Date: 2021/10/27 14:39
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-class ChatGroupViewModel(private val groupId: String) : ViewModel() {
+class ChatViewModel(private val chat: Chat) : ViewModel() {
 
     private var loadMessageJob: Job? = null
 
@@ -36,9 +36,8 @@ class ChatGroupViewModel(private val groupId: String) : ViewModel() {
         }
     }
 
-    val chatGroupScreenState = MutableStateFlow(
-        ChatGroupScreenState(
-            groupProfile = GroupProfile.Empty,
+    val chatScreenState = MutableStateFlow(
+        ChatScreenState(
             messageList = emptyList(),
             showLoadMore = false,
             loadFinish = false,
@@ -46,22 +45,39 @@ class ChatGroupViewModel(private val groupId: String) : ViewModel() {
         )
     )
 
+    val screenTopBarTitle = MutableStateFlow("")
+
     init {
-        Chat.groupMessageProvider.startReceive(partyId = groupId, messageListener = messageListener)
-        getGroupProfile()
-        markMessageAsRead()
+        ComposeChat.messageProvider.startReceive(chat = chat, messageListener = messageListener)
+        ComposeChat.accountProvider.refreshPersonProfile()
+        when (chat) {
+            is Chat.C2C -> {
+                getFriendProfile(friendId = chat.id)
+            }
+            is Chat.Group -> {
+                getGroupProfile(groupId = chat.id)
+            }
+        }
     }
 
-    private fun getGroupProfile() {
+    private fun getFriendProfile(friendId: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            Chat.groupProvider.getGroupInfo(groupId)?.let {
-                refreshViewState(groupProfile = it)
+            ComposeChat.friendshipProvider.getFriendProfile(friendId = friendId)?.let {
+                screenTopBarTitle.emit(it.showName)
+            }
+        }
+    }
+
+    private fun getGroupProfile(groupId: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            ComposeChat.groupProvider.getGroupInfo(groupId = groupId)?.let {
+                screenTopBarTitle.emit(it.name)
             }
         }
     }
 
     fun loadMoreMessage() {
-        if (loadMessageJob != null || chatGroupScreenState.value.loadFinish) {
+        if (loadMessageJob != null || chatScreenState.value.loadFinish) {
             return
         }
         refreshViewState(
@@ -73,8 +89,8 @@ class ChatGroupViewModel(private val groupId: String) : ViewModel() {
 
     private fun getHistoryMessageList() {
         loadMessageJob = viewModelScope.launch(Dispatchers.Main) {
-            val loadResult = Chat.groupMessageProvider.getHistoryMessage(
-                partyId = groupId,
+            val loadResult = ComposeChat.messageProvider.getHistoryMessage(
+                chat = chat,
                 lastMessage = lastMessage
             )
             when (loadResult) {
@@ -100,10 +116,10 @@ class ChatGroupViewModel(private val groupId: String) : ViewModel() {
         viewModelScope.launch(Dispatchers.Main) {
             val messageChannel = Channel<Message>()
             launch {
-                Chat.groupMessageProvider.send(
-                    channel = messageChannel,
-                    partyId = groupId,
-                    text = text
+                ComposeChat.messageProvider.send(
+                    chat = chat,
+                    text = text,
+                    channel = messageChannel
                 )
             }
             var sendingMessage: Message? = null
@@ -172,13 +188,11 @@ class ChatGroupViewModel(private val groupId: String) : ViewModel() {
     }
 
     private fun refreshViewState(
-        groupProfile: GroupProfile = chatGroupScreenState.value.groupProfile,
-        showLoadMore: Boolean = chatGroupScreenState.value.showLoadMore,
-        loadFinish: Boolean = chatGroupScreenState.value.loadFinish,
+        showLoadMore: Boolean = chatScreenState.value.showLoadMore,
+        loadFinish: Boolean = chatScreenState.value.loadFinish,
         mushScrollToBottom: Boolean = false,
     ) {
-        chatGroupScreenState.value = ChatGroupScreenState(
-            groupProfile = groupProfile,
+        chatScreenState.value = ChatScreenState(
             messageList = allMessage.toList(),
             showLoadMore = showLoadMore,
             loadFinish = loadFinish,
@@ -191,12 +205,12 @@ class ChatGroupViewModel(private val groupId: String) : ViewModel() {
     }
 
     private fun markMessageAsRead() {
-        Chat.groupMessageProvider.markMessageAsRead(partyId = groupId)
+        ComposeChat.messageProvider.markMessageAsRead(chat = chat)
     }
 
     override fun onCleared() {
         super.onCleared()
-        Chat.groupMessageProvider.stopReceive(messageListener = messageListener)
+        ComposeChat.messageProvider.stopReceive(messageListener = messageListener)
         markMessageAsRead()
     }
 

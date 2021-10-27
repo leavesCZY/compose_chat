@@ -17,9 +17,10 @@ import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.Conversation
 import github.leavesc.compose_chat.base.model.ServerState
 import github.leavesc.compose_chat.cache.AccountCache
-import github.leavesc.compose_chat.extend.navigate
+import github.leavesc.compose_chat.extend.navToC2CChatScreen
+import github.leavesc.compose_chat.extend.navToGroupChatScreen
 import github.leavesc.compose_chat.extend.navigateWithBack
-import github.leavesc.compose_chat.logic.Chat
+import github.leavesc.compose_chat.logic.ComposeChat
 import github.leavesc.compose_chat.logic.HomeViewModel
 import github.leavesc.compose_chat.model.AppTheme
 import github.leavesc.compose_chat.model.HomeDrawerViewState
@@ -131,11 +132,11 @@ fun HomeScreen(
                     },
                     onJoinGroup = {
                         coroutineScope.launch {
-                            val groupId = Chat.groupId
+                            val groupId = ComposeChat.groupId
                             when (val result = homeViewModel.joinGroup(groupId)) {
                                 is ActionResult.Success -> {
                                     showToast("加入成功")
-                                    navController.navigate(screen = Screen.ChatGroupScreen(groupId = groupId))
+                                    navController.navToGroupChatScreen(groupId = groupId)
                                 }
                                 is ActionResult.Failed -> {
                                     showToast(result.reason)
@@ -199,10 +200,10 @@ fun HomeScreen(
                         onClickConversation = {
                             when (it) {
                                 is Conversation.C2CConversation -> {
-                                    navController.navigate(screen = Screen.ChatFriendScreen(friendId = it.id))
+                                    navController.navToC2CChatScreen(friendId = it.id)
                                 }
                                 is Conversation.GroupConversation -> {
-                                    navController.navigate(screen = Screen.ChatGroupScreen(groupId = it.id))
+                                    navController.navToGroupChatScreen(groupId = it.id)
                                 }
                             }
                         },
@@ -224,11 +225,11 @@ fun HomeScreen(
                         joinedGroupList = joinedGroupList,
                         friendList = friendList,
                         onClickGroup = {
-                            navController.navigate(screen = Screen.ChatGroupScreen(groupId = it.id))
+                            navController.navToGroupChatScreen(groupId = it.id)
                         },
                         onClickFriend = {
                             navController.navigate(
-                                screen = Screen.FriendProfileScreen(friendId = it.userId)
+                                route = Screen.FriendProfileScreen.generateRoute(friendId = it.userId)
                             )
                         },
                     )

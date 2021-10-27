@@ -22,31 +22,31 @@ class HomeViewModel : ViewModel() {
 
     val appTheme = MutableStateFlow(AppThemeCache.currentTheme)
 
-    val conversationList = Chat.conversationProvider.conversationList
+    val conversationList = ComposeChat.conversationProvider.conversationList
 
-    val totalUnreadCount = Chat.conversationProvider.totalUnreadCount
+    val totalUnreadCount = ComposeChat.conversationProvider.totalUnreadCount
 
-    val fiendList = Chat.friendshipProvider.friendList
+    val fiendList = ComposeChat.friendshipProvider.friendList
 
-    val joinedGroupList = Chat.groupProvider.joinedGroupList
+    val joinedGroupList = ComposeChat.groupProvider.joinedGroupList
 
-    val personProfile = Chat.accountProvider.personProfile
+    val personProfile = ComposeChat.accountProvider.personProfile
 
-    val serverConnectState = Chat.accountProvider.serverConnectState
+    val serverConnectState = ComposeChat.accountProvider.serverConnectState
 
     fun init() {
-        Chat.conversationProvider.getConversationList()
-        Chat.groupProvider.getJoinedGroupList()
-        Chat.friendshipProvider.getFriendList()
-        Chat.accountProvider.refreshPersonProfile()
+        ComposeChat.conversationProvider.getConversationList()
+        ComposeChat.groupProvider.getJoinedGroupList()
+        ComposeChat.friendshipProvider.getFriendList()
+        ComposeChat.accountProvider.refreshPersonProfile()
     }
 
     fun deleteConversation(conversation: Conversation) {
         viewModelScope.launch(Dispatchers.Main) {
             when (val result =
-                Chat.conversationProvider.deleteConversation(conversation = conversation)) {
+                ComposeChat.conversationProvider.deleteConversation(conversation = conversation)) {
                 is ActionResult.Success -> {
-                    Chat.conversationProvider.getConversationList()
+                    ComposeChat.conversationProvider.getConversationList()
                 }
                 is ActionResult.Failed -> {
                     showToast(result.reason)
@@ -57,7 +57,7 @@ class HomeViewModel : ViewModel() {
 
     fun pinConversation(conversation: Conversation, pin: Boolean) {
         viewModelScope.launch(Dispatchers.Main) {
-            Chat.conversationProvider.pinConversation(conversation = conversation, pin = pin)
+            ComposeChat.conversationProvider.pinConversation(conversation = conversation, pin = pin)
         }
     }
 
@@ -67,7 +67,7 @@ class HomeViewModel : ViewModel() {
         signature: String
     ) {
         viewModelScope.launch(Dispatchers.Main) {
-            val updateProfile = Chat.accountProvider.updatePersonProfile(
+            val updateProfile = ComposeChat.accountProvider.updatePersonProfile(
                 faceUrl = faceUrl,
                 nickname = nickname,
                 signature = signature
@@ -79,7 +79,7 @@ class HomeViewModel : ViewModel() {
     fun addFriend(userId: String) {
         val formatUserId = userId.lowercase()
         viewModelScope.launch(Dispatchers.Main) {
-            when (val result = Chat.friendshipProvider.addFriend(friendId = formatUserId)) {
+            when (val result = ComposeChat.friendshipProvider.addFriend(friendId = formatUserId)) {
                 is ActionResult.Success -> {
                     showToast("添加成功")
                 }
@@ -92,13 +92,13 @@ class HomeViewModel : ViewModel() {
 
     suspend fun joinGroup(groupId: String): ActionResult {
         return withContext(Dispatchers.Main) {
-            Chat.groupProvider.joinGroup(groupId)
+            ComposeChat.groupProvider.joinGroup(groupId)
         }
     }
 
     fun logout() {
         viewModelScope.launch(Dispatchers.Main) {
-            when (val result = Chat.accountProvider.logout()) {
+            when (val result = ComposeChat.accountProvider.logout()) {
                 is ActionResult.Success -> {
                     AccountCache.onUserLogout()
                 }

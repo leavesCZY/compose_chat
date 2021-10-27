@@ -14,7 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.imePadding
 import github.leavesc.compose_chat.base.model.PersonProfile
-import github.leavesc.compose_chat.extend.navToChatFriendScreen
+import github.leavesc.compose_chat.extend.navToC2CChatScreen
 import github.leavesc.compose_chat.extend.navToHomeScreen
 import github.leavesc.compose_chat.logic.FriendProfileViewModel
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
@@ -73,7 +73,7 @@ fun FriendProfileScreen(
                     personProfile = friendProfile
                 )
                 CommonButton(text = "去聊天吧") {
-                    navController.navToChatFriendScreen(friendId = friendProfile.userId)
+                    navController.navToC2CChatScreen(friendId = friendProfile.userId)
                 }
                 CommonButton(text = "设置备注") {
                     expandSheetContent()

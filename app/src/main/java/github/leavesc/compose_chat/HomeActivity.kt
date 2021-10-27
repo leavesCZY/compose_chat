@@ -19,8 +19,7 @@ import github.leavesc.compose_chat.logic.HomeViewModel
 import github.leavesc.compose_chat.model.AppTheme
 import github.leavesc.compose_chat.model.HomeScreenTab
 import github.leavesc.compose_chat.model.Screen
-import github.leavesc.compose_chat.ui.chat.ChatFriendScreen
-import github.leavesc.compose_chat.ui.chat.ChatGroupScreen
+import github.leavesc.compose_chat.ui.chat.ChatScreen
 import github.leavesc.compose_chat.ui.friend.FriendProfileScreen
 import github.leavesc.compose_chat.ui.home.HomeScreen
 import github.leavesc.compose_chat.ui.login.LoginScreen
@@ -77,26 +76,18 @@ class HomeActivity : ComponentActivity() {
                         }
                     )
                 }
-                animatedComposable(screen = Screen.FriendProfileScreen()) { backStackEntry ->
+                animatedComposable(screen = Screen.FriendProfileScreen) { backStackEntry ->
                     FriendProfileScreen(
                         navController = navController,
                         friendId = Screen.FriendProfileScreen.getArgument(backStackEntry)
                     )
                 }
-                animatedComposable(screen = Screen.ChatFriendScreen()) { backStackEntry ->
+                animatedComposable(screen = Screen.ChatScreen) { backStackEntry ->
                     val listState = rememberLazyListState()
-                    ChatFriendScreen(
+                    ChatScreen(
                         navController = navController,
                         listState = listState,
-                        friendId = Screen.ChatFriendScreen.getArgument(backStackEntry),
-                    )
-                }
-                animatedComposable(screen = Screen.ChatGroupScreen()) { backStackEntry ->
-                    val listState = rememberLazyListState()
-                    ChatGroupScreen(
-                        navController = navController,
-                        listState = listState,
-                        groupId = Screen.ChatGroupScreen.getArgument(backStackEntry),
+                        chat = Screen.ChatScreen.getArgument(backStackEntry),
                     )
                 }
             }

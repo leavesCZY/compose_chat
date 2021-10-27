@@ -2,7 +2,7 @@ package github.leavesc.compose_chat
 
 import android.app.Application
 import github.leavesc.compose_chat.cache.AppThemeCache
-import github.leavesc.compose_chat.logic.Chat
+import github.leavesc.compose_chat.logic.ComposeChat
 import github.leavesc.compose_chat.ui.weigets.CoilImageLoader
 import github.leavesc.compose_chat.utils.ContextHolder
 
@@ -18,7 +18,7 @@ class ChatApplication : Application() {
         super.onCreate()
         ContextHolder.init(context = this)
         CoilImageLoader.init(context = this)
-        Chat.accountProvider.init(context = this)
+        ComposeChat.accountProvider.init(context = this)
         AppThemeCache.init()
     }
 

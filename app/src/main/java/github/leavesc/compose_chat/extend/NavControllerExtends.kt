@@ -2,6 +2,7 @@ package github.leavesc.compose_chat.extend
 
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import github.leavesc.compose_chat.base.model.Chat
 import github.leavesc.compose_chat.model.Screen
 
 /**
@@ -19,19 +20,33 @@ fun NavController.navigateWithBack(screen: Screen) {
     navigate(route = screen.route)
 }
 
-fun NavController.navToChatFriendScreen(friendId: String) {
-    navigate(route = Screen.ChatFriendScreen(friendId = friendId).route) {
-        popUpTo(route = Screen.ChatFriendScreen().route) {
+private fun NavController.navToChatScreen(chat: Chat) {
+    val route = Screen.ChatScreen.generateRoute(chat = chat)
+    navigate(route = route) {
+        popUpTo(route = route) {
             inclusive = true
         }
     }
+}
+
+fun NavController.navToC2CChatScreen(friendId: String) {
+    navToChatScreen(Chat.C2C(id = friendId))
+}
+
+fun NavController.navToGroupChatScreen(groupId: String) {
+    navToChatScreen(Chat.Group(id = groupId))
 }
 
 fun NavController.navToHomeScreen() {
     popBackStack(route = Screen.HomeScreen.route, inclusive = false)
 }
 
-fun NavBackStackEntry.getArgument(key: String): String {
+fun NavBackStackEntry.getStringArgument(key: String): String {
     return arguments?.getString(key)
+        ?: throw IllegalArgumentException()
+}
+
+fun NavBackStackEntry.getIntArgument(key: String): Int {
+    return arguments?.getString(key)?.toInt()
         ?: throw IllegalArgumentException()
 }

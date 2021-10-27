@@ -9,7 +9,7 @@ import github.leavesc.compose_chat.proxy.logic.*
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-object Chat {
+object ComposeChat {
 
     const val groupId = "@TGS#3Y6Y6MRHG"
 
@@ -17,12 +17,10 @@ object Chat {
 
     val conversationProvider: IConversationProvider = ConversationProvider()
 
-    val fiendMessageProvider: IMessageProvider = FriendMessageProvider()
+    val messageProvider: IMessageProvider = MessageProvider()
 
     val friendshipProvider: IFriendshipProvider = FriendshipProvider()
 
     val groupProvider: IGroupProvider = GroupProvider()
-
-    val groupMessageProvider: IMessageProvider = GroupMessageProvider()
 
 }

@@ -1,5 +1,6 @@
 package github.leavesc.compose_chat.base.provider
 
+import github.leavesc.compose_chat.base.model.Chat
 import github.leavesc.compose_chat.base.model.LoadMessageResult
 import github.leavesc.compose_chat.base.model.Message
 import kotlinx.coroutines.channels.Channel
@@ -18,18 +19,18 @@ interface IMessageProvider {
 
     }
 
-    fun markMessageAsRead(partyId: String)
-
-    suspend fun getHistoryMessage(partyId: String, lastMessage: Message?): LoadMessageResult
-
-    suspend fun send(
-        channel: Channel<Message>,
-        partyId: String,
-        text: String
-    )
-
-    fun startReceive(partyId: String, messageListener: MessageListener)
+    fun startReceive(chat: Chat, messageListener: MessageListener)
 
     fun stopReceive(messageListener: MessageListener)
+
+    suspend fun send(
+        chat: Chat,
+        text: String,
+        channel: Channel<Message>
+    )
+
+    suspend fun getHistoryMessage(chat: Chat, lastMessage: Message?): LoadMessageResult
+
+    fun markMessageAsRead(chat: Chat)
 
 }

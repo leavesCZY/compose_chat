@@ -73,7 +73,7 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.Main) {
             val loginResult: ActionResult
             val time = measureTimeMillis {
-                loginResult = Chat.accountProvider.login(formatUserId)
+                loginResult = ComposeChat.accountProvider.login(formatUserId)
             }
             when (loginResult) {
                 is ActionResult.Failed -> {

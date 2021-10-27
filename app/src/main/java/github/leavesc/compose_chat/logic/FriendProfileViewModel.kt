@@ -22,14 +22,14 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
     fun getFriendProfile() {
         viewModelScope.launch(Dispatchers.Main) {
             friendProfile.emit(
-                Chat.friendshipProvider.getFriendProfile(friendId) ?: PersonProfile.Empty
+                ComposeChat.friendshipProvider.getFriendProfile(friendId) ?: PersonProfile.Empty
             )
         }
     }
 
     fun deleteFriend(friendId: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            when (val result = Chat.friendshipProvider.deleteFriend(friendId = friendId)) {
+            when (val result = ComposeChat.friendshipProvider.deleteFriend(friendId = friendId)) {
                 is ActionResult.Success -> {
                     showToast("已删除好友")
                 }
@@ -43,12 +43,12 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
     fun setFriendRemark(friendId: String, remark: String) {
         viewModelScope.launch(Dispatchers.Main) {
             when (val result =
-                Chat.friendshipProvider.setFriendRemark(friendId = friendId, remark = remark)) {
+                ComposeChat.friendshipProvider.setFriendRemark(friendId = friendId, remark = remark)) {
                 is ActionResult.Success -> {
                     showToast("设置成功")
                     getFriendProfile()
-                    Chat.friendshipProvider.getFriendList()
-                    Chat.conversationProvider.getConversationList()
+                    ComposeChat.friendshipProvider.getFriendList()
+                    ComposeChat.conversationProvider.getConversationList()
                 }
                 is ActionResult.Failed -> {
                     showToast(result.reason)
