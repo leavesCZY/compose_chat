@@ -84,7 +84,9 @@ class GroupProvider : IGroupProvider, Converters {
             id = group.groupID ?: "",
             faceUrl = group.faceUrl ?: "",
             name = group.groupName ?: "",
-            notification = group.notification ?: ""
+            introduction = group.introduction ?: "",
+            createTime = group.createTime,
+            memberCount = group.memberCount
         )
     }
 
@@ -94,17 +96,41 @@ class GroupProvider : IGroupProvider, Converters {
 
     override suspend fun getGroupMemberList(groupId: String): List<GroupMemberProfile> {
         return withContext(Dispatchers.Main) {
+            var nextStep = 0L
+            val memberList = mutableListOf<GroupMemberProfile>()
+            while (true) {
+                val pair = getGroupMemberList(groupId = groupId, nextStep = nextStep)
+                memberList.addAll(pair.first)
+                nextStep = pair.second
+                if (nextStep <= 0) {
+                    break
+                }
+            }
+            memberList
+        }
+    }
+
+    private suspend fun getGroupMemberList(
+        groupId: String,
+        nextStep: Long
+    ): Pair<List<GroupMemberProfile>, Long> {
+        return withContext(Dispatchers.Main) {
             suspendCancellableCoroutine { continuation ->
                 V2TIMManager.getGroupManager().getGroupMemberList(groupId,
                     V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_FILTER_ALL,
-                    0,
+                    nextStep,
                     object : V2TIMValueCallback<V2TIMGroupMemberInfoResult> {
-                        override fun onSuccess(t: V2TIMGroupMemberInfoResult?) {
-                            continuation.resume(convertGroupMember(t?.memberInfoList))
+                        override fun onSuccess(t: V2TIMGroupMemberInfoResult) {
+                            continuation.resume(
+                                Pair(
+                                    convertGroupMember(t.memberInfoList),
+                                    t.nextSeq
+                                )
+                            )
                         }
 
                         override fun onError(code: Int, desc: String?) {
-                            continuation.resume(emptyList())
+                            continuation.resume(Pair(emptyList(), -111))
                         }
                     })
             }

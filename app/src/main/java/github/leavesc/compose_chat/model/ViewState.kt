@@ -6,9 +6,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Flare
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavBackStackEntry
-import github.leavesc.compose_chat.base.model.Chat
-import github.leavesc.compose_chat.base.model.Message
-import github.leavesc.compose_chat.base.model.PersonProfile
+import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.extend.getIntArgument
 import github.leavesc.compose_chat.extend.getStringArgument
 
@@ -28,6 +26,9 @@ sealed class Screen(val route: String) {
         private const val friendProfileScreen = "friendProfileScreen"
         private const val keyFriendId = "keyFriendId"
 
+        private const val groupProfileScreen = "groupProfileScreen"
+        private const val keyGroupId = "keyGroupId"
+
         private const val chatScreen = "chatScreen"
         private const val keyChatScreenPartyType = "keyChatScreenPartyType"
         private const val keyChatScreenPartyId = "keyChatScreenPartyId"
@@ -45,6 +46,18 @@ sealed class Screen(val route: String) {
 
         fun getArgument(entry: NavBackStackEntry): String {
             return entry.getStringArgument(key = keyFriendId)
+        }
+
+    }
+
+    object GroupProfileScreen : Screen(route = groupProfileScreen + "/{${keyGroupId}}") {
+
+        fun generateRoute(groupId: String): String {
+            return groupProfileScreen + "/${groupId}"
+        }
+
+        fun getArgument(entry: NavBackStackEntry): String {
+            return entry.getStringArgument(key = keyGroupId)
         }
 
     }
@@ -80,11 +93,16 @@ enum class HomeScreenTab(
     );
 }
 
-class ChatScreenState(
+data class ChatScreenState(
     val messageList: List<Message>,
     val mushScrollToBottom: Boolean,
     val showLoadMore: Boolean,
     val loadFinish: Boolean,
+)
+
+data class GroupProfileScreenState(
+    val groupProfile: GroupProfile,
+    val memberList: List<GroupMemberProfile>
 )
 
 data class HomeDrawerViewState(

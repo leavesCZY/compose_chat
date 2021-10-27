@@ -21,9 +21,8 @@ fun NavController.navigateWithBack(screen: Screen) {
 }
 
 private fun NavController.navToChatScreen(chat: Chat) {
-    val route = Screen.ChatScreen.generateRoute(chat = chat)
-    navigate(route = route) {
-        popUpTo(route = route) {
+    navigate(route = Screen.ChatScreen.generateRoute(chat = chat)) {
+        popUpTo(route = Screen.ChatScreen.route) {
             inclusive = true
         }
     }

@@ -1,5 +1,7 @@
 package github.leavesc.compose_chat.base.model
 
+import github.leavesc.compose_chat.base.utils.TimeUtil
+
 /**
  * @Author: leavesC
  * @Date: 2021/6/22 17:05
@@ -12,7 +14,16 @@ open class BaseProfile(
     val nickname: String,
     val remark: String,
     val signature: String,
-)
+) {
+
+    val showName: String
+        get() {
+            return remark.takeIf { it.isNotBlank() }
+                ?: nickname.takeIf { it.isNotBlank() }
+                ?: userId
+        }
+
+}
 
 class PersonProfile(
     userId: String,
@@ -34,13 +45,6 @@ class PersonProfile(
             PersonProfile(userId = "", faceUrl = "", nickname = "", remark = "", signature = "")
 
     }
-
-    val showName: String
-        get() {
-            return remark.takeIf { it.isNotBlank() }
-                ?: nickname.takeIf { it.isNotBlank() }
-                ?: userId
-        }
 
 }
 
@@ -64,13 +68,25 @@ data class GroupProfile(
     val id: String,
     val faceUrl: String,
     val name: String,
-    val notification: String
+    val introduction: String,
+    val createTime: Long,
+    val memberCount: Int
 ) {
 
     companion object {
 
-        val Empty = GroupProfile(id = "", faceUrl = "", name = "", notification = "")
+        val Empty = GroupProfile(
+            id = "",
+            faceUrl = "",
+            name = "",
+            introduction = "",
+            createTime = 0L,
+            memberCount = 0
+        )
 
     }
+
+    val createTimeFormat =
+        TimeUtil.formatTime(time = createTime * 1000, format = TimeUtil.YYYY_MM_DD_HH_MM_SS)
 
 }

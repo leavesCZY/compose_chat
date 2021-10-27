@@ -20,6 +20,7 @@ import github.leavesc.compose_chat.model.AppTheme
 import github.leavesc.compose_chat.model.HomeScreenTab
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.chat.ChatScreen
+import github.leavesc.compose_chat.ui.chat.GroupProfileScreen
 import github.leavesc.compose_chat.ui.friend.FriendProfileScreen
 import github.leavesc.compose_chat.ui.home.HomeScreen
 import github.leavesc.compose_chat.ui.login.LoginScreen
@@ -88,6 +89,11 @@ class HomeActivity : ComponentActivity() {
                         navController = navController,
                         listState = listState,
                         chat = Screen.ChatScreen.getArgument(backStackEntry),
+                    )
+                }
+                animatedComposable(screen = Screen.GroupProfileScreen) { backStackEntry ->
+                    GroupProfileScreen(
+                        groupId = Screen.GroupProfileScreen.getArgument(backStackEntry),
                     )
                 }
             }

@@ -1,10 +1,13 @@
-package github.leavesc.compose_chat.ui.profile
+package github.leavesc.compose_chat.ui.chat
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -23,9 +26,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.statusBarsPadding
-import github.leavesc.compose_chat.base.model.PersonProfile
+import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.extend.scrim
+import github.leavesc.compose_chat.logic.GroupProfileViewModel
 import github.leavesc.compose_chat.ui.theme.BezierShape
 import github.leavesc.compose_chat.ui.weigets.CoilImage
 import github.leavesc.compose_chat.ui.weigets.OutlinedAvatar
@@ -34,27 +41,58 @@ import kotlin.math.roundToInt
 
 /**
  * @Author: leavesC
- * @Date: 2021/6/23 21:56
+ * @Date: 2021/10/27 18:04
  * @Desc:
  * @Github：https://github.com/leavesC
  */
 @Preview
 @Composable
-fun PreviewProfileScreen() {
-    ProfileScreen(personProfile = PersonProfile.Empty)
+private fun PreviewGroupProfileScreen() {
+    GroupProfileScreen(groupProfile = GroupProfile.Empty)
 }
 
 @Composable
-fun ProfileScreen(personProfile: PersonProfile) {
+fun GroupProfileScreen(groupId: String) {
+    val groupProfileViewModel = viewModel<GroupProfileViewModel>(factory = object :
+        ViewModelProvider.NewInstanceFactory() {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return GroupProfileViewModel(groupId = groupId) as T
+        }
+    })
+    val groupProfileScreenState by groupProfileViewModel.groupProfileScreenState.collectAsState()
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+        LazyColumn {
+            item(key = true) {
+                GroupProfileScreen(groupProfile = groupProfileScreenState.groupProfile)
+            }
+            val memberList = groupProfileScreenState.memberList
+            memberList.forEach {
+                item(key = it.userId) {
+                    ListItem {
+                        Text(text = it.userId)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun GroupProfileScreen(groupProfile: GroupProfile) {
     ConstraintLayout(
         modifier = Modifier
             .background(color = MaterialTheme.colors.background)
             .zIndex(zIndex = 1f)
     ) {
-        val userFaceUrl = personProfile.faceUrl
-        val userId = personProfile.userId
-        val userName = personProfile.showName
-        val userSignature = personProfile.signature
+        val groupFaceUrl = groupProfile.faceUrl
+        val groupId = groupProfile.id
+        val groupName = groupProfile.name
+        val groupIntroduction = groupProfile.introduction
+        val groupCreateTime = groupProfile.createTimeFormat
+        val memberCount = groupProfile.memberCount
         val animateValue by rememberInfiniteTransition().animateFloat(
             initialValue = 1.3f, targetValue = 1.9f,
             animationSpec = infiniteRepeatable(
@@ -62,9 +100,9 @@ fun ProfileScreen(personProfile: PersonProfile) {
                 repeatMode = RepeatMode.Reverse,
             ),
         )
-        val (backgroundRefs, idRefs, faceRefs, nicknameRefs, signatureRefs) = createRefs()
+        val (backgroundRefs, idRefs, faceRefs, nameRefs, notificationRefs) = createRefs()
         CoilImage(
-            data = userFaceUrl,
+            data = groupFaceUrl,
             modifier = Modifier
                 .constrainAs(ref = backgroundRefs) {
 
@@ -81,7 +119,7 @@ fun ProfileScreen(personProfile: PersonProfile) {
         var offsetX by remember { mutableStateOf(0f) }
         var offsetY by remember { mutableStateOf(0f) }
         OutlinedAvatar(
-            data = userFaceUrl,
+            data = groupFaceUrl,
             modifier = Modifier
                 .constrainAs(ref = faceRefs) {
                     start.linkTo(backgroundRefs.start)
@@ -127,37 +165,37 @@ fun ProfileScreen(personProfile: PersonProfile) {
                     )
                 }
         )
-        Text(text = userName,
+        Text(text = groupName,
             color = Color.White,
-            fontSize = 18.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .constrainAs(ref = nicknameRefs) {
+                .constrainAs(ref = nameRefs) {
                     start.linkTo(backgroundRefs.start)
                     end.linkTo(backgroundRefs.end)
                     top.linkTo(parent.top)
                 }
                 .statusBarsPadding()
-                .padding(start = 10.dp, end = 10.dp, top = 20.dp))
+                .padding(start = 10.dp, end = 10.dp, top = 30.dp))
         Text(
-            text = userSignature,
+            text = groupIntroduction,
             color = Color.White.copy(alpha = 0.7f),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .constrainAs(ref = signatureRefs) {
+                .constrainAs(ref = notificationRefs) {
                     start.linkTo(backgroundRefs.start)
                     end.linkTo(backgroundRefs.end)
-                    top.linkTo(nicknameRefs.bottom)
+                    top.linkTo(nameRefs.bottom)
                 }
                 .padding(
                     start = 15.dp, end = 15.dp, top = 8.dp
                 ))
         Text(
-            text = "ID: $userId",
-            style = MaterialTheme.typography.subtitle1,
+            text = "GroupID: $groupId\nCreateTime: $groupCreateTime\nMemberCount: $memberCount",
+            style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .constrainAs(ref = idRefs) {
@@ -166,7 +204,7 @@ fun ProfileScreen(personProfile: PersonProfile) {
                     top.linkTo(backgroundRefs.bottom)
                 }
                 .fillMaxWidth()
-                .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp)
+                .padding(start = 10.dp, end = 10.dp, top = 10.dp)
         )
     }
 }

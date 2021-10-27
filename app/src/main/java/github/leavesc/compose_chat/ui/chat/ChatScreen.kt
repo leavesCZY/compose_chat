@@ -79,7 +79,9 @@ fun ChatScreen(
                             )
                         }
                         is Chat.Group -> {
-                            // TODO: 2021/10/27
+                            navController.navigate(
+                                route = Screen.GroupProfileScreen.generateRoute(groupId = chat.id)
+                            )
                         }
                     }
                 }
