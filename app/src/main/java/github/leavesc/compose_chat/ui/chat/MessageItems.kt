@@ -4,7 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -140,13 +139,14 @@ fun SelfTextMessageItem(
                 )
                 .clip(shape = messageShape)
                 .background(color = selfMsgBgColor)
-                .pointerInput(key1 = Unit) {
-                    detectTapGestures(
-                        onLongPress = {
-                            onLongPressMessage(textMessage)
-                        },
-                    )
-                }
+                .combinedClickable(
+                    onClick = {
+
+                    },
+                    onLongClick = {
+                        onLongPressMessage(textMessage)
+                    }
+                )
                 .padding(
                     start = messageInnerPadding,
                     top = messageInnerPadding,
@@ -200,13 +200,14 @@ fun FriendTextMessageItem(
                 )
                 .clip(shape = messageShape)
                 .background(color = friendMsgBgColor)
-                .pointerInput(key1 = Unit) {
-                    detectTapGestures(
-                        onLongPress = {
-                            onLongPressMessage(textMessage)
-                        },
-                    )
-                }
+                .combinedClickable(
+                    onClick = {
+
+                    },
+                    onLongClick = {
+                        onLongPressMessage(textMessage)
+                    }
+                )
                 .padding(
                     start = messageInnerPadding,
                     top = messageInnerPadding,

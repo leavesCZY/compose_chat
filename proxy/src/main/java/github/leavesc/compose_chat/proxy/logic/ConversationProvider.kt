@@ -75,17 +75,42 @@ class ConversationProvider : IConversationProvider, Converters {
 
     private suspend fun getConversationListOrigin(): List<Conversation> {
         return withContext(Dispatchers.Main) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getConversationManager().getConversationList(0, 50, object :
-                    V2TIMValueCallback<V2TIMConversationResult> {
-                    override fun onSuccess(result: V2TIMConversationResult) {
-                        continuation.resume(convertConversation(result.conversationList))
-                    }
+            var nextStep = 0L
+            val conversationList = mutableListOf<Conversation>()
+            while (true) {
+                val pair = getConversationList(nextStep = nextStep)
+                conversationList.addAll(pair.first)
+                nextStep = pair.second
+                if (nextStep <= 0) {
+                    break
+                }
+            }
+            conversationList
+        }
+    }
 
-                    override fun onError(code: Int, desc: String?) {
-                        continuation.resume(emptyList())
-                    }
-                })
+    private suspend fun getConversationList(nextStep: Long): Pair<List<Conversation>, Long> {
+        return withContext(Dispatchers.Main) {
+            suspendCancellableCoroutine { continuation ->
+                V2TIMManager.getConversationManager().getConversationList(nextStep, 100,
+                    object : V2TIMValueCallback<V2TIMConversationResult> {
+                        override fun onSuccess(result: V2TIMConversationResult) {
+                            continuation.resume(
+                                Pair(
+                                    convertConversation(result.conversationList),
+                                    if (result.isFinished) {
+                                        -111
+                                    } else {
+                                        result.nextSeq
+                                    }
+                                )
+                            )
+                        }
+
+                        override fun onError(code: Int, desc: String?) {
+                            continuation.resume(Pair(emptyList(), -111))
+                        }
+                    })
             }
         }
     }

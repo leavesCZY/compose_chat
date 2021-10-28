@@ -1,7 +1,7 @@
 package github.leavesc.compose_chat.ui.conversation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -84,16 +83,14 @@ private fun ConversationItem(
     }
     ConstraintLayout(
         modifier = Modifier
-            .pointerInput(key1 = Unit) {
-                detectTapGestures(
-                    onTap = {
-                        onClickConversation(conversation)
-                    },
-                    onLongPress = {
-                        menuExpanded = true
-                    },
-                )
-            }
+            .combinedClickable(
+                onClick = {
+                    onClickConversation(conversation)
+                },
+                onLongClick = {
+                    menuExpanded = true
+                }
+            )
             .fillMaxWidth()
             .background(color = bgColor)
             .padding(top = padding),
