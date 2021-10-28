@@ -76,7 +76,7 @@ fun ProfileScreen(personProfile: PersonProfile) {
                 .scale(scale = animateValue)
                 .rotate(degrees = animateValue * 10.3f)
         )
-        val avatarSize = 90.dp
+        val avatarSize = 100.dp
         val coroutineScope = rememberCoroutineScope()
         var offsetX by remember { mutableStateOf(0f) }
         var offsetY by remember { mutableStateOf(0f) }

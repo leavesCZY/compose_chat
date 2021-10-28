@@ -10,7 +10,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -19,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import github.leavesc.compose_chat.base.model.Conversation
-import github.leavesc.compose_chat.ui.weigets.CoilImage
+import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 import github.leavesc.compose_chat.ui.weigets.EmptyView
 
@@ -96,12 +95,11 @@ private fun ConversationItem(
             .padding(top = padding),
     ) {
         val (avatar, unreadMessageCount, nickname, lastMsg, time, divider, dropdownMenu) = createRefs()
-        CoilImage(
+        CoilCircleImage(
             data = conversation.faceUrl,
             modifier = Modifier
                 .padding(start = padding * 1.5f)
                 .size(size = 50.dp)
-                .clip(shape = CircleShape)
                 .constrainAs(ref = avatar) {
                     start.linkTo(anchor = parent.start)
                     top.linkTo(anchor = parent.top)

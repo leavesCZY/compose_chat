@@ -16,11 +16,13 @@ object AppThemeCache {
 
     private const val KEY_APP_THEME = "keyAppTheme"
 
+    private val DefaultAppTheme = AppTheme.Blue
+
     private val preferences by lazy {
         ContextHolder.context.getSharedPreferences(KEY_GROUP, Context.MODE_PRIVATE)
     }
 
-    var currentTheme = AppTheme.Light
+    var currentTheme = DefaultAppTheme
         private set
 
     fun init() {
@@ -28,8 +30,8 @@ object AppThemeCache {
     }
 
     private fun getAppTheme(): AppTheme {
-        val themeType = preferences.getInt(KEY_APP_THEME, 0)
-        return AppTheme.values().find { it.type == themeType } ?: AppTheme.Light
+        val themeType = preferences.getInt(KEY_APP_THEME, DefaultAppTheme.type)
+        return AppTheme.values().find { it.type == themeType } ?: throw IllegalArgumentException()
     }
 
     fun onAppThemeChanged(appTheme: AppTheme) {

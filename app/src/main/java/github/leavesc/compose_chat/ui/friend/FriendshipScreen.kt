@@ -5,13 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -19,7 +17,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.base.model.PersonProfile
-import github.leavesc.compose_chat.ui.weigets.CoilImage
+import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 import github.leavesc.compose_chat.ui.weigets.EmptyView
 
@@ -77,12 +75,11 @@ private fun GroupItem(groupProfile: GroupProfile, onClickGroup: (GroupProfile) -
             },
     ) {
         val (avatar, showName, divider) = createRefs()
-        CoilImage(
+        CoilCircleImage(
             data = groupProfile.faceUrl,
             modifier = Modifier
                 .padding(start = padding * 1.5f, top = padding, bottom = padding)
                 .size(size = 50.dp)
-                .clip(shape = CircleShape)
                 .constrainAs(ref = avatar) {
                     start.linkTo(anchor = parent.start)
                     top.linkTo(anchor = parent.top)
@@ -126,12 +123,11 @@ private fun FriendshipItem(personProfile: PersonProfile, onClickFriend: (PersonP
             },
     ) {
         val (avatar, showName, signature, divider) = createRefs()
-        CoilImage(
+        CoilCircleImage(
             data = personProfile.faceUrl,
             modifier = Modifier
                 .padding(start = padding * 1.5f, top = padding, bottom = padding)
                 .size(size = 50.dp)
-                .clip(shape = CircleShape)
                 .constrainAs(ref = avatar) {
                     start.linkTo(anchor = parent.start)
                     top.linkTo(anchor = parent.top)

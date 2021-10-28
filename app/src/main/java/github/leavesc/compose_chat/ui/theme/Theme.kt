@@ -23,6 +23,14 @@ private val DarkColorPalette = darkColors(
     secondary = SecondaryColorDark,
 )
 
+private val BlueColorPalette = lightColors(
+    background = BackgroundColorBlue,
+    primary = PrimaryColorBlue,
+    primaryVariant = PrimaryVariantColorBlue,
+    surface = SurfaceColorBlue,
+    secondary = SecondaryColorBlue,
+)
+
 private val PinkColorPalette = lightColors(
     background = BackgroundColorPink,
     primary = PrimaryColorPink,
@@ -43,6 +51,9 @@ fun ChatTheme(
         AppTheme.Dark -> {
             DarkColorPalette
         }
+        AppTheme.Blue -> {
+            BlueColorPalette
+        }
         AppTheme.Pink -> {
             PinkColorPalette
         }
@@ -53,6 +64,9 @@ fun ChatTheme(
         }
         AppTheme.Dark -> {
             DarkTypography
+        }
+        AppTheme.Blue -> {
+            BlueTypography
         }
         AppTheme.Pink -> {
             PinkTypography

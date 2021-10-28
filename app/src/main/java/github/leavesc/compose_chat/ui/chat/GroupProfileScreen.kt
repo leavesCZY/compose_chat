@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -40,6 +39,7 @@ import github.leavesc.compose_chat.extend.scrim
 import github.leavesc.compose_chat.logic.GroupProfileViewModel
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.theme.BezierShape
+import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
 import github.leavesc.compose_chat.ui.weigets.CoilImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 import github.leavesc.compose_chat.ui.weigets.OutlinedAvatar
@@ -128,7 +128,7 @@ private fun GroupProfileScreen(groupProfile: GroupProfile) {
                 .scale(scale = animateValue)
                 .rotate(degrees = animateValue * 10.3f)
         )
-        val avatarSize = 90.dp
+        val avatarSize = 100.dp
         val coroutineScope = rememberCoroutineScope()
         var offsetX by remember { mutableStateOf(0f) }
         var offsetY by remember { mutableStateOf(0f) }
@@ -237,12 +237,11 @@ private fun GroupMemberItem(
             },
     ) {
         val (avatar, showName, role, divider) = createRefs()
-        CoilImage(
+        CoilCircleImage(
             data = groupMemberProfile.faceUrl,
             modifier = Modifier
                 .padding(start = padding * 1.5f, top = padding, bottom = padding)
                 .size(size = 50.dp)
-                .clip(shape = CircleShape)
                 .constrainAs(ref = avatar) {
                     start.linkTo(anchor = parent.start)
                     top.linkTo(anchor = parent.top)

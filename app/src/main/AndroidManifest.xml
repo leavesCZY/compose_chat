@@ -15,6 +15,7 @@
         android:theme="@style/Theme.ComposeChat">
         <activity
             android:name=".HomeActivity"
+            android:configChanges="uiMode"
             android:exported="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">

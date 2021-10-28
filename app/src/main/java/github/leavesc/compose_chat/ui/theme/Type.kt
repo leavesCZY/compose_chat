@@ -58,6 +58,10 @@ val DarkTypography = LightTypography.copy(
     caption = LightTypography.caption.copy(color = Color.White.copy(alpha = smallAlpha)),
 )
 
+val BlueTypography = LightTypography.copy(
+    body1 = LightTypography.body1.copy(color = Color.Black.copy(alpha = smallAlpha)),
+)
+
 val PinkTypography = LightTypography.copy(
     body1 = LightTypography.body1.copy(color = Color.Black.copy(alpha = smallAlpha)),
 )

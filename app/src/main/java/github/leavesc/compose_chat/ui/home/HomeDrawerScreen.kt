@@ -46,6 +46,7 @@ fun HomeDrawerScreen(
         scaffoldState = scaffoldState,
         backLayerBackgroundColor = MaterialTheme.colors.background,
         frontLayerBackgroundColor = MaterialTheme.colors.background,
+        frontLayerScrimColor = MaterialTheme.colors.primary.copy(alpha = 0.60f),
         appBar = {
 
         },

@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -26,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.ui.theme.friendMsgBgColor
 import github.leavesc.compose_chat.ui.theme.selfMsgBgColor
-import github.leavesc.compose_chat.ui.weigets.CoilImage
+import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
 
 /**
  * @Author: leavesC
@@ -91,7 +90,7 @@ private fun PreviewMessageStateItem() {
     MessageStateItem(modifier = Modifier, messageState = MessageState.Sending)
 }
 
-private val avatarSize = 40.dp
+private val avatarSize = 44.dp
 private val itemPaddingTop = 6.dp
 private val itemPaddingBottom = 6.dp
 private val itemPaddingStart = 14.dp
@@ -158,11 +157,10 @@ fun SelfTextMessageItem(
             letterSpacing = 2.sp,
             textAlign = TextAlign.Left,
         )
-        CoilImage(
+        CoilCircleImage(
             data = textMessage.sender.faceUrl,
             modifier = Modifier
                 .size(size = avatarSize)
-                .clip(shape = CircleShape)
                 .clickable(onClick = {
                     onClickSelfAvatar(textMessage)
                 })
@@ -181,11 +179,10 @@ fun FriendTextMessageItem(
             .fillMaxWidth()
             .padding(start = itemPaddingStart, top = itemPaddingTop, bottom = itemPaddingBottom)
     ) {
-        CoilImage(
+        CoilCircleImage(
             data = textMessage.sender.faceUrl,
             modifier = Modifier
                 .size(size = avatarSize)
-                .clip(shape = CircleShape)
                 .clickable {
                     onClickFriendAvatar(textMessage)
                 }

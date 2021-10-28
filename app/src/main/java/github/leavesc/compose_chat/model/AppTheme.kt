@@ -8,11 +8,7 @@ package github.leavesc.compose_chat.model
  */
 enum class AppTheme(val type: Int) {
 
-    Light(0), Dark(1), Pink(2);
-
-    fun isDarkTheme(): Boolean {
-        return this == Dark
-    }
+    Light(0), Dark(1), Blue(2), Pink(3);
 
     fun nextTheme(): AppTheme {
         return when (this) {
@@ -20,6 +16,9 @@ enum class AppTheme(val type: Int) {
                 Dark
             }
             Dark -> {
+                Blue
+            }
+            Blue -> {
                 Pink
             }
             Pink -> {
