@@ -62,6 +62,30 @@ fun ProfileScreen(personProfile: PersonProfile) {
                 repeatMode = RepeatMode.Reverse,
             ),
         )
+        val coroutineScope = rememberCoroutineScope()
+        var offsetX by remember { mutableStateOf(0f) }
+        var offsetY by remember { mutableStateOf(0f) }
+        var dragAnimateEnable by remember {
+            mutableStateOf(false)
+        }
+        LaunchedEffect(dragAnimateEnable) {
+            if (dragAnimateEnable) {
+                coroutineScope.launch {
+                    Animatable(
+                        initialValue = Offset(x = offsetX, y = offsetY),
+                        typeConverter = Offset.VectorConverter
+                    ).animateTo(
+                        targetValue = Offset(x = 0f, y = 0f),
+                        animationSpec = SpringSpec(dampingRatio = Spring.DampingRatioHighBouncy),
+                        block = {
+                            offsetX = value.x
+                            offsetY = value.y
+                        }
+                    )
+                    dragAnimateEnable = false
+                }
+            }
+        }
         val (backgroundRefs, idRefs, faceRefs, nicknameRefs, signatureRefs) = createRefs()
         CoilImage(
             data = userFaceUrl,
@@ -72,14 +96,10 @@ fun ProfileScreen(personProfile: PersonProfile) {
                 .fillMaxWidth()
                 .aspectRatio(ratio = 5f / 4f)
                 .clip(shape = BezierShape(padding = animateValue * 100))
-                .scrim(colors = listOf(Color(0x40000000), Color(0x40F4F4F4)))
+                .scrim(colors = listOf(Color(color = 0x40000000), Color(color=0x40F4F4F4)))
                 .scale(scale = animateValue)
                 .rotate(degrees = animateValue * 10.3f)
         )
-        val avatarSize = 100.dp
-        val coroutineScope = rememberCoroutineScope()
-        var offsetX by remember { mutableStateOf(0f) }
-        var offsetY by remember { mutableStateOf(0f) }
         OutlinedAvatar(
             data = userFaceUrl,
             modifier = Modifier
@@ -88,7 +108,7 @@ fun ProfileScreen(personProfile: PersonProfile) {
                     end.linkTo(backgroundRefs.end)
                     bottom.linkTo(backgroundRefs.bottom)
                 }
-                .size(size = avatarSize)
+                .size(size = 100.dp)
                 .zIndex(zIndex = 1f)
                 .offset {
                     IntOffset(
@@ -102,22 +122,10 @@ fun ProfileScreen(personProfile: PersonProfile) {
 
                         },
                         onDragCancel = {
-
+                            dragAnimateEnable = true
                         },
                         onDragEnd = {
-                            coroutineScope.launch {
-                                Animatable(
-                                    initialValue = Offset(offsetX, offsetY),
-                                    typeConverter = Offset.VectorConverter
-                                ).animateTo(
-                                    targetValue = Offset(x = 0f, y = 0f),
-                                    animationSpec = SpringSpec(dampingRatio = Spring.DampingRatioHighBouncy),
-                                    block = {
-                                        offsetX = value.x
-                                        offsetY = value.y
-                                    }
-                                )
-                            }
+                            dragAnimateEnable = true
                         },
                         onDrag = { change, dragAmount ->
                             change.consumeAllChanges()
