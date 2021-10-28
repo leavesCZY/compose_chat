@@ -55,7 +55,7 @@ fun EmptyView() {
             .fillMaxSize()
             .wrapContentSize(align = Alignment.Center),
         style = MaterialTheme.typography.subtitle2,
-        fontWeight = FontWeight.ExtraBold,
+        fontWeight = FontWeight.Bold,
         fontSize = 49.sp,
     )
 }
