@@ -20,8 +20,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeMoreActionScreen(
     modalBottomSheetState: ModalBottomSheetState,
-    onAddFriend: (userId: String) -> Unit,
-    onJoinGroup: (groupId: String) -> Unit
+    toAddFriend: (userId: String) -> Unit,
+    toJoinGroup: (groupId: String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -46,7 +46,7 @@ fun HomeMoreActionScreen(
         }
     })
 
-    var userId by remember(key1 = Unit) {
+    var userId by remember(key1 = modalBottomSheetState.isVisible) {
         mutableStateOf(
             ""
         )
@@ -67,7 +67,7 @@ fun HomeMoreActionScreen(
             }
         },
     ) {
-        Column(modifier = Modifier) {
+        Column {
             InputItem(
                 value = userId,
                 onValueChange = {
@@ -81,19 +81,18 @@ fun HomeMoreActionScreen(
                             scaffoldState.snackbarHostState.showSnackbar(message = "请输入 UserID")
                         }
                     } else {
-                        onAddFriend(userId)
-                        userId = ""
+                        toAddFriend(userId)
                     }
                 }
             )
             CommonButton(text = "加入 compose_chat 交流群 - A") {
-                onJoinGroup(ComposeChat.groupIdA)
+                toJoinGroup(ComposeChat.groupIdA)
             }
             CommonButton(text = "加入 compose_chat 交流群 - B") {
-                onJoinGroup(ComposeChat.groupIdB)
+                toJoinGroup(ComposeChat.groupIdB)
             }
             CommonButton(text = "加入 compose_chat 交流群 - C") {
-                onJoinGroup(ComposeChat.groupIdC)
+                toJoinGroup(ComposeChat.groupIdC)
             }
         }
     }
@@ -113,7 +112,7 @@ private fun InputItem(
             .wrapContentHeight()
             .padding(
                 horizontal = 20.dp,
-                vertical = 10.dp
+                vertical = 20.dp
             ),
         label = {
             Text(text = label)

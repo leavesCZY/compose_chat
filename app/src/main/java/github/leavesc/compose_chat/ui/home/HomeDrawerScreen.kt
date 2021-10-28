@@ -2,8 +2,6 @@ package github.leavesc.compose_chat.ui.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -82,34 +80,48 @@ fun HomeDrawerScreen(
         },
         stickyFrontLayer = false,
         frontLayerContent = {
-            AlterProfile(homeDrawerViewState = homeDrawerViewState)
+            AlterProfile(
+                backdropScaffoldState = scaffoldState,
+                homeDrawerViewState = homeDrawerViewState
+            )
         }
     )
 }
 
 @Composable
-private fun AlterProfile(homeDrawerViewState: HomeDrawerViewState) {
+private fun AlterProfile(
+    backdropScaffoldState: BackdropScaffoldState,
+    homeDrawerViewState: HomeDrawerViewState
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .padding(
                 horizontal = 20.dp,
                 vertical = 20.dp
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var faceUrl by remember(key1 = homeDrawerViewState) {
+        var faceUrl by remember(
+            key1 = backdropScaffoldState.isRevealed,
+            key2 = homeDrawerViewState
+        ) {
             mutableStateOf(
                 homeDrawerViewState.userProfile.faceUrl
             )
         }
-        var nickname by remember(key1 = homeDrawerViewState) {
+        var nickname by remember(
+            key1 = backdropScaffoldState.isRevealed,
+            key2 = homeDrawerViewState
+        ) {
             mutableStateOf(
                 homeDrawerViewState.userProfile.nickname
             )
         }
-        var signature by remember(key1 = homeDrawerViewState) {
+        var signature by remember(
+            key1 = backdropScaffoldState.isRevealed,
+            key2 = homeDrawerViewState
+        ) {
             mutableStateOf(
                 homeDrawerViewState.userProfile.signature
             )

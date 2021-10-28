@@ -196,15 +196,15 @@ private fun ConversationItem(
             ) {
                 DropdownMenuItem(onClick = {
                     menuExpanded = false
-                    onDeleteConversation(conversation)
+                    onConversationPinnedChanged(conversation, !conversation.isPinned)
                 }) {
-                    Text(text = "删除会话", modifier = Modifier)
+                    Text(text = if (conversation.isPinned) "取消置顶" else "置顶会话")
                 }
                 DropdownMenuItem(onClick = {
                     menuExpanded = false
-                    onConversationPinnedChanged(conversation, !conversation.isPinned)
+                    onDeleteConversation(conversation)
                 }) {
-                    Text(text = if (conversation.isPinned) "取消置顶" else "会话置顶", modifier = Modifier)
+                    Text(text = "删除会话")
                 }
             }
         }

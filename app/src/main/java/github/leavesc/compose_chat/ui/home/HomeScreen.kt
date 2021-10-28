@@ -1,11 +1,12 @@
 package github.leavesc.compose_chat.ui.home
 
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -50,6 +51,59 @@ fun HomeScreen(
 ) {
     val homeViewModel = viewModel<HomeViewModel>()
     log(log = "homeViewModel: $homeViewModel")
+
+    val conversationList by homeViewModel.conversationList.collectAsState()
+    val totalUnreadCount by homeViewModel.totalUnreadCount.collectAsState()
+    val friendList by homeViewModel.fiendList.collectAsState()
+    val joinedGroupList by homeViewModel.joinedGroupList.collectAsState()
+    val personProfile by homeViewModel.personProfile.collectAsState()
+
+    val coroutineScope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scaffoldState = rememberScaffoldState(drawerState = drawerState)
+    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val conversationListState = rememberSaveable(
+        inputs = arrayOf(totalUnreadCount),
+        saver = LazyListState.Saver
+    ) {
+        LazyListState(
+            0,
+            0
+        )
+    }
+    val friendShipListState = rememberSaveable(
+        inputs = arrayOf(joinedGroupList.size + friendList.size),
+        saver = LazyListState.Saver
+    ) {
+        LazyListState(
+            0,
+            0
+        )
+    }
+    val homeDrawerViewState = remember(key1 = appTheme, key2 = personProfile) {
+        HomeDrawerViewState(
+            appTheme = appTheme,
+            userProfile = personProfile,
+            switchToNextTheme = switchToNextTheme,
+            updateProfile = { faceUrl: String, nickname: String, signature: String ->
+                homeViewModel.updateProfile(
+                    faceUrl = faceUrl,
+                    nickname = nickname,
+                    signature = signature
+                )
+            },
+            logout = {
+                homeViewModel.logout()
+            },
+        )
+    }
+
+    fun sheetContentAnimateTo(targetValue: ModalBottomSheetValue) {
+        coroutineScope.launch {
+            sheetState.animateTo(targetValue = targetValue)
+        }
+    }
+
     LaunchedEffect(Unit) {
         launch {
             homeViewModel.serverConnectState.collect {
@@ -72,26 +126,6 @@ fun HomeScreen(
                 }
             }
         }
-        homeViewModel.init()
-    }
-    val coroutineScope = rememberCoroutineScope()
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scaffoldState = rememberScaffoldState(drawerState = drawerState)
-    val sheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    val conversationList by homeViewModel.conversationList.collectAsState()
-    val totalUnreadCount by homeViewModel.totalUnreadCount.collectAsState()
-    val friendList by homeViewModel.fiendList.collectAsState()
-    val joinedGroupList by homeViewModel.joinedGroupList.collectAsState()
-    val personProfile by homeViewModel.personProfile.collectAsState()
-
-    val conversationListState = rememberLazyListState()
-    val friendShipListState = rememberLazyListState()
-
-    fun sheetContentAnimateTo(targetValue: ModalBottomSheetValue) {
-        coroutineScope.launch {
-            sheetState.animateTo(targetValue = targetValue)
-        }
     }
 
     ModalBottomSheetLayout(
@@ -101,18 +135,20 @@ fun HomeScreen(
         sheetContent = {
             HomeMoreActionScreen(
                 modalBottomSheetState = sheetState,
-                onAddFriend = {
+                toAddFriend = {
                     homeViewModel.addFriend(userId = it)
-                }, onJoinGroup = {
+                }, toJoinGroup = {
                     coroutineScope.launch {
                         when (val result = homeViewModel.joinGroup(groupId = it)) {
                             is ActionResult.Success -> {
                                 showToast("加入成功")
                                 navController.navToGroupChatScreen(groupId = it)
+                                sheetState.hide()
                             }
                             is ActionResult.Failed -> {
                                 if (result.code == 10013) {
                                     navController.navToGroupChatScreen(groupId = it)
+                                    sheetState.hide()
                                 } else {
                                     showToast(result.reason)
                                 }
@@ -161,21 +197,7 @@ fun HomeScreen(
             drawerContent = {
                 HomeDrawerScreen(
                     drawerState = drawerState,
-                    homeDrawerViewState = HomeDrawerViewState(
-                        appTheme = appTheme,
-                        userProfile = personProfile,
-                        switchToNextTheme = switchToNextTheme,
-                        updateProfile = { faceUrl: String, nickname: String, signature: String ->
-                            homeViewModel.updateProfile(
-                                faceUrl = faceUrl,
-                                nickname = nickname,
-                                signature = signature
-                            )
-                        },
-                        logout = {
-                            homeViewModel.logout()
-                        },
-                    ),
+                    homeDrawerViewState = homeDrawerViewState
                 )
             },
             drawerShape = RoundedCornerShape(0.dp),

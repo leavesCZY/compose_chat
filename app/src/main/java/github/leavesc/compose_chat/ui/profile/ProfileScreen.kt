@@ -58,7 +58,7 @@ fun ProfileScreen(personProfile: PersonProfile) {
         val animateValue by rememberInfiniteTransition().animateFloat(
             initialValue = 1.3f, targetValue = 1.9f,
             animationSpec = infiniteRepeatable(
-                animation = tween(durationMillis = 1800, easing = FastOutSlowInEasing),
+                animation = tween(durationMillis = 1200, easing = FastOutSlowInEasing),
                 repeatMode = RepeatMode.Reverse,
             ),
         )

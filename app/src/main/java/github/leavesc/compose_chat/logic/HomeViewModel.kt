@@ -34,7 +34,7 @@ class HomeViewModel : ViewModel() {
 
     val serverConnectState = ComposeChat.accountProvider.serverConnectState
 
-    fun init() {
+    init {
         ComposeChat.conversationProvider.getConversationList()
         ComposeChat.groupProvider.getJoinedGroupList()
         ComposeChat.friendshipProvider.getFriendList()
