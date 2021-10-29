@@ -99,7 +99,7 @@ private fun ProfileScreen(
             .zIndex(zIndex = 1f)
     ) {
         val animateValue by rememberInfiniteTransition().animateFloat(
-            initialValue = 1.3f, targetValue = 1.9f,
+            initialValue = 0f, targetValue = 1f,
             animationSpec = infiniteRepeatable(
                 animation = tween(durationMillis = 1200, easing = FastOutSlowInEasing),
                 repeatMode = RepeatMode.Reverse,
@@ -137,11 +137,11 @@ private fun ProfileScreen(
                 }
                 .fillMaxWidth()
                 .aspectRatio(ratio = 5f / 4f)
-                .rotate(degrees = animateValue * 14.3f)
-                .scale(scale = animateValue * 1.1f)
-                .clip(shape = BezierShape(animateValue = animateValue * 120))
-                .scrim(colors = listOf(Color(color = 0x40000000), Color(color = 0x40F4F4F4)))
-                .zIndex(zIndex = -1f),
+                .scale(scale = (animateValue + 1f) * 1.1f)
+                .clip(shape = BezierShape(animateValue = animateValue))
+                .rotate(degrees = animateValue * 10f)
+                .scrim(colors = listOf(Color(color = 0xBCB6BCC0), Color(color = 0xF7F5F5)))
+                .zIndex(zIndex = -100f),
             data = avatarUrl
         )
         OutlinedAvatar(
@@ -153,7 +153,7 @@ private fun ProfileScreen(
                     bottom.linkTo(backgroundRefs.bottom)
                 }
                 .size(size = 100.dp)
-                .zIndex(zIndex = 1f)
+                .zIndex(zIndex = Float.MAX_VALUE)
                 .offset {
                     IntOffset(
                         x = offsetX.roundToInt(),
@@ -227,7 +227,7 @@ private fun ProfileScreen(
                     end.linkTo(backgroundRefs.end)
                     top.linkTo(introductionRefs.bottom)
                 }
-                .zIndex(zIndex = 0f)
+                .zIndex(zIndex = 1f)
         ) {
             content()
         }

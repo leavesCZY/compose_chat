@@ -15,37 +15,37 @@ val LightTypography = Typography(
     subtitle1 = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
+        fontSize = 17.sp,
         color = Color.Black.copy(alpha = smallAlpha),
     ),
     subtitle2 = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
+        fontSize = 15.sp,
         color = Color.Black.copy(alpha = smallAlpha),
     ),
     body1 = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
+        fontSize = 17.sp,
         color = Color.Black.copy(alpha = smallAlpha),
     ),
     body2 = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
+        fontSize = 15.sp,
         color = Color.Black.copy(alpha = mediumAlpha),
     ),
     button = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
+        fontSize = 17.sp,
         color = Color.White.copy(alpha = smallAlpha),
     ),
     caption = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 19.sp,
+        fontSize = 20.sp,
         color = Color.Black.copy(alpha = smallAlpha),
     )
 )

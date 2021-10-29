@@ -53,7 +53,7 @@ class HomeActivity : ComponentActivity() {
     @Composable
     private fun NavigationView(appTheme: AppTheme, switchToNextTheme: () -> Unit) {
         val navController = rememberAnimatedNavController()
-        var screenSelected by remember {
+        var homeScreenSelected by remember {
             mutableStateOf(HomeScreenTab.Conversation)
         }
         ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
@@ -71,9 +71,9 @@ class HomeActivity : ComponentActivity() {
                         navController = navController,
                         appTheme = appTheme,
                         switchToNextTheme = switchToNextTheme,
-                        screenSelected = screenSelected,
-                        onTabSelected = {
-                            screenSelected = it
+                        homeScreenSelected = homeScreenSelected,
+                        onHomeScreenTabSelected = {
+                            homeScreenSelected = it
                         }
                     )
                 }

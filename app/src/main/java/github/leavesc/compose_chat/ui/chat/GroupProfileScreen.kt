@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
@@ -74,6 +75,7 @@ private fun GroupMemberItem(
     val padding = 12.dp
     ConstraintLayout(
         modifier = Modifier
+            .zIndex(zIndex = 10f)
             .fillMaxWidth()
             .clickable {
                 onClickMember(groupMemberProfile)

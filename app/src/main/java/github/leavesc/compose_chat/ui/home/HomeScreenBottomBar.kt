@@ -25,10 +25,10 @@ import github.leavesc.compose_chat.ui.weigets.CommonDivider
  */
 @Composable
 fun HomeScreenBottomBar(
-    screenList: List<HomeScreenTab>,
-    screenSelected: HomeScreenTab,
+    homeScreenList: List<HomeScreenTab>,
+    homeScreenSelected: HomeScreenTab,
     unreadMessageCount: Long,
-    onTabSelected: (HomeScreenTab) -> Unit,
+    onHomeScreenTabSelected: (HomeScreenTab) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -38,15 +38,15 @@ fun HomeScreenBottomBar(
     ) {
         CommonDivider()
         Row {
-            for (screen in screenList) {
-                val selected = screenSelected == screen
+            for (screen in homeScreenList) {
+                val selected = homeScreenSelected == screen
                 BottomNavigationItem(
                     modifier = Modifier.weight(1f),
                     screen = screen,
                     tabSelected = selected,
                     unreadMessageCount = unreadMessageCount,
                     onClickTab = {
-                        onTabSelected(screen)
+                        onHomeScreenTabSelected(screen)
                     }
                 )
             }

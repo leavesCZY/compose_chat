@@ -45,8 +45,8 @@ fun HomeScreen(
     navController: NavHostController,
     appTheme: AppTheme,
     switchToNextTheme: () -> Unit,
-    screenSelected: HomeScreenTab,
-    onTabSelected: (HomeScreenTab) -> Unit
+    homeScreenSelected: HomeScreenTab,
+    onHomeScreenTabSelected: (HomeScreenTab) -> Unit
 ) {
     val homeViewModel = viewModel<HomeViewModel>()
 
@@ -170,7 +170,7 @@ fun HomeScreen(
             },
             topBar = {
                 HomeScreenTopBar(
-                    screenSelected = screenSelected,
+                    screenSelected = homeScreenSelected,
                     openDrawer = {
                         coroutineScope.launch {
                             scaffoldState.drawerState.open()
@@ -186,10 +186,10 @@ fun HomeScreen(
             },
             bottomBar = {
                 HomeScreenBottomBar(
-                    screenList = HomeScreenTab.values().toList(),
-                    screenSelected = screenSelected,
+                    homeScreenList = HomeScreenTab.values().toList(),
+                    homeScreenSelected = homeScreenSelected,
                     unreadMessageCount = totalUnreadCount,
-                    onTabSelected = onTabSelected
+                    onHomeScreenTabSelected = onHomeScreenTabSelected
                 )
             },
             drawerContent = {
@@ -200,7 +200,7 @@ fun HomeScreen(
             },
             drawerShape = RoundedCornerShape(0.dp),
             floatingActionButton = {
-                if (screenSelected == HomeScreenTab.Friendship) {
+                if (homeScreenSelected == HomeScreenTab.Friendship) {
                     FloatingActionButton(
                         backgroundColor = MaterialTheme.colors.primary,
                         onClick = {
@@ -215,7 +215,7 @@ fun HomeScreen(
                 }
             },
         ) { paddingValues ->
-            when (screenSelected) {
+            when (homeScreenSelected) {
                 HomeScreenTab.Conversation -> {
                     ConversationScreen(
                         listState = conversationListState,
