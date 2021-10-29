@@ -49,33 +49,34 @@ fun HomeDrawerScreen(
 
         },
         backLayerContent = {
-            Column {
-                ProfileScreen(
-                    personProfile = homeDrawerViewState.userProfile
-                )
-                CommonButton(text = "个人资料") {
-                    coroutineScope.launch {
-                        scaffoldState.conceal()
+            ProfileScreen(
+                personProfile = homeDrawerViewState.userProfile
+            ) {
+                Column {
+                    CommonButton(text = "个人资料") {
+                        coroutineScope.launch {
+                            scaffoldState.conceal()
+                        }
                     }
+                    CommonButton(text = "切换主题") {
+                        homeDrawerViewState.switchToNextTheme()
+                    }
+                    CommonButton(text = "切换账号") {
+                        homeDrawerViewState.logout()
+                    }
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(align = Alignment.CenterHorizontally),
+                        text = "VersionCode: " + BuildConfig.VERSION_CODE + "\n" +
+                                "VersionName: " + BuildConfig.VERSION_NAME + "\n" +
+                                "BuildTime: " + BuildConfig.BUILD_TIME,
+                        style = MaterialTheme.typography.subtitle2,
+                        textAlign = TextAlign.Center,
+                        letterSpacing = 2.sp,
+                        fontFamily = FontFamily.Serif,
+                    )
                 }
-                CommonButton(text = "切换主题") {
-                    homeDrawerViewState.switchToNextTheme()
-                }
-                CommonButton(text = "切换账号") {
-                    homeDrawerViewState.logout()
-                }
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(align = Alignment.CenterHorizontally),
-                    text = "versionCode: " + BuildConfig.VERSION_CODE + "\n" +
-                            "versionName: " + BuildConfig.VERSION_NAME + "\n" +
-                            "buildTime: " + BuildConfig.BUILD_TIME,
-                    style = MaterialTheme.typography.subtitle2,
-                    textAlign = TextAlign.Center,
-                    letterSpacing = 2.sp,
-                    fontFamily = FontFamily.Serif,
-                )
             }
         },
         stickyFrontLayer = false,

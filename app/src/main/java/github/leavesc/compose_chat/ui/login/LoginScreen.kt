@@ -6,6 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalTextInputService
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -13,6 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.statusBarsPadding
+import github.leavesc.compose_chat.R
 import github.leavesc.compose_chat.extend.navigateWithBack
 import github.leavesc.compose_chat.logic.LoginViewModel
 import github.leavesc.compose_chat.model.Screen
@@ -68,14 +71,15 @@ fun LoginScreen(navController: NavHostController) {
             ) {
                 if (loginScreenState.showLogo) {
                     Text(
-                        text = "Chat",
+                        text = stringResource(id = R.string.app_name),
                         modifier = Modifier
                             .fillMaxWidth()
                             .statusBarsPadding()
                             .fillMaxHeight(fraction = 0.35f)
                             .wrapContentSize(align = Alignment.Center),
                         style = MaterialTheme.typography.subtitle1,
-                        fontSize = 60.sp,
+                        fontSize = 24.sp,
+                        fontFamily = FontFamily.Serif,
                         textAlign = TextAlign.Center,
                     )
                 }

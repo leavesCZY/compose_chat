@@ -43,7 +43,7 @@ val DiagonalShape: Shape = object : Shape {
 
 }
 
-class BezierShape(private val padding: Float) : Shape {
+class BezierShape(private val animateValue: Float) : Shape {
 
     override fun createOutline(
         size: Size,
@@ -51,9 +51,9 @@ class BezierShape(private val padding: Float) : Shape {
         density: Density
     ): Outline {
         val path = Path()
-        path.lineTo(0f, size.height - padding)
-        path.quadraticBezierTo(size.width / 2, size.height, size.width, size.height - padding)
-        path.lineTo(size.width, size.height - padding)
+        path.lineTo(0f, size.height - animateValue)
+        path.quadraticBezierTo(size.width / 2, size.height, size.width, size.height - animateValue)
+        path.lineTo(size.width, size.height - animateValue)
         path.lineTo(size.width, 0f)
         path.lineTo(0f, 0f)
         return Outline.Generic(path = path)

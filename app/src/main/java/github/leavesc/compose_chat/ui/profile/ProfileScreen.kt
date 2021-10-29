@@ -50,27 +50,38 @@ fun ProfileScreen() {
             remark = "",
             signature = "希望对你有所帮助 \uD83E\uDD23\uD83E\uDD23\uD83E\uDD23",
             isFriend = false
-        )
+        ),
+        content = {
+
+        }
     )
 }
 
 @Composable
-fun ProfileScreen(personProfile: PersonProfile) {
+fun ProfileScreen(
+    personProfile: PersonProfile,
+    content: @Composable () -> Unit = {}
+) {
     ProfileScreen(
         title = personProfile.showName,
         subtitle = personProfile.signature,
         introduction = "ID: ${personProfile.userId}",
-        avatarUrl = personProfile.faceUrl
+        avatarUrl = personProfile.faceUrl,
+        content = content
     )
 }
 
 @Composable
-fun ProfileScreen(groupProfile: GroupProfile) {
+fun ProfileScreen(
+    groupProfile: GroupProfile,
+    content: @Composable () -> Unit = {}
+) {
     ProfileScreen(
         title = groupProfile.name,
         subtitle = groupProfile.introduction,
         introduction = "GroupID: ${groupProfile.id}\nCreateTime: ${groupProfile.createTimeFormat}\nMemberCount: ${groupProfile.memberCount}",
-        avatarUrl = groupProfile.faceUrl
+        avatarUrl = groupProfile.faceUrl,
+        content = content
     )
 }
 
@@ -79,7 +90,8 @@ private fun ProfileScreen(
     title: String,
     subtitle: String,
     introduction: String,
-    avatarUrl: String
+    avatarUrl: String,
+    content: @Composable () -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -117,19 +129,20 @@ private fun ProfileScreen(
                 }
             }
         }
-        val (titleRefs, subtitleRefs, introductionRefs, backgroundRefs, avatarRefs) = createRefs()
+        val (titleRefs, subtitleRefs, introductionRefs, backgroundRefs, avatarRefs, contentRefs) = createRefs()
         CoilImage(
-            data = avatarUrl,
             modifier = Modifier
                 .constrainAs(ref = backgroundRefs) {
 
                 }
                 .fillMaxWidth()
                 .aspectRatio(ratio = 5f / 4f)
-                .clip(shape = BezierShape(padding = animateValue * 100))
-                .scrim(colors = listOf(Color(color = 0x40000000), Color(color = 0x40F4F4F4)))
+                .rotate(degrees = animateValue * 14.3f)
                 .scale(scale = animateValue)
-                .rotate(degrees = animateValue * 10.3f)
+                .clip(shape = BezierShape(animateValue = animateValue * 100))
+                .scrim(colors = listOf(Color(color = 0x40000000), Color(color = 0x40F4F4F4)))
+                .zIndex(zIndex = -1f),
+            data = avatarUrl
         )
         OutlinedAvatar(
             data = avatarUrl,
@@ -168,7 +181,7 @@ private fun ProfileScreen(
         )
         Text(text = title,
             color = Color.White,
-            fontSize = 18.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -181,8 +194,8 @@ private fun ProfileScreen(
                 .padding(start = 10.dp, end = 10.dp, top = 20.dp))
         Text(
             text = subtitle,
-            color = Color.White.copy(alpha = 0.7f),
-            fontSize = 16.sp,
+            color = Color.White.copy(alpha = 0.8f),
+            fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -192,7 +205,7 @@ private fun ProfileScreen(
                     top.linkTo(titleRefs.bottom)
                 }
                 .padding(
-                    start = 15.dp, end = 15.dp, top = 8.dp
+                    start = 15.dp, end = 15.dp, top = 12.dp
                 ))
         Text(
             text = introduction,
@@ -207,5 +220,16 @@ private fun ProfileScreen(
                 .fillMaxWidth()
                 .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp)
         )
+        Box(
+            modifier = Modifier
+                .constrainAs(ref = contentRefs) {
+                    start.linkTo(backgroundRefs.start)
+                    end.linkTo(backgroundRefs.end)
+                    top.linkTo(introductionRefs.bottom)
+                }
+                .zIndex(zIndex = 0f)
+        ) {
+            content()
+        }
     }
 }

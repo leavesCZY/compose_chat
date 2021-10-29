@@ -68,19 +68,20 @@ fun FriendProfileScreen(
     ) {
         var openDeleteFriendDialog by remember { mutableStateOf(false) }
         Scaffold(modifier = Modifier.fillMaxSize()) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                ProfileScreen(
-                    personProfile = friendProfile
-                )
+            ProfileScreen(
+                personProfile = friendProfile
+            ) {
                 if (friendProfile.isFriend) {
-                    CommonButton(text = "去聊天吧") {
-                        navController.navToC2CChatScreen(friendId = friendProfile.userId)
-                    }
-                    CommonButton(text = "设置备注") {
-                        expandSheetContent()
-                    }
-                    CommonButton(text = "删除好友") {
-                        openDeleteFriendDialog = true
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        CommonButton(text = "去聊天吧") {
+                            navController.navToC2CChatScreen(friendId = friendProfile.userId)
+                        }
+                        CommonButton(text = "设置备注") {
+                            expandSheetContent()
+                        }
+                        CommonButton(text = "删除好友") {
+                            openDeleteFriendDialog = true
+                        }
                     }
                 }
             }
