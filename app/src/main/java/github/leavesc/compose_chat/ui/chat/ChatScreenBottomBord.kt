@@ -77,12 +77,12 @@ fun ChatScreenBottomBord(
     })
 
     fun checkSendMessageEnabled() {
-        sendMessageEnabled = message.text.isNotEmpty()
+        sendMessageEnabled = message.text.isNotBlank()
     }
 
     fun onMessageSent() {
         val text = message.text
-        if (text.isNotEmpty()) {
+        if (text.isNotBlank()) {
             sendMessage(text)
             message = TextFieldValue()
         }

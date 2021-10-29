@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.google.accompanist.insets.statusBarsPadding
+import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.extend.scrim
 import github.leavesc.compose_chat.ui.theme.BezierShape
@@ -40,21 +41,51 @@ import kotlin.math.roundToInt
  */
 @Preview
 @Composable
-private fun PreviewProfileScreen() {
-    ProfileScreen(personProfile = PersonProfile.Empty)
+fun ProfileScreen() {
+    ProfileScreen(
+        personProfile = PersonProfile(
+            userId = "leavesC",
+            faceUrl = "",
+            nickname = "业志陈",
+            remark = "",
+            signature = "希望对你有所帮助 \uD83E\uDD23\uD83E\uDD23\uD83E\uDD23",
+            isFriend = false
+        )
+    )
 }
 
 @Composable
 fun ProfileScreen(personProfile: PersonProfile) {
+    ProfileScreen(
+        title = personProfile.showName,
+        subtitle = personProfile.signature,
+        introduction = "ID: ${personProfile.userId}",
+        avatarUrl = personProfile.faceUrl
+    )
+}
+
+@Composable
+fun ProfileScreen(groupProfile: GroupProfile) {
+    ProfileScreen(
+        title = groupProfile.name,
+        subtitle = groupProfile.introduction,
+        introduction = "GroupID: ${groupProfile.id}\nCreateTime: ${groupProfile.createTimeFormat}\nMemberCount: ${groupProfile.memberCount}",
+        avatarUrl = groupProfile.faceUrl
+    )
+}
+
+@Composable
+private fun ProfileScreen(
+    title: String,
+    subtitle: String,
+    introduction: String,
+    avatarUrl: String
+) {
     ConstraintLayout(
         modifier = Modifier
             .background(color = MaterialTheme.colors.background)
             .zIndex(zIndex = 1f)
     ) {
-        val userFaceUrl = personProfile.faceUrl
-        val userId = personProfile.userId
-        val userName = personProfile.showName
-        val userSignature = personProfile.signature
         val animateValue by rememberInfiniteTransition().animateFloat(
             initialValue = 1.3f, targetValue = 1.9f,
             animationSpec = infiniteRepeatable(
@@ -86,9 +117,9 @@ fun ProfileScreen(personProfile: PersonProfile) {
                 }
             }
         }
-        val (backgroundRefs, idRefs, faceRefs, nicknameRefs, signatureRefs) = createRefs()
+        val (titleRefs, subtitleRefs, introductionRefs, backgroundRefs, avatarRefs) = createRefs()
         CoilImage(
-            data = userFaceUrl,
+            data = avatarUrl,
             modifier = Modifier
                 .constrainAs(ref = backgroundRefs) {
 
@@ -96,14 +127,14 @@ fun ProfileScreen(personProfile: PersonProfile) {
                 .fillMaxWidth()
                 .aspectRatio(ratio = 5f / 4f)
                 .clip(shape = BezierShape(padding = animateValue * 100))
-                .scrim(colors = listOf(Color(color = 0x40000000), Color(color=0x40F4F4F4)))
+                .scrim(colors = listOf(Color(color = 0x40000000), Color(color = 0x40F4F4F4)))
                 .scale(scale = animateValue)
                 .rotate(degrees = animateValue * 10.3f)
         )
         OutlinedAvatar(
-            data = userFaceUrl,
+            data = avatarUrl,
             modifier = Modifier
-                .constrainAs(ref = faceRefs) {
+                .constrainAs(ref = avatarRefs) {
                     start.linkTo(backgroundRefs.start)
                     end.linkTo(backgroundRefs.end)
                     bottom.linkTo(backgroundRefs.bottom)
@@ -135,13 +166,13 @@ fun ProfileScreen(personProfile: PersonProfile) {
                     )
                 }
         )
-        Text(text = userName,
+        Text(text = title,
             color = Color.White,
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .constrainAs(ref = nicknameRefs) {
+                .constrainAs(ref = titleRefs) {
                     start.linkTo(backgroundRefs.start)
                     end.linkTo(backgroundRefs.end)
                     top.linkTo(parent.top)
@@ -149,26 +180,26 @@ fun ProfileScreen(personProfile: PersonProfile) {
                 .statusBarsPadding()
                 .padding(start = 10.dp, end = 10.dp, top = 20.dp))
         Text(
-            text = userSignature,
+            text = subtitle,
             color = Color.White.copy(alpha = 0.7f),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .constrainAs(ref = signatureRefs) {
+                .constrainAs(ref = subtitleRefs) {
                     start.linkTo(backgroundRefs.start)
                     end.linkTo(backgroundRefs.end)
-                    top.linkTo(nicknameRefs.bottom)
+                    top.linkTo(titleRefs.bottom)
                 }
                 .padding(
                     start = 15.dp, end = 15.dp, top = 8.dp
                 ))
         Text(
-            text = "ID: $userId",
+            text = introduction,
             style = MaterialTheme.typography.subtitle1,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .constrainAs(ref = idRefs) {
+                .constrainAs(ref = introductionRefs) {
                     start.linkTo(backgroundRefs.start)
                     end.linkTo(backgroundRefs.end)
                     top.linkTo(backgroundRefs.bottom)

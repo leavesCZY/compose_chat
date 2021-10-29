@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.ui.theme.friendMsgBgColor
 import github.leavesc.compose_chat.ui.theme.selfMsgBgColor
+import github.leavesc.compose_chat.ui.theme.textMessageColor
 import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
 
 /**
@@ -154,6 +155,7 @@ fun SelfTextMessageItem(
                 ),
             text = textMessage.msg,
             style = MaterialTheme.typography.body1,
+            color = textMessageColor,
             letterSpacing = 2.sp,
             textAlign = TextAlign.Left,
         )
@@ -213,6 +215,7 @@ fun FriendTextMessageItem(
                 ),
             text = textMessage.msg,
             style = MaterialTheme.typography.body1,
+            color = textMessageColor,
             letterSpacing = 2.sp,
             textAlign = TextAlign.Left,
         )
@@ -243,9 +246,10 @@ fun TimeMessageItem(timeMessage: TimeMessage) {
         Text(
             text = timeMessage.chatTime,
             style = MaterialTheme.typography.subtitle2,
+            color = textMessageColor,
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(size = 3.dp))
-                .background(Color.Gray.copy(alpha = 0.2f))
+                .background(Color.Gray.copy(alpha = 0.4f))
                 .padding(all = 4.dp)
         )
     }
