@@ -29,11 +29,11 @@ private fun NavController.navToChatScreen(chat: Chat) {
 }
 
 fun NavController.navToC2CChatScreen(friendId: String) {
-    navToChatScreen(Chat.C2C(id = friendId))
+    navToChatScreen(chat = Chat.C2C(id = friendId))
 }
 
 fun NavController.navToGroupChatScreen(groupId: String) {
-    navToChatScreen(Chat.Group(id = groupId))
+    navToChatScreen(chat = Chat.Group(id = groupId))
 }
 
 fun NavController.navToHomeScreen() {

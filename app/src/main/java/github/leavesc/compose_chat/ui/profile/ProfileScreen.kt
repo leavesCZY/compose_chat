@@ -138,8 +138,8 @@ private fun ProfileScreen(
                 .fillMaxWidth()
                 .aspectRatio(ratio = 5f / 4f)
                 .rotate(degrees = animateValue * 14.3f)
-                .scale(scale = animateValue)
-                .clip(shape = BezierShape(animateValue = animateValue * 100))
+                .scale(scale = animateValue * 1.1f)
+                .clip(shape = BezierShape(animateValue = animateValue * 120))
                 .scrim(colors = listOf(Color(color = 0x40000000), Color(color = 0x40F4F4F4)))
                 .zIndex(zIndex = -1f),
             data = avatarUrl

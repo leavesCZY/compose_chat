@@ -8,14 +8,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.imePadding
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.extend.navToC2CChatScreen
 import github.leavesc.compose_chat.extend.navToHomeScreen
+import github.leavesc.compose_chat.extend.viewModelInstance
 import github.leavesc.compose_chat.logic.FriendProfileViewModel
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
@@ -33,12 +31,9 @@ fun FriendProfileScreen(
     navController: NavHostController,
     friendId: String
 ) {
-    val friendProfileViewModel = viewModel<FriendProfileViewModel>(factory = object :
-        ViewModelProvider.NewInstanceFactory() {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return FriendProfileViewModel(friendId) as T
-        }
-    })
+    val friendProfileViewModel = viewModelInstance {
+        FriendProfileViewModel(friendId = friendId)
+    }
     LaunchedEffect(Unit) {
         friendProfileViewModel.getFriendProfile()
     }

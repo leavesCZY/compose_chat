@@ -1,10 +1,7 @@
 package github.leavesc.compose_chat.ui.chat
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -18,11 +15,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import github.leavesc.compose_chat.base.model.GroupMemberProfile
+import github.leavesc.compose_chat.extend.viewModelInstance
 import github.leavesc.compose_chat.logic.GroupProfileViewModel
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
@@ -37,12 +32,9 @@ import github.leavesc.compose_chat.ui.weigets.CommonDivider
  */
 @Composable
 fun GroupProfileScreen(navController: NavHostController, groupId: String) {
-    val groupProfileViewModel = viewModel<GroupProfileViewModel>(factory = object :
-        ViewModelProvider.NewInstanceFactory() {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return GroupProfileViewModel(groupId = groupId) as T
-        }
-    })
+    val groupProfileViewModel = viewModelInstance {
+        GroupProfileViewModel(groupId = groupId)
+    }
     val groupProfileScreenState by groupProfileViewModel.groupProfileScreenState.collectAsState()
     Scaffold(
         modifier = Modifier
@@ -57,7 +49,10 @@ fun GroupProfileScreen(navController: NavHostController, groupId: String) {
                 }
             }
         }
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 60.dp)
+        ) {
             item(key = true) {
                 ProfileScreen(groupProfile = groupProfileScreenState.groupProfile)
             }

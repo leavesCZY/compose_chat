@@ -30,7 +30,6 @@ import github.leavesc.compose_chat.ui.conversation.ConversationScreen
 import github.leavesc.compose_chat.ui.friend.FriendshipScreen
 import github.leavesc.compose_chat.ui.person.PersonProfileScreen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
-import github.leavesc.compose_chat.utils.log
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -50,7 +49,6 @@ fun HomeScreen(
     onTabSelected: (HomeScreenTab) -> Unit
 ) {
     val homeViewModel = viewModel<HomeViewModel>()
-    log(log = "homeViewModel: $homeViewModel")
 
     val conversationList by homeViewModel.conversationList.collectAsState()
     val totalUnreadCount by homeViewModel.totalUnreadCount.collectAsState()

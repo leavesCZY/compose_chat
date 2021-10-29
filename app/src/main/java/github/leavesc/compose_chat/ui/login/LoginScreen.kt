@@ -78,7 +78,7 @@ fun LoginScreen(navController: NavHostController) {
                             .fillMaxHeight(fraction = 0.35f)
                             .wrapContentSize(align = Alignment.Center),
                         style = MaterialTheme.typography.subtitle1,
-                        fontSize = 24.sp,
+                        fontSize = 30.sp,
                         fontFamily = FontFamily.Serif,
                         textAlign = TextAlign.Center,
                     )

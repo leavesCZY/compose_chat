@@ -7,12 +7,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.base.model.Chat
+import github.leavesc.compose_chat.extend.viewModelInstance
 import github.leavesc.compose_chat.logic.ChatViewModel
 import github.leavesc.compose_chat.model.Screen
 import kotlinx.coroutines.flow.collect
@@ -31,12 +29,9 @@ fun ChatScreen(
     listState: LazyListState,
     chat: Chat
 ) {
-    val chatViewModel = viewModel<ChatViewModel>(factory = object :
-        ViewModelProvider.NewInstanceFactory() {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return ChatViewModel(chat = chat) as T
-        }
-    })
+    val chatViewModel = viewModelInstance {
+        ChatViewModel(chat = chat)
+    }
 
     val screenTopBarTitle by chatViewModel.screenTopBarTitle.collectAsState()
     val chatScreenState by chatViewModel.chatScreenState.collectAsState()
