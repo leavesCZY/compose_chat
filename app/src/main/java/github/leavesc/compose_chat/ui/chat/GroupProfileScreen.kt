@@ -1,29 +1,34 @@
 package github.leavesc.compose_chat.ui.chat
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
+import com.google.accompanist.insets.statusBarsPadding
+import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.GroupMemberProfile
+import github.leavesc.compose_chat.extend.navToHomeScreen
 import github.leavesc.compose_chat.extend.viewModelInstance
 import github.leavesc.compose_chat.logic.GroupProfileViewModel
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
+import github.leavesc.compose_chat.utils.showToast
+import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesC
@@ -32,37 +37,56 @@ import github.leavesc.compose_chat.ui.weigets.CommonDivider
  * @Github：https://github.com/leavesC
  */
 @Composable
-fun GroupProfileScreen(navController: NavHostController, groupId: String) {
+fun GroupProfileScreen(
+    navController: NavHostController,
+    groupId: String
+) {
     val groupProfileViewModel = viewModelInstance {
         GroupProfileViewModel(groupId = groupId)
     }
     val groupProfileScreenState by groupProfileViewModel.groupProfileScreenState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
     ) {
-        val onClickMember: (GroupMemberProfile) -> Unit = remember {
-            object : (GroupMemberProfile) -> Unit {
-                override fun invoke(member: GroupMemberProfile) {
-                    navController.navigate(
-                        route = Screen.FriendProfileScreen.generateRoute(friendId = member.userId)
-                    )
+        Box {
+            val onClickMember: (GroupMemberProfile) -> Unit = remember {
+                object : (GroupMemberProfile) -> Unit {
+                    override fun invoke(member: GroupMemberProfile) {
+                        navController.navigate(
+                            route = Screen.FriendProfileScreen.generateRoute(friendId = member.userId)
+                        )
+                    }
                 }
             }
-        }
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 60.dp)
-        ) {
-            item(key = true) {
-                ProfileScreen(groupProfile = groupProfileScreenState.groupProfile)
-            }
-            val memberList = groupProfileScreenState.memberList
-            memberList.forEach {
-                item(key = it.userId) {
-                    GroupMemberItem(groupMemberProfile = it, onClickMember = onClickMember)
+            LazyColumn(
+                modifier = Modifier,
+                contentPadding = PaddingValues(bottom = 60.dp)
+            ) {
+                item(key = true) {
+                    ProfileScreen(groupProfile = groupProfileScreenState.groupProfile)
+                }
+                val memberList = groupProfileScreenState.memberList
+                memberList.forEach {
+                    item(key = it.userId) {
+                        GroupMemberItem(groupMemberProfile = it, onClickMember = onClickMember)
+                    }
                 }
             }
+            GroupProfileScreenTopBar(quitGroup = {
+                coroutineScope.launch {
+                    when (val result = groupProfileViewModel.quitGroup()) {
+                        ActionResult.Success -> {
+                            showToast("已退出群聊")
+                            navController.navToHomeScreen()
+                        }
+                        is ActionResult.Failed -> {
+                            showToast(result.reason)
+                        }
+                    }
+                }
+            })
         }
     }
 }
@@ -93,7 +117,13 @@ private fun GroupMemberItem(
                 }
         )
         Text(
-            text = groupMemberProfile.showName + "（ID: ${groupMemberProfile.userId}）",
+            text = groupMemberProfile.showName + "（ID: ${
+                groupMemberProfile.userId + if (groupMemberProfile.isOwner) {
+                    " - 群主"
+                } else {
+                    ""
+                }
+            }）",
             style = MaterialTheme.typography.subtitle1,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
@@ -107,7 +137,7 @@ private fun GroupMemberItem(
                 }
         )
         Text(
-            text = groupMemberProfile.role + " - joinTime: ${groupMemberProfile.joinTimeFormat}",
+            text = "joinTime: ${groupMemberProfile.joinTimeFormat}",
             style = MaterialTheme.typography.body2,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
@@ -129,5 +159,72 @@ private fun GroupMemberItem(
                     width = Dimension.fillToConstraints
                 }
         )
+    }
+}
+
+@Composable
+private fun GroupProfileScreenTopBar(
+    quitGroup: () -> Unit,
+) {
+    var menuExpanded by remember {
+        mutableStateOf(false)
+    }
+    TopAppBar(
+        modifier = Modifier
+            .fillMaxWidth()
+            .statusBarsPadding(),
+        backgroundColor = Color.Transparent,
+        contentColor = Color.Transparent,
+        elevation = 0.dp,
+        contentPadding = PaddingValues(
+            all = 0.dp
+        ),
+    ) {
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            val (menuIcon, menu) = createRefs()
+            Icon(
+                modifier = Modifier
+                    .constrainAs(ref = menuIcon) {
+                        end.linkTo(anchor = parent.end)
+                        top.linkTo(anchor = parent.top)
+                        bottom.linkTo(anchor = parent.bottom)
+                    }
+                    .padding(end = 12.dp)
+                    .size(size = 28.dp)
+                    .clickable {
+                        menuExpanded = true
+                    },
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = null,
+                tint = MaterialTheme.colors.surface
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize(align = Alignment.TopEnd)
+                    .padding(end = 20.dp)
+                    .constrainAs(ref = menu) {
+                        top.linkTo(anchor = menuIcon.bottom)
+                    }
+            ) {
+                DropdownMenu(
+                    modifier = Modifier.background(color = MaterialTheme.colors.background),
+                    expanded = menuExpanded,
+                    onDismissRequest = {
+                        menuExpanded = false
+                    }
+                ) {
+                    DropdownMenuItem(onClick = {
+                        menuExpanded = false
+                        quitGroup()
+                    }) {
+                        Text(text = "退出群聊", modifier = Modifier)
+                    }
+                }
+            }
+        }
     }
 }

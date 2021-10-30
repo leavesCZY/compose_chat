@@ -53,14 +53,19 @@ internal interface Converters {
         )
     }
 
-    fun convertGroupMember(memberFullInfo: V2TIMGroupMemberInfo): GroupMemberProfile {
+    fun convertGroupMember(
+        memberFullInfo: V2TIMGroupMemberInfo
+    ): GroupMemberProfile {
+        val fullInfo = memberFullInfo as? V2TIMGroupMemberFullInfo
+        val role = fullInfo?.role ?: -11111
         return GroupMemberProfile(
             userId = memberFullInfo.userID ?: "",
             faceUrl = memberFullInfo.faceUrl ?: "",
             nickname = memberFullInfo.nickName ?: "",
             remark = memberFullInfo.friendRemark ?: "",
             signature = "",
-            role = convertRole((memberFullInfo as? V2TIMGroupMemberFullInfo)?.role ?: -11111),
+            role = convertRole(role),
+            isOwner = role == V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_OWNER,
             joinTime = (memberFullInfo as? V2TIMGroupMemberFullInfo)?.joinTime ?: 0,
         )
     }

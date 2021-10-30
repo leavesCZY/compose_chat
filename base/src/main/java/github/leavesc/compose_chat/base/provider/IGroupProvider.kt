@@ -19,6 +19,8 @@ interface IGroupProvider {
 
     suspend fun joinGroup(groupId: String): ActionResult
 
+    suspend fun quitGroup(groupId: String): ActionResult
+
     suspend fun getGroupInfo(groupId: String): GroupProfile?
 
     suspend fun getGroupMemberList(groupId: String): List<GroupMemberProfile>

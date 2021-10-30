@@ -63,6 +63,7 @@ data class GroupMemberProfile(
     override val remark: String,
     override val signature: String,
     val role: String,
+    val isOwner: Boolean,
     val joinTime: Long
 ) : BaseProfile(
     userId = userId,

@@ -22,10 +22,41 @@ class GroupProvider : IGroupProvider, Converters {
 
     override val joinedGroupList = MutableStateFlow<List<GroupProfile>>(emptyList())
 
+    init {
+        V2TIMManager.getInstance().addGroupListener(object : V2TIMGroupListener() {
+            override fun onMemberEnter(
+                groupID: String,
+                memberList: MutableList<V2TIMGroupMemberInfo>
+            ) {
+                getJoinedGroupList()
+            }
+
+            override fun onQuitFromGroup(groupID: String) {
+                getJoinedGroupList()
+            }
+        })
+    }
+
     override suspend fun joinGroup(groupId: String): ActionResult {
         return withContext(Dispatchers.Main) {
             suspendCancellableCoroutine { continuation ->
                 V2TIMManager.getInstance().joinGroup(groupId, "", object : V2TIMCallback {
+                    override fun onSuccess() {
+                        continuation.resume(ActionResult.Success)
+                    }
+
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(ActionResult.Failed(code = code, reason = desc ?: ""))
+                    }
+                })
+            }
+        }
+    }
+
+    override suspend fun quitGroup(groupId: String): ActionResult {
+        return withContext(Dispatchers.Main) {
+            suspendCancellableCoroutine { continuation ->
+                V2TIMManager.getInstance().quitGroup(groupId, object : V2TIMCallback {
                     override fun onSuccess() {
                         continuation.resume(ActionResult.Success)
                     }
@@ -106,7 +137,7 @@ class GroupProvider : IGroupProvider, Converters {
                     break
                 }
             }
-            memberList
+            memberList.sortedBy { it.joinTime }
         }
     }
 

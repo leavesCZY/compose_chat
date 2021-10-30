@@ -2,6 +2,7 @@ package github.leavesc.compose_chat.logic
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.model.GroupProfileScreenState
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +42,10 @@ class GroupProfileViewModel(private val groupId: String) : ViewModel() {
             val memberList = ComposeChat.groupProvider.getGroupMemberList(groupId = groupId)
             groupProfileScreenState.emit(value = groupProfileScreenState.value.copy(memberList = memberList))
         }
+    }
+
+    suspend fun quitGroup(): ActionResult {
+        return ComposeChat.groupProvider.quitGroup(groupId = groupId)
     }
 
 }
