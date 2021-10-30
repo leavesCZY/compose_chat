@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
  */
 @Preview(showBackground = true)
 @Composable
-private fun EmojiTablePreview() {
+private fun PreviewEmojiTable() {
     UserInputSelector(currentInputSelector = InputSelector.EMOJI,
         onInputSelectorChange = {
 
@@ -46,8 +46,7 @@ fun UserInputSelector(
 ) {
     Row(
         modifier = modifier
-            .wrapContentHeight()
-            .height(height = 56.dp),
+            .wrapContentHeight(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         InputSelectorButton(
@@ -75,8 +74,7 @@ fun UserInputSelector(
         )
         Button(
             modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .height(height = 36.dp),
+                .padding(horizontal = 8.dp, vertical = 4.dp),
             enabled = sendMessageEnabled,
             onClick = onMessageSent,
             colors = buttonColors,

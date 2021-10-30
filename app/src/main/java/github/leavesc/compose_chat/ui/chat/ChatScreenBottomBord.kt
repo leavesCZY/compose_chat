@@ -22,8 +22,6 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.derivedWindowInsetsTypeOf
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 /**
@@ -133,6 +131,7 @@ fun ChatScreenBottomBord(
         applyEnd = true,
         applyBottom = true
     )
+
     var navigationBarsWithImeHeight by remember {
         mutableStateOf(0.dp)
     }
@@ -143,26 +142,19 @@ fun ChatScreenBottomBord(
         launch {
             snapshotFlow {
                 navigationBarsWithImePadding.calculateBottomPadding()
-            }.filter {
-                bottomTableMinHeight =
-                    if (currentInputSelector != InputSelector.NONE || ime.isVisible) {
-                        max(navigationBarsWithImeHeight, it)
-                    } else {
-                        0.dp
-                    }
-                it > navigationBarsWithImeHeight
             }.collect {
-                navigationBarsWithImeHeight = it
-            }
-        }
+                navigationBarsWithImeHeight = max(navigationBarsWithImeHeight, it)
 
-        launch {
-            snapshotFlow {
-                ime.isVisible
-            }.distinctUntilChanged().collect {
-                if (it && currentInputSelector != InputSelector.NONE) {
+                if (ime.isVisible && currentInputSelector != InputSelector.NONE) {
                     currentInputSelector = InputSelector.NONE
                 }
+
+                bottomTableMinHeight =
+                    if (currentInputSelector != InputSelector.NONE || ime.isVisible) {
+                        navigationBarsWithImeHeight
+                    } else {
+                        it
+                    }
             }
         }
     }
