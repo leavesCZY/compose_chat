@@ -18,14 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.atMost
 import github.leavesc.compose_chat.base.model.*
-import github.leavesc.compose_chat.ui.theme.friendMsgBgColor
-import github.leavesc.compose_chat.ui.theme.selfMsgBgColor
-import github.leavesc.compose_chat.ui.theme.textMessageColor
+import github.leavesc.compose_chat.ui.theme.textMessageBgColor
 import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
 
 /**
@@ -56,7 +60,8 @@ private val timeMessageMock = TimeMessage(targetMessage = friendTextMessageMock)
 private fun PreviewFriendTextMessageItem() {
     FriendTextMessageItem(
         textMessage = friendTextMessageMock,
-        onClickFriendAvatar = {
+        showSenderName = true,
+        onClickAvatar = {
 
         },
         onLongPressMessage = {
@@ -70,7 +75,7 @@ private fun PreviewFriendTextMessageItem() {
 private fun PreviewSelfTextMessageItem() {
     SelfTextMessageItem(
         textMessage = selfTextMessageMock,
-        onClickSelfAvatar = {
+        onClickAvatar = {
 
         },
         onLongPressMessage = {
@@ -91,114 +96,136 @@ private fun PreviewMessageStateItem() {
     MessageStateItem(modifier = Modifier, messageState = MessageState.Sending)
 }
 
-private val avatarSize = 44.dp
-private val itemPaddingTop = 6.dp
-private val itemPaddingBottom = 6.dp
-private val itemPaddingStart = 14.dp
-private val messageStartPadding = 10.dp
-private val messageTopPadding = avatarSize * 0.3f
-private val messageEndPadding = 10.dp
-private val messageInnerPadding = 6.dp
-private val messageShape = RoundedCornerShape(size = 6.dp)
-private const val messageWidthWeight = 3.5f
-private const val messageStateWidthWeight = 1f
-
 @Composable
-fun SelfTextMessageItem(
-    textMessage: TextMessage,
+fun MessageItems(
+    message: Message,
+    showSenderName: Boolean,
     onClickSelfAvatar: (Message) -> Unit,
-    onLongPressMessage: (Message) -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = itemPaddingStart, top = itemPaddingTop, bottom = itemPaddingBottom),
-        horizontalArrangement = Arrangement.End,
-    ) {
-        Box(
-            modifier = Modifier
-                .weight(weight = messageStateWidthWeight, fill = true)
-                .padding(
-                    top = messageTopPadding,
-                )
-                .align(alignment = Alignment.CenterVertically),
-            contentAlignment = Alignment.CenterEnd
-        ) {
-            MessageStateItem(
-                modifier = Modifier,
-                messageState = textMessage.state,
-            )
-        }
-        Text(
-            modifier = Modifier
-                .weight(weight = messageWidthWeight, fill = false)
-                .padding(
-                    start = messageStartPadding,
-                    top = messageTopPadding,
-                    end = messageEndPadding
-                )
-                .clip(shape = messageShape)
-                .background(color = selfMsgBgColor)
-                .combinedClickable(
-                    onClick = {
-
-                    },
-                    onLongClick = {
-                        onLongPressMessage(textMessage)
-                    }
-                )
-                .padding(
-                    start = messageInnerPadding,
-                    top = messageInnerPadding,
-                    end = messageInnerPadding,
-                    bottom = messageInnerPadding
-                ),
-            text = textMessage.msg,
-            style = MaterialTheme.typography.body1,
-            color = textMessageColor,
-            letterSpacing = 2.sp,
-            textAlign = TextAlign.Left,
-        )
-        CoilCircleImage(
-            data = textMessage.sender.faceUrl,
-            modifier = Modifier
-                .size(size = avatarSize)
-                .clickable(onClick = {
-                    onClickSelfAvatar(textMessage)
-                })
-        )
-    }
-}
-
-@Composable
-fun FriendTextMessageItem(
-    textMessage: TextMessage,
     onClickFriendAvatar: (Message) -> Unit,
     onLongPressMessage: (Message) -> Unit,
 ) {
-    Row(
+    val unit = when (message) {
+        is TextMessage -> {
+            when (message) {
+                is TextMessage.SelfTextMessage -> {
+                    SelfTextMessageItem(
+                        textMessage = message,
+                        onClickAvatar = onClickSelfAvatar,
+                        onLongPressMessage = onLongPressMessage,
+                    )
+                }
+                is TextMessage.FriendTextMessage -> {
+                    FriendTextMessageItem(
+                        textMessage = message,
+                        showSenderName = showSenderName,
+                        onClickAvatar = onClickFriendAvatar,
+                        onLongPressMessage = onLongPressMessage,
+                    )
+                }
+            }
+        }
+        is TimeMessage -> {
+            TimeMessageItem(timeMessage = message)
+        }
+    }
+}
+
+private val avatarSize = 44.dp
+private val itemHorizontalPadding = 12.dp
+private val itemVerticalPadding = 10.dp
+
+private val textMessageWidthAtMost = 230.dp
+private val textMessageSenderNameVerticalPadding = 3.dp
+private val textMessageHorizontalPadding = 6.dp
+private val textMessageInnerHorizontalPadding = 4.dp
+private val textMessageInnerVerticalPadding = 4.dp
+private val textMessageShape = RoundedCornerShape(size = 6.dp)
+private val timeMessageShape = RoundedCornerShape(size = 4.dp)
+
+private val messageBgColor = Color.Unspecified
+
+@Composable
+private fun textMessageStyle(): TextStyle {
+    return TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 17.sp,
+        color = Color.White,
+        letterSpacing = 1.sp,
+        lineHeight = 22.sp
+    )
+}
+
+@Composable
+private fun timeMessageStyle(): TextStyle {
+    return TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        color = Color.White
+    )
+}
+
+@Composable
+private fun messageSenderNameStyle(): TextStyle {
+    return MaterialTheme.typography.body1.copy(fontSize = 12.sp)
+}
+
+@Composable
+private fun SelfTextMessageItem(
+    textMessage: TextMessage,
+    onClickAvatar: (Message) -> Unit,
+    onLongPressMessage: (Message) -> Unit,
+) {
+    ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = itemPaddingStart, top = itemPaddingTop, bottom = itemPaddingBottom)
+            .padding(
+                horizontal = itemHorizontalPadding,
+                vertical = itemVerticalPadding
+            )
+            .background(color = messageBgColor)
     ) {
+        val (avatarRefs, showName, message, messageState) = createRefs()
         CoilCircleImage(
             data = textMessage.sender.faceUrl,
             modifier = Modifier
-                .size(size = avatarSize)
-                .clickable {
-                    onClickFriendAvatar(textMessage)
+                .constrainAs(ref = avatarRefs) {
+                    top.linkTo(anchor = parent.top)
+                    end.linkTo(anchor = parent.end)
                 }
+                .size(size = avatarSize)
+                .clickable(onClick = {
+                    onClickAvatar(textMessage)
+                })
         )
         Text(
             modifier = Modifier
-                .weight(weight = messageWidthWeight, fill = false)
-                .padding(
-                    start = messageStartPadding,
-                    top = messageTopPadding,
-                    end = messageEndPadding
-                )
-                .clip(shape = messageShape)
-                .background(color = friendMsgBgColor)
+                .constrainAs(ref = showName) {
+                    top.linkTo(
+                        anchor = avatarRefs.top
+                    )
+                    end.linkTo(
+                        anchor = avatarRefs.start,
+                        margin = textMessageHorizontalPadding
+                    )
+                },
+            text = "",
+            style = messageSenderNameStyle(),
+            textAlign = TextAlign.End,
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(ref = message) {
+                    top.linkTo(
+                        anchor = showName.bottom,
+                        margin = textMessageSenderNameVerticalPadding
+                    )
+                    end.linkTo(anchor = showName.end)
+                    width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
+                }
+                .clip(shape = textMessageShape)
+                .background(color = textMessageBgColor)
                 .combinedClickable(
                     onClick = {
 
@@ -208,55 +235,127 @@ fun FriendTextMessageItem(
                     }
                 )
                 .padding(
-                    start = messageInnerPadding,
-                    top = messageInnerPadding,
-                    end = messageInnerPadding,
-                    bottom = messageInnerPadding
+                    horizontal = textMessageInnerHorizontalPadding,
+                    vertical = textMessageInnerVerticalPadding
                 ),
             text = textMessage.msg,
-            style = MaterialTheme.typography.body1,
-            color = textMessageColor,
-            letterSpacing = 2.sp,
-            textAlign = TextAlign.Left,
+            style = textMessageStyle(),
+            textAlign = TextAlign.Start,
         )
-        Box(
-            modifier = Modifier
-                .weight(weight = messageStateWidthWeight, fill = true)
-                .padding(
-                    top = messageTopPadding,
-                )
-                .align(alignment = Alignment.CenterVertically)
-        ) {
-            MessageStateItem(
-                modifier = Modifier,
-                messageState = textMessage.state,
-            )
-        }
+        MessageStateItem(
+            modifier = Modifier.constrainAs(ref = messageState) {
+                top.linkTo(anchor = message.top)
+                bottom.linkTo(anchor = message.bottom)
+                end.linkTo(anchor = message.start, margin = textMessageHorizontalPadding)
+            },
+            messageState = textMessage.state,
+        )
     }
 }
 
 @Composable
-fun TimeMessageItem(timeMessage: TimeMessage) {
-    Box(
+private fun FriendTextMessageItem(
+    textMessage: TextMessage,
+    showSenderName: Boolean,
+    onClickAvatar: (Message) -> Unit,
+    onLongPressMessage: (Message) -> Unit,
+) {
+    ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp),
-        contentAlignment = Alignment.TopCenter
+            .padding(
+                horizontal = itemHorizontalPadding,
+                vertical = itemVerticalPadding
+            )
+            .background(color = messageBgColor)
     ) {
-        Text(
-            text = timeMessage.chatTime,
-            style = MaterialTheme.typography.subtitle2,
-            color = textMessageColor,
+        val (avatarRefs, showName, message, messageState) = createRefs()
+        CoilCircleImage(
+            data = textMessage.sender.faceUrl,
             modifier = Modifier
-                .clip(shape = RoundedCornerShape(size = 3.dp))
-                .background(Color.Gray.copy(alpha = 0.4f))
-                .padding(all = 4.dp)
+                .constrainAs(ref = avatarRefs) {
+                    top.linkTo(anchor = parent.top)
+                    start.linkTo(anchor = parent.start)
+                }
+                .size(size = avatarSize)
+                .clickable(onClick = {
+                    onClickAvatar(textMessage)
+                })
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(ref = showName) {
+                    top.linkTo(
+                        anchor = avatarRefs.top
+                    )
+                    start.linkTo(
+                        anchor = avatarRefs.end,
+                        margin = textMessageHorizontalPadding
+                    )
+                },
+            text = if (showSenderName) {
+                textMessage.sender.showName
+            } else {
+                ""
+            },
+            style = messageSenderNameStyle(),
+            textAlign = TextAlign.Start,
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(ref = message) {
+                    top.linkTo(
+                        anchor = showName.bottom,
+                        margin = textMessageSenderNameVerticalPadding
+                    )
+                    start.linkTo(anchor = showName.start)
+                    width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
+                }
+                .clip(shape = textMessageShape)
+                .background(color = textMessageBgColor)
+                .combinedClickable(
+                    onClick = {
+
+                    },
+                    onLongClick = {
+                        onLongPressMessage(textMessage)
+                    }
+                )
+                .padding(
+                    horizontal = textMessageInnerHorizontalPadding,
+                    vertical = textMessageInnerVerticalPadding
+                ),
+            text = textMessage.msg,
+            style = textMessageStyle(),
+            textAlign = TextAlign.Start,
+        )
+        MessageStateItem(
+            modifier = Modifier.constrainAs(ref = messageState) {
+                top.linkTo(anchor = message.top)
+                bottom.linkTo(anchor = message.bottom)
+                start.linkTo(anchor = message.end, margin = textMessageHorizontalPadding)
+            },
+            messageState = textMessage.state,
         )
     }
 }
 
 @Composable
-fun MessageStateItem(modifier: Modifier, messageState: MessageState) {
+private fun TimeMessageItem(timeMessage: TimeMessage) {
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp, bottom = 20.dp)
+            .wrapContentWidth(align = Alignment.CenterHorizontally)
+            .background(color = Color.DarkGray.copy(alpha = 0.3f), shape = timeMessageShape)
+            .padding(all = 4.dp),
+        text = timeMessage.time,
+        style = timeMessageStyle()
+    )
+}
+
+@Composable
+private fun MessageStateItem(modifier: Modifier, messageState: MessageState) {
     val unit = when (messageState) {
         MessageState.Completed -> {
             return

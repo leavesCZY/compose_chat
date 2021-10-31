@@ -93,7 +93,8 @@ fun ChatScreen(
             navController = navController,
             listState = listState,
             contentPadding = contentPadding,
-            chatScreenState = chatScreenState
+            chatScreenState = chatScreenState,
+            showSenderName = chat is Chat.Group
         )
     }
 }

@@ -8,35 +8,39 @@ import github.leavesc.compose_chat.cache.AppThemeCache
 import github.leavesc.compose_chat.model.AppTheme
 
 private val LightColorPalette = lightColors(
-    background = BackgroundColorLight,
     primary = PrimaryColorLight,
     primaryVariant = PrimaryVariantColorLight,
-    surface = SurfaceColorLight,
     secondary = SecondaryColorLight,
+    secondaryVariant = SecondaryVariantColorLight,
+    background = BackgroundColorLight,
+    surface = SurfaceColorLight,
 )
 
 private val DarkColorPalette = darkColors(
-    background = BackgroundColorDark,
     primary = PrimaryColorDark,
     primaryVariant = PrimaryVariantColorDark,
-    surface = SurfaceColorDark,
     secondary = SecondaryColorDark,
+    secondaryVariant = SecondaryVariantColorDark,
+    background = BackgroundColorDark,
+    surface = SurfaceColorDark,
 )
 
 private val BlueColorPalette = lightColors(
-    background = BackgroundColorBlue,
     primary = PrimaryColorBlue,
     primaryVariant = PrimaryVariantColorBlue,
-    surface = SurfaceColorBlue,
     secondary = SecondaryColorBlue,
+    secondaryVariant = SecondaryVariantColorBlue,
+    background = BackgroundColorBlue,
+    surface = SurfaceColorBlue,
 )
 
 private val PinkColorPalette = lightColors(
-    background = BackgroundColorPink,
     primary = PrimaryColorPink,
     primaryVariant = PrimaryVariantColorPink,
-    surface = SurfaceColorPink,
     secondary = SecondaryColorPink,
+    secondaryVariant = SecondaryVariantColorPink,
+    background = BackgroundColorPink,
+    surface = SurfaceColorPink,
 )
 
 @Composable

@@ -125,7 +125,7 @@ fun HomeScreenTopBar(
                         menuExpanded = false
                         onJoinGroup()
                     }) {
-                        Text(text = "加入交流群", modifier = Modifier)
+                        Text(text = "加入群聊", modifier = Modifier)
                     }
                 }
             }

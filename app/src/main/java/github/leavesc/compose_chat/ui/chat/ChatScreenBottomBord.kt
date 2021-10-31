@@ -141,13 +141,18 @@ fun ChatScreenBottomBord(
     LaunchedEffect(key1 = ime, key2 = navBars) {
         launch {
             snapshotFlow {
+                ime.isVisible
+            }.collect {
+                if (it && currentInputSelector != InputSelector.NONE) {
+                    currentInputSelector = InputSelector.NONE
+                }
+            }
+        }
+        launch {
+            snapshotFlow {
                 navigationBarsWithImePadding.calculateBottomPadding()
             }.collect {
                 navigationBarsWithImeHeight = max(navigationBarsWithImeHeight, it)
-
-                if (ime.isVisible && currentInputSelector != InputSelector.NONE) {
-                    currentInputSelector = InputSelector.NONE
-                }
 
                 bottomTableMinHeight =
                     if (currentInputSelector != InputSelector.NONE || ime.isVisible) {

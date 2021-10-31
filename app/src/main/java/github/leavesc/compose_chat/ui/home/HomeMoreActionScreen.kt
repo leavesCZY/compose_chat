@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.imePadding
 import github.leavesc.compose_chat.logic.ComposeChat
 import github.leavesc.compose_chat.ui.weigets.CommonButton
+import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
 import kotlinx.coroutines.launch
 
 /**
@@ -106,7 +107,7 @@ private fun InputItem(
     buttonText: String,
     onConfirm: (String) -> Unit,
 ) {
-    OutlinedTextField(
+    CommonOutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
@@ -114,14 +115,9 @@ private fun InputItem(
                 horizontal = 20.dp,
                 vertical = 20.dp
             ),
-        label = {
-            Text(text = label)
-        },
-        textStyle = MaterialTheme.typography.subtitle1,
-        singleLine = true,
-        maxLines = 1,
         value = value,
         onValueChange = onValueChange,
+        label = label
     )
     CommonButton(text = buttonText) {
         onConfirm(value)

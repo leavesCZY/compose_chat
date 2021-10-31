@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.Button
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,7 +22,9 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CommonDivider(modifier: Modifier = Modifier) {
     Divider(
-        modifier = modifier, thickness = 0.6.dp,
+        modifier = modifier,
+        thickness = 1.dp,
+        color = MaterialTheme.colors.secondary,
     )
 }
 
@@ -45,6 +44,28 @@ fun CommonButton(
             text = text
         )
     }
+}
+
+@Composable
+fun CommonOutlinedTextField(
+    modifier: Modifier,
+    value: String,
+    label: String,
+    onValueChange: (String) -> Unit,
+) {
+    OutlinedTextField(
+        modifier = modifier,
+        value = value,
+        onValueChange = onValueChange,
+        maxLines = 4,
+        label = {
+            Text(text = label)
+        },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = MaterialTheme.colors.primary,
+            unfocusedBorderColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.disabled)
+        )
+    )
 }
 
 @Composable

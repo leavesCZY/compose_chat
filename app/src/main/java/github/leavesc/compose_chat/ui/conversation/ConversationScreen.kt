@@ -71,7 +71,7 @@ private fun ConversationItem(
     onDeleteConversation: (Conversation) -> Unit,
     onConversationPinnedChanged: (Conversation, Boolean) -> Unit
 ) {
-    val padding = 12.dp
+    val padding = 10.dp
     var menuExpanded by remember {
         mutableStateOf(false)
     }
@@ -146,11 +146,11 @@ private fun ConversationItem(
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             modifier = Modifier
-                .padding(start = padding, top = padding / 3)
+                .padding(start = padding)
                 .constrainAs(ref = time) {
-                    top.linkTo(anchor = nickname.top)
-                    bottom.linkTo(anchor = nickname.bottom)
+                    centerVerticallyTo(other = nickname)
                     end.linkTo(anchor = parent.end, margin = padding)
+                    height = Dimension.wrapContent
                 }
         )
         Text(

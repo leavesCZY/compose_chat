@@ -29,14 +29,14 @@ sealed class Message(
         TimeUtil.toConversationTime(timestamp)
     }
 
-    val chatTime by lazy {
+    val time by lazy {
         TimeUtil.toChatTime(timestamp)
     }
 
     var tag: Any? = null
 
     override fun toString(): String {
-        return "Message(msgId='$msgId', timestamp=$timestamp, state=$state, sender=$sender, conversationTime='$conversationTime', chatTime='$chatTime', tag=$tag)"
+        return "Message(msgId='$msgId', timestamp=$timestamp, state=$state, sender=$sender, conversationTime='$conversationTime', chatTime='$time', tag=$tag)"
     }
 
 }

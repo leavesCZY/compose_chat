@@ -42,7 +42,7 @@ class HomeActivity : ComponentActivity() {
             val homeViewModel = viewModel<HomeViewModel>()
             val appTheme by homeViewModel.appTheme.collectAsState()
             ChatTheme(appTheme = appTheme) {
-                SetSystemBarsColor()
+                SetSystemBarsColor(isLightTheme = appTheme == AppTheme.Light)
                 NavigationView(appTheme = appTheme) {
                     homeViewModel.switchToNextTheme()
                 }

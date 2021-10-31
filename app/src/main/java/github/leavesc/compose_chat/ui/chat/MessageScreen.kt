@@ -11,9 +11,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import github.leavesc.compose_chat.base.model.Message
 import github.leavesc.compose_chat.base.model.TextMessage
-import github.leavesc.compose_chat.base.model.TimeMessage
 import github.leavesc.compose_chat.model.ChatScreenState
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.utils.showToast
@@ -29,7 +27,8 @@ fun MessageScreen(
     navController: NavController,
     listState: LazyListState,
     contentPadding: PaddingValues,
-    chatScreenState: ChatScreenState
+    chatScreenState: ChatScreenState,
+    showSenderName: Boolean,
 ) {
     val clipboardManager = LocalClipboardManager.current
     LazyColumn(
@@ -42,8 +41,9 @@ fun MessageScreen(
     ) {
         for (message in chatScreenState.messageList) {
             item(key = message.msgId) {
-                MessageItem(
+                MessageItems(
                     message = message,
+                    showSenderName = showSenderName,
                     onClickSelfAvatar = {
                         val messageSenderId = (it as? TextMessage)?.sender?.userId
                         if (!messageSenderId.isNullOrBlank()) {
@@ -74,38 +74,6 @@ fun MessageScreen(
             item {
                 LoadMoreMessageItem()
             }
-        }
-    }
-}
-
-@Composable
-private fun MessageItem(
-    message: Message,
-    onClickSelfAvatar: (Message) -> Unit,
-    onClickFriendAvatar: (Message) -> Unit,
-    onLongPressMessage: (Message) -> Unit,
-) {
-    val unit = when (message) {
-        is TextMessage -> {
-            when (message) {
-                is TextMessage.SelfTextMessage -> {
-                    SelfTextMessageItem(
-                        textMessage = message,
-                        onClickSelfAvatar = onClickSelfAvatar,
-                        onLongPressMessage = onLongPressMessage,
-                    )
-                }
-                is TextMessage.FriendTextMessage -> {
-                    FriendTextMessageItem(
-                        textMessage = message,
-                        onClickFriendAvatar = onClickFriendAvatar,
-                        onLongPressMessage = onLongPressMessage,
-                    )
-                }
-            }
-        }
-        is TimeMessage -> {
-            TimeMessageItem(timeMessage = message)
         }
     }
 }

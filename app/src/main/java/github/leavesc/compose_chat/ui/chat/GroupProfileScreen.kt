@@ -60,10 +60,7 @@ fun GroupProfileScreen(
                     }
                 }
             }
-            LazyColumn(
-                modifier = Modifier,
-                contentPadding = PaddingValues(bottom = 60.dp)
-            ) {
+            LazyColumn {
                 item(key = true) {
                     ProfileScreen(groupProfile = groupProfileScreenState.groupProfile)
                 }
@@ -72,6 +69,9 @@ fun GroupProfileScreen(
                     item(key = it.userId) {
                         GroupMemberItem(groupMemberProfile = it, onClickMember = onClickMember)
                     }
+                }
+                item {
+                    Spacer(modifier = Modifier.height(40.dp))
                 }
             }
             GroupProfileScreenTopBar(quitGroup = {

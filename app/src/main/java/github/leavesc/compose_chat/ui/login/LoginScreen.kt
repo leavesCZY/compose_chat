@@ -20,6 +20,7 @@ import github.leavesc.compose_chat.extend.navigateWithBack
 import github.leavesc.compose_chat.logic.LoginViewModel
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.weigets.CommonButton
+import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -78,14 +79,14 @@ fun LoginScreen(navController: NavHostController) {
                             .fillMaxHeight(fraction = 0.35f)
                             .wrapContentSize(align = Alignment.Center),
                         style = MaterialTheme.typography.subtitle1,
-                        fontSize = 30.sp,
+                        fontSize = 34.sp,
                         fontFamily = FontFamily.Serif,
                         textAlign = TextAlign.Center,
                     )
                 }
                 if (loginScreenState.showInput) {
                     var userId by remember { mutableStateOf(loginScreenState.lastLoginUserId) }
-                    OutlinedTextField(
+                    CommonOutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 40.dp, end = 40.dp),
@@ -96,12 +97,7 @@ fun LoginScreen(navController: NavHostController) {
                                 userId = realValue
                             }
                         },
-                        label = {
-                            Text(text = "UserId")
-                        },
-                        singleLine = true,
-                        maxLines = 1,
-                        textStyle = MaterialTheme.typography.subtitle1,
+                        label = "UserId",
                     )
                     CommonButton(
                         modifier = Modifier

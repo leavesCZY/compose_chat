@@ -18,6 +18,7 @@ import github.leavesc.compose_chat.logic.FriendProfileViewModel
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
 import github.leavesc.compose_chat.ui.weigets.CommonButton
+import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
 import kotlinx.coroutines.launch
 
 /**
@@ -190,7 +191,7 @@ private fun SetFriendRemarkScreen(
                 text = "Set Remark",
                 style = MaterialTheme.typography.subtitle1,
             )
-            OutlinedTextField(
+            CommonOutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
@@ -198,16 +199,11 @@ private fun SetFriendRemarkScreen(
                         horizontal = 20.dp,
                         vertical = 10.dp
                     ),
-                label = {
-                    Text(text = "设置好友备注")
-                },
-                textStyle = MaterialTheme.typography.subtitle1,
-                singleLine = true,
-                maxLines = 1,
                 value = remark,
                 onValueChange = {
                     remark = it
                 },
+                label = "设置好友备注",
             )
             CommonButton(text = "设置备注") {
                 onSetRemark(friendProfile.userId, remark)
