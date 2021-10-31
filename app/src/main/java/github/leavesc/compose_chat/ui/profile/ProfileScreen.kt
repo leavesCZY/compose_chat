@@ -96,7 +96,6 @@ private fun ProfileScreen(
     ConstraintLayout(
         modifier = Modifier
             .background(color = MaterialTheme.colors.background)
-            .zIndex(zIndex = 1f)
     ) {
         val animateValue by rememberInfiniteTransition().animateFloat(
             initialValue = 0f, targetValue = 1f,
@@ -137,11 +136,11 @@ private fun ProfileScreen(
                 }
                 .fillMaxWidth()
                 .aspectRatio(ratio = 5f / 4f)
+                .zIndex(zIndex = -100f)
                 .scale(scale = (animateValue + 1f) * 1.1f)
                 .clip(shape = BezierShape(animateValue = animateValue))
                 .rotate(degrees = animateValue * 10f)
-                .scrim(colors = listOf(Color(color = 0xBCB6BCC0), Color(color = 0xF7F5F5)))
-                .zIndex(zIndex = -100f),
+                .scrim(colors = listOf(Color(color = 0x4DB6BCC0), Color(color = 0x41F7F5F5))),
             data = avatarUrl
         )
         OutlinedAvatar(
