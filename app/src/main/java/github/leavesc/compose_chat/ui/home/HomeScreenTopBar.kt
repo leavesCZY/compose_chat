@@ -119,13 +119,13 @@ fun HomeScreenTopBar(
                         menuExpanded = false
                         onAddFriend()
                     }) {
-                        Text(text = "添加好友", modifier = Modifier)
+                        Text(text = "添加好友")
                     }
                     DropdownMenuItem(onClick = {
                         menuExpanded = false
                         onJoinGroup()
                     }) {
-                        Text(text = "加入群聊", modifier = Modifier)
+                        Text(text = "加入群聊")
                     }
                 }
             }

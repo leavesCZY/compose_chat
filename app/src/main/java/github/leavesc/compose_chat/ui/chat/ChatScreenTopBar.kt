@@ -63,8 +63,8 @@ fun ChatScreenTopBar(
                         if (onClickBackMenu != null) {
                             onClickBackMenu.invoke()
                         } else {
-                            if (ime.isVisible) {
-                                textInputService?.hideSoftwareKeyboard()
+                            if (ime.isVisible && textInputService != null) {
+                                textInputService.hideSoftwareKeyboard()
                             } else {
                                 navController.popBackStack()
                             }

@@ -151,8 +151,8 @@ class MessageProvider : IMessageProvider, Converters {
                     if (msg == null) {
                         channel.send(sendingMessage.copy(state = MessageState.SendFailed))
                     } else {
-                        //channel.send(msg)
-                        channel.send(sendingMessage.copy(state = MessageState.Completed))
+                        channel.send(msg)
+//                        channel.send(sendingMessage.copy(state = MessageState.Completed))
                     }
                     channel.close()
                 }

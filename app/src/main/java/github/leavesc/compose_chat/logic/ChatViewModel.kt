@@ -31,7 +31,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
 
     private val messageListener = object : IMessageProvider.MessageListener {
         override fun onReceiveMessage(message: Message) {
-            attachNewMessage(newMessage = message)
+            attachNewMessage(newMessage = message, mushScrollToBottom = false)
             markMessageAsRead()
         }
     }
@@ -127,7 +127,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                 when (message.state) {
                     MessageState.Sending -> {
                         sendingMessage = message
-                        attachNewMessage(newMessage = message)
+                        attachNewMessage(newMessage = message, mushScrollToBottom = true)
                     }
                     MessageState.Completed, MessageState.SendFailed -> {
                         val sending = sendingMessage ?: return@launch
@@ -135,7 +135,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                             allMessage.indexOfFirst { it.msgId == sending.msgId }
                         if (sendingMessageIndex > -1) {
                             allMessage[sendingMessageIndex] = message
-                            refreshViewState(mushScrollToBottom = true)
+                            refreshViewState()
                         }
                         if (message.state == MessageState.SendFailed) {
                             (message.tag as? String)?.let {
@@ -148,13 +148,13 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
         }
     }
 
-    private fun attachNewMessage(newMessage: Message) {
+    private fun attachNewMessage(newMessage: Message, mushScrollToBottom: Boolean) {
         val firstMessage = allMessage.getOrNull(0)
         if (firstMessage == null || newMessage.timestamp - firstMessage.timestamp > 60) {
             allMessage.add(0, TimeMessage(targetMessage = newMessage))
         }
         allMessage.add(0, newMessage)
-        refreshViewState()
+        refreshViewState(mushScrollToBottom = mushScrollToBottom)
     }
 
     private fun addMessageToFooter(
@@ -198,10 +198,6 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
             loadFinish = loadFinish,
             mushScrollToBottom = mushScrollToBottom
         )
-    }
-
-    fun alreadyScrollToBottom() {
-        refreshViewState()
     }
 
     private fun markMessageAsRead() {

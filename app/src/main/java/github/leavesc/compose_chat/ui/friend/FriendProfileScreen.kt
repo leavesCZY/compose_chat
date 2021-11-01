@@ -185,7 +185,7 @@ private fun SetFriendRemarkScreen(
             }
         },
     ) {
-        Column(modifier = Modifier) {
+        Column {
             Text(
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
                 text = "Set Remark",

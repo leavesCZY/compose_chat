@@ -8,6 +8,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.base.model.Chat
 import github.leavesc.compose_chat.extend.viewModelInstance
@@ -15,7 +16,6 @@ import github.leavesc.compose_chat.logic.ChatViewModel
 import github.leavesc.compose_chat.model.Screen
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesC
@@ -36,24 +36,24 @@ fun ChatScreen(
     val screenTopBarTitle by chatViewModel.screenTopBarTitle.collectAsState()
     val chatScreenState by chatViewModel.chatScreenState.collectAsState()
 
-    if (chatScreenState.mushScrollToBottom) {
-        LaunchedEffect(key1 = chatScreenState.mushScrollToBottom) {
-            if (chatScreenState.mushScrollToBottom) {
-                listState.animateScrollToItem(index = 0)
-                chatViewModel.alreadyScrollToBottom()
-            }
+    val ime = LocalWindowInsets.current.ime
+    LaunchedEffect(key1 = chatScreenState) {
+        snapshotFlow {
+            chatScreenState.mushScrollToBottom || ime.isVisible
+        }.filter {
+            it
+        }.collect {
+            listState.scrollToItem(index = 0, scrollOffset = 0)
         }
     }
 
-    LaunchedEffect(listState) {
-        launch {
-            snapshotFlow {
-                listState.firstVisibleItemIndex
-            }.filter {
-                !chatScreenState.loadFinish
-            }.collect {
-                chatViewModel.loadMoreMessage()
-            }
+    LaunchedEffect(key1 = listState) {
+        snapshotFlow {
+            listState.firstVisibleItemIndex
+        }.filter {
+            !chatScreenState.loadFinish
+        }.collect {
+            chatViewModel.loadMoreMessage()
         }
     }
 
