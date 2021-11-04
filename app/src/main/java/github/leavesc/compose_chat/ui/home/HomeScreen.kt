@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.google.accompanist.insets.imePadding
 import com.google.accompanist.insets.navigationBarsPadding
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.Conversation
@@ -31,6 +30,7 @@ import github.leavesc.compose_chat.ui.friend.FriendshipScreen
 import github.leavesc.compose_chat.ui.person.PersonProfileScreen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
 import github.leavesc.compose_chat.utils.showToast
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -97,12 +97,12 @@ fun HomeScreen(
     }
 
     fun sheetContentAnimateTo(targetValue: ModalBottomSheetValue) {
-        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.Main) {
             sheetState.animateTo(targetValue = targetValue)
         }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = Unit) {
         launch {
             homeViewModel.serverConnectState.collect {
                 when (it) {
@@ -136,17 +136,17 @@ fun HomeScreen(
                 toAddFriend = {
                     homeViewModel.addFriend(userId = it)
                 }, toJoinGroup = {
-                    coroutineScope.launch {
+                    coroutineScope.launch(Dispatchers.Main) {
                         when (val result = homeViewModel.joinGroup(groupId = it)) {
                             is ActionResult.Success -> {
                                 showToast("加入成功")
-                                navController.navToGroupChatScreen(groupId = it)
                                 sheetState.hide()
+                                navController.navToGroupChatScreen(groupId = it)
                             }
                             is ActionResult.Failed -> {
                                 if (result.code == 10013) {
-                                    navController.navToGroupChatScreen(groupId = it)
                                     sheetState.hide()
+                                    navController.navToGroupChatScreen(groupId = it)
                                 } else {
                                     showToast(result.reason)
                                 }
@@ -158,21 +158,11 @@ fun HomeScreen(
     ) {
         Scaffold(
             scaffoldState = scaffoldState,
-            snackbarHost = {
-                SnackbarHost(it) { data ->
-                    Snackbar(
-                        modifier = Modifier.imePadding(),
-                        backgroundColor = MaterialTheme.colors.primary,
-                        elevation = 0.dp,
-                        snackbarData = data,
-                    )
-                }
-            },
             topBar = {
                 HomeScreenTopBar(
                     screenSelected = homeScreenSelected,
                     openDrawer = {
-                        coroutineScope.launch {
+                        coroutineScope.launch(Dispatchers.Main) {
                             scaffoldState.drawerState.open()
                         }
                     },
@@ -258,7 +248,7 @@ fun HomeScreen(
                         },
                     )
                 }
-                HomeScreenTab.PersonProfile -> {
+                HomeScreenTab.Person -> {
                     PersonProfileScreen(
                         personProfile = personProfile
                     )

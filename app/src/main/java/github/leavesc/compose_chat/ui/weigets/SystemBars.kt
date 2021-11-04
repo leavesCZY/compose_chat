@@ -1,9 +1,14 @@
 package github.leavesc.compose_chat.ui.weigets
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.derivedWindowInsetsTypeOf
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 /**
@@ -30,4 +35,19 @@ fun SetSystemBarsColor(
         )
         systemUiController.systemBarsDarkContentEnabled = isLightTheme
     }
+}
+
+@Composable
+fun navigationBarsWithImePadding(): PaddingValues {
+    val ime = LocalWindowInsets.current.ime
+    val navBars = LocalWindowInsets.current.navigationBars
+    val insets = remember(key1 = ime, key2 = navBars) {
+        derivedWindowInsetsTypeOf(ime, navBars)
+    }
+    return rememberInsetsPaddingValues(
+        insets = insets,
+        applyStart = true,
+        applyEnd = true,
+        applyBottom = true
+    )
 }

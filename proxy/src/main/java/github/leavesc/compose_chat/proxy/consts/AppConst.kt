@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
  */
 internal object AppConst {
 
-    const val APP_ID = 1400553975
+    const val APP_ID = 1400592743
 
-    const val APP_SECRET_KEY = "36b54858b7422f77243c595d0dc07a7a72d60e224c833d9d02687493a1e38a40"
+    const val APP_SECRET_KEY = "9b9d7ea10c1d88a377e31b19320ed8780a12f55451a76461b3a87189ee7339e0"
 
     val personProfile = MutableStateFlow(PersonProfile.Empty)
 

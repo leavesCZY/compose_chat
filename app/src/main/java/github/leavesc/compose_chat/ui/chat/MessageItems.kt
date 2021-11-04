@@ -55,6 +55,7 @@ private val selfTextMessageMock = TextMessage.SelfTextMessage(
 
 private val timeMessageMock = TimeMessage(targetMessage = friendTextMessageMock)
 
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun PreviewFriendTextMessageItem() {
@@ -70,6 +71,7 @@ private fun PreviewFriendTextMessageItem() {
     )
 }
 
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun PreviewSelfTextMessageItem() {
@@ -84,12 +86,14 @@ private fun PreviewSelfTextMessageItem() {
     )
 }
 
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun PreviewTimeMessageItem() {
     TimeMessageItem(timeMessage = timeMessageMock)
 }
 
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun PreviewMessageStateItem() {
@@ -137,8 +141,8 @@ private val itemVerticalPadding = 10.dp
 private val textMessageWidthAtMost = 230.dp
 private val textMessageSenderNameVerticalPadding = 3.dp
 private val textMessageHorizontalPadding = 6.dp
-private val textMessageInnerHorizontalPadding = 4.dp
-private val textMessageInnerVerticalPadding = 4.dp
+private val textMessageInnerHorizontalPadding = 6.dp
+private val textMessageInnerVerticalPadding = 6.dp
 private val textMessageShape = RoundedCornerShape(size = 6.dp)
 private val timeMessageShape = RoundedCornerShape(size = 4.dp)
 
@@ -159,8 +163,8 @@ private fun textMessageStyle(): TextStyle {
 @Composable
 private fun timeMessageStyle(): TextStyle {
     return TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
+        fontFamily = FontFamily.Serif,
+        fontWeight = FontWeight.Bold,
         fontSize = 12.sp,
         color = Color.White
     )
@@ -347,7 +351,7 @@ private fun TimeMessageItem(timeMessage: TimeMessage) {
             .fillMaxWidth()
             .padding(top = 20.dp, bottom = 20.dp)
             .wrapContentWidth(align = Alignment.CenterHorizontally)
-            .background(color = Color.DarkGray.copy(alpha = 0.3f), shape = timeMessageShape)
+            .background(color = Color.LightGray.copy(alpha = 0.8f), shape = timeMessageShape)
             .padding(all = 4.dp),
         text = timeMessage.time,
         style = timeMessageStyle()

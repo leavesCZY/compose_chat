@@ -3,7 +3,7 @@ package github.leavesc.compose_chat.model
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Flare
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavBackStackEntry
 import github.leavesc.compose_chat.base.model.*
@@ -88,8 +88,8 @@ enum class HomeScreenTab(
     Friendship(
         icon = Icons.Filled.Album,
     ),
-    PersonProfile(
-        icon = Icons.Filled.Flare,
+    Person(
+        icon = Icons.Filled.WbSunny,
     );
 }
 

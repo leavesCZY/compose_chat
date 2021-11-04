@@ -1,5 +1,6 @@
 package github.leavesc.compose_chat.ui.profile
 
+import android.content.res.Configuration
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -30,6 +31,7 @@ import github.leavesc.compose_chat.extend.scrim
 import github.leavesc.compose_chat.ui.theme.BezierShape
 import github.leavesc.compose_chat.ui.weigets.CoilImage
 import github.leavesc.compose_chat.ui.weigets.OutlinedAvatar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -39,9 +41,10 @@ import kotlin.math.roundToInt
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-@Preview
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun ProfileScreen() {
+fun PreviewProfileScreen() {
     ProfileScreen(
         personProfile = PersonProfile(
             userId = "leavesC",
@@ -110,9 +113,9 @@ private fun ProfileScreen(
         var dragAnimateEnable by remember {
             mutableStateOf(false)
         }
-        LaunchedEffect(dragAnimateEnable) {
+        LaunchedEffect(key1 = dragAnimateEnable) {
             if (dragAnimateEnable) {
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.Main) {
                     Animatable(
                         initialValue = Offset(x = offsetX, y = offsetY),
                         typeConverter = Offset.VectorConverter
@@ -144,7 +147,6 @@ private fun ProfileScreen(
             data = avatarUrl
         )
         OutlinedAvatar(
-            data = avatarUrl,
             modifier = Modifier
                 .constrainAs(ref = avatarRefs) {
                     start.linkTo(backgroundRefs.start)
@@ -176,7 +178,8 @@ private fun ProfileScreen(
                             offsetY += dragAmount.y
                         },
                     )
-                }
+                },
+            data = avatarUrl
         )
         Text(text = title,
             color = Color.White,

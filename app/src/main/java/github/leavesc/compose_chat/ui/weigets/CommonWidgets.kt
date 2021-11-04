@@ -9,9 +9,11 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.insets.imePadding
 
 /**
  * @Author: leavesC
@@ -51,13 +53,16 @@ fun CommonOutlinedTextField(
     modifier: Modifier,
     value: String,
     label: String,
+    singleLine: Boolean = false,
+    maxLines: Int = 4,
     onValueChange: (String) -> Unit,
 ) {
     OutlinedTextField(
         modifier = modifier,
         value = value,
         onValueChange = onValueChange,
-        maxLines = 4,
+        singleLine = singleLine,
+        maxLines = maxLines,
         label = {
             Text(text = label)
         },
@@ -66,6 +71,20 @@ fun CommonOutlinedTextField(
             unfocusedBorderColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.disabled)
         )
     )
+}
+
+@Composable
+fun CommonSnackbar(state: SnackbarHostState) {
+    SnackbarHost(state) { data ->
+        Snackbar(
+            modifier = Modifier.imePadding(),
+            backgroundColor = MaterialTheme.colors.primary,
+            elevation = 0.dp,
+            content = {
+                Text(text = data.message, color = Color.White)
+            },
+        )
+    }
 }
 
 @Composable

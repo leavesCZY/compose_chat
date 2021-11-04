@@ -1,5 +1,6 @@
 package github.leavesc.compose_chat.ui.chat
 
+import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,6 +10,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.text.TextRange
@@ -16,12 +20,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.derivedWindowInsetsTypeOf
-import com.google.accompanist.insets.rememberInsetsPaddingValues
+import github.leavesc.compose_chat.ui.weigets.navigationBarsWithImePadding
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 /**
@@ -30,7 +33,8 @@ import kotlinx.coroutines.launch
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun PreviewChatScreenBottomBord() {
     ChatScreenBottomBord(sendMessage = {})
@@ -55,23 +59,23 @@ fun ChatScreenBottomBord(
         mutableStateOf(false)
     }
 
+    val focusRequester = remember { FocusRequester() }
+
     val onSelectorChange: (InputSelector) -> Unit = remember {
         {
-            currentInputSelector = if (it == currentInputSelector) {
-                InputSelector.NONE
-            } else {
-                it
-            }
-            if (currentInputSelector == InputSelector.NONE) {
-                textInputService?.showSoftwareKeyboard()
-            } else {
-                textInputService?.hideSoftwareKeyboard()
+            if (it != currentInputSelector) {
+                currentInputSelector = it
+                if (currentInputSelector != InputSelector.NONE) {
+                    textInputService?.hideSoftwareKeyboard()
+                } else {
+                    textInputService?.showSoftwareKeyboard()
+                }
             }
         }
     }
 
     BackHandler(enabled = currentInputSelector != InputSelector.NONE, onBack = {
-        onSelectorChange(InputSelector.NONE)
+        focusRequester.requestFocus()
     })
 
     fun checkSendMessageEnabled() {
@@ -124,13 +128,7 @@ fun ChatScreenBottomBord(
 
     val ime = LocalWindowInsets.current.ime
     val navBars = LocalWindowInsets.current.navigationBars
-    val insets = remember(key1 = ime, key2 = navBars) { derivedWindowInsetsTypeOf(ime, navBars) }
-    val navigationBarsWithImePadding = rememberInsetsPaddingValues(
-        insets = insets,
-        applyStart = true,
-        applyEnd = true,
-        applyBottom = true
-    )
+    val navigationBarsWithImePadding = navigationBarsWithImePadding()
 
     var navigationBarsWithImeHeight by remember {
         mutableStateOf(0.dp)
@@ -141,25 +139,49 @@ fun ChatScreenBottomBord(
     LaunchedEffect(key1 = ime, key2 = navBars) {
         launch {
             snapshotFlow {
-                ime.isVisible
+                ime.animationInProgress
+            }.filter {
+                !it && ime.isVisible && currentInputSelector != InputSelector.NONE
             }.collect {
-                if (it && currentInputSelector != InputSelector.NONE) {
-                    currentInputSelector = InputSelector.NONE
-                }
+                currentInputSelector = InputSelector.NONE
+            }
+        }
+        launch {
+            snapshotFlow {
+                ime.isVisible
+            }.filter {
+                !it
+            }.collect {
+                navigationBarsWithImeHeight =
+                    navigationBarsWithImePadding.calculateBottomPadding()
             }
         }
         launch {
             snapshotFlow {
                 navigationBarsWithImePadding.calculateBottomPadding()
             }.collect {
-                navigationBarsWithImeHeight = max(navigationBarsWithImeHeight, it)
-
-                bottomTableMinHeight =
-                    if (currentInputSelector != InputSelector.NONE || ime.isVisible) {
-                        navigationBarsWithImeHeight
-                    } else {
-                        it
+                if (ime.isVisible) {
+                    if (it != 0.dp) {
+                        bottomTableMinHeight = if (currentInputSelector == InputSelector.NONE) {
+                            it
+                        } else {
+                            if (navigationBarsWithImeHeight.value > 0f) {
+                                navigationBarsWithImeHeight
+                            } else {
+                                it
+                            }
+                        }
                     }
+                } else {
+                    bottomTableMinHeight = when (currentInputSelector) {
+                        InputSelector.NONE -> {
+                            it
+                        }
+                        InputSelector.EMOJI, InputSelector.Picture -> {
+                            navigationBarsWithImeHeight
+                        }
+                    }
+                }
             }
         }
     }
@@ -170,6 +192,8 @@ fun ChatScreenBottomBord(
     ) {
         BasicTextField(
             modifier = Modifier
+                .focusTarget()
+                .focusRequester(focusRequester = focusRequester)
                 .fillMaxWidth()
                 .padding(
                     start = 12.dp, end = 12.dp, top = 12.dp
@@ -201,7 +225,9 @@ fun ChatScreenBottomBord(
             },
         )
 
-        Box(modifier = Modifier.sizeIn(minHeight = bottomTableMinHeight)) {
+        Box(
+            modifier = Modifier.sizeIn(minHeight = bottomTableMinHeight)
+        ) {
             when (currentInputSelector) {
                 InputSelector.NONE -> {
 
@@ -214,7 +240,7 @@ fun ChatScreenBottomBord(
                     )
                 }
                 InputSelector.Picture -> {
-
+                    PictureTable()
                 }
             }
         }

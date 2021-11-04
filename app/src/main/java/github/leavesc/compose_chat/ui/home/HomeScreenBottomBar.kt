@@ -86,16 +86,13 @@ private fun BottomNavigationItem(
                 Text(
                     text = if (unreadMessageCount > 99) "99+" else unreadMessageCount.toString(),
                     color = Color.White,
-                    fontSize = 12.sp,
+                    fontSize = 10.sp,
                     textAlign = TextAlign.Center,
-                    letterSpacing = 0.sp,
-                    lineHeight = 0.sp,
                     modifier = Modifier
                         .offset(x = 18.dp, y = (-10).dp)
-                        .size(size = 24.dp)
-                        .padding(all = 2.dp)
+                        .size(size = 22.dp)
                         .background(color = MaterialTheme.colors.primary, shape = CircleShape)
-                        .align(alignment = Alignment.TopCenter)
+                        .wrapContentSize(align = Alignment.Center)
                 )
             }
         }

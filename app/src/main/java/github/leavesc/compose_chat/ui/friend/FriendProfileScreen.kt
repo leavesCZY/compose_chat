@@ -9,7 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.google.accompanist.insets.imePadding
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.extend.navToC2CChatScreen
 import github.leavesc.compose_chat.extend.navToHomeScreen
@@ -19,6 +18,8 @@ import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
+import github.leavesc.compose_chat.ui.weigets.CommonSnackbar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -35,7 +36,7 @@ fun FriendProfileScreen(
     val friendProfileViewModel = viewModelInstance {
         FriendProfileViewModel(friendId = friendId)
     }
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = Unit) {
         friendProfileViewModel.getFriendProfile()
     }
     val friendProfile by friendProfileViewModel.friendProfile.collectAsState()
@@ -43,7 +44,7 @@ fun FriendProfileScreen(
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
     fun expandSheetContent() {
-        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.Main) {
             sheetState.animateTo(targetValue = ModalBottomSheetValue.Expanded)
         }
     }
@@ -70,6 +71,7 @@ fun FriendProfileScreen(
                 if (friendProfile.isFriend) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         CommonButton(text = "去聊天吧") {
+                            navController.popBackStack()
                             navController.navToC2CChatScreen(friendId = friendProfile.userId)
                         }
                         CommonButton(text = "设置备注") {
@@ -145,7 +147,7 @@ private fun SetFriendRemarkScreen(
     val scaffoldState = rememberScaffoldState()
 
     fun expandSheetContent(targetValue: ModalBottomSheetValue) {
-        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.Main) {
             modalBottomSheetState.animateTo(targetValue = targetValue)
         }
     }
@@ -156,7 +158,7 @@ private fun SetFriendRemarkScreen(
 
             }
             ModalBottomSheetValue.Expanded -> {
-                expandSheetContent(targetValue = ModalBottomSheetValue.Hidden)
+                expandSheetContent(targetValue = ModalBottomSheetValue.HalfExpanded)
             }
             ModalBottomSheetValue.HalfExpanded -> {
                 expandSheetContent(targetValue = ModalBottomSheetValue.Hidden)
@@ -175,22 +177,10 @@ private fun SetFriendRemarkScreen(
             .fillMaxHeight(fraction = 0.8f),
         scaffoldState = scaffoldState,
         snackbarHost = {
-            SnackbarHost(it) { data ->
-                Snackbar(
-                    modifier = Modifier.imePadding(),
-                    backgroundColor = MaterialTheme.colors.primary,
-                    elevation = 0.dp,
-                    snackbarData = data,
-                )
-            }
+            CommonSnackbar(it)
         },
     ) {
         Column {
-            Text(
-                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
-                text = "Set Remark",
-                style = MaterialTheme.typography.subtitle1,
-            )
             CommonOutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -203,7 +193,7 @@ private fun SetFriendRemarkScreen(
                 onValueChange = {
                     remark = it
                 },
-                label = "设置好友备注",
+                label = "Set Remark",
             )
             CommonButton(text = "设置备注") {
                 onSetRemark(friendProfile.userId, remark)

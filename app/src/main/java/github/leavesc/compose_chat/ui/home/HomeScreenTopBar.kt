@@ -32,7 +32,7 @@ fun HomeScreenTopBar(
     onAddFriend: () -> Unit,
     onJoinGroup: () -> Unit,
 ) {
-    if (screenSelected == HomeScreenTab.PersonProfile) {
+    if (screenSelected == HomeScreenTab.Person) {
         return
     }
     var menuExpanded by remember {

@@ -1,5 +1,6 @@
 package github.leavesc.compose_chat.ui.chat
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -25,7 +26,8 @@ import androidx.compose.ui.unit.sp
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun PreviewEmojiTable() {
     UserInputSelector(currentInputSelector = InputSelector.EMOJI,
@@ -148,6 +150,15 @@ fun EmojiTable(
             }
         }
     }
+}
+
+@Composable
+fun PictureTable() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(height = 120.dp)
+    )
 }
 
 private const val EMOJI_COLUMNS = 8

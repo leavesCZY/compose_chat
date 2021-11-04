@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.atLeast
 import github.leavesc.compose_chat.base.model.Conversation
 import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
@@ -111,19 +112,18 @@ private fun ConversationItem(
             Text(
                 text = count,
                 color = Color.White,
-                fontSize = 12.sp,
+                fontSize = 10.sp,
                 textAlign = TextAlign.Center,
-                letterSpacing = 0.sp,
-                lineHeight = 0.sp,
                 modifier = Modifier
-                    .size(24.dp)
-                    .padding(all = 2.dp)
-                    .background(color = Color.Red, shape = CircleShape)
                     .constrainAs(ref = unreadMessageCount) {
                         start.linkTo(anchor = avatar.end)
                         end.linkTo(anchor = avatar.end)
                         top.linkTo(anchor = avatar.top, margin = (-6).dp)
+                        width = Dimension.preferredWrapContent.atLeast(dp = 22.dp)
+                        height = Dimension.preferredWrapContent.atLeast(dp = 22.dp)
                     }
+                    .background(color = Color.Red, shape = CircleShape)
+                    .wrapContentSize(align = Alignment.Center)
             )
         }
         Text(

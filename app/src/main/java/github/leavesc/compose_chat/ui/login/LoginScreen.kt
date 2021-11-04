@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.R
 import github.leavesc.compose_chat.extend.navigateWithBack
@@ -21,6 +20,8 @@ import github.leavesc.compose_chat.logic.LoginViewModel
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
+import github.leavesc.compose_chat.ui.weigets.CommonSnackbar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -37,7 +38,7 @@ fun LoginScreen(navController: NavHostController) {
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val textInputService = LocalTextInputService.current
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = Unit) {
         launch {
             loginViewModel.loginScreenState.collect {
                 if (it.loginSuccess) {
@@ -55,14 +56,7 @@ fun LoginScreen(navController: NavHostController) {
             .fillMaxSize(),
         scaffoldState = scaffoldState,
         snackbarHost = {
-            SnackbarHost(it) { data ->
-                Snackbar(
-                    modifier = Modifier.navigationBarsWithImePadding(),
-                    backgroundColor = MaterialTheme.colors.primary,
-                    elevation = 0.dp,
-                    snackbarData = data,
-                )
-            }
+            CommonSnackbar(it)
         }
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -98,6 +92,8 @@ fun LoginScreen(navController: NavHostController) {
                             }
                         },
                         label = "UserId",
+                        maxLines = 1,
+                        singleLine = true
                     )
                     CommonButton(
                         modifier = Modifier
@@ -106,7 +102,7 @@ fun LoginScreen(navController: NavHostController) {
                         text = "登陆"
                     ) {
                         if (userId.isBlank()) {
-                            coroutineScope.launch {
+                            coroutineScope.launch(Dispatchers.Main) {
                                 scaffoldState.snackbarHostState.showSnackbar(message = "请输入 UserID")
                             }
                         } else {

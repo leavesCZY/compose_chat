@@ -28,6 +28,7 @@ import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 import github.leavesc.compose_chat.utils.showToast
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -75,7 +76,7 @@ fun GroupProfileScreen(
                 }
             }
             GroupProfileScreenTopBar(quitGroup = {
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.Main) {
                     when (val result = groupProfileViewModel.quitGroup()) {
                         ActionResult.Success -> {
                             showToast("已退出群聊")

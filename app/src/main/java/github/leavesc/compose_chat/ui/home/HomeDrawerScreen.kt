@@ -15,6 +15,8 @@ import github.leavesc.compose_chat.model.HomeDrawerViewState
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
@@ -32,15 +34,30 @@ fun HomeDrawerScreen(
     val scaffoldState = rememberBackdropScaffoldState(initialValue = BackdropValue.Revealed)
     BackHandler(enabled = drawerState.isOpen || scaffoldState.isConcealed, onBack = {
         if (scaffoldState.isConcealed) {
-            coroutineScope.launch {
+            coroutineScope.launch(Dispatchers.Main) {
                 scaffoldState.reveal()
             }
         } else if (drawerState.isOpen) {
-            coroutineScope.launch {
+            coroutineScope.launch(Dispatchers.Main) {
                 drawerState.close()
             }
         }
     })
+
+    if (drawerState.isOpen) {
+        LaunchedEffect(key1 = drawerState.isOpen) {
+            snapshotFlow {
+                drawerState.isOpen
+            }.collect {
+                if (!it && scaffoldState.isConcealed) {
+                    coroutineScope.launch(Dispatchers.Main) {
+                        scaffoldState.reveal()
+                    }
+                }
+            }
+        }
+    }
+
     BackdropScaffold(
         scaffoldState = scaffoldState,
         backLayerBackgroundColor = MaterialTheme.colors.background,
@@ -55,7 +72,7 @@ fun HomeDrawerScreen(
             ) {
                 Column {
                     CommonButton(text = "个人资料") {
-                        coroutineScope.launch {
+                        coroutineScope.launch(Dispatchers.Main) {
                             scaffoldState.conceal()
                         }
                     }
