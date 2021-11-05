@@ -56,7 +56,7 @@ class HomeActivity : ComponentActivity() {
         var homeScreenSelected by remember {
             mutableStateOf(HomeScreenTab.Conversation)
         }
-        ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
+        ProvideWindowInsets {
             AnimatedNavHost(
                 navController = navController,
                 startDestination = Screen.LoginScreen.route
@@ -107,7 +107,7 @@ class HomeActivity : ComponentActivity() {
     ) {
         composable(
             route = screen.route,
-            enterTransition = { _, _ ->
+            enterTransition = {
                 slideInHorizontally(
                     initialOffsetX = {
                         -it
@@ -115,10 +115,10 @@ class HomeActivity : ComponentActivity() {
                     animationSpec = tween(400)
                 ) + fadeIn(initialAlpha = 0.6f, animationSpec = tween(400))
             },
-            exitTransition = { _, _ ->
+            exitTransition = {
                 fadeOut(targetAlpha = 0.9f, animationSpec = tween(400))
             },
-            popEnterTransition = { _, _ ->
+            popEnterTransition = {
                 slideInHorizontally(
                     initialOffsetX = {
                         0
@@ -126,7 +126,7 @@ class HomeActivity : ComponentActivity() {
                     animationSpec = tween(10)
                 ) + fadeIn(initialAlpha = 0.7f, animationSpec = tween(200))
             },
-            popExitTransition = { _, _ ->
+            popExitTransition = {
                 slideOutHorizontally(targetOffsetX = {
                     it
                 }, animationSpec = tween(400))
