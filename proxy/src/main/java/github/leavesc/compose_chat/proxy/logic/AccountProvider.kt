@@ -9,10 +9,11 @@ import github.leavesc.compose_chat.base.model.ServerState
 import github.leavesc.compose_chat.base.provider.IAccountProvider
 import github.leavesc.compose_chat.proxy.consts.AppConst
 import github.leavesc.compose_chat.proxy.utils.GenerateUserSig
-import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 /**
@@ -69,54 +70,50 @@ class AccountProvider : IAccountProvider, Converters {
     }
 
     private fun dispatchServerState(serverState: ServerState) {
-        coroutineScope.launch(Dispatchers.Main) {
+        coroutineScope.launch {
             serverConnectState.emit(serverState)
         }
     }
 
     override suspend fun login(userId: String): ActionResult {
-        return withContext(Dispatchers.Main) {
-            val formatUserId = userId.lowercase()
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getInstance()
-                    .login(formatUserId, GenerateUserSig.genUserSig(formatUserId),
-                        object : V2TIMCallback {
-                            override fun onSuccess() {
-                                continuation.resume(ActionResult.Success)
-                            }
+        val formatUserId = userId.lowercase()
+        return suspendCancellableCoroutine { continuation ->
+            V2TIMManager.getInstance()
+                .login(formatUserId, GenerateUserSig.genUserSig(formatUserId),
+                    object : V2TIMCallback {
+                        override fun onSuccess() {
+                            continuation.resume(ActionResult.Success)
+                        }
 
-                            override fun onError(code: Int, desc: String?) {
-                                continuation.resume(
-                                    ActionResult.Failed(
-                                        code = code,
-                                        reason = desc ?: ""
-                                    )
+                        override fun onError(code: Int, desc: String?) {
+                            continuation.resume(
+                                ActionResult.Failed(
+                                    code = code,
+                                    reason = desc ?: ""
                                 )
-                            }
-                        })
-            }
+                            )
+                        }
+                    })
         }
     }
 
     override suspend fun logout(): ActionResult {
-        return withContext(Dispatchers.Main) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getInstance().logout(object : V2TIMCallback {
-                    override fun onSuccess() {
-                        dispatchServerState(ServerState.Logout)
-                        continuation.resume(ActionResult.Success)
-                    }
+        return suspendCancellableCoroutine { continuation ->
+            V2TIMManager.getInstance().logout(object : V2TIMCallback {
+                override fun onSuccess() {
+                    dispatchServerState(ServerState.Logout)
+                    continuation.resume(ActionResult.Success)
+                }
 
-                    override fun onError(code: Int, desc: String?) {
-                        continuation.resume(ActionResult.Failed(code = code, reason = desc ?: ""))
-                    }
-                })
-            }
+                override fun onError(code: Int, desc: String?) {
+                    continuation.resume(ActionResult.Failed(code = code, reason = desc ?: ""))
+                }
+            })
         }
     }
 
     override fun refreshPersonProfile() {
-        coroutineScope.launch(Dispatchers.Main) {
+        coroutineScope.launch {
             getSelfProfileOrigin()?.let {
                 convertPersonProfile(it)
             }?.let {
@@ -131,40 +128,36 @@ class AccountProvider : IAccountProvider, Converters {
         nickname: String,
         signature: String
     ): Boolean {
-        return withContext(Dispatchers.Main) {
-            val originProfile = getSelfProfileOrigin() ?: return@withContext false
-            suspendCancellableCoroutine { continuation ->
-                originProfile.faceUrl = faceUrl
-                originProfile.setNickname(nickname)
-                originProfile.selfSignature = signature
-                V2TIMManager.getInstance().setSelfInfo(originProfile, object : V2TIMCallback {
-                    override fun onSuccess() {
-                        continuation.resume(true)
-                    }
+        val originProfile = getSelfProfileOrigin() ?: return false
+        return suspendCancellableCoroutine { continuation ->
+            originProfile.faceUrl = faceUrl
+            originProfile.setNickname(nickname)
+            originProfile.selfSignature = signature
+            V2TIMManager.getInstance().setSelfInfo(originProfile, object : V2TIMCallback {
+                override fun onSuccess() {
+                    continuation.resume(true)
+                }
 
-                    override fun onError(code: Int, desc: String?) {
-                        continuation.resume(false)
-                    }
-                })
-            }
+                override fun onError(code: Int, desc: String?) {
+                    continuation.resume(false)
+                }
+            })
         }
     }
 
     private suspend fun getSelfProfileOrigin(): V2TIMUserFullInfo? {
-        return withContext(Dispatchers.Main) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getInstance()
-                    .getUsersInfo(listOf(V2TIMManager.getInstance().loginUser), object :
-                        V2TIMValueCallback<List<V2TIMUserFullInfo>> {
-                        override fun onSuccess(t: List<V2TIMUserFullInfo>) {
-                            continuation.resume(t[0])
-                        }
+        return suspendCancellableCoroutine { continuation ->
+            V2TIMManager.getInstance()
+                .getUsersInfo(listOf(V2TIMManager.getInstance().loginUser), object :
+                    V2TIMValueCallback<List<V2TIMUserFullInfo>> {
+                    override fun onSuccess(t: List<V2TIMUserFullInfo>) {
+                        continuation.resume(t[0])
+                    }
 
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(null)
-                        }
-                    })
-            }
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(null)
+                    }
+                })
         }
     }
 

@@ -3,19 +3,28 @@ package github.leavesc.compose_chat
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import github.leavesc.compose_chat.logic.HomeViewModel
+import github.leavesc.compose_chat.base.model.ServerState
+import github.leavesc.compose_chat.cache.AccountCache
+import github.leavesc.compose_chat.extend.navToLogin
+import github.leavesc.compose_chat.logic.AppViewModel
 import github.leavesc.compose_chat.model.AppTheme
 import github.leavesc.compose_chat.model.HomeScreenTab
 import github.leavesc.compose_chat.model.Screen
@@ -26,6 +35,10 @@ import github.leavesc.compose_chat.ui.home.HomeScreen
 import github.leavesc.compose_chat.ui.login.LoginScreen
 import github.leavesc.compose_chat.ui.theme.ChatTheme
 import github.leavesc.compose_chat.ui.weigets.SetSystemBarsColor
+import github.leavesc.compose_chat.utils.showToast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.withContext
 
 /**
  * @Author: leavesC
@@ -39,20 +52,55 @@ class HomeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            val homeViewModel = viewModel<HomeViewModel>()
-            val appTheme by homeViewModel.appTheme.collectAsState()
-            ChatTheme(appTheme = appTheme) {
-                SetSystemBarsColor(isLightTheme = appTheme == AppTheme.Light)
-                NavigationView(appTheme = appTheme) {
-                    homeViewModel.switchToNextTheme()
+            val appViewModel = viewModel<AppViewModel>()
+            val appTheme by appViewModel.appTheme.collectAsState()
+            val switchToNextTheme = remember {
+                {
+                    appViewModel.switchToNextTheme()
                 }
+            }
+            val navController = rememberAnimatedNavController()
+            LaunchedEffect(key1 = Unit) {
+                withContext(Dispatchers.Main) {
+                    appViewModel.serverConnectState.collect {
+                        when (it) {
+                            ServerState.KickedOffline -> {
+                                showToast("本账号已在其它客户端登陆，请重新登陆")
+                                AccountCache.onUserLogout()
+                                navController.navToLogin()
+                            }
+                            ServerState.Logout -> {
+                                navController.navToLogin()
+                            }
+                            else -> {
+                                showToast("Connect State Changed : $it")
+                            }
+                        }
+                    }
+                }
+            }
+            ChatTheme(appTheme = appTheme) {
+                SetSystemBarsColor(
+                    statusBarColor = Color.Transparent,
+                    navigationBarColor = MaterialTheme.colors.background,
+                    statusBarDarkIcons = appTheme == AppTheme.Light,
+                    navigationDarkIcons = appTheme != AppTheme.Dark
+                )
+                NavigationView(
+                    navController = navController,
+                    appTheme = appTheme,
+                    switchToNextTheme = switchToNextTheme
+                )
             }
         }
     }
 
     @Composable
-    private fun NavigationView(appTheme: AppTheme, switchToNextTheme: () -> Unit) {
-        val navController = rememberAnimatedNavController()
+    private fun NavigationView(
+        navController: NavHostController,
+        appTheme: AppTheme,
+        switchToNextTheme: () -> Unit
+    ) {
         var homeScreenSelected by remember {
             mutableStateOf(HomeScreenTab.Conversation)
         }
@@ -71,8 +119,8 @@ class HomeActivity : ComponentActivity() {
                         navController = navController,
                         appTheme = appTheme,
                         switchToNextTheme = switchToNextTheme,
-                        homeScreenSelected = homeScreenSelected,
-                        onHomeScreenTabSelected = {
+                        homeTabSelected = homeScreenSelected,
+                        onHomeTabSelected = {
                             homeScreenSelected = it
                         }
                     )
@@ -112,24 +160,24 @@ class HomeActivity : ComponentActivity() {
                     initialOffsetX = {
                         -it
                     },
-                    animationSpec = tween(400)
-                ) + fadeIn(initialAlpha = 0.6f, animationSpec = tween(400))
+                    animationSpec = tween(300)
+                )
             },
             exitTransition = {
-                fadeOut(targetAlpha = 0.9f, animationSpec = tween(400))
+                fadeOut(targetAlpha = 0.9f, animationSpec = tween(300))
             },
             popEnterTransition = {
                 slideInHorizontally(
                     initialOffsetX = {
                         0
                     },
-                    animationSpec = tween(10)
-                ) + fadeIn(initialAlpha = 0.7f, animationSpec = tween(200))
+                    animationSpec = tween(300)
+                )
             },
             popExitTransition = {
                 slideOutHorizontally(targetOffsetX = {
                     it
-                }, animationSpec = tween(400))
+                }, animationSpec = tween(300))
             },
         ) { backStackEntry ->
             content(backStackEntry)

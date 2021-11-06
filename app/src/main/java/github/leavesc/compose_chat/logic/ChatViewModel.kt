@@ -6,7 +6,6 @@ import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.base.provider.IMessageProvider
 import github.leavesc.compose_chat.model.ChatScreenState
 import github.leavesc.compose_chat.utils.showToast
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,7 +60,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     }
 
     private fun getFriendProfile(friendId: String) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             ComposeChat.friendshipProvider.getFriendProfile(friendId = friendId)?.let {
                 screenTopBarTitle.emit(it.showName)
             }
@@ -69,7 +68,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     }
 
     private fun getGroupProfile(groupId: String) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             ComposeChat.groupProvider.getGroupInfo(groupId = groupId)?.let {
                 screenTopBarTitle.emit(it.name)
             }
@@ -88,7 +87,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     }
 
     private fun getHistoryMessageList() {
-        loadMessageJob = viewModelScope.launch(Dispatchers.Main) {
+        loadMessageJob = viewModelScope.launch {
             val loadResult = ComposeChat.messageProvider.getHistoryMessage(
                 chat = chat,
                 lastMessage = lastMessage
@@ -113,7 +112,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     }
 
     fun sendMessage(text: String) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             val messageChannel = Channel<Message>()
             launch {
                 ComposeChat.messageProvider.send(

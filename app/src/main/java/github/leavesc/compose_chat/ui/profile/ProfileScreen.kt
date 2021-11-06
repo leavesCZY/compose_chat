@@ -31,7 +31,6 @@ import github.leavesc.compose_chat.extend.scrim
 import github.leavesc.compose_chat.ui.theme.BezierShape
 import github.leavesc.compose_chat.ui.weigets.CoilImage
 import github.leavesc.compose_chat.ui.weigets.OutlinedAvatar
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -41,8 +40,8 @@ import kotlin.math.roundToInt
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewProfileScreen() {
     ProfileScreen(
@@ -115,7 +114,7 @@ private fun ProfileScreen(
         }
         LaunchedEffect(key1 = dragAnimateEnable) {
             if (dragAnimateEnable) {
-                coroutineScope.launch(Dispatchers.Main) {
+                coroutineScope.launch {
                     Animatable(
                         initialValue = Offset(x = offsetX, y = offsetY),
                         typeConverter = Offset.VectorConverter

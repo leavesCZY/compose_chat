@@ -11,6 +11,7 @@
         android:allowBackup="false"
         android:icon="@drawable/icon_logo"
         android:label="@string/app_name"
+        android:roundIcon="@drawable/icon_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ComposeChat">
         <activity

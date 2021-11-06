@@ -17,6 +17,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.R
 import github.leavesc.compose_chat.model.HomeScreenTab
+import github.leavesc.compose_chat.model.HomeScreenTopBarState
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 
 /**
@@ -27,12 +28,9 @@ import github.leavesc.compose_chat.ui.weigets.CommonDivider
  */
 @Composable
 fun HomeScreenTopBar(
-    screenSelected: HomeScreenTab,
-    openDrawer: () -> Unit,
-    onAddFriend: () -> Unit,
-    onJoinGroup: () -> Unit,
+    homeScreenTopBarState: HomeScreenTopBarState,
 ) {
-    if (screenSelected == HomeScreenTab.Person) {
+    if (homeScreenTopBarState.screenSelected == HomeScreenTab.Person) {
         return
     }
     var menuExpanded by remember {
@@ -62,7 +60,7 @@ fun HomeScreenTopBar(
                         bottom.linkTo(anchor = parent.bottom)
                     }
                     .size(size = 28.dp)
-                    .clickable(onClick = openDrawer),
+                    .clickable(onClick = homeScreenTopBarState.openDrawer),
                 imageVector = Icons.Filled.Menu,
                 contentDescription = null,
                 tint = MaterialTheme.colors.surface
@@ -77,7 +75,7 @@ fun HomeScreenTopBar(
                     .padding(start = 12.dp)
                     .size(size = 28.dp)
                     .clickable {
-                        openDrawer()
+                        homeScreenTopBarState.openDrawer()
                     },
                 painter = painterResource(id = R.drawable.ic_crane_logo),
                 contentDescription = null,
@@ -117,13 +115,13 @@ fun HomeScreenTopBar(
                 ) {
                     DropdownMenuItem(onClick = {
                         menuExpanded = false
-                        onAddFriend()
+                        homeScreenTopBarState.onAddFriend()
                     }) {
                         Text(text = "添加好友")
                     }
                     DropdownMenuItem(onClick = {
                         menuExpanded = false
-                        onJoinGroup()
+                        homeScreenTopBarState.onJoinGroup()
                     }) {
                         Text(text = "加入群聊")
                     }

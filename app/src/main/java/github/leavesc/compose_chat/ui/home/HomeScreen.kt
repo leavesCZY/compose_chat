@@ -1,12 +1,11 @@
 package github.leavesc.compose_chat.ui.home
 
-import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -15,23 +14,15 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.insets.navigationBarsPadding
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.Conversation
-import github.leavesc.compose_chat.base.model.ServerState
-import github.leavesc.compose_chat.cache.AccountCache
 import github.leavesc.compose_chat.extend.navToC2CChatScreen
 import github.leavesc.compose_chat.extend.navToGroupChatScreen
-import github.leavesc.compose_chat.extend.navigateWithBack
 import github.leavesc.compose_chat.logic.HomeViewModel
-import github.leavesc.compose_chat.model.AppTheme
-import github.leavesc.compose_chat.model.HomeDrawerViewState
-import github.leavesc.compose_chat.model.HomeScreenTab
-import github.leavesc.compose_chat.model.Screen
+import github.leavesc.compose_chat.model.*
 import github.leavesc.compose_chat.ui.conversation.ConversationScreen
 import github.leavesc.compose_chat.ui.friend.FriendshipScreen
 import github.leavesc.compose_chat.ui.person.PersonProfileScreen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
 import github.leavesc.compose_chat.utils.showToast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
@@ -45,85 +36,152 @@ fun HomeScreen(
     navController: NavHostController,
     appTheme: AppTheme,
     switchToNextTheme: () -> Unit,
-    homeScreenSelected: HomeScreenTab,
-    onHomeScreenTabSelected: (HomeScreenTab) -> Unit
+    homeTabSelected: HomeScreenTab,
+    onHomeTabSelected: (HomeScreenTab) -> Unit
 ) {
-    val homeViewModel = viewModel<HomeViewModel>()
-
-    val conversationList by homeViewModel.conversationList.collectAsState()
-    val totalUnreadCount by homeViewModel.totalUnreadCount.collectAsState()
-    val friendList by homeViewModel.fiendList.collectAsState()
-    val joinedGroupList by homeViewModel.joinedGroupList.collectAsState()
-    val personProfile by homeViewModel.personProfile.collectAsState()
-
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scaffoldState = rememberScaffoldState(drawerState = drawerState)
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    val conversationListState = rememberSaveable(
-        inputs = arrayOf(totalUnreadCount),
-        saver = LazyListState.Saver
-    ) {
-        LazyListState(
-            0,
-            0
-        )
-    }
-    val friendShipListState = rememberSaveable(
-        inputs = arrayOf(joinedGroupList.size + friendList.size),
-        saver = LazyListState.Saver
-    ) {
-        LazyListState(
-            0,
-            0
-        )
-    }
-    val homeDrawerViewState = remember(key1 = appTheme, key2 = personProfile) {
-        HomeDrawerViewState(
-            appTheme = appTheme,
-            userProfile = personProfile,
-            switchToNextTheme = switchToNextTheme,
-            updateProfile = { faceUrl: String, nickname: String, signature: String ->
-                homeViewModel.updateProfile(
-                    faceUrl = faceUrl,
-                    nickname = nickname,
-                    signature = signature
-                )
-            },
-            logout = {
-                homeViewModel.logout()
-            },
-        )
-    }
 
-    fun sheetContentAnimateTo(targetValue: ModalBottomSheetValue) {
-        coroutineScope.launch(Dispatchers.Main) {
-            sheetState.animateTo(targetValue = targetValue)
+    fun sheetContentAnimateToExpanded() {
+        coroutineScope.launch {
+            sheetState.animateTo(targetValue = ModalBottomSheetValue.Expanded)
         }
     }
 
-    LaunchedEffect(key1 = Unit) {
-        launch {
-            homeViewModel.serverConnectState.collect {
+    val homeViewModel = viewModel<HomeViewModel>()
+
+    val personProfile by homeViewModel.personProfile.collectAsState()
+    val conversationList by homeViewModel.conversationList.collectAsState()
+    val fiendList by homeViewModel.fiendList.collectAsState()
+    val joinedGroupList by homeViewModel.joinedGroupList.collectAsState()
+
+    val conversationListState = rememberLazyListState()
+    val conversationScreenState = remember(key1 = conversationList) {
+        ConversationScreenState(
+            listState = conversationListState,
+            conversationList = homeViewModel.conversationList.value,
+            onClickConversation = {
                 when (it) {
-                    ServerState.KickedOffline -> {
-                        showToast("本账号已在其它客户端登陆，请重新登陆")
-                        AccountCache.onUserLogout()
-                        navController.navigateWithBack(
-                            screen = Screen.LoginScreen
-                        )
+                    is Conversation.C2CConversation -> {
+                        navController.navToC2CChatScreen(friendId = it.id)
                     }
-                    ServerState.Logout -> {
-                        navController.navigateWithBack(
-                            screen = Screen.LoginScreen
-                        )
+                    is Conversation.GroupConversation -> {
+                        navController.navToGroupChatScreen(groupId = it.id)
                     }
-                    else -> {
-                        showToast("Connect State Changed : $it")
+                }
+            },
+            onDeleteConversation = {
+                homeViewModel.deleteConversation(it)
+            },
+            onPinnedConversation = { conversation, pin ->
+                homeViewModel.pinConversation(
+                    conversation = conversation,
+                    pin = pin
+                )
+            }
+        )
+    }
+
+    val friendShipListState = rememberLazyListState()
+    val friendshipScreenState = remember(key1 = joinedGroupList, key2 = fiendList) {
+        FriendshipScreenState(
+            listState = friendShipListState,
+            joinedGroupList = homeViewModel.joinedGroupList.value,
+            friendList = homeViewModel.fiendList.value,
+            onClickGroup = {
+                navController.navToGroupChatScreen(groupId = it.id)
+            },
+            onClickFriend = {
+                navController.navigate(
+                    route = Screen.FriendProfileScreen.generateRoute(friendId = it.userId)
+                )
+            },
+        )
+    }
+    val personProfileScreenState = remember(key1 = personProfile) {
+        PersonProfileScreenState(personProfile = homeViewModel.personProfile.value)
+    }
+
+    val homeDrawerViewState =
+        remember(key1 = personProfile, key2 = appTheme, key3 = switchToNextTheme) {
+            HomeScreenDrawerState(
+                drawerState = drawerState,
+                appTheme = appTheme,
+                userProfile = homeViewModel.personProfile.value,
+                switchToNextTheme = switchToNextTheme,
+                updateProfile = { faceUrl: String, nickname: String, signature: String ->
+                    homeViewModel.updateProfile(
+                        faceUrl = faceUrl,
+                        nickname = nickname,
+                        signature = signature
+                    )
+                },
+                logout = {
+                    homeViewModel.logout()
+                },
+            )
+        }
+
+    val homeScreenTopBarState = remember(
+        key1 = homeTabSelected
+    ) {
+        HomeScreenTopBarState(
+            screenSelected = homeTabSelected,
+            openDrawer = {
+                coroutineScope.launch {
+                    scaffoldState.drawerState.open()
+                }
+            },
+            onAddFriend = {
+                sheetContentAnimateToExpanded()
+            },
+            onJoinGroup = {
+                sheetContentAnimateToExpanded()
+            }
+        )
+    }
+
+    val homeScreenBottomBarState = remember(
+        key1 = homeTabSelected,
+        key2 = homeViewModel.totalUnreadCount.collectAsState(),
+        key3 = onHomeTabSelected
+    ) {
+        HomeScreenBottomBarState(
+            homeScreenList = HomeScreenTab.values().toList(),
+            homeScreenSelected = homeTabSelected,
+            unreadMessageCount = homeViewModel.totalUnreadCount.value,
+            onHomeScreenTabSelected = onHomeTabSelected
+        )
+    }
+
+    val homeSheetContentState = remember {
+        HomeScreenSheetContentState(
+            modalBottomSheetState = sheetState,
+            toAddFriend = {
+                homeViewModel.addFriend(userId = it)
+            },
+            toJoinGroup = {
+                coroutineScope.launch {
+                    when (val result = homeViewModel.joinGroup(groupId = it)) {
+                        is ActionResult.Success -> {
+                            showToast("加入成功")
+                            sheetState.hide()
+                            navController.navToGroupChatScreen(groupId = it)
+                        }
+                        is ActionResult.Failed -> {
+                            if (result.code == 10013) {
+                                sheetState.hide()
+                                navController.navToGroupChatScreen(groupId = it)
+                            } else {
+                                showToast(result.reason)
+                            }
+                        }
                     }
                 }
             }
-        }
+        )
     }
 
     ModalBottomSheetLayout(
@@ -131,70 +189,31 @@ fun HomeScreen(
         sheetState = sheetState,
         sheetShape = BottomSheetShape,
         sheetContent = {
-            HomeMoreActionScreen(
-                modalBottomSheetState = sheetState,
-                toAddFriend = {
-                    homeViewModel.addFriend(userId = it)
-                }, toJoinGroup = {
-                    coroutineScope.launch(Dispatchers.Main) {
-                        when (val result = homeViewModel.joinGroup(groupId = it)) {
-                            is ActionResult.Success -> {
-                                showToast("加入成功")
-                                sheetState.hide()
-                                navController.navToGroupChatScreen(groupId = it)
-                            }
-                            is ActionResult.Failed -> {
-                                if (result.code == 10013) {
-                                    sheetState.hide()
-                                    navController.navToGroupChatScreen(groupId = it)
-                                } else {
-                                    showToast(result.reason)
-                                }
-                            }
-                        }
-                    }
-                })
+            HomeScreenSheetContent(homeScreenSheetContentState = homeSheetContentState)
         }
     ) {
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
-                HomeScreenTopBar(
-                    screenSelected = homeScreenSelected,
-                    openDrawer = {
-                        coroutineScope.launch(Dispatchers.Main) {
-                            scaffoldState.drawerState.open()
-                        }
-                    },
-                    onAddFriend = {
-                        sheetContentAnimateTo(targetValue = ModalBottomSheetValue.Expanded)
-                    },
-                    onJoinGroup = {
-                        sheetContentAnimateTo(targetValue = ModalBottomSheetValue.Expanded)
-                    }
-                )
+                HomeScreenTopBar(homeScreenTopBarState = homeScreenTopBarState)
             },
             bottomBar = {
                 HomeScreenBottomBar(
-                    homeScreenList = HomeScreenTab.values().toList(),
-                    homeScreenSelected = homeScreenSelected,
-                    unreadMessageCount = totalUnreadCount,
-                    onHomeScreenTabSelected = onHomeScreenTabSelected
+                    homeScreenBottomBarState = homeScreenBottomBarState
                 )
             },
             drawerContent = {
-                HomeDrawerScreen(
-                    drawerState = drawerState,
-                    homeDrawerViewState = homeDrawerViewState
+                HomeScreenDrawer(
+                    homeScreenDrawerState = homeDrawerViewState
                 )
             },
             drawerShape = RoundedCornerShape(0.dp),
             floatingActionButton = {
-                if (homeScreenSelected == HomeScreenTab.Friendship) {
+                if (homeTabSelected == HomeScreenTab.Friendship) {
                     FloatingActionButton(
                         backgroundColor = MaterialTheme.colors.primary,
                         onClick = {
-                            sheetContentAnimateTo(targetValue = ModalBottomSheetValue.Expanded)
+                            sheetContentAnimateToExpanded()
                         }) {
                         Icon(
                             imageVector = Icons.Filled.Favorite,
@@ -205,52 +224,22 @@ fun HomeScreen(
                 }
             },
         ) { paddingValues ->
-            when (homeScreenSelected) {
+            when (homeTabSelected) {
                 HomeScreenTab.Conversation -> {
                     ConversationScreen(
-                        listState = conversationListState,
                         paddingValues = paddingValues,
-                        conversationList = conversationList,
-                        onClickConversation = {
-                            when (it) {
-                                is Conversation.C2CConversation -> {
-                                    navController.navToC2CChatScreen(friendId = it.id)
-                                }
-                                is Conversation.GroupConversation -> {
-                                    navController.navToGroupChatScreen(groupId = it.id)
-                                }
-                            }
-                        },
-                        onDeleteConversation = {
-                            homeViewModel.deleteConversation(it)
-                        },
-                        onConversationPinnedChanged = { conversation, pin ->
-                            homeViewModel.pinConversation(
-                                conversation = conversation,
-                                pin = pin
-                            )
-                        }
+                        conversationScreenState = conversationScreenState
                     )
                 }
                 HomeScreenTab.Friendship -> {
                     FriendshipScreen(
-                        listState = friendShipListState,
                         paddingValues = paddingValues,
-                        joinedGroupList = joinedGroupList,
-                        friendList = friendList,
-                        onClickGroup = {
-                            navController.navToGroupChatScreen(groupId = it.id)
-                        },
-                        onClickFriend = {
-                            navController.navigate(
-                                route = Screen.FriendProfileScreen.generateRoute(friendId = it.userId)
-                            )
-                        },
+                        friendshipScreenState = friendshipScreenState
                     )
                 }
                 HomeScreenTab.Person -> {
                     PersonProfileScreen(
-                        personProfile = personProfile
+                        personProfileScreenState = personProfileScreenState
                     )
                 }
             }

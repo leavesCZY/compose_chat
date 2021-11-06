@@ -5,12 +5,9 @@ import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.Conversation
 import github.leavesc.compose_chat.cache.AccountCache
-import github.leavesc.compose_chat.cache.AppThemeCache
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * @Author: leavesC
@@ -19,8 +16,6 @@ import kotlinx.coroutines.withContext
  * @Github：https://github.com/leavesC
  */
 class HomeViewModel : ViewModel() {
-
-    val appTheme = MutableStateFlow(AppThemeCache.currentTheme)
 
     val conversationList = ComposeChat.conversationProvider.conversationList
 
@@ -32,8 +27,6 @@ class HomeViewModel : ViewModel() {
 
     val personProfile = ComposeChat.accountProvider.personProfile
 
-    val serverConnectState = ComposeChat.accountProvider.serverConnectState
-
     init {
         ComposeChat.conversationProvider.getConversationList()
         ComposeChat.groupProvider.getJoinedGroupList()
@@ -42,7 +35,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun deleteConversation(conversation: Conversation) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             when (val result =
                 ComposeChat.conversationProvider.deleteConversation(conversation = conversation)) {
                 is ActionResult.Success -> {
@@ -56,7 +49,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun pinConversation(conversation: Conversation, pin: Boolean) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             ComposeChat.conversationProvider.pinConversation(conversation = conversation, pin = pin)
         }
     }
@@ -66,7 +59,7 @@ class HomeViewModel : ViewModel() {
         nickname: String,
         signature: String
     ) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             val updateProfile = ComposeChat.accountProvider.updatePersonProfile(
                 faceUrl = faceUrl,
                 nickname = nickname,
@@ -78,7 +71,7 @@ class HomeViewModel : ViewModel() {
 
     fun addFriend(userId: String) {
         val formatUserId = userId.lowercase()
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             when (val result = ComposeChat.friendshipProvider.addFriend(friendId = formatUserId)) {
                 is ActionResult.Success -> {
                     showToast("添加成功")
@@ -91,13 +84,11 @@ class HomeViewModel : ViewModel() {
     }
 
     suspend fun joinGroup(groupId: String): ActionResult {
-        return withContext(Dispatchers.Main) {
-            ComposeChat.groupProvider.joinGroup(groupId)
-        }
+        return ComposeChat.groupProvider.joinGroup(groupId)
     }
 
     fun logout() {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             when (val result = ComposeChat.accountProvider.logout()) {
                 is ActionResult.Success -> {
                     AccountCache.onUserLogout()
@@ -107,12 +98,6 @@ class HomeViewModel : ViewModel() {
                 }
             }
         }
-    }
-
-    fun switchToNextTheme() {
-        val nextTheme = appTheme.value.nextTheme()
-        AppThemeCache.onAppThemeChanged(nextTheme)
-        appTheme.value = nextTheme
     }
 
 }

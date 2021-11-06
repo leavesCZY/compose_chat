@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import github.leavesc.compose_chat.base.model.PersonProfile
+import github.leavesc.compose_chat.model.PersonProfileScreenState
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 
 /**
@@ -14,11 +14,11 @@ import github.leavesc.compose_chat.ui.profile.ProfileScreen
  * @Github：https://github.com/leavesC
  */
 @Composable
-fun PersonProfileScreen(personProfile: PersonProfile) {
+fun PersonProfileScreen(personProfileScreenState: PersonProfileScreenState) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        ProfileScreen(personProfile = personProfile)
+        ProfileScreen(personProfile = personProfileScreenState.personProfile)
     }
 }

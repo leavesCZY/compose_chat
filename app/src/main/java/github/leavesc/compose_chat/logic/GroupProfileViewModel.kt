@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.model.GroupProfileScreenState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -30,7 +29,7 @@ class GroupProfileViewModel(private val groupId: String) : ViewModel() {
     }
 
     private fun getGroupProfile() {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             ComposeChat.groupProvider.getGroupInfo(groupId = groupId)?.let {
                 groupProfileScreenState.emit(value = groupProfileScreenState.value.copy(groupProfile = it))
             }
@@ -38,7 +37,7 @@ class GroupProfileViewModel(private val groupId: String) : ViewModel() {
     }
 
     private fun getGroupMemberList() {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             val memberList = ComposeChat.groupProvider.getGroupMemberList(groupId = groupId)
             groupProfileScreenState.emit(value = groupProfileScreenState.value.copy(memberList = memberList))
         }

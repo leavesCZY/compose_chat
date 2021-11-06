@@ -19,7 +19,6 @@ import github.leavesc.compose_chat.ui.theme.BottomSheetShape
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
 import github.leavesc.compose_chat.ui.weigets.CommonSnackbar
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -44,7 +43,7 @@ fun FriendProfileScreen(
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
     fun expandSheetContent() {
-        coroutineScope.launch(Dispatchers.Main) {
+        coroutineScope.launch {
             sheetState.animateTo(targetValue = ModalBottomSheetValue.Expanded)
         }
     }
@@ -147,7 +146,7 @@ private fun SetFriendRemarkScreen(
     val scaffoldState = rememberScaffoldState()
 
     fun expandSheetContent(targetValue: ModalBottomSheetValue) {
-        coroutineScope.launch(Dispatchers.Main) {
+        coroutineScope.launch {
             modalBottomSheetState.animateTo(targetValue = targetValue)
         }
     }

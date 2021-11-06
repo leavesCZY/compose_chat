@@ -38,30 +38,28 @@ class ConversationProvider : IConversationProvider, Converters {
     }
 
     override fun getConversationList() {
-        coroutineScope.launch(Dispatchers.Main) {
+        coroutineScope.launch {
             dispatchConversationList(getConversationListOrigin())
         }
     }
 
     override suspend fun pinConversation(conversation: Conversation, pin: Boolean): ActionResult {
-        return withContext(Dispatchers.Main) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getConversationManager()
-                    .pinConversation(getConversationId(conversation), pin, object : V2TIMCallback {
-                        override fun onSuccess() {
-                            continuation.resume(ActionResult.Success)
-                        }
+        return suspendCancellableCoroutine { continuation ->
+            V2TIMManager.getConversationManager()
+                .pinConversation(getConversationId(conversation), pin, object : V2TIMCallback {
+                    override fun onSuccess() {
+                        continuation.resume(ActionResult.Success)
+                    }
 
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(
-                                ActionResult.Failed(
-                                    code = code,
-                                    reason = desc ?: ""
-                                )
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(
+                            ActionResult.Failed(
+                                code = code,
+                                reason = desc ?: ""
                             )
-                        }
-                    })
-            }
+                        )
+                    }
+                })
         }
     }
 
@@ -74,44 +72,40 @@ class ConversationProvider : IConversationProvider, Converters {
     }
 
     private suspend fun getConversationListOrigin(): List<Conversation> {
-        return withContext(Dispatchers.Main) {
-            var nextStep = 0L
-            val conversationList = mutableListOf<Conversation>()
-            while (true) {
-                val pair = getConversationList(nextStep = nextStep)
-                conversationList.addAll(pair.first)
-                nextStep = pair.second
-                if (nextStep <= 0) {
-                    break
-                }
+        var nextStep = 0L
+        val conversationList = mutableListOf<Conversation>()
+        while (true) {
+            val pair = getConversationList(nextStep = nextStep)
+            conversationList.addAll(pair.first)
+            nextStep = pair.second
+            if (nextStep <= 0) {
+                break
             }
-            conversationList
         }
+        return conversationList
     }
 
     private suspend fun getConversationList(nextStep: Long): Pair<List<Conversation>, Long> {
-        return withContext(Dispatchers.Main) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getConversationManager().getConversationList(nextStep, 100,
-                    object : V2TIMValueCallback<V2TIMConversationResult> {
-                        override fun onSuccess(result: V2TIMConversationResult) {
-                            continuation.resume(
-                                Pair(
-                                    convertConversation(result.conversationList),
-                                    if (result.isFinished) {
-                                        -111
-                                    } else {
-                                        result.nextSeq
-                                    }
-                                )
+        return suspendCancellableCoroutine { continuation ->
+            V2TIMManager.getConversationManager().getConversationList(nextStep, 100,
+                object : V2TIMValueCallback<V2TIMConversationResult> {
+                    override fun onSuccess(result: V2TIMConversationResult) {
+                        continuation.resume(
+                            Pair(
+                                convertConversation(result.conversationList),
+                                if (result.isFinished) {
+                                    -111
+                                } else {
+                                    result.nextSeq
+                                }
                             )
-                        }
+                        )
+                    }
 
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(Pair(emptyList(), -111))
-                        }
-                    })
-            }
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(Pair(emptyList(), -111))
+                    }
+                })
         }
     }
 

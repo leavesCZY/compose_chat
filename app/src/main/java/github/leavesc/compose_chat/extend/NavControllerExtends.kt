@@ -15,6 +15,14 @@ fun NavController.navigate(screen: Screen) {
     navigate(route = screen.route)
 }
 
+fun NavController.navToLogin() {
+    navigate(route = Screen.LoginScreen.route) {
+        popUpTo(route = Screen.HomeScreen.route) {
+            inclusive = true
+        }
+    }
+}
+
 fun NavController.navigateWithBack(screen: Screen) {
     popBackStack()
     navigate(route = screen.route)

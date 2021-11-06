@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.sp
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewEmojiTable() {
     UserInputSelector(currentInputSelector = InputSelector.EMOJI,

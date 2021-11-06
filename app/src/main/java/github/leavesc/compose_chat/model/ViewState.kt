@@ -1,5 +1,8 @@
 package github.leavesc.compose_chat.model
 
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material.DrawerState
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.Favorite
@@ -93,6 +96,55 @@ enum class HomeScreenTab(
     );
 }
 
+data class HomeScreenDrawerState(
+    val drawerState: DrawerState,
+    val appTheme: AppTheme,
+    val userProfile: PersonProfile,
+    val switchToNextTheme: () -> Unit,
+    val updateProfile: (faceUrl: String, nickname: String, signature: String) -> Unit,
+    val logout: () -> Unit,
+)
+
+data class HomeScreenTopBarState(
+    val screenSelected: HomeScreenTab,
+    val openDrawer: () -> Unit,
+    val onAddFriend: () -> Unit,
+    val onJoinGroup: () -> Unit,
+)
+
+data class HomeScreenBottomBarState(
+    val homeScreenList: List<HomeScreenTab>,
+    val homeScreenSelected: HomeScreenTab,
+    val unreadMessageCount: Long,
+    val onHomeScreenTabSelected: (HomeScreenTab) -> Unit
+)
+
+data class HomeScreenSheetContentState(
+    val modalBottomSheetState: ModalBottomSheetState,
+    val toAddFriend: (userId: String) -> Unit,
+    val toJoinGroup: (groupId: String) -> Unit
+)
+
+data class ConversationScreenState(
+    val listState: LazyListState,
+    val conversationList: List<Conversation>,
+    val onClickConversation: (Conversation) -> Unit,
+    val onDeleteConversation: (Conversation) -> Unit,
+    val onPinnedConversation: (Conversation, Boolean) -> Unit
+)
+
+data class FriendshipScreenState(
+    val listState: LazyListState,
+    val joinedGroupList: List<GroupProfile>,
+    val friendList: List<PersonProfile>,
+    val onClickGroup: (GroupProfile) -> Unit,
+    val onClickFriend: (PersonProfile) -> Unit
+)
+
+data class PersonProfileScreenState(
+    val personProfile: PersonProfile
+)
+
 data class ChatScreenState(
     val messageList: List<Message>,
     val mushScrollToBottom: Boolean,
@@ -103,14 +155,6 @@ data class ChatScreenState(
 data class GroupProfileScreenState(
     val groupProfile: GroupProfile,
     val memberList: List<GroupMemberProfile>
-)
-
-data class HomeDrawerViewState(
-    val appTheme: AppTheme,
-    val userProfile: PersonProfile,
-    val switchToNextTheme: () -> Unit,
-    val updateProfile: (faceUrl: String, nickname: String, signature: String) -> Unit,
-    val logout: () -> Unit,
 )
 
 data class LoginScreenState(

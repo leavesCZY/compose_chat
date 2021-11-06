@@ -5,11 +5,9 @@ import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.base.provider.IMessageProvider
 import github.leavesc.compose_chat.proxy.consts.AppConst
 import github.leavesc.compose_chat.proxy.utils.RandomUtils
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
 import java.lang.ref.SoftReference
 import kotlin.coroutines.resume
 
@@ -97,39 +95,37 @@ class MessageProvider : IMessageProvider, Converters {
     ): LoadMessageResult {
         val id = chat.id
         val count = 40
-        return withContext(Dispatchers.Main) {
-            suspendCancellableCoroutine { continuation ->
-                val callback = object : V2TIMValueCallback<List<V2TIMMessage>> {
-                    override fun onSuccess(t: List<V2TIMMessage>) {
-                        continuation.resume(
-                            LoadMessageResult.Success(
-                                messageList = convertMessage(t),
-                                loadFinish = t.size < count
-                            )
+        return suspendCancellableCoroutine { continuation ->
+            val callback = object : V2TIMValueCallback<List<V2TIMMessage>> {
+                override fun onSuccess(t: List<V2TIMMessage>) {
+                    continuation.resume(
+                        LoadMessageResult.Success(
+                            messageList = convertMessage(t),
+                            loadFinish = t.size < count
                         )
-                    }
-
-                    override fun onError(code: Int, desc: String?) {
-                        continuation.resume(LoadMessageResult.Failed(reason = "code: $code desc: $desc"))
-                    }
+                    )
                 }
-                when (chat) {
-                    is Chat.C2C -> {
-                        V2TIMManager.getMessageManager().getC2CHistoryMessageList(
-                            id,
-                            count,
-                            lastMessage?.tag as? V2TIMMessage,
-                            callback
-                        )
-                    }
-                    is Chat.Group -> {
-                        V2TIMManager.getMessageManager().getGroupHistoryMessageList(
-                            id,
-                            count,
-                            lastMessage?.tag as? V2TIMMessage,
-                            callback
-                        )
-                    }
+
+                override fun onError(code: Int, desc: String?) {
+                    continuation.resume(LoadMessageResult.Failed(reason = "code: $code desc: $desc"))
+                }
+            }
+            when (chat) {
+                is Chat.C2C -> {
+                    V2TIMManager.getMessageManager().getC2CHistoryMessageList(
+                        id,
+                        count,
+                        lastMessage?.tag as? V2TIMMessage,
+                        callback
+                    )
+                }
+                is Chat.Group -> {
+                    V2TIMManager.getMessageManager().getGroupHistoryMessageList(
+                        id,
+                        count,
+                        lastMessage?.tag as? V2TIMMessage,
+                        callback
+                    )
                 }
             }
         }
@@ -146,7 +142,7 @@ class MessageProvider : IMessageProvider, Converters {
         channel.send(sendingMessage)
         val callback = object : V2TIMValueCallback<V2TIMMessage> {
             override fun onSuccess(t: V2TIMMessage) {
-                coroutineScope.launch(Dispatchers.Main) {
+                coroutineScope.launch {
                     val msg = convertMessage(t) as? TextMessage
                     if (msg == null) {
                         channel.send(sendingMessage.copy(state = MessageState.SendFailed))
@@ -159,7 +155,7 @@ class MessageProvider : IMessageProvider, Converters {
             }
 
             override fun onError(code: Int, desc: String?) {
-                coroutineScope.launch(Dispatchers.Main) {
+                coroutineScope.launch {
                     channel.send(
                         sendingMessage.copy(state = MessageState.SendFailed).apply {
                             tag = "code: $code desc: $desc"

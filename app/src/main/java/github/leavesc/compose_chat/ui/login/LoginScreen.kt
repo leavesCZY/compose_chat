@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.R
 import github.leavesc.compose_chat.extend.navigateWithBack
 import github.leavesc.compose_chat.logic.LoginViewModel
@@ -21,7 +20,6 @@ import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
 import github.leavesc.compose_chat.ui.weigets.CommonSnackbar
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -69,8 +67,7 @@ fun LoginScreen(navController: NavHostController) {
                         text = stringResource(id = R.string.app_name),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .statusBarsPadding()
-                            .fillMaxHeight(fraction = 0.35f)
+                            .fillMaxHeight(fraction = 0.40f)
                             .wrapContentSize(align = Alignment.Center),
                         style = MaterialTheme.typography.subtitle1,
                         fontSize = 34.sp,
@@ -102,7 +99,7 @@ fun LoginScreen(navController: NavHostController) {
                         text = "登陆"
                     ) {
                         if (userId.isBlank()) {
-                            coroutineScope.launch(Dispatchers.Main) {
+                            coroutineScope.launch {
                                 scaffoldState.snackbarHostState.showSnackbar(message = "请输入 UserID")
                             }
                         } else {

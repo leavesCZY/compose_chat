@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesc.compose_chat.model.HomeScreenBottomBarState
 import github.leavesc.compose_chat.model.HomeScreenTab
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 
@@ -25,10 +26,7 @@ import github.leavesc.compose_chat.ui.weigets.CommonDivider
  */
 @Composable
 fun HomeScreenBottomBar(
-    homeScreenList: List<HomeScreenTab>,
-    homeScreenSelected: HomeScreenTab,
-    unreadMessageCount: Long,
-    onHomeScreenTabSelected: (HomeScreenTab) -> Unit,
+    homeScreenBottomBarState: HomeScreenBottomBarState
 ) {
     Column(
         modifier = Modifier
@@ -38,15 +36,15 @@ fun HomeScreenBottomBar(
     ) {
         CommonDivider()
         Row {
-            for (screen in homeScreenList) {
-                val selected = homeScreenSelected == screen
+            for (screen in homeScreenBottomBarState.homeScreenList) {
+                val selected = homeScreenBottomBarState.homeScreenSelected == screen
                 BottomNavigationItem(
                     modifier = Modifier.weight(1f),
                     screen = screen,
                     tabSelected = selected,
-                    unreadMessageCount = unreadMessageCount,
+                    unreadMessageCount = homeScreenBottomBarState.unreadMessageCount,
                     onClickTab = {
-                        onHomeScreenTabSelected(screen)
+                        homeScreenBottomBarState.onHomeScreenTabSelected(screen)
                     }
                 )
             }

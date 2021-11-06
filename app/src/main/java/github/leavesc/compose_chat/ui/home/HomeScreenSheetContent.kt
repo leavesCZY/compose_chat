@@ -2,7 +2,6 @@ package github.leavesc.compose_chat.ui.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
@@ -10,10 +9,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import github.leavesc.compose_chat.logic.ComposeChat
+import github.leavesc.compose_chat.model.HomeScreenSheetContentState
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
 import github.leavesc.compose_chat.ui.weigets.CommonSnackbar
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -23,22 +22,20 @@ import kotlinx.coroutines.launch
  * @Github：https://github.com/leavesC
  */
 @Composable
-fun HomeMoreActionScreen(
-    modalBottomSheetState: ModalBottomSheetState,
-    toAddFriend: (userId: String) -> Unit,
-    toJoinGroup: (groupId: String) -> Unit
+fun HomeScreenSheetContent(
+    homeScreenSheetContentState: HomeScreenSheetContentState,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
 
     fun expandSheetContent(targetValue: ModalBottomSheetValue) {
-        coroutineScope.launch(Dispatchers.Main) {
-            modalBottomSheetState.animateTo(targetValue = targetValue)
+        coroutineScope.launch {
+            homeScreenSheetContentState.modalBottomSheetState.animateTo(targetValue = targetValue)
         }
     }
 
-    BackHandler(enabled = modalBottomSheetState.isVisible, onBack = {
-        when (modalBottomSheetState.currentValue) {
+    BackHandler(enabled = homeScreenSheetContentState.modalBottomSheetState.isVisible, onBack = {
+        when (homeScreenSheetContentState.modalBottomSheetState.currentValue) {
             ModalBottomSheetValue.Hidden -> {
 
             }
@@ -51,7 +48,7 @@ fun HomeMoreActionScreen(
         }
     })
 
-    var userId by remember(key1 = modalBottomSheetState.isVisible) {
+    var userId by remember(key1 = homeScreenSheetContentState.modalBottomSheetState.isVisible) {
         mutableStateOf(
             ""
         )
@@ -87,21 +84,21 @@ fun HomeMoreActionScreen(
             )
             CommonButton(text = "添加好友") {
                 if (userId.isBlank()) {
-                    coroutineScope.launch(Dispatchers.Main) {
+                    coroutineScope.launch {
                         scaffoldState.snackbarHostState.showSnackbar(message = "请输入 UserID")
                     }
                 } else {
-                    toAddFriend(userId)
+                    homeScreenSheetContentState.toAddFriend(userId)
                 }
             }
-            CommonButton(text = "加入 compose_chat 交流群 - A") {
-                toJoinGroup(ComposeChat.groupIdA)
+            CommonButton(text = "加入交流群 A") {
+                homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdA)
             }
-            CommonButton(text = "加入 compose_chat 交流群 - B") {
-                toJoinGroup(ComposeChat.groupIdB)
+            CommonButton(text = "加入交流群 B") {
+                homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdB)
             }
-            CommonButton(text = "加入 compose_chat 交流群 - C") {
-                toJoinGroup(ComposeChat.groupIdC)
+            CommonButton(text = "加入交流群 C") {
+                homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdC)
             }
         }
     }

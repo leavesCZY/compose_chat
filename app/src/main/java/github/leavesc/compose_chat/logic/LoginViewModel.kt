@@ -6,10 +6,8 @@ import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.cache.AccountCache
 import github.leavesc.compose_chat.model.LoginScreenState
 import github.leavesc.compose_chat.utils.showToast
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlin.system.measureTimeMillis
 
 /**
  * @Author: leavesC
@@ -70,12 +68,8 @@ class LoginViewModel : ViewModel() {
 
     private fun login(userId: String) {
         val formatUserId = userId.lowercase()
-        viewModelScope.launch(Dispatchers.Main) {
-            val loginResult: ActionResult
-            val time = measureTimeMillis {
-                loginResult = ComposeChat.accountProvider.login(formatUserId)
-            }
-            when (loginResult) {
+        viewModelScope.launch {
+            when (val loginResult = ComposeChat.accountProvider.login(formatUserId)) {
                 is ActionResult.Failed -> {
                     showToast(loginResult.reason)
                     dispatchViewState(
@@ -89,10 +83,6 @@ class LoginViewModel : ViewModel() {
                     )
                 }
                 is ActionResult.Success -> {
-//                    val minTime = 2000
-//                    if (time < minTime) {
-//                        delay(minTime - time)
-//                    }
                     AccountCache.onUserLogin(userId = formatUserId)
                     dispatchViewState(
                         LoginScreenState(

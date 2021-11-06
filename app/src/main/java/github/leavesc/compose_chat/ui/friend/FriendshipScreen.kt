@@ -1,22 +1,20 @@
 package github.leavesc.compose_chat.ui.friend
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.base.model.PersonProfile
+import github.leavesc.compose_chat.model.FriendshipScreenState
 import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 import github.leavesc.compose_chat.ui.weigets.EmptyView
@@ -29,30 +27,32 @@ import github.leavesc.compose_chat.ui.weigets.EmptyView
  */
 @Composable
 fun FriendshipScreen(
-    listState: LazyListState,
     paddingValues: PaddingValues,
-    joinedGroupList: List<GroupProfile>,
-    friendList: List<PersonProfile>,
-    onClickGroup: (GroupProfile) -> Unit,
-    onClickFriend: (PersonProfile) -> Unit
+    friendshipScreenState: FriendshipScreenState,
 ) {
     Scaffold(
         modifier = Modifier
             .padding(bottom = paddingValues.calculateBottomPadding())
             .fillMaxSize()
     ) {
-        if (joinedGroupList.isEmpty() && friendList.isEmpty()) {
+        if (friendshipScreenState.joinedGroupList.isEmpty() && friendshipScreenState.friendList.isEmpty()) {
             EmptyView()
         } else {
-            LazyColumn(state = listState) {
-                joinedGroupList.forEach {
+            LazyColumn(state = friendshipScreenState.listState) {
+                friendshipScreenState.joinedGroupList.forEach {
                     item(key = it.id) {
-                        GroupItem(groupProfile = it, onClickGroup = onClickGroup)
+                        GroupItem(
+                            groupProfile = it,
+                            onClickGroup = friendshipScreenState.onClickGroup
+                        )
                     }
                 }
-                friendList.forEach {
+                friendshipScreenState.friendList.forEach {
                     item(key = it.userId) {
-                        FriendshipItem(personProfile = it, onClickFriend = onClickFriend)
+                        FriendshipItem(
+                            personProfile = it,
+                            onClickFriend = friendshipScreenState.onClickFriend
+                        )
                     }
                 }
                 item {
@@ -69,7 +69,6 @@ private fun GroupItem(groupProfile: GroupProfile, onClickGroup: (GroupProfile) -
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Color.Gray.copy(alpha = 0.1f))
             .clickable {
                 onClickGroup(groupProfile)
             },

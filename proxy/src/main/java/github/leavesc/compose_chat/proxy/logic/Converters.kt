@@ -4,9 +4,7 @@ import com.tencent.imsdk.v2.*
 import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.proxy.coroutineScope.ChatCoroutineScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 
 /**
@@ -88,19 +86,17 @@ internal interface Converters {
     }
 
     suspend fun deleteConversation(id: String): ActionResult {
-        return withContext(Dispatchers.Main) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getConversationManager().deleteConversation(
-                    id, object : V2TIMCallback {
-                        override fun onSuccess() {
-                            continuation.resume(ActionResult.Success)
-                        }
+        return suspendCancellableCoroutine { continuation ->
+            V2TIMManager.getConversationManager().deleteConversation(
+                id, object : V2TIMCallback {
+                    override fun onSuccess() {
+                        continuation.resume(ActionResult.Success)
+                    }
 
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(ActionResult.Failed(desc ?: ""))
-                        }
-                    })
-            }
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(ActionResult.Failed(desc ?: ""))
+                    }
+                })
         }
     }
 

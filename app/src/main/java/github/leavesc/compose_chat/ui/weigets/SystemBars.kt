@@ -1,7 +1,6 @@
 package github.leavesc.compose_chat.ui.weigets
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
@@ -19,21 +18,21 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
  */
 @Composable
 fun SetSystemBarsColor(
-    statusBarColor: Color = Color.Transparent,
-    navigationBarColor: Color = MaterialTheme.colors.background,
-    isLightTheme: Boolean = MaterialTheme.colors.isLight
+    statusBarColor: Color,
+    navigationBarColor: Color,
+    statusBarDarkIcons: Boolean,
+    navigationDarkIcons: Boolean
 ) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setStatusBarColor(
             color = statusBarColor,
-            darkIcons = isLightTheme
+            darkIcons = statusBarDarkIcons
         )
         systemUiController.setNavigationBarColor(
             color = navigationBarColor,
-            darkIcons = isLightTheme
+            darkIcons = navigationDarkIcons
         )
-        systemUiController.systemBarsDarkContentEnabled = isLightTheme
     }
 }
 

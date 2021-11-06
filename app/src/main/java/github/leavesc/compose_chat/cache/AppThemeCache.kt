@@ -31,7 +31,7 @@ object AppThemeCache {
 
     private fun getAppTheme(): AppTheme {
         val themeType = preferences.getInt(KEY_APP_THEME, DefaultAppTheme.type)
-        return AppTheme.values().find { it.type == themeType } ?: throw IllegalArgumentException()
+        return AppTheme.values().find { it.type == themeType } ?: DefaultAppTheme
     }
 
     fun onAppThemeChanged(appTheme: AppTheme) {

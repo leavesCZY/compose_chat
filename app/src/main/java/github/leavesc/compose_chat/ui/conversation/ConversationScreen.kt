@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -19,6 +18,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atLeast
 import github.leavesc.compose_chat.base.model.Conversation
+import github.leavesc.compose_chat.model.ConversationScreenState
 import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 import github.leavesc.compose_chat.ui.weigets.EmptyView
@@ -31,29 +31,25 @@ import github.leavesc.compose_chat.ui.weigets.EmptyView
  */
 @Composable
 fun ConversationScreen(
-    listState: LazyListState,
     paddingValues: PaddingValues,
-    conversationList: List<Conversation>,
-    onClickConversation: (Conversation) -> Unit,
-    onDeleteConversation: (Conversation) -> Unit,
-    onConversationPinnedChanged: (Conversation, Boolean) -> Unit
+    conversationScreenState: ConversationScreenState,
 ) {
     Scaffold(
         modifier = Modifier
             .padding(bottom = paddingValues.calculateBottomPadding())
             .fillMaxSize()
     ) {
-        if (conversationList.isEmpty()) {
+        if (conversationScreenState.conversationList.isEmpty()) {
             EmptyView()
         } else {
-            LazyColumn(state = listState) {
-                conversationList.forEach {
+            LazyColumn(state = conversationScreenState.listState) {
+                conversationScreenState.conversationList.forEach {
                     item(key = it.id) {
                         ConversationItem(
                             conversation = it,
-                            onClickConversation = onClickConversation,
-                            onDeleteConversation = onDeleteConversation,
-                            onConversationPinnedChanged = onConversationPinnedChanged
+                            onClickConversation = conversationScreenState.onClickConversation,
+                            onDeleteConversation = conversationScreenState.onDeleteConversation,
+                            onPinnedConversation = conversationScreenState.onPinnedConversation
                         )
                     }
                 }
@@ -70,14 +66,14 @@ private fun ConversationItem(
     conversation: Conversation,
     onClickConversation: (Conversation) -> Unit,
     onDeleteConversation: (Conversation) -> Unit,
-    onConversationPinnedChanged: (Conversation, Boolean) -> Unit
+    onPinnedConversation: (Conversation, Boolean) -> Unit
 ) {
     val padding = 10.dp
     var menuExpanded by remember {
         mutableStateOf(false)
     }
     val bgColor = if (conversation.isPinned) {
-        Color.Gray.copy(alpha = 0.1f)
+        Color.LightGray.copy(alpha = 0.15f)
     } else {
         MaterialTheme.colors.background
     }
@@ -184,7 +180,6 @@ private fun ConversationItem(
                     start.linkTo(anchor = parent.start)
                     end.linkTo(anchor = parent.end)
                     top.linkTo(anchor = parent.top)
-                    bottom.linkTo(anchor = parent.bottom)
                 }
         ) {
             DropdownMenu(
@@ -196,7 +191,7 @@ private fun ConversationItem(
             ) {
                 DropdownMenuItem(onClick = {
                     menuExpanded = false
-                    onConversationPinnedChanged(conversation, !conversation.isPinned)
+                    onPinnedConversation(conversation, !conversation.isPinned)
                 }) {
                     Text(text = if (conversation.isPinned) "取消置顶" else "置顶会话")
                 }

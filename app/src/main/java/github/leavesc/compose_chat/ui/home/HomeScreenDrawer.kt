@@ -11,11 +11,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesc.compose_chat.BuildConfig
-import github.leavesc.compose_chat.model.HomeDrawerViewState
+import github.leavesc.compose_chat.model.HomeScreenDrawerState
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -26,19 +25,17 @@ import kotlinx.coroutines.launch
  * @Github：https://github.com/leavesC
  */
 @Composable
-fun HomeDrawerScreen(
-    drawerState: DrawerState,
-    homeDrawerViewState: HomeDrawerViewState
-) {
+fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
+    val drawerState = homeScreenDrawerState.drawerState
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberBackdropScaffoldState(initialValue = BackdropValue.Revealed)
     BackHandler(enabled = drawerState.isOpen || scaffoldState.isConcealed, onBack = {
         if (scaffoldState.isConcealed) {
-            coroutineScope.launch(Dispatchers.Main) {
+            coroutineScope.launch {
                 scaffoldState.reveal()
             }
         } else if (drawerState.isOpen) {
-            coroutineScope.launch(Dispatchers.Main) {
+            coroutineScope.launch {
                 drawerState.close()
             }
         }
@@ -50,7 +47,7 @@ fun HomeDrawerScreen(
                 drawerState.isOpen
             }.collect {
                 if (!it && scaffoldState.isConcealed) {
-                    coroutineScope.launch(Dispatchers.Main) {
+                    coroutineScope.launch {
                         scaffoldState.reveal()
                     }
                 }
@@ -68,19 +65,19 @@ fun HomeDrawerScreen(
         },
         backLayerContent = {
             ProfileScreen(
-                personProfile = homeDrawerViewState.userProfile
+                personProfile = homeScreenDrawerState.userProfile
             ) {
                 Column {
                     CommonButton(text = "个人资料") {
-                        coroutineScope.launch(Dispatchers.Main) {
+                        coroutineScope.launch {
                             scaffoldState.conceal()
                         }
                     }
                     CommonButton(text = "切换主题") {
-                        homeDrawerViewState.switchToNextTheme()
+                        homeScreenDrawerState.switchToNextTheme()
                     }
                     CommonButton(text = "切换账号") {
-                        homeDrawerViewState.logout()
+                        homeScreenDrawerState.logout()
                     }
                     Text(
                         modifier = Modifier
@@ -99,18 +96,18 @@ fun HomeDrawerScreen(
         },
         stickyFrontLayer = false,
         frontLayerContent = {
-            AlterProfile(
+            DrawerFrontLayer(
                 backdropScaffoldState = scaffoldState,
-                homeDrawerViewState = homeDrawerViewState
+                homeScreenDrawerState = homeScreenDrawerState
             )
         }
     )
 }
 
 @Composable
-private fun AlterProfile(
+private fun DrawerFrontLayer(
     backdropScaffoldState: BackdropScaffoldState,
-    homeDrawerViewState: HomeDrawerViewState
+    homeScreenDrawerState: HomeScreenDrawerState
 ) {
     Column(
         modifier = Modifier
@@ -123,26 +120,26 @@ private fun AlterProfile(
     ) {
         var faceUrl by remember(
             key1 = backdropScaffoldState.isRevealed,
-            key2 = homeDrawerViewState
+            key2 = homeScreenDrawerState
         ) {
             mutableStateOf(
-                homeDrawerViewState.userProfile.faceUrl
+                homeScreenDrawerState.userProfile.faceUrl
             )
         }
         var nickname by remember(
             key1 = backdropScaffoldState.isRevealed,
-            key2 = homeDrawerViewState
+            key2 = homeScreenDrawerState
         ) {
             mutableStateOf(
-                homeDrawerViewState.userProfile.nickname
+                homeScreenDrawerState.userProfile.nickname
             )
         }
         var signature by remember(
             key1 = backdropScaffoldState.isRevealed,
-            key2 = homeDrawerViewState
+            key2 = homeScreenDrawerState
         ) {
             mutableStateOf(
-                homeDrawerViewState.userProfile.signature
+                homeScreenDrawerState.userProfile.signature
             )
         }
         val textFieldModifier = Modifier
@@ -192,7 +189,7 @@ private fun AlterProfile(
                 .padding(vertical = 10.dp),
             text = "保存设置"
         ) {
-            homeDrawerViewState.updateProfile(
+            homeScreenDrawerState.updateProfile(
                 faceUrl,
                 nickname,
                 signature

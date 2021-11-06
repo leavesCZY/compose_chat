@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.utils.showToast
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -20,7 +19,7 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
     val friendProfile = MutableStateFlow(PersonProfile.Empty)
 
     fun getFriendProfile() {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             friendProfile.emit(
                 ComposeChat.friendshipProvider.getFriendProfile(friendId) ?: PersonProfile.Empty
             )
@@ -28,7 +27,7 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
     }
 
     fun deleteFriend(friendId: String) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             when (val result = ComposeChat.friendshipProvider.deleteFriend(friendId = friendId)) {
                 is ActionResult.Success -> {
                     showToast("已删除好友")
@@ -41,7 +40,7 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
     }
 
     fun setFriendRemark(friendId: String, remark: String) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             when (val result =
                 ComposeChat.friendshipProvider.setFriendRemark(
                     friendId = friendId,

@@ -55,8 +55,8 @@ private val selfTextMessageMock = TextMessage.SelfTextMessage(
 
 private val timeMessageMock = TimeMessage(targetMessage = friendTextMessageMock)
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewFriendTextMessageItem() {
     FriendTextMessageItem(
@@ -71,8 +71,8 @@ private fun PreviewFriendTextMessageItem() {
     )
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewSelfTextMessageItem() {
     SelfTextMessageItem(
@@ -86,15 +86,15 @@ private fun PreviewSelfTextMessageItem() {
     )
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewTimeMessageItem() {
     TimeMessageItem(timeMessage = timeMessageMock)
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewMessageStateItem() {
     MessageStateItem(modifier = Modifier, messageState = MessageState.Sending)
