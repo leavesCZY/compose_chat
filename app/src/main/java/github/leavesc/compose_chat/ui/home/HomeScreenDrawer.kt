@@ -41,17 +41,11 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
         }
     })
 
-    if (drawerState.isOpen) {
-        LaunchedEffect(key1 = drawerState.isOpen) {
-            snapshotFlow {
-                drawerState.isOpen
-            }.collect {
-                if (!it && scaffoldState.isConcealed) {
-                    coroutineScope.launch {
-                        scaffoldState.reveal()
-                    }
-                }
-            }
+    LaunchedEffect(key1 = Unit) {
+        snapshotFlow {
+            !drawerState.isOpen && scaffoldState.isConcealed
+        }.collect {
+            scaffoldState.reveal()
         }
     }
 
