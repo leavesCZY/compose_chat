@@ -28,9 +28,9 @@ object CoilImageLoader {
         val imageLoader = ImageLoader.Builder(context)
             .crossfade(false)
             .allowHardware(false)
-            .placeholder(R.drawable.icon_logo)
-            .fallback(R.drawable.icon_logo)
-            .error(R.drawable.icon_logo)
+            .placeholder(R.drawable.icon_logo_round)
+            .fallback(R.drawable.icon_logo_round)
+            .error(R.drawable.icon_logo_round)
             .build()
         Coil.setImageLoader(imageLoader)
     }

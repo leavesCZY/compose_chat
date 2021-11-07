@@ -52,16 +52,17 @@ fun HomeScreen(
 
     val homeViewModel = viewModel<HomeViewModel>()
 
-    val personProfile by homeViewModel.personProfile.collectAsState()
     val conversationList by homeViewModel.conversationList.collectAsState()
+    val totalUnreadCount by homeViewModel.totalUnreadCount.collectAsState()
     val fiendList by homeViewModel.fiendList.collectAsState()
     val joinedGroupList by homeViewModel.joinedGroupList.collectAsState()
+    val personProfile by homeViewModel.personProfile.collectAsState()
 
     val conversationListState = rememberLazyListState()
     val conversationScreenState = remember(key1 = conversationList) {
         ConversationScreenState(
             listState = conversationListState,
-            conversationList = homeViewModel.conversationList.value,
+            conversationList = conversationList,
             onClickConversation = {
                 when (it) {
                     is Conversation.C2CConversation -> {
@@ -88,8 +89,8 @@ fun HomeScreen(
     val friendshipScreenState = remember(key1 = joinedGroupList, key2 = fiendList) {
         FriendshipScreenState(
             listState = friendShipListState,
-            joinedGroupList = homeViewModel.joinedGroupList.value,
-            friendList = homeViewModel.fiendList.value,
+            joinedGroupList = joinedGroupList,
+            friendList = fiendList,
             onClickGroup = {
                 navController.navToGroupChatScreen(groupId = it.id)
             },
@@ -101,7 +102,7 @@ fun HomeScreen(
         )
     }
     val personProfileScreenState = remember(key1 = personProfile) {
-        PersonProfileScreenState(personProfile = homeViewModel.personProfile.value)
+        PersonProfileScreenState(personProfile = personProfile)
     }
 
     val homeDrawerViewState =
@@ -109,7 +110,7 @@ fun HomeScreen(
             HomeScreenDrawerState(
                 drawerState = drawerState,
                 appTheme = appTheme,
-                userProfile = homeViewModel.personProfile.value,
+                userProfile = personProfile,
                 switchToNextTheme = switchToNextTheme,
                 updateProfile = { faceUrl: String, nickname: String, signature: String ->
                     homeViewModel.updateProfile(
@@ -145,13 +146,13 @@ fun HomeScreen(
 
     val homeScreenBottomBarState = remember(
         key1 = homeTabSelected,
-        key2 = homeViewModel.totalUnreadCount.collectAsState(),
+        key2 = totalUnreadCount,
         key3 = onHomeTabSelected
     ) {
         HomeScreenBottomBarState(
             homeScreenList = HomeScreenTab.values().toList(),
             homeScreenSelected = homeTabSelected,
-            unreadMessageCount = homeViewModel.totalUnreadCount.value,
+            unreadMessageCount = totalUnreadCount,
             onHomeScreenTabSelected = onHomeTabSelected
         )
     }

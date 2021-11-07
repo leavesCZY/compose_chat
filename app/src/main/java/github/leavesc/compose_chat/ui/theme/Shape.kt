@@ -24,25 +24,6 @@ val BottomSheetShape = RoundedCornerShape(
     bottomStart = CornerSize(0.dp)
 )
 
-val DiagonalShape: Shape = object : Shape {
-
-    override fun createOutline(
-        size: Size,
-        layoutDirection: LayoutDirection,
-        density: Density
-    ): Outline {
-        val path = Path()
-        path.lineTo(size.width, 0f)
-        path.lineTo(size.width, size.height / 1.5f)
-        path.lineTo(0f, size.height)
-        path.close()
-        return Outline.Generic(path = path)
-    }
-
-    override fun toString(): String = "DiagonalShape"
-
-}
-
 class BezierShape(private val animateValue: Float) : Shape {
 
     override fun createOutline(

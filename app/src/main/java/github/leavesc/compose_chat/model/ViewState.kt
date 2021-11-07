@@ -82,6 +82,14 @@ sealed class Screen(val route: String) {
 
 }
 
+data class LoginScreenState(
+    val showLogo: Boolean,
+    val showInput: Boolean,
+    val showLoading: Boolean,
+    val loginSuccess: Boolean,
+    val lastLoginUserId: String
+)
+
 enum class HomeScreenTab(
     val icon: ImageVector
 ) {
@@ -155,12 +163,4 @@ data class ChatScreenState(
 data class GroupProfileScreenState(
     val groupProfile: GroupProfile,
     val memberList: List<GroupMemberProfile>
-)
-
-data class LoginScreenState(
-    val showLogo: Boolean,
-    val showInput: Boolean,
-    val showLoading: Boolean,
-    val loginSuccess: Boolean,
-    val lastLoginUserId: String = ""
 )

@@ -37,11 +37,10 @@ fun HomeScreenBottomBar(
         CommonDivider()
         Row {
             for (screen in homeScreenBottomBarState.homeScreenList) {
-                val selected = homeScreenBottomBarState.homeScreenSelected == screen
                 BottomNavigationItem(
                     modifier = Modifier.weight(1f),
                     screen = screen,
-                    tabSelected = selected,
+                    tabSelected = homeScreenBottomBarState.homeScreenSelected == screen,
                     unreadMessageCount = homeScreenBottomBarState.unreadMessageCount,
                     onClickTab = {
                         homeScreenBottomBarState.onHomeScreenTabSelected(screen)
