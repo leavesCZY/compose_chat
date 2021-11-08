@@ -106,30 +106,25 @@ private fun ProfileScreen(
                 repeatMode = RepeatMode.Reverse,
             ),
         )
-        val coroutineScope = rememberCoroutineScope()
         var offsetX by remember { mutableStateOf(0f) }
         var offsetY by remember { mutableStateOf(0f) }
-        var dragAnimateEnable by remember {
-            mutableStateOf(false)
-        }
-        LaunchedEffect(key1 = dragAnimateEnable) {
-            if (dragAnimateEnable) {
-                coroutineScope.launch {
-                    Animatable(
-                        initialValue = Offset(x = offsetX, y = offsetY),
-                        typeConverter = Offset.VectorConverter
-                    ).animateTo(
-                        targetValue = Offset(x = 0f, y = 0f),
-                        animationSpec = SpringSpec(dampingRatio = Spring.DampingRatioHighBouncy),
-                        block = {
-                            offsetX = value.x
-                            offsetY = value.y
-                        }
-                    )
-                    dragAnimateEnable = false
-                }
+        val coroutineScope = rememberCoroutineScope()
+        fun launchDragAnimate() {
+            coroutineScope.launch {
+                Animatable(
+                    initialValue = Offset(x = offsetX, y = offsetY),
+                    typeConverter = Offset.VectorConverter
+                ).animateTo(
+                    targetValue = Offset(x = 0f, y = 0f),
+                    animationSpec = SpringSpec(dampingRatio = Spring.DampingRatioHighBouncy),
+                    block = {
+                        offsetX = value.x
+                        offsetY = value.y
+                    }
+                )
             }
         }
+
         val (titleRefs, subtitleRefs, introductionRefs, backgroundRefs, avatarRefs, contentRefs) = createRefs()
         CoilImage(
             modifier = Modifier
@@ -142,15 +137,15 @@ private fun ProfileScreen(
                 .scale(scale = (animateValue + 1f) * 1.1f)
                 .clip(shape = BezierShape(animateValue = animateValue))
                 .rotate(degrees = animateValue * 10f)
-                .scrim(colors = listOf(Color(color = 0x4DB6BCC0), Color(color = 0x41F7F5F5))),
+                .scrim(colors = listOf(Color(color = 0x4DD1D5D8), Color(color = 0x41F7F5F5))),
             data = avatarUrl
         )
         OutlinedAvatar(
             modifier = Modifier
                 .constrainAs(ref = avatarRefs) {
-                    start.linkTo(backgroundRefs.start)
-                    end.linkTo(backgroundRefs.end)
-                    bottom.linkTo(backgroundRefs.bottom)
+                    start.linkTo(anchor = backgroundRefs.start)
+                    end.linkTo(anchor = backgroundRefs.end)
+                    bottom.linkTo(anchor = backgroundRefs.bottom)
                 }
                 .size(size = 100.dp)
                 .zIndex(zIndex = Float.MAX_VALUE)
@@ -160,16 +155,16 @@ private fun ProfileScreen(
                         y = offsetY.roundToInt()
                     )
                 }
-                .pointerInput(Unit) {
+                .pointerInput(key1 = Unit) {
                     detectDragGestures(
                         onDragStart = {
 
                         },
                         onDragCancel = {
-                            dragAnimateEnable = true
+                            launchDragAnimate()
                         },
                         onDragEnd = {
-                            dragAnimateEnable = true
+                            launchDragAnimate()
                         },
                         onDrag = { change, dragAmount ->
                             change.consumeAllChanges()
@@ -187,9 +182,9 @@ private fun ProfileScreen(
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .constrainAs(ref = titleRefs) {
-                    start.linkTo(backgroundRefs.start)
-                    end.linkTo(backgroundRefs.end)
-                    top.linkTo(parent.top)
+                    start.linkTo(anchor = backgroundRefs.start)
+                    end.linkTo(anchor = backgroundRefs.end)
+                    top.linkTo(anchor = parent.top)
                 }
                 .statusBarsPadding()
                 .padding(start = 10.dp, end = 10.dp, top = 20.dp))
@@ -201,9 +196,9 @@ private fun ProfileScreen(
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .constrainAs(ref = subtitleRefs) {
-                    start.linkTo(backgroundRefs.start)
-                    end.linkTo(backgroundRefs.end)
-                    top.linkTo(titleRefs.bottom)
+                    start.linkTo(anchor = backgroundRefs.start)
+                    end.linkTo(anchor = backgroundRefs.end)
+                    top.linkTo(anchor = titleRefs.bottom)
                 }
                 .padding(
                     start = 15.dp, end = 15.dp, top = 12.dp
@@ -214,9 +209,9 @@ private fun ProfileScreen(
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .constrainAs(ref = introductionRefs) {
-                    start.linkTo(backgroundRefs.start)
-                    end.linkTo(backgroundRefs.end)
-                    top.linkTo(backgroundRefs.bottom)
+                    start.linkTo(anchor = backgroundRefs.start)
+                    end.linkTo(anchor = backgroundRefs.end)
+                    top.linkTo(anchor = backgroundRefs.bottom)
                 }
                 .fillMaxWidth()
                 .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp)
@@ -224,9 +219,9 @@ private fun ProfileScreen(
         Box(
             modifier = Modifier
                 .constrainAs(ref = contentRefs) {
-                    start.linkTo(backgroundRefs.start)
-                    end.linkTo(backgroundRefs.end)
-                    top.linkTo(introductionRefs.bottom)
+                    start.linkTo(anchor = backgroundRefs.start)
+                    end.linkTo(anchor = backgroundRefs.end)
+                    top.linkTo(anchor = introductionRefs.bottom)
                 }
                 .zIndex(zIndex = 1f)
         ) {

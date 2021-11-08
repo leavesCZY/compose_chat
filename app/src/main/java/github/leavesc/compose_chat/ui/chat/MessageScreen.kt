@@ -2,6 +2,7 @@ package github.leavesc.compose_chat.ui.chat
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -33,6 +34,7 @@ fun MessageScreen(
     val clipboardManager = LocalClipboardManager.current
     LazyColumn(
         modifier = Modifier
+            .fillMaxSize()
             .padding(bottom = 20.dp),
         state = listState,
         reverseLayout = true,

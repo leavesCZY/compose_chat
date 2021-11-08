@@ -36,9 +36,7 @@ import github.leavesc.compose_chat.ui.login.LoginScreen
 import github.leavesc.compose_chat.ui.theme.ChatTheme
 import github.leavesc.compose_chat.ui.weigets.SetSystemBarsColor
 import github.leavesc.compose_chat.utils.showToast
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.withContext
 
 /**
  * @Author: leavesC
@@ -61,20 +59,18 @@ class HomeActivity : ComponentActivity() {
             }
             val navController = rememberAnimatedNavController()
             LaunchedEffect(key1 = Unit) {
-                withContext(Dispatchers.Main) {
-                    appViewModel.serverConnectState.collect {
-                        when (it) {
-                            ServerState.KickedOffline -> {
-                                showToast("本账号已在其它客户端登陆，请重新登陆")
-                                AccountCache.onUserLogout()
-                                navController.navToLogin()
-                            }
-                            ServerState.Logout -> {
-                                navController.navToLogin()
-                            }
-                            else -> {
-                                showToast("Connect State Changed : $it")
-                            }
+                appViewModel.serverConnectState.collect {
+                    when (it) {
+                        ServerState.KickedOffline -> {
+                            showToast("本账号已在其它客户端登陆，请重新登陆")
+                            AccountCache.onUserLogout()
+                            navController.navToLogin()
+                        }
+                        ServerState.Logout -> {
+                            navController.navToLogin()
+                        }
+                        else -> {
+                            showToast("Connect State Changed : $it")
                         }
                     }
                 }
