@@ -13,9 +13,15 @@ object ComposeChat {
 
     const val groupIdA = "@TGS#3KGRTDSHY"
 
-    const val groupIdB = "@TGS#3QXSTDSHR"
+    const val groupIdB = "@TGS#3S4RTDSHN"
 
-    const val groupIdC = "@TGS#3S4RTDSHN"
+    const val groupIdC = "@TGS#3QXSTDSHR"
+
+    const val groupIdD = "@TGS#3GR2HLTH3"
+
+    const val groupIdE = "@TGS#3Q65MLTHR"
+
+    const val groupIdF = "@TGS#3XFHNLTH5"
 
     val accountProvider: IAccountProvider = AccountProvider()
 

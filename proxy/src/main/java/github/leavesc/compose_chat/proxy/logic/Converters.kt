@@ -123,21 +123,22 @@ internal interface Converters {
         return messageList?.mapNotNull { convertMessage(it) } ?: emptyList()
     }
 
-    fun convertMessage(timMessage: V2TIMMessage?): Message? {
+    fun convertMessage(timMessage: V2TIMMessage?, withGroupTip: Boolean = false): Message? {
         val groupId = timMessage?.groupID
         val userId = timMessage?.userID
         if (groupId.isNullOrBlank() && userId.isNullOrBlank()) {
             return null
         }
-        return when (timMessage.elemType) {
-            V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> {
-                val senderProfile = PersonProfile(
-                    userId = timMessage.sender,
-                    faceUrl = timMessage.faceUrl ?: "",
-                    nickname = timMessage.nickName ?: "",
-                    remark = timMessage.friendRemark ?: "",
-                    signature = ""
-                )
+        val senderProfile = PersonProfile(
+            userId = timMessage.sender,
+            faceUrl = timMessage.faceUrl ?: "",
+            nickname = timMessage.nickName ?: "",
+            remark = timMessage.friendRemark ?: "",
+            signature = ""
+        )
+        return kotlin.run {
+            val elementType = timMessage.elemType
+            if (elementType == V2TIMMessage.V2TIM_ELEM_TYPE_TEXT) {
                 if (timMessage.isSelf) {
                     TextMessage.SelfTextMessage(
                         msgId = timMessage.msgID ?: "",
@@ -154,8 +155,14 @@ internal interface Converters {
                         sender = senderProfile
                     )
                 }
-            }
-            else -> {
+            } else if (withGroupTip && elementType == V2TIMMessage.V2TIM_ELEM_TYPE_GROUP_TIPS) {
+                TextMessage.FriendTextMessage(
+                    msgId = timMessage.msgID ?: "",
+                    msg = "[修改了群资料]",
+                    timestamp = timMessage.timestamp,
+                    sender = senderProfile
+                )
+            } else {
                 null
             }
         }?.apply {

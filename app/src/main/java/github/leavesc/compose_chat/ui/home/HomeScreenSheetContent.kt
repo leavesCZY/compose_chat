@@ -1,7 +1,11 @@
 package github.leavesc.compose_chat.ui.home
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
@@ -62,43 +66,54 @@ fun HomeScreenSheetContent(
             CommonSnackbar(it)
         },
     ) {
-        Column {
-            CommonOutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(
-                        horizontal = 20.dp,
-                        vertical = 20.dp
-                    ),
-                value = userId,
-                onValueChange = { id ->
-                    val realValue = id.trimStart().trimEnd()
-                    if (realValue.all { it.isLowerCase() || it.isUpperCase() }) {
-                        userId = realValue
+        LazyColumn {
+            item {
+                CommonOutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(
+                            horizontal = 20.dp,
+                            vertical = 20.dp
+                        ),
+                    value = userId,
+                    onValueChange = { id ->
+                        val realValue = id.trimStart().trimEnd()
+                        if (realValue.all { it.isLowerCase() || it.isUpperCase() }) {
+                            userId = realValue
+                        }
+                    },
+                    label = "输入 UserID",
+                    singleLine = true,
+                    maxLines = 1,
+                )
+                CommonButton(text = "添加好友") {
+                    if (userId.isBlank()) {
+                        coroutineScope.launch {
+                            scaffoldState.snackbarHostState.showSnackbar(message = "请输入 UserID")
+                        }
+                    } else {
+                        homeScreenSheetContentState.toAddFriend(userId)
                     }
-                },
-                label = "输入 UserID",
-                singleLine = true,
-                maxLines = 1,
-            )
-            CommonButton(text = "添加好友") {
-                if (userId.isBlank()) {
-                    coroutineScope.launch {
-                        scaffoldState.snackbarHostState.showSnackbar(message = "请输入 UserID")
-                    }
-                } else {
-                    homeScreenSheetContentState.toAddFriend(userId)
                 }
-            }
-            CommonButton(text = "加入交流群 A") {
-                homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdA)
-            }
-            CommonButton(text = "加入交流群 B") {
-                homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdB)
-            }
-            CommonButton(text = "加入交流群 C") {
-                homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdC)
+                CommonButton(text = "加入交流群 A") {
+                    homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdA)
+                }
+                CommonButton(text = "加入交流群 B") {
+                    homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdB)
+                }
+                CommonButton(text = "加入交流群 C") {
+                    homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdC)
+                }
+                CommonButton(text = "加入交流群 D") {
+                    homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdD)
+                }
+                CommonButton(text = "加入交流群 E") {
+                    homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdE)
+                }
+                CommonButton(text = "加入交流群 F") {
+                    homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdF)
+                }
             }
         }
     }

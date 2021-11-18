@@ -32,8 +32,8 @@ android {
         applicationId "github.leavesc.compose_chat"
         minSdk 21
         targetSdk 30
-        versionCode 2
-        versionName "1.2.0"
+        versionCode 3
+        versionName "1.2.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs 'zh'
         vectorDrawables {
@@ -120,26 +120,26 @@ android {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
-    implementation 'io.coil-kt:coil-compose:2.0.0-alpha02'
-    implementation 'androidx.activity:activity-compose:1.4.0'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc01"
-    implementation "androidx.navigation:navigation-compose:2.4.0-beta01"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling:$compose_version"
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-    implementation "com.google.accompanist:accompanist-insets:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
+    testImplementation all_dependencie['androidx-junit']
+    androidTestImplementation all_dependencie['androidx-test-ext']
+    androidTestImplementation all_dependencie['androidx-espresso']
+    implementation all_dependencie['androidx-appcompat']
+    implementation all_dependencie['androidx-material']
+    implementation all_dependencie['kotlinx-coroutines']
+    implementation all_dependencie['compose-coil']
+    implementation all_dependencie['compose-activity']
+    implementation all_dependencie['compose-lifecycle-viewmodel']
+    implementation all_dependencie['compose-constraintlayout']
+    implementation all_dependencie['compose-navigation']
+    implementation all_dependencie['compose-material']
+    implementation all_dependencie['compose-material-icons']
+    implementation all_dependencie['compose-livedata']
+    implementation all_dependencie['compose-ui']
+    implementation all_dependencie['compose-ui-tooling']
+    androidTestImplementation all_dependencie['compose-ui-test-junit4']
+    implementation all_dependencie['accompanist-insets']
+    implementation all_dependencie['accompanist-systemuicontroller']
+    implementation all_dependencie['accompanist-navigation-animation']
     implementation project(path: ':base')
     implementation project(path: ':proxy')
 }

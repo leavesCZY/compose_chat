@@ -1,8 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+subprojects {
+    apply from: "${rootDir}${File.separator}gradle${File.separator}dependencies.gradle"
+}
+
 buildscript {
     ext {
         kotlin_version = '1.5.31'
-        compose_version = '1.1.0-beta02'
+        compose_version = '1.1.0-beta03'
         accompanist_version = '0.21.2-beta'
     }
     repositories {

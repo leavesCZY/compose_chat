@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.model.GroupProfileScreenState
+import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -45,6 +46,21 @@ class GroupProfileViewModel(private val groupId: String) : ViewModel() {
 
     suspend fun quitGroup(): ActionResult {
         return ComposeChat.groupProvider.quitGroup(groupId = groupId)
+    }
+
+    fun setAvatar(avatarUrl: String) {
+        viewModelScope.launch {
+            when (val result =
+                ComposeChat.groupProvider.setAvatar(groupId = groupId, avatarUrl = avatarUrl)) {
+                ActionResult.Success -> {
+                    getGroupProfile()
+                    showToast("修改成功")
+                }
+                is ActionResult.Failed -> {
+                    showToast(result.reason)
+                }
+            }
+        }
     }
 
 }

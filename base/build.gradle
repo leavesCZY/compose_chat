@@ -21,8 +21,8 @@ android {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+    testImplementation all_dependencie['androidx-junit']
+    androidTestImplementation all_dependencie['androidx-test-ext']
+    androidTestImplementation all_dependencie['androidx-espresso']
+    implementation all_dependencie['kotlinx-coroutines']
 }

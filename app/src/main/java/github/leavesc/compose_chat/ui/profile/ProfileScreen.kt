@@ -137,7 +137,7 @@ private fun ProfileScreen(
                 .scale(scale = (animateValue + 1f) * 1.1f)
                 .clip(shape = BezierShape(animateValue = animateValue))
                 .rotate(degrees = animateValue * 10f)
-                .scrim(colors = listOf(Color(color = 0x4DD1D5D8), Color(color = 0x41F7F5F5))),
+                .scrim(colors = listOf(Color(color = 0x4D9DA3A8), Color(color = 0x41F7F5F5))),
             data = avatarUrl
         )
         OutlinedAvatar(

@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
+
 /**
  * @Author: leavesC
  * @Date: 2021/7/12 0:10
@@ -32,6 +33,13 @@ class GroupProvider : IGroupProvider, Converters {
             override fun onQuitFromGroup(groupID: String) {
                 getJoinedGroupList()
             }
+
+            override fun onGroupInfoChanged(
+                groupID: String?,
+                changeInfos: MutableList<V2TIMGroupChangeInfo>?
+            ) {
+                getJoinedGroupList()
+            }
         })
     }
 
@@ -52,6 +60,23 @@ class GroupProvider : IGroupProvider, Converters {
     override suspend fun quitGroup(groupId: String): ActionResult {
         return suspendCancellableCoroutine { continuation ->
             V2TIMManager.getInstance().quitGroup(groupId, object : V2TIMCallback {
+                override fun onSuccess() {
+                    continuation.resume(ActionResult.Success)
+                }
+
+                override fun onError(code: Int, desc: String?) {
+                    continuation.resume(ActionResult.Failed(code = code, reason = desc ?: ""))
+                }
+            })
+        }
+    }
+
+    override suspend fun setAvatar(groupId: String, avatarUrl: String): ActionResult {
+        return suspendCancellableCoroutine { continuation ->
+            val v2TIMGroupInfo = V2TIMGroupInfo()
+            v2TIMGroupInfo.groupID = groupId
+            v2TIMGroupInfo.faceUrl = avatarUrl
+            V2TIMManager.getGroupManager().setGroupInfo(v2TIMGroupInfo, object : V2TIMCallback {
                 override fun onSuccess() {
                     continuation.resume(ActionResult.Success)
                 }

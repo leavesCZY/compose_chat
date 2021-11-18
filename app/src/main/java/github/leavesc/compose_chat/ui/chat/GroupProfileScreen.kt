@@ -24,6 +24,7 @@ import github.leavesc.compose_chat.extend.navToHomeScreen
 import github.leavesc.compose_chat.extend.viewModelInstance
 import github.leavesc.compose_chat.logic.GroupProfileViewModel
 import github.leavesc.compose_chat.model.Screen
+import github.leavesc.compose_chat.ui.home.randomFaceUrl
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
@@ -77,19 +78,23 @@ fun GroupProfileScreen(
                     Spacer(modifier = Modifier.height(height = 40.dp))
                 }
             }
-            GroupProfileScreenTopBar(quitGroup = {
-                coroutineScope.launch {
-                    when (val result = groupProfileViewModel.quitGroup()) {
-                        ActionResult.Success -> {
-                            showToast("已退出群聊")
-                            navController.navToHomeScreen()
-                        }
-                        is ActionResult.Failed -> {
-                            showToast(result.reason)
+            GroupProfileScreenTopBar(
+                randomAvatar = {
+                    groupProfileViewModel.setAvatar(avatarUrl = randomFaceUrl())
+                },
+                quitGroup = {
+                    coroutineScope.launch {
+                        when (val result = groupProfileViewModel.quitGroup()) {
+                            ActionResult.Success -> {
+                                showToast("已退出群聊")
+                                navController.navToHomeScreen()
+                            }
+                            is ActionResult.Failed -> {
+                                showToast(result.reason)
+                            }
                         }
                     }
-                }
-            })
+                })
         }
     }
 }
@@ -167,6 +172,7 @@ private fun GroupMemberItem(
 
 @Composable
 private fun GroupProfileScreenTopBar(
+    randomAvatar: () -> Unit,
     quitGroup: () -> Unit,
 ) {
     var menuExpanded by remember {
@@ -220,6 +226,12 @@ private fun GroupProfileScreenTopBar(
                         menuExpanded = false
                     }
                 ) {
+                    DropdownMenuItem(onClick = {
+                        menuExpanded = false
+                        randomAvatar()
+                    }) {
+                        Text(text = "修改头像", modifier = Modifier)
+                    }
                     DropdownMenuItem(onClick = {
                         menuExpanded = false
                         quitGroup()

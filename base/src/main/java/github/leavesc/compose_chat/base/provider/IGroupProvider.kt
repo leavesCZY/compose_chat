@@ -25,4 +25,6 @@ interface IGroupProvider {
 
     suspend fun getGroupMemberList(groupId: String): List<GroupMemberProfile>
 
+    suspend fun setAvatar(groupId: String, avatarUrl: String): ActionResult
+
 }

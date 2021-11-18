@@ -1,0 +1,25 @@
+ext {
+    all_dependencie = [
+            "androidx-junit"                  : 'junit:junit:4.13.2',
+            "androidx-test-ext"               : 'androidx.test.ext:junit:1.1.2',
+            "androidx-espresso"               : 'androidx.test.espresso:espresso-core:3.4.0',
+            "androidx-appcompat"              : 'androidx.appcompat:appcompat:1.4.0',
+            "androidx-material"               : 'com.google.android.material:material:1.4.0',
+            "compose-activity"                : 'androidx.activity:activity-compose:1.4.0',
+            "compose-lifecycle-viewmodel"     : "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0",
+            "compose-constraintlayout"        : "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02",
+            "compose-navigation"              : "androidx.navigation:navigation-compose:2.4.0-beta02",
+            "compose-material"                : "androidx.compose.material:material:$compose_version",
+            "compose-material-icons"          : "androidx.compose.material:material-icons-extended:$compose_version",
+            "compose-livedata"                : "androidx.compose.runtime:runtime-livedata:$compose_version",
+            "compose-ui"                      : "androidx.compose.ui:ui:$compose_version",
+            "compose-ui-tooling"              : "androidx.compose.ui:ui-tooling:$compose_version",
+            "compose-ui-test-junit4"          : "androidx.compose.ui:ui-test-junit4:$compose_version",
+            "accompanist-insets"              : "com.google.accompanist:accompanist-insets:$accompanist_version",
+            "accompanist-systemuicontroller"  : "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version",
+            "accompanist-navigation-animation": "com.google.accompanist:accompanist-navigation-animation:$accompanist_version",
+            "compose-coil"                    : 'io.coil-kt:coil-compose:2.0.0-alpha03',
+            "kotlinx-coroutines"              : 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2',
+            "tencent-imsdk"                   : "com.tencent.imsdk:imsdk-plus:5.7.1435",
+    ]
+}
