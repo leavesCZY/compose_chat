@@ -22,7 +22,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.LocalWindowInsets
-import github.leavesc.compose_chat.ui.weigets.CommonDivider
 
 /**
  * @Author: leavesC
@@ -41,7 +40,7 @@ fun ChatScreenTopBar(
     val ime = LocalWindowInsets.current.ime
     TopAppBar(
         backgroundColor = MaterialTheme.colors.primaryVariant,
-        elevation = 0.dp,
+        elevation = 1.dp,
         contentPadding = PaddingValues(
             all = 0.dp
         ),
@@ -50,7 +49,7 @@ fun ChatScreenTopBar(
             modifier = Modifier
                 .fillMaxSize(),
         ) {
-            val (backMenu, showName, moreMenu, divider) = createRefs()
+            val (backMenu, showName, moreMenu) = createRefs()
             Icon(
                 modifier = Modifier
                     .size(size = 28.dp)
@@ -105,12 +104,6 @@ fun ChatScreenTopBar(
                 contentDescription = null,
                 tint = MaterialTheme.colors.surface
             )
-            CommonDivider(modifier = Modifier
-                .constrainAs(ref = divider) {
-                    start.linkTo(anchor = parent.start)
-                    bottom.linkTo(anchor = parent.bottom)
-                    end.linkTo(anchor = parent.end)
-                })
         }
     }
 }

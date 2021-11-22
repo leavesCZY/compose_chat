@@ -20,6 +20,6 @@ ext {
             "accompanist-navigation-animation": "com.google.accompanist:accompanist-navigation-animation:$accompanist_version",
             "compose-coil"                    : 'io.coil-kt:coil-compose:2.0.0-alpha03',
             "kotlinx-coroutines"              : 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2',
-            "tencent-imsdk"                   : "com.tencent.imsdk:imsdk-plus:5.7.1435",
+            "tencent-imsdk"                   : "com.tencent.imsdk:imsdk-plus:5.8.1668",
     ]
 }

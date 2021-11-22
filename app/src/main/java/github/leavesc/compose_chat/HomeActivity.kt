@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -103,7 +102,23 @@ class HomeActivity : ComponentActivity() {
         ProvideWindowInsets {
             AnimatedNavHost(
                 navController = navController,
-                startDestination = Screen.LoginScreen.route
+                startDestination = Screen.LoginScreen.route,
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = {
+                            -it
+                        },
+                        animationSpec = tween(300)
+                    )
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = {
+                            it
+                        },
+                        animationSpec = tween(300)
+                    )
+                },
             ) {
                 animatedComposable(
                     screen = Screen.LoginScreen,
@@ -150,31 +165,7 @@ class HomeActivity : ComponentActivity() {
         content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
     ) {
         composable(
-            route = screen.route,
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = {
-                        -it
-                    },
-                    animationSpec = tween(300)
-                )
-            },
-            exitTransition = {
-                fadeOut(targetAlpha = 0.9f, animationSpec = tween(300))
-            },
-            popEnterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = {
-                        0
-                    },
-                    animationSpec = tween(300)
-                )
-            },
-            popExitTransition = {
-                slideOutHorizontally(targetOffsetX = {
-                    it
-                }, animationSpec = tween(300))
-            },
+            route = screen.route
         ) { backStackEntry ->
             content(backStackEntry)
         }
