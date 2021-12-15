@@ -21,19 +21,15 @@ void generateBuildConfigField(String type, String fieldName, Object value) {
     }
 }
 
-def keyAliasExt = "leavesc"
-def keyPasswordExt = "123456"
-def storePasswordExt = "123456"
-
 android {
-    compileSdk 31
-    buildToolsVersion "30.0.3"
+    compileSdk compileSdkVersionExt.toInteger()
+    buildToolsVersion buildToolsVersionExt.toString()
     defaultConfig {
-        applicationId "github.leavesc.compose_chat"
-        minSdk 21
-        targetSdk 30
-        versionCode 3
-        versionName "1.2.1"
+        applicationId applicationIdExt.toString()
+        minSdk minSdkVersionExt.toInteger()
+        targetSdk targetSdkVersionExt.toInteger()
+        versionCode versionCodeExt.toInteger()
+        versionName versionNameExt.toString()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs 'zh'
         vectorDrawables {
@@ -50,9 +46,9 @@ android {
     signingConfigs {
         releaseConfig {
             storeFile file("..\\key.jks")
-            keyAlias keyAliasExt
-            storePassword keyPasswordExt
-            keyPassword storePasswordExt
+            keyAlias keyAliasExt.toString()
+            storePassword keyPasswordExt.toString()
+            keyPassword storePasswordExt.toString()
             v1SigningEnabled true
             v2SigningEnabled true
         }

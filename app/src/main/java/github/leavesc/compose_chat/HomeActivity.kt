@@ -7,9 +7,13 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -78,7 +82,7 @@ class HomeActivity : ComponentActivity() {
                 SetSystemBarsColor(
                     statusBarColor = Color.Transparent,
                     navigationBarColor = MaterialTheme.colors.background,
-                    statusBarDarkIcons = appTheme == AppTheme.Light,
+                    statusBarDarkIcons = appTheme == AppTheme.Light || appTheme == AppTheme.Gray,
                     navigationDarkIcons = appTheme != AppTheme.Dark
                 )
                 NavigationView(
@@ -86,6 +90,14 @@ class HomeActivity : ComponentActivity() {
                     appTheme = appTheme,
                     switchToNextTheme = switchToNextTheme
                 )
+                if (appTheme == AppTheme.Gray) {
+                    Canvas(modifier = Modifier.fillMaxSize()) {
+                        drawRect(
+                            color = Color.LightGray,
+                            blendMode = BlendMode.Saturation
+                        )
+                    }
+                }
             }
         }
     }

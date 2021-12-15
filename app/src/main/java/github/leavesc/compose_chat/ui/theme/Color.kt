@@ -44,5 +44,6 @@ val textMessageBgColor: Color
             AppTheme.Dark -> textMessageBgColorDark
             AppTheme.Blue -> textMessageBgColorBlue
             AppTheme.Pink -> textMessageBgColorPink
+            AppTheme.Gray -> textMessageBgColorLight
         }
     }

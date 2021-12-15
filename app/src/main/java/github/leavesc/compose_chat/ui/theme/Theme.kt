@@ -61,6 +61,9 @@ fun ChatTheme(
         AppTheme.Pink -> {
             PinkColorPalette
         }
+        AppTheme.Gray -> {
+            LightColorPalette
+        }
     }
     val typography = when (appTheme) {
         AppTheme.Light -> {
@@ -74,6 +77,9 @@ fun ChatTheme(
         }
         AppTheme.Pink -> {
             PinkTypography
+        }
+        AppTheme.Gray -> {
+            LightTypography
         }
     }
     MaterialTheme(
