@@ -14,12 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.Coil
 import coil.ImageLoader
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import coil.size.Scale
 import github.leavesc.compose_chat.R
 
 object CoilImageLoader {
@@ -44,7 +46,13 @@ fun CoilImage(
     contentScale: ContentScale = ContentScale.Crop,
     builder: ImageRequest.Builder.() -> Unit = {},
 ) {
-    val imagePainter = rememberImagePainter(data = data, builder = builder)
+    val imagePainter = rememberAsyncImagePainter(
+        ImageRequest.Builder(LocalContext.current)
+            .data(data = data)
+            .scale(scale = Scale.FIT)
+            .apply(block = builder)
+            .build()
+    )
     Image(
         modifier = modifier,
         painter = imagePainter,

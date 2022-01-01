@@ -76,7 +76,7 @@ private fun PreviewFriendTextMessageItem() {
         onClickAvatar = {
 
         },
-        onLongPressMessage = {
+        onLongPressTextMessage = {
 
         }
     )
@@ -91,7 +91,7 @@ private fun PreviewSelfTextMessageItem() {
         onClickAvatar = {
 
         },
-        onLongPressMessage = {
+        onLongPressTextMessage = {
 
         }
     )
@@ -100,13 +100,14 @@ private fun PreviewSelfTextMessageItem() {
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun PreviewImageMessageItem() {
-    ImageMessageItem(
+private fun PreviewFriendImageMessageItem() {
+    FriendImageMessageItem(
         imageMessage = selfImageMessageMock,
+        showSenderName = true,
         onClickAvatar = {
 
         },
-        onLongPressMessage = {
+        onClickImageMessage = {
 
         }
     )
@@ -132,7 +133,8 @@ fun MessageItems(
     showSenderName: Boolean,
     onClickSelfAvatar: (Message) -> Unit,
     onClickFriendAvatar: (Message) -> Unit,
-    onLongPressMessage: (Message) -> Unit,
+    onLongPressTextMessage: (TextMessage) -> Unit,
+    onClickImageMessage: (ImageMessage) -> Unit,
 ) {
     val unit = when (message) {
         is TextMessage -> {
@@ -140,14 +142,14 @@ fun MessageItems(
                 SelfTextMessageItem(
                     textMessage = message,
                     onClickAvatar = onClickSelfAvatar,
-                    onLongPressMessage = onLongPressMessage,
+                    onLongPressTextMessage = onLongPressTextMessage,
                 )
             } else {
                 FriendTextMessageItem(
                     textMessage = message,
                     showSenderName = showSenderName,
                     onClickAvatar = onClickFriendAvatar,
-                    onLongPressMessage = onLongPressMessage,
+                    onLongPressTextMessage = onLongPressTextMessage,
                 )
             }
         }
@@ -155,11 +157,20 @@ fun MessageItems(
             TimeMessageItem(timeMessage = message)
         }
         is ImageMessage -> {
-            ImageMessageItem(
-                imageMessage = message,
-                onClickAvatar = onClickFriendAvatar,
-                onLongPressMessage = onLongPressMessage
-            )
+            if (message.detail.isSelfMessage) {
+                SelfImageMessageItem(
+                    imageMessage = message,
+                    onClickAvatar = onClickFriendAvatar,
+                    onClickImageMessage = onClickImageMessage
+                )
+            } else {
+                FriendImageMessageItem(
+                    imageMessage = message,
+                    showSenderName = showSenderName,
+                    onClickAvatar = onClickFriendAvatar,
+                    onClickImageMessage = onClickImageMessage
+                )
+            }
         }
     }
 }
@@ -175,6 +186,8 @@ private val textMessageInnerHorizontalPadding = 6.dp
 private val textMessageInnerVerticalPadding = 6.dp
 private val textMessageShape = RoundedCornerShape(size = 6.dp)
 private val timeMessageShape = RoundedCornerShape(size = 4.dp)
+
+private val imageSize = 120.dp
 
 private val messageBgColor = Color.Unspecified
 
@@ -209,7 +222,7 @@ private fun messageSenderNameStyle(): TextStyle {
 private fun SelfTextMessageItem(
     textMessage: TextMessage,
     onClickAvatar: (Message) -> Unit,
-    onLongPressMessage: (Message) -> Unit,
+    onLongPressTextMessage: (TextMessage) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -265,7 +278,7 @@ private fun SelfTextMessageItem(
 
                     },
                     onLongClick = {
-                        onLongPressMessage(textMessage)
+                        onLongPressTextMessage(textMessage)
                     }
                 )
                 .padding(
@@ -292,7 +305,7 @@ private fun FriendTextMessageItem(
     textMessage: TextMessage,
     showSenderName: Boolean,
     onClickAvatar: (Message) -> Unit,
-    onLongPressMessage: (Message) -> Unit,
+    onLongPressTextMessage: (TextMessage) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -352,7 +365,7 @@ private fun FriendTextMessageItem(
 
                     },
                     onLongClick = {
-                        onLongPressMessage(textMessage)
+                        onLongPressTextMessage(textMessage)
                     }
                 )
                 .padding(
@@ -370,6 +383,161 @@ private fun FriendTextMessageItem(
                 start.linkTo(anchor = message.end, margin = textMessageHorizontalPadding)
             },
             messageState = textMessage.detail.state,
+        )
+    }
+}
+
+@Composable
+private fun SelfImageMessageItem(
+    imageMessage: ImageMessage,
+    onClickAvatar: (Message) -> Unit,
+    onClickImageMessage: (ImageMessage) -> Unit,
+) {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = itemHorizontalPadding,
+                vertical = itemVerticalPadding
+            )
+            .background(color = messageBgColor)
+    ) {
+        val (avatarRefs, showName, message, messageState) = createRefs()
+        CoilCircleImage(
+            data = imageMessage.detail.sender.faceUrl,
+            modifier = Modifier
+                .constrainAs(ref = avatarRefs) {
+                    top.linkTo(anchor = parent.top)
+                    end.linkTo(anchor = parent.end)
+                }
+                .size(size = avatarSize)
+                .clickable(onClick = {
+                    onClickAvatar(imageMessage)
+                })
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(ref = showName) {
+                    top.linkTo(
+                        anchor = avatarRefs.top
+                    )
+                    end.linkTo(
+                        anchor = avatarRefs.start,
+                        margin = textMessageHorizontalPadding
+                    )
+                },
+            text = "",
+            style = messageSenderNameStyle(),
+            textAlign = TextAlign.End,
+        )
+        CoilImage(
+            modifier = Modifier
+                .constrainAs(ref = message) {
+                    top.linkTo(
+                        anchor = showName.bottom,
+                        margin = textMessageSenderNameVerticalPadding
+                    )
+                    end.linkTo(anchor = showName.start)
+                    width = Dimension.preferredValue(dp = imageSize)
+                    height = Dimension.preferredValue(dp = imageSize)
+                }
+                .combinedClickable(
+                    onClick = {
+                        onClickImageMessage(imageMessage)
+                    }
+                )
+                .padding(
+                    horizontal = textMessageInnerHorizontalPadding,
+                    vertical = textMessageInnerVerticalPadding
+                ),
+            data = imageMessage.imagePath)
+        MessageStateItem(
+            modifier = Modifier.constrainAs(ref = messageState) {
+                top.linkTo(anchor = message.top)
+                bottom.linkTo(anchor = message.bottom)
+                end.linkTo(anchor = message.start, margin = textMessageHorizontalPadding)
+            },
+            messageState = imageMessage.detail.state,
+        )
+    }
+}
+
+@Composable
+private fun FriendImageMessageItem(
+    imageMessage: ImageMessage,
+    showSenderName: Boolean,
+    onClickAvatar: (Message) -> Unit,
+    onClickImageMessage: (ImageMessage) -> Unit,
+) {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = itemHorizontalPadding,
+                vertical = itemVerticalPadding
+            )
+            .background(color = messageBgColor)
+    ) {
+        val (avatarRefs, showName, message, messageState) = createRefs()
+        CoilCircleImage(
+            data = imageMessage.detail.sender.faceUrl,
+            modifier = Modifier
+                .constrainAs(ref = avatarRefs) {
+                    top.linkTo(anchor = parent.top)
+                    start.linkTo(anchor = parent.start)
+                }
+                .size(size = avatarSize)
+                .clickable(onClick = {
+                    onClickAvatar(imageMessage)
+                })
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(ref = showName) {
+                    top.linkTo(
+                        anchor = avatarRefs.top
+                    )
+                    start.linkTo(
+                        anchor = avatarRefs.end,
+                        margin = textMessageHorizontalPadding
+                    )
+                },
+            text = if (showSenderName) {
+                imageMessage.detail.sender.showName
+            } else {
+                ""
+            },
+            style = messageSenderNameStyle(),
+            textAlign = TextAlign.Start,
+        )
+        CoilImage(
+            modifier = Modifier
+                .constrainAs(ref = message) {
+                    top.linkTo(
+                        anchor = showName.bottom,
+                        margin = textMessageSenderNameVerticalPadding
+                    )
+                    start.linkTo(anchor = showName.start)
+                    width = Dimension.preferredValue(dp = imageSize)
+                    height = Dimension.preferredValue(dp = imageSize)
+                }
+                .combinedClickable(
+                    onClick = {
+                        onClickImageMessage(imageMessage)
+                    }
+                )
+                .padding(
+                    horizontal = textMessageInnerHorizontalPadding,
+                    vertical = textMessageInnerVerticalPadding
+                ),
+            data = imageMessage.imagePath)
+        MessageStateItem(
+            modifier = Modifier.constrainAs(ref = messageState) {
+                top.linkTo(anchor = message.top)
+                bottom.linkTo(anchor = message.bottom)
+                start.linkTo(anchor = message.end, margin = textMessageHorizontalPadding)
+            },
+            messageState = imageMessage.detail.state,
         )
     }
 }
@@ -409,70 +577,6 @@ private fun MessageStateItem(modifier: Modifier, messageState: MessageState) {
                 strokeWidth = 2.dp
             )
         }
-    }
-}
-
-@Composable
-private fun ImageMessageItem(
-    imageMessage: ImageMessage,
-    onClickAvatar: (Message) -> Unit,
-    onLongPressMessage: (Message) -> Unit,
-) {
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = itemHorizontalPadding,
-                vertical = itemVerticalPadding
-            )
-            .background(color = messageBgColor)
-    ) {
-        val (avatarRefs, showName, message, messageState) = createRefs()
-        CoilCircleImage(
-            data = imageMessage.detail.sender.faceUrl,
-            modifier = Modifier
-                .constrainAs(ref = avatarRefs) {
-                    top.linkTo(anchor = parent.top)
-                    start.linkTo(anchor = parent.start)
-                }
-                .size(size = avatarSize)
-                .clickable(onClick = {
-                    onClickAvatar(imageMessage)
-                })
-        )
-        CoilImage(
-            modifier = Modifier
-                .constrainAs(ref = message) {
-                    top.linkTo(
-                        anchor = showName.bottom,
-                        margin = textMessageSenderNameVerticalPadding
-                    )
-                    start.linkTo(anchor = showName.start)
-                    width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
-                }
-                .clip(shape = textMessageShape)
-                .background(color = textMessageBgColor)
-                .combinedClickable(
-                    onClick = {
-
-                    },
-                    onLongClick = {
-                        onLongPressMessage(imageMessage)
-                    }
-                )
-                .padding(
-                    horizontal = textMessageInnerHorizontalPadding,
-                    vertical = textMessageInnerVerticalPadding
-                ),
-            data = imageMessage.imagePath)
-        MessageStateItem(
-            modifier = Modifier.constrainAs(ref = messageState) {
-                top.linkTo(anchor = message.top)
-                bottom.linkTo(anchor = message.bottom)
-                start.linkTo(anchor = message.end, margin = textMessageHorizontalPadding)
-            },
-            messageState = imageMessage.detail.state,
-        )
     }
 }
 

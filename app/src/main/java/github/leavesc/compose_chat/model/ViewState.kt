@@ -12,6 +12,7 @@ import androidx.navigation.NavBackStackEntry
 import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.extend.getIntArgument
 import github.leavesc.compose_chat.extend.getStringArgument
+import github.leavesc.compose_chat.utils.StringUtils
 
 /**
  * @Author: leavesC
@@ -23,7 +24,6 @@ sealed class Screen(val route: String) {
 
     private companion object {
         private const val loginScreen = "loginScreen"
-
         private const val homeScreen = "homeScreen"
 
         private const val friendProfileScreen = "friendProfileScreen"
@@ -35,6 +35,17 @@ sealed class Screen(val route: String) {
         private const val chatScreen = "chatScreen"
         private const val keyChatScreenPartyType = "keyChatScreenPartyType"
         private const val keyChatScreenPartyId = "keyChatScreenPartyId"
+
+        private const val previewImageScreen = "previewImageScreen"
+        private const val keyPreviewImageScreenPartyType = "keyPreviewImageScreenImagePath"
+
+        private fun formatArgument(argument: String): String {
+            return StringUtils.str2HexStr(argument)
+        }
+
+        private fun decodeArgument(argument: String): String {
+            return StringUtils.hexStr2Str(argument)
+        }
     }
 
     object LoginScreen : Screen(route = loginScreen)
@@ -44,11 +55,11 @@ sealed class Screen(val route: String) {
     object FriendProfileScreen : Screen(route = friendProfileScreen + "/{${keyFriendId}}") {
 
         fun generateRoute(friendId: String): String {
-            return friendProfileScreen + "/${friendId}"
+            return friendProfileScreen + "/${formatArgument(argument = friendId)}"
         }
 
         fun getArgument(entry: NavBackStackEntry): String {
-            return entry.getStringArgument(key = keyFriendId)
+            return decodeArgument(entry.getStringArgument(key = keyFriendId))
         }
 
     }
@@ -56,11 +67,11 @@ sealed class Screen(val route: String) {
     object GroupProfileScreen : Screen(route = groupProfileScreen + "/{${keyGroupId}}") {
 
         fun generateRoute(groupId: String): String {
-            return groupProfileScreen + "/${groupId}"
+            return groupProfileScreen + "/${formatArgument(argument = groupId)}"
         }
 
         fun getArgument(entry: NavBackStackEntry): String {
-            return entry.getStringArgument(key = keyGroupId)
+            return decodeArgument(entry.getStringArgument(key = keyGroupId))
         }
 
     }
@@ -69,13 +80,26 @@ sealed class Screen(val route: String) {
         Screen(route = chatScreen + "/{${keyChatScreenPartyType}}" + "/{${keyChatScreenPartyId}}") {
 
         fun generateRoute(chat: Chat): String {
-            return chatScreen + "/${chat.type}" + "/${chat.id.replace('#', '$')}"
+            return chatScreen + "/${chat.type}" + "/${formatArgument(argument = chat.id)}"
         }
 
         fun getArgument(entry: NavBackStackEntry): Chat {
             val type = entry.getIntArgument(key = keyChatScreenPartyType)
-            val id = entry.getStringArgument(key = keyChatScreenPartyId).replace('$', '#')
+            val id = decodeArgument(entry.getStringArgument(key = keyChatScreenPartyId))
             return Chat.find(type = type, id = id)
+        }
+
+    }
+
+    object PreviewImageScreen :
+        Screen(route = previewImageScreen + "/{${keyPreviewImageScreenPartyType}}") {
+
+        fun generateRoute(imagePath: String): String {
+            return previewImageScreen + "/${formatArgument(argument = imagePath)}"
+        }
+
+        fun getArgument(entry: NavBackStackEntry): String {
+            return decodeArgument(entry.getStringArgument(key = keyPreviewImageScreenPartyType))
         }
 
     }

@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -44,10 +45,12 @@ fun PictureTable(sendImage: (String) -> Unit) {
                 }
             }
         }
-        Button(onClick = {
-            launcher.launch(Unit)
-        }) {
-            Text(text = "申请权限")
+        Button(
+            modifier = Modifier.padding(all = 40.dp),
+            onClick = {
+                launcher.launch(Unit)
+            }) {
+            Text(text = "发送图片")
         }
     }
 }

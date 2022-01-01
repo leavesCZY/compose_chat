@@ -48,6 +48,10 @@ fun NavController.navToHomeScreen() {
     popBackStack(route = Screen.HomeScreen.route, inclusive = false)
 }
 
+fun NavController.navToPreviewImageScreen(imagePath: String) {
+    navigate(route = Screen.PreviewImageScreen.generateRoute(imagePath = imagePath))
+}
+
 fun NavBackStackEntry.getStringArgument(key: String): String {
     return arguments?.getString(key)
         ?: throw IllegalArgumentException()

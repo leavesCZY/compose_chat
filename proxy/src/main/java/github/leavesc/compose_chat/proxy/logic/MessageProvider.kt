@@ -177,13 +177,41 @@ class MessageProvider : IMessageProvider, Converters {
             }
         }
 
+        private suspend fun onSuccess(message: Message) {
+            when (preSendMessage) {
+                is TextMessage -> {
+//                    messageChannel.send(element = message)
+                    messageChannel.send(
+                        element = preSendMessage.copy(
+                            preSendMessage.detail.copy(
+                                state = MessageState.Completed
+                            )
+                        )
+                    )
+                }
+                is ImageMessage -> {
+//                    messageChannel.send(element = message)
+                    messageChannel.send(
+                        element = preSendMessage.copy(
+                            preSendMessage.detail.copy(
+                                state = MessageState.Completed
+                            )
+                        )
+                    )
+                }
+                else -> {
+                    throw IllegalArgumentException()
+                }
+            }
+        }
+
         override fun onSuccess(t: V2TIMMessage) {
             coroutineScope.launch {
                 val msg = convertMessage(t)
                 if (msg == null) {
                     onFailed(reason = "未知错误")
                 } else {
-                    messageChannel.send(element = msg)
+                    onSuccess(message = msg)
                 }
                 messageChannel.close()
             }

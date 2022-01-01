@@ -13,6 +13,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import github.leavesc.compose_chat.base.model.TextMessage
+import github.leavesc.compose_chat.extend.navToPreviewImageScreen
 import github.leavesc.compose_chat.model.ChatScreenState
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.utils.showToast
@@ -62,13 +63,16 @@ fun MessageScreen(
                             )
                         }
                     },
-                    onLongPressMessage = {
+                    onLongPressTextMessage = {
                         val msg = (message as? TextMessage)?.msg
                         if (!msg.isNullOrEmpty()) {
                             clipboardManager.setText(AnnotatedString(msg))
                             showToast("已复制")
                         }
                     },
+                    onClickImageMessage = {
+                        navController.navToPreviewImageScreen(imagePath = it.imagePath)
+                    }
                 )
             }
         }
