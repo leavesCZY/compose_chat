@@ -36,40 +36,40 @@ sealed class Conversation(
         }
     }
 
-    class C2CConversation(
-        userID: String,
-        name: String,
-        faceUrl: String,
-        unreadMessageCount: Int,
-        lastMessage: Message,
-        isPinned: Boolean
-    ) : Conversation(
-        id = userID,
-        name = name,
-        faceUrl = faceUrl,
-        unreadMessageCount = unreadMessageCount,
-        lastMessage = lastMessage,
-        isPinned = isPinned
-    )
-
-    class GroupConversation(
-        groupId: String,
-        name: String,
-        faceUrl: String,
-        unreadMessageCount: Int,
-        lastMessage: Message,
-        isPinned: Boolean
-    ) : Conversation(
-        id = groupId,
-        name = name,
-        faceUrl = faceUrl,
-        unreadMessageCount = unreadMessageCount,
-        lastMessage = lastMessage,
-        isPinned = isPinned
-    )
-
     override fun toString(): String {
         return "Conversation(id='$id', name='$name', faceUrl='$faceUrl', unreadMessageCount=$unreadMessageCount, lastMessage=$lastMessage, isPinned=$isPinned, formatMsg='$formatMsg')"
     }
 
 }
+
+class C2CConversation(
+    userID: String,
+    name: String,
+    faceUrl: String,
+    unreadMessageCount: Int,
+    lastMessage: Message,
+    isPinned: Boolean
+) : Conversation(
+    id = userID,
+    name = name,
+    faceUrl = faceUrl,
+    unreadMessageCount = unreadMessageCount,
+    lastMessage = lastMessage,
+    isPinned = isPinned
+)
+
+class GroupConversation(
+    groupId: String,
+    name: String,
+    faceUrl: String,
+    unreadMessageCount: Int,
+    lastMessage: Message,
+    isPinned: Boolean
+) : Conversation(
+    id = groupId,
+    name = name,
+    faceUrl = faceUrl,
+    unreadMessageCount = unreadMessageCount,
+    lastMessage = lastMessage,
+    isPinned = isPinned
+)

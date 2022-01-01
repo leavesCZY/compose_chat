@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import github.leavesc.compose_chat.base.model.Chat
 import github.leavesc.compose_chat.base.model.TextMessage
 import github.leavesc.compose_chat.extend.navToPreviewImageScreen
 import github.leavesc.compose_chat.model.ChatScreenState
@@ -30,7 +31,7 @@ fun MessageScreen(
     listState: LazyListState,
     contentPadding: PaddingValues,
     chatScreenState: ChatScreenState,
-    showSenderName: Boolean,
+    chat: Chat,
 ) {
     val clipboardManager = LocalClipboardManager.current
     LazyColumn(
@@ -46,7 +47,7 @@ fun MessageScreen(
             item(key = message.messageDetail.msgId) {
                 MessageItems(
                     message = message,
-                    showSenderName = showSenderName,
+                    showSenderName = chat is Chat.Group,
                     onClickSelfAvatar = {
                         val messageSenderId = (it as? TextMessage)?.messageDetail?.sender?.userId
                         if (!messageSenderId.isNullOrBlank()) {
@@ -71,7 +72,12 @@ fun MessageScreen(
                         }
                     },
                     onClickImageMessage = {
-                        navController.navToPreviewImageScreen(imagePath = it.imagePath)
+                        val imagePath = it.imagePath
+                        if (imagePath.isBlank()) {
+                            showToast("图片路径为空")
+                        } else {
+                            navController.navToPreviewImageScreen(imagePath = imagePath)
+                        }
                     }
                 )
             }

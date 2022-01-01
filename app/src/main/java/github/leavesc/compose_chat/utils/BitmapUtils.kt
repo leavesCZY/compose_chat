@@ -57,7 +57,7 @@ object BitmapUtils {
 
     private fun copyBitmap(bitmap: Bitmap, desc: File) {
         val op = FileOutputStream(desc)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, op)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, op)
     }
 
 }

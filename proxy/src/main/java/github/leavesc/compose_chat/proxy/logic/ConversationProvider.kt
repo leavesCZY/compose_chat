@@ -2,7 +2,9 @@ package github.leavesc.compose_chat.proxy.logic
 
 import com.tencent.imsdk.v2.*
 import github.leavesc.compose_chat.base.model.ActionResult
+import github.leavesc.compose_chat.base.model.C2CConversation
 import github.leavesc.compose_chat.base.model.Conversation
+import github.leavesc.compose_chat.base.model.GroupConversation
 import github.leavesc.compose_chat.base.provider.IConversationProvider
 import github.leavesc.compose_chat.proxy.logic.Converters.Companion.convertMessage
 import github.leavesc.compose_chat.proxy.logic.Converters.Companion.getConversationId
@@ -128,7 +130,7 @@ class ConversationProvider : IConversationProvider, Converters {
                 val lastMessage =
                     convertMessage(timMessage = conversation.lastMessage)
                         ?: return null
-                return Conversation.C2CConversation(
+                return C2CConversation(
                     userID = conversation.userID ?: "",
                     name = conversation.showName ?: "",
                     faceUrl = conversation.faceUrl ?: "",
@@ -139,9 +141,9 @@ class ConversationProvider : IConversationProvider, Converters {
             }
             V2TIMConversation.V2TIM_GROUP -> {
                 val lastMessage =
-                    convertMessage(timMessage = conversation.lastMessage, withGroupTip = true)
+                    convertMessage(timMessage = conversation.lastMessage)
                         ?: return null
-                return Conversation.GroupConversation(
+                return GroupConversation(
                     groupId = conversation.groupID ?: "",
                     name = conversation.showName ?: "",
                     faceUrl = conversation.faceUrl ?: "",

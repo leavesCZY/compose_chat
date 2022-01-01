@@ -4,7 +4,6 @@ import com.tencent.imsdk.v2.*
 import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.base.provider.IMessageProvider
 import github.leavesc.compose_chat.proxy.consts.AppConst
-import github.leavesc.compose_chat.proxy.logic.Converters.Companion.convertGroupMember
 import github.leavesc.compose_chat.proxy.logic.Converters.Companion.convertMessage
 import github.leavesc.compose_chat.proxy.utils.RandomUtils
 import kotlinx.coroutines.CoroutineScope
@@ -22,69 +21,22 @@ import kotlin.coroutines.resume
  */
 class MessageProvider : IMessageProvider, Converters {
 
-    private val c2cListenerMap =
-        mutableMapOf<String, SoftReference<IMessageProvider.MessageListener>>()
-
-    private val groupListenerMap =
+    private val messageListenerMap =
         mutableMapOf<String, SoftReference<IMessageProvider.MessageListener>>()
 
     init {
-        V2TIMManager.getInstance().addSimpleMsgListener(object : V2TIMSimpleMsgListener() {
-            override fun onRecvC2CTextMessage(
-                msgID: String,
-                sender: V2TIMUserInfo,
-                text: String
-            ) {
-                val friendId = sender.userID
-                val listener = c2cListenerMap[friendId]?.get()
-                if (listener != null) {
-                    val messageDetail = MessageDetail(
-                        msgId = msgID,
-                        timestamp = V2TIMManager.getInstance().serverTime,
-                        state = MessageState.Completed,
-                        sender = PersonProfile(
-                            userId = friendId,
-                            faceUrl = sender.faceUrl ?: "",
-                            nickname = sender.nickName ?: "",
-                            remark = "",
-                            signature = ""
-                        ),
-                        isSelfMessage = false
-                    )
-                    listener.onReceiveMessage(
-                        message = TextMessage(
-                            detail = messageDetail,
-                            msg = text
-                        )
+        V2TIMManager.getMessageManager().addAdvancedMsgListener(object :
+            V2TIMAdvancedMsgListener() {
+            override fun onRecvNewMessage(msg: V2TIMMessage) {
+                val partId = msg.groupID ?: msg.userID ?: ""
+                val messageListener = messageListenerMap[partId]?.get()
+                if (messageListener != null) {
+                    val message = convertMessage(msg) ?: return
+                    messageListener.onReceiveMessage(
+                        message = message
                     )
                 } else {
-                    c2cListenerMap.remove(friendId)
-                }
-            }
-
-            override fun onRecvGroupTextMessage(
-                msgID: String,
-                groupID: String,
-                sender: V2TIMGroupMemberInfo,
-                text: String
-            ) {
-                val listener = groupListenerMap[groupID]?.get()
-                if (listener != null) {
-                    val messageDetail = MessageDetail(
-                        msgId = msgID,
-                        timestamp = V2TIMManager.getInstance().serverTime,
-                        state = MessageState.Completed,
-                        sender = convertGroupMember(sender).detail,
-                        isSelfMessage = false
-                    )
-                    listener.onReceiveMessage(
-                        message = TextMessage(
-                            detail = messageDetail,
-                            msg = text
-                        )
-                    )
-                } else {
-                    groupListenerMap.remove(groupID)
+                    messageListenerMap.remove(partId)
                 }
             }
         })
@@ -271,27 +223,17 @@ class MessageProvider : IMessageProvider, Converters {
         messageListener: IMessageProvider.MessageListener
     ) {
         val id = chat.id
-        when (chat) {
-            is Chat.C2C -> {
-                c2cListenerMap.remove(id)
-                c2cListenerMap[id] = SoftReference(messageListener)
-            }
-            is Chat.Group -> {
-                groupListenerMap.remove(id)
-                groupListenerMap[id] = SoftReference(messageListener)
-            }
-        }
+        messageListenerMap.remove(id)
+        messageListenerMap[id] = SoftReference(messageListener)
         checkListener()
     }
 
     override fun stopReceive(messageListener: IMessageProvider.MessageListener) {
-        removeReduceListener(listener = messageListener, listenerMap = c2cListenerMap)
-        removeReduceListener(listener = messageListener, listenerMap = groupListenerMap)
+        removeReduceListener(listener = messageListener, listenerMap = messageListenerMap)
     }
 
     private fun checkListener() {
-        removeReduceListener(listener = null, listenerMap = c2cListenerMap)
-        removeReduceListener(listener = null, listenerMap = groupListenerMap)
+        removeReduceListener(listener = null, listenerMap = messageListenerMap)
     }
 
     private fun removeReduceListener(

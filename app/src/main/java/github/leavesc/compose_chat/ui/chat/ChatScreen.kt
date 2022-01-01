@@ -95,7 +95,7 @@ fun ChatScreen(
             listState = listState,
             contentPadding = contentPadding,
             chatScreenState = chatScreenState,
-            showSenderName = chat is Chat.Group
+            chat = chat
         )
     }
 }

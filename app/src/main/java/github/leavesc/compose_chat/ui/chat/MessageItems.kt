@@ -441,12 +441,16 @@ private fun SelfImageMessageItem(
                     width = Dimension.value(dp = imageSize)
                     height = Dimension.value(dp = imageSize)
                 }
+                .background(color = Color.LightGray)
                 .combinedClickable(
                     onClick = {
                         onClickImageMessage(imageMessage)
                     }
                 ),
-            data = imageMessage.imagePath)
+            data = imageMessage.imagePath,
+            builder = {
+                placeholder(null)
+            })
         MessageStateItem(
             modifier = Modifier.constrainAs(ref = messageState) {
                 top.linkTo(anchor = message.top)
@@ -517,12 +521,16 @@ private fun FriendImageMessageItem(
                     width = Dimension.value(dp = imageSize)
                     height = Dimension.value(dp = imageSize)
                 }
+                .background(color = Color.LightGray)
                 .combinedClickable(
                     onClick = {
                         onClickImageMessage(imageMessage)
                     }
                 ),
-            data = imageMessage.imagePath)
+            data = imageMessage.imagePath,
+            builder = {
+                placeholder(null)
+            })
         MessageStateItem(
             modifier = Modifier.constrainAs(ref = messageState) {
                 top.linkTo(anchor = message.top)

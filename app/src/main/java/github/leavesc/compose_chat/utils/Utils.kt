@@ -13,6 +13,6 @@ fun showToast(msg: Any?) {
     Toast.makeText(ContextHolder.context, msg.toString(), Toast.LENGTH_SHORT).show()
 }
 
-fun log(tag: String = "TAG", log: Any) {
-    Log.e(tag, log.toString())
+fun log(tag: String = "TAG", log: () -> Any?) {
+    Log.e(tag, log()?.toString() ?: "empty")
 }

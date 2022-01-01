@@ -62,7 +62,7 @@ android {
             debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ndk {
-                abiFilters 'armeabi-v7a', 'x86'
+                abiFilters 'arm64-v8a', 'x86'
             }
         }
         release {
@@ -73,7 +73,7 @@ android {
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ndk {
-                abiFilters 'armeabi-v7a'
+                abiFilters 'arm64-v8a'
             }
         }
     }
@@ -112,6 +112,7 @@ android {
         exclude 'META-INF/*.md'
         exclude 'META-INF/CHANGES'
         exclude 'DebugProbesKt.bin'
+        exclude 'kotlin-tooling-metadata.json'
     }
 }
 

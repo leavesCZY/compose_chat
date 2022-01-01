@@ -102,10 +102,10 @@ internal interface Converters {
 
         fun getConversationId(conversation: Conversation): String {
             return when (conversation) {
-                is Conversation.C2CConversation -> {
+                is C2CConversation -> {
                     String.format("c2c_%s", conversation.id)
                 }
-                is Conversation.GroupConversation -> {
+                is GroupConversation -> {
                     String.format("group_%s", conversation.id)
                 }
             }
@@ -115,7 +115,7 @@ internal interface Converters {
             return messageList?.mapNotNull { convertMessage(it) } ?: emptyList()
         }
 
-        fun convertMessage(timMessage: V2TIMMessage?, withGroupTip: Boolean = false): Message? {
+        fun convertMessage(timMessage: V2TIMMessage?): Message? {
             val groupId = timMessage?.groupID
             val userId = timMessage?.userID
             if (groupId.isNullOrBlank() && userId.isNullOrBlank()) {
@@ -145,7 +145,7 @@ internal interface Converters {
                 V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE -> {
                     ImageMessage(
                         detail = messageDetail,
-                        imagePath = timMessage.imageElem.path ?: ""
+                        imagePath = timMessage.imageElem?.imageList?.getOrNull(1)?.url ?: ""
                     )
                 }
                 else -> {

@@ -13,7 +13,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.navigationBarsPadding
 import github.leavesc.compose_chat.base.model.ActionResult
-import github.leavesc.compose_chat.base.model.Conversation
+import github.leavesc.compose_chat.base.model.C2CConversation
+import github.leavesc.compose_chat.base.model.GroupConversation
 import github.leavesc.compose_chat.extend.navToC2CChatScreen
 import github.leavesc.compose_chat.extend.navToGroupChatScreen
 import github.leavesc.compose_chat.logic.HomeViewModel
@@ -65,10 +66,10 @@ fun HomeScreen(
             conversationList = conversationList,
             onClickConversation = {
                 when (it) {
-                    is Conversation.C2CConversation -> {
+                    is C2CConversation -> {
                         navController.navToC2CChatScreen(friendId = it.id)
                     }
-                    is Conversation.GroupConversation -> {
+                    is GroupConversation -> {
                         navController.navToGroupChatScreen(groupId = it.id)
                     }
                 }
