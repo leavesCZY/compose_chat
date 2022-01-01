@@ -83,7 +83,7 @@ fun ChatScreen(
         },
         bottomBar = {
             ChatScreenBottomBord(
-                sendMessage = {
+                sendText = {
                     chatViewModel.sendTextMessage(it)
                 }, sendImage = {
                     chatViewModel.sendImageMessage(it)

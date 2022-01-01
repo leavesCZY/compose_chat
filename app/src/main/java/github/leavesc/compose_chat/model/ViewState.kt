@@ -40,11 +40,21 @@ sealed class Screen(val route: String) {
         private const val keyPreviewImageScreenPartyType = "keyPreviewImageScreenImagePath"
 
         private fun formatArgument(argument: String): String {
-            return StringUtils.str2HexStr(argument)
+            return try {
+                StringUtils.str2HexStr(argument)
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                argument
+            }
         }
 
         private fun decodeArgument(argument: String): String {
-            return StringUtils.hexStr2Str(argument)
+            return try {
+                StringUtils.hexStr2Str(argument)
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                argument
+            }
         }
     }
 

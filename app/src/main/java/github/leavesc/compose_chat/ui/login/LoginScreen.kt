@@ -20,7 +20,6 @@ import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
 import github.leavesc.compose_chat.ui.weigets.CommonSnackbar
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**

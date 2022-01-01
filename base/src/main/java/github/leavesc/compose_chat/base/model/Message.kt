@@ -34,13 +34,13 @@ data class MessageDetail(
         TimeUtil.toChatTime(timestamp)
     }
 
-    var tag: Any? = null
-
 }
 
 sealed class Message(val messageDetail: MessageDetail) {
 
     abstract val formatMessage: String
+
+    var tag: Any? = null
 
 }
 

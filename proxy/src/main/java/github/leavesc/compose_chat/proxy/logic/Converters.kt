@@ -135,7 +135,7 @@ internal interface Converters {
                 sender = senderProfile,
                 isSelfMessage = timMessage.isSelf
             )
-            val message = when (timMessage.elemType) {
+            val message = when (val elemType = timMessage.elemType) {
                 V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> {
                     TextMessage(
                         detail = messageDetail,
@@ -151,11 +151,11 @@ internal interface Converters {
                 else -> {
                     TextMessage(
                         detail = messageDetail,
-                        msg = "[未知消息的类型]"
+                        msg = "[未知消息类型] - $elemType"
                     )
                 }
             }
-            message.messageDetail.tag = timMessage
+            message.tag = timMessage
             return message
         }
 

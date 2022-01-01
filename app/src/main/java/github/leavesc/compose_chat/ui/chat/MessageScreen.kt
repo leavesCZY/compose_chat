@@ -13,7 +13,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import github.leavesc.compose_chat.base.model.Chat
-import github.leavesc.compose_chat.base.model.TextMessage
 import github.leavesc.compose_chat.extend.navToPreviewImageScreen
 import github.leavesc.compose_chat.model.ChatScreenState
 import github.leavesc.compose_chat.model.Screen
@@ -49,24 +48,24 @@ fun MessageScreen(
                     message = message,
                     showSenderName = chat is Chat.Group,
                     onClickSelfAvatar = {
-                        val messageSenderId = (it as? TextMessage)?.messageDetail?.sender?.userId
-                        if (!messageSenderId.isNullOrBlank()) {
+                        val messageSenderId = it.messageDetail.sender.userId
+                        if (messageSenderId.isNotBlank()) {
                             navController.navigate(
                                 route = Screen.FriendProfileScreen.generateRoute(friendId = messageSenderId)
                             )
                         }
                     },
                     onClickFriendAvatar = {
-                        val messageSenderId = (it as? TextMessage)?.messageDetail?.sender?.userId
-                        if (!messageSenderId.isNullOrBlank()) {
+                        val messageSenderId = it.messageDetail.sender.userId
+                        if (messageSenderId.isNotBlank()) {
                             navController.navigate(
                                 route = Screen.FriendProfileScreen.generateRoute(friendId = messageSenderId)
                             )
                         }
                     },
                     onLongPressTextMessage = {
-                        val msg = (message as? TextMessage)?.msg
-                        if (!msg.isNullOrEmpty()) {
+                        val msg = it.msg
+                        if (msg.isNotEmpty()) {
                             clipboardManager.setText(AnnotatedString(msg))
                             showToast("已复制")
                         }

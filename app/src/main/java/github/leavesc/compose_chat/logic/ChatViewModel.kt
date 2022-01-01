@@ -1,15 +1,20 @@
 package github.leavesc.compose_chat.logic
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.base.provider.IMessageProvider
 import github.leavesc.compose_chat.model.ChatScreenState
+import github.leavesc.compose_chat.utils.BitmapUtils
+import github.leavesc.compose_chat.utils.ContextHolder
 import github.leavesc.compose_chat.utils.showToast
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * @Author: leavesC
@@ -133,7 +138,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                             refreshViewState()
                         }
                         if (message.messageDetail.state == MessageState.SendFailed) {
-                            val failReason = message.messageDetail.tag as? String
+                            val failReason = message.tag as? String
                             if (!failReason.isNullOrBlank()) {
                                 showToast(failReason)
                             }
@@ -154,13 +159,22 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
         }
     }
 
-    fun sendImageMessage(imagePath: String) {
+    fun sendImageMessage(imageUri: Uri) {
         sendMessage {
-            ComposeChat.messageProvider.sendImage(
-                chat = chat,
-                imagePath = imagePath,
-                messageChannel = it
-            )
+            withContext(Dispatchers.IO) {
+                val imageFile =
+                    BitmapUtils.saveImage(context = ContextHolder.context, imageUri = imageUri)
+                val imagePath = imageFile?.absolutePath
+                if (imagePath.isNullOrBlank()) {
+                    showToast("图片获取失败")
+                } else {
+                    ComposeChat.messageProvider.sendImage(
+                        chat = chat,
+                        imagePath = imagePath,
+                        messageChannel = it
+                    )
+                }
+            }
         }
     }
 

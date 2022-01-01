@@ -1,7 +1,9 @@
 package github.leavesc.compose_chat.ui.chat
 
 import android.content.res.Configuration
+import android.net.Uri
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -27,7 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.insets.LocalWindowInsets
+import github.leavesc.compose_chat.common.SelectPictureContract
 import github.leavesc.compose_chat.ui.weigets.navigationBarsWithImePadding
+import github.leavesc.compose_chat.utils.log
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
@@ -41,7 +45,7 @@ import kotlinx.coroutines.launch
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewChatScreenBottomBord() {
-    ChatScreenBottomBord(sendMessage = {}, sendImage = {})
+    ChatScreenBottomBord(sendText = {}, sendImage = {})
 }
 
 enum class InputSelector {
@@ -54,8 +58,8 @@ private const val TEXT_MSG_MAX_LENGTH = 200
 
 @Composable
 fun ChatScreenBottomBord(
-    sendMessage: (String) -> Unit,
-    sendImage: (String) -> Unit
+    sendText: (String) -> Unit,
+    sendImage: (Uri) -> Unit
 ) {
     val textInputService = LocalTextInputService.current
     var currentInputSelector by remember { mutableStateOf(InputSelector.NONE) }
@@ -90,7 +94,7 @@ fun ChatScreenBottomBord(
     fun onMessageSent() {
         val text = message.text
         if (text.isNotBlank()) {
-            sendMessage(text)
+            sendText(text)
             message = TextFieldValue()
         }
         checkSendMessageEnabled()
@@ -140,6 +144,16 @@ fun ChatScreenBottomBord(
     }
     var bottomTableMinHeight by remember {
         mutableStateOf(0.dp)
+    }
+    val selectPictureLauncher = rememberLauncherForActivityResult(
+        contract = SelectPictureContract
+    ) { imageUri ->
+        log {
+            "imageUri: " + imageUri?.toString()
+        }
+        if (imageUri != null) {
+            sendImage(imageUri)
+        }
     }
     LaunchedEffect(key1 = ime, key2 = navBars) {
         launch {
@@ -245,7 +259,7 @@ fun ChatScreenBottomBord(
                     )
                 }
                 InputSelector.Picture -> {
-                    ExtendTable(sendImage = sendImage)
+                    ExtendTable(selectPictureLauncher = selectPictureLauncher)
                 }
             }
         }

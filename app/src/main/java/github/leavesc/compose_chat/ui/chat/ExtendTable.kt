@@ -1,28 +1,21 @@
 package github.leavesc.compose_chat.ui.chat
 
-import androidx.activity.compose.rememberLauncherForActivityResult
+import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesc.compose_chat.R
-import github.leavesc.compose_chat.common.SelectPictureContract
-import github.leavesc.compose_chat.utils.BitmapUtils
-import github.leavesc.compose_chat.utils.log
-import github.leavesc.compose_chat.utils.showToast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesC
@@ -30,33 +23,16 @@ import kotlinx.coroutines.launch
  * @Desc:
  */
 @Composable
-fun ExtendTable(sendImage: (String) -> Unit) {
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
+fun ExtendTable(
+    selectPictureLauncher: ManagedActivityResultLauncher<Unit, Uri?>
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .height(height = 180.dp)
     ) {
-        val launcher = rememberLauncherForActivityResult(
-            contract = SelectPictureContract
-        ) { imageUri ->
-            log {
-                "imageUri: " + imageUri?.toString()
-            }
-            if (imageUri != null) {
-                coroutineScope.launch(Dispatchers.IO) {
-                    val imageFile = BitmapUtils.saveImage(context = context, imageUri = imageUri)
-                    if (imageFile != null) {
-                        sendImage(imageFile.absolutePath)
-                    } else {
-                        showToast("图片获取失败")
-                    }
-                }
-            }
-        }
         IconButton(onClick = {
-            launcher.launch(Unit)
+            selectPictureLauncher.launch(Unit)
         }) {
             Column(
                 modifier = Modifier

@@ -80,7 +80,7 @@ class MessageProvider : IMessageProvider, Converters {
                     V2TIMManager.getMessageManager().getC2CHistoryMessageList(
                         chatId,
                         count,
-                        lastMessage?.messageDetail?.tag as? V2TIMMessage,
+                        lastMessage?.tag as? V2TIMMessage,
                         callback
                     )
                 }
@@ -88,7 +88,7 @@ class MessageProvider : IMessageProvider, Converters {
                     V2TIMManager.getMessageManager().getGroupHistoryMessageList(
                         chatId,
                         count,
-                        lastMessage?.messageDetail?.tag as? V2TIMMessage,
+                        lastMessage?.tag as? V2TIMMessage,
                         callback
                     )
                 }

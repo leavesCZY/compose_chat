@@ -15,7 +15,6 @@ import github.leavesc.compose_chat.model.HomeScreenDrawerState
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
