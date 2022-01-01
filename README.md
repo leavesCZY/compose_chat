@@ -21,3 +21,12 @@
 
 - [学不动也要学，用 Jetpack Compose 写一个 IM APP（一）](https://juejin.cn/post/6991429231821684773)
 - [学不动也要学，用 Jetpack Compose 写一个 IM APP（二）](https://juejin.cn/post/7028397244894330917)
+
+## 历史版本
+
+- v1.2.1
+  - 支持修改群头像
+- v1.2.0
+  - 支持群聊、发送 emoji 表情
+- v1.0.0
+  - 支持单聊、发送文本
