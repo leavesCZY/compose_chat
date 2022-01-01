@@ -150,54 +150,21 @@ class MessageProvider : IMessageProvider, Converters {
         private val messageChannel: Channel<Message>
     ) : V2TIMSendCallback<V2TIMMessage> {
 
-        private suspend fun onFailed(reason: String) {
-            when (preSendMessage) {
+        private fun Message.copyMessage(messageState: MessageState, failReason: Any?): Message {
+            return when (this) {
                 is TextMessage -> {
-                    messageChannel.send(
-                        element = preSendMessage.copy(detail = preSendMessage.detail.copy(
-                            state =
-                            MessageState.SendFailed
-                        ).apply {
-                            tag = reason
-                        })
-                    )
+                    this.copy(detail = this.detail.copy(
+                        state = messageState
+                    ).apply {
+                        tag = failReason
+                    })
                 }
                 is ImageMessage -> {
-                    messageChannel.send(
-                        element = preSendMessage.copy(detail = preSendMessage.detail.copy(
-                            state = MessageState.SendFailed
-                        ).apply {
-                            tag = reason
-                        })
-                    )
-                }
-                else -> {
-                    throw IllegalArgumentException()
-                }
-            }
-        }
-
-        private suspend fun onSuccess(message: Message) {
-            when (preSendMessage) {
-                is TextMessage -> {
-//                    messageChannel.send(element = message)
-                    messageChannel.send(
-                        element = preSendMessage.copy(
-                            preSendMessage.detail.copy(
-                                state = MessageState.Completed
-                            )
-                        )
-                    )
-                }
-                is ImageMessage -> {
-//                    messageChannel.send(element = message)
-                    messageChannel.send(
-                        element = preSendMessage.copy(
-                            preSendMessage.detail.copy(
-                                state = MessageState.Completed
-                            )
-                        )
-                    )
+                    this.copy(detail = this.detail.copy(
+                        state = messageState
+                    ).apply {
+                        tag = failReason
+                    })
                 }
                 else -> {
                     throw IllegalArgumentException()
@@ -207,19 +174,24 @@ class MessageProvider : IMessageProvider, Converters {
 
         override fun onSuccess(t: V2TIMMessage) {
             coroutineScope.launch {
-                val msg = convertMessage(t)
-                if (msg == null) {
-                    onFailed(reason = "未知错误")
-                } else {
-                    onSuccess(message = msg)
-                }
+                messageChannel.send(
+                    element = preSendMessage.copyMessage(
+                        messageState = MessageState.Completed,
+                        failReason = null
+                    )
+                )
                 messageChannel.close()
             }
         }
 
         override fun onError(code: Int, desc: String?) {
             coroutineScope.launch {
-                onFailed(reason = "code: $code desc: $desc")
+                messageChannel.send(
+                    element = preSendMessage.copyMessage(
+                        messageState = MessageState.SendFailed,
+                        failReason = "code: $code desc: $desc"
+                    )
+                )
                 messageChannel.close()
             }
         }

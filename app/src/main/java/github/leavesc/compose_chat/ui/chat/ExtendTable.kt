@@ -1,18 +1,19 @@
 package github.leavesc.compose_chat.ui.chat
 
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import github.leavesc.compose_chat.R
 import github.leavesc.compose_chat.common.SelectPictureContract
 import github.leavesc.compose_chat.utils.BitmapUtils
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,7 @@ import kotlinx.coroutines.launch
  * @Desc:
  */
 @Composable
-fun PictureTable(sendImage: (String) -> Unit) {
+fun ExtendTable(sendImage: (String) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     Column(
@@ -35,7 +36,6 @@ fun PictureTable(sendImage: (String) -> Unit) {
         val launcher = rememberLauncherForActivityResult(
             contract = SelectPictureContract
         ) { imageUri ->
-            Log.e("imageUri", imageUri.toString())
             if (imageUri != null) {
                 coroutineScope.launch(Dispatchers.IO) {
                     val imageFile = BitmapUtils.saveImage(context = context, imageUri = imageUri)
@@ -45,12 +45,23 @@ fun PictureTable(sendImage: (String) -> Unit) {
                 }
             }
         }
-        Button(
-            modifier = Modifier.padding(all = 40.dp),
-            onClick = {
-                launcher.launch(Unit)
-            }) {
-            Text(text = "发送图片")
+        IconButton(onClick = {
+            launcher.launch(Unit)
+        }) {
+            Column(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .padding(start = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    modifier = Modifier.size(size = 60.dp),
+                    painter = painterResource(id = R.drawable.icon_album),
+                    contentDescription = null,
+                    alignment = Alignment.Center,
+                )
+                Text(text = "发送图片", fontSize = 16.sp)
+            }
         }
     }
 }

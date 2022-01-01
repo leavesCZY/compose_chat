@@ -245,7 +245,7 @@ fun ChatScreenBottomBord(
                     )
                 }
                 InputSelector.Picture -> {
-                    PictureTable(sendImage = sendImage)
+                    ExtendTable(sendImage = sendImage)
                 }
             }
         }

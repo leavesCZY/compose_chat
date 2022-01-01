@@ -438,17 +438,13 @@ private fun SelfImageMessageItem(
                         margin = textMessageSenderNameVerticalPadding
                     )
                     end.linkTo(anchor = showName.start)
-                    width = Dimension.preferredValue(dp = imageSize)
-                    height = Dimension.preferredValue(dp = imageSize)
+                    width = Dimension.value(dp = imageSize)
+                    height = Dimension.value(dp = imageSize)
                 }
                 .combinedClickable(
                     onClick = {
                         onClickImageMessage(imageMessage)
                     }
-                )
-                .padding(
-                    horizontal = textMessageInnerHorizontalPadding,
-                    vertical = textMessageInnerVerticalPadding
                 ),
             data = imageMessage.imagePath)
         MessageStateItem(
@@ -518,17 +514,13 @@ private fun FriendImageMessageItem(
                         margin = textMessageSenderNameVerticalPadding
                     )
                     start.linkTo(anchor = showName.start)
-                    width = Dimension.preferredValue(dp = imageSize)
-                    height = Dimension.preferredValue(dp = imageSize)
+                    width = Dimension.value(dp = imageSize)
+                    height = Dimension.value(dp = imageSize)
                 }
                 .combinedClickable(
                     onClick = {
                         onClickImageMessage(imageMessage)
                     }
-                )
-                .padding(
-                    horizontal = textMessageInnerHorizontalPadding,
-                    vertical = textMessageInnerVerticalPadding
                 ),
             data = imageMessage.imagePath)
         MessageStateItem(
