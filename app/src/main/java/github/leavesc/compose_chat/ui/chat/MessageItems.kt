@@ -31,6 +31,7 @@ import androidx.constraintlayout.compose.atMost
 import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.ui.theme.textMessageBgColor
 import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
+import github.leavesc.compose_chat.ui.weigets.CoilImage
 
 /**
  * @Author: leavesC
@@ -52,6 +53,15 @@ private val selfTextMessageMock = TextMessage.SelfTextMessage(
     sender = PersonProfile.Empty,
     msg = "掘金：业志陈，希望对你有所帮助 \uD83E\uDD23\uD83E\uDD23"
 )
+
+private val selfImageMessageMock = ImageMessage(
+    msgId = "业志陈",
+    state = MessageState.Completed,
+    timestamp = 1635218361,
+    sender = PersonProfile.Empty,
+    imagePath = "掘金：业志陈，希望对你有所帮助 \uD83E\uDD23\uD83E\uDD23"
+)
+
 
 private val timeMessageMock = TimeMessage(targetMessage = friendTextMessageMock)
 
@@ -77,6 +87,21 @@ private fun PreviewFriendTextMessageItem() {
 private fun PreviewSelfTextMessageItem() {
     SelfTextMessageItem(
         textMessage = selfTextMessageMock,
+        onClickAvatar = {
+
+        },
+        onLongPressMessage = {
+
+        }
+    )
+}
+
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewImageMessageItem() {
+    ImageMessageItem(
+        imageMessage = selfImageMessageMock,
         onClickAvatar = {
 
         },
@@ -130,6 +155,13 @@ fun MessageItems(
         }
         is TimeMessage -> {
             TimeMessageItem(timeMessage = message)
+        }
+        is ImageMessage -> {
+            ImageMessageItem(
+                imageMessage = message,
+                onClickAvatar = onClickFriendAvatar,
+                onLongPressMessage = onLongPressMessage
+            )
         }
     }
 }
@@ -353,7 +385,7 @@ private fun TimeMessageItem(timeMessage: TimeMessage) {
             .wrapContentWidth(align = Alignment.CenterHorizontally)
             .background(color = Color.LightGray.copy(alpha = 0.8f), shape = timeMessageShape)
             .padding(all = 4.dp),
-        text = timeMessage.time,
+        text = timeMessage.chatTime,
         style = timeMessageStyle()
     )
 }
@@ -379,6 +411,70 @@ private fun MessageStateItem(modifier: Modifier, messageState: MessageState) {
                 strokeWidth = 2.dp
             )
         }
+    }
+}
+
+@Composable
+private fun ImageMessageItem(
+    imageMessage: ImageMessage,
+    onClickAvatar: (Message) -> Unit,
+    onLongPressMessage: (Message) -> Unit,
+) {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = itemHorizontalPadding,
+                vertical = itemVerticalPadding
+            )
+            .background(color = messageBgColor)
+    ) {
+        val (avatarRefs, showName, message, messageState) = createRefs()
+        CoilCircleImage(
+            data = imageMessage.sender.faceUrl,
+            modifier = Modifier
+                .constrainAs(ref = avatarRefs) {
+                    top.linkTo(anchor = parent.top)
+                    start.linkTo(anchor = parent.start)
+                }
+                .size(size = avatarSize)
+                .clickable(onClick = {
+                    onClickAvatar(imageMessage)
+                })
+        )
+        CoilImage(
+            modifier = Modifier
+                .constrainAs(ref = message) {
+                    top.linkTo(
+                        anchor = showName.bottom,
+                        margin = textMessageSenderNameVerticalPadding
+                    )
+                    start.linkTo(anchor = showName.start)
+                    width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
+                }
+                .clip(shape = textMessageShape)
+                .background(color = textMessageBgColor)
+                .combinedClickable(
+                    onClick = {
+
+                    },
+                    onLongClick = {
+                        onLongPressMessage(imageMessage)
+                    }
+                )
+                .padding(
+                    horizontal = textMessageInnerHorizontalPadding,
+                    vertical = textMessageInnerVerticalPadding
+                ),
+            data = imageMessage.imagePath)
+        MessageStateItem(
+            modifier = Modifier.constrainAs(ref = messageState) {
+                top.linkTo(anchor = message.top)
+                bottom.linkTo(anchor = message.bottom)
+                start.linkTo(anchor = message.end, margin = textMessageHorizontalPadding)
+            },
+            messageState = imageMessage.state,
+        )
     }
 }
 

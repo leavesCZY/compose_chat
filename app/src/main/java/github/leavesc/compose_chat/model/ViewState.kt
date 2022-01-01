@@ -69,12 +69,12 @@ sealed class Screen(val route: String) {
         Screen(route = chatScreen + "/{${keyChatScreenPartyType}}" + "/{${keyChatScreenPartyId}}") {
 
         fun generateRoute(chat: Chat): String {
-            return chatScreen + "/${chat.type}" + "/${chat.id}"
+            return chatScreen + "/${chat.type}" + "/${chat.id.replace('#', '$')}"
         }
 
         fun getArgument(entry: NavBackStackEntry): Chat {
             val type = entry.getIntArgument(key = keyChatScreenPartyType)
-            val id = entry.getStringArgument(key = keyChatScreenPartyId)
+            val id = entry.getStringArgument(key = keyChatScreenPartyId).replace('$', '#')
             return Chat.find(type = type, id = id)
         }
 

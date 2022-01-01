@@ -27,6 +27,13 @@ sealed class Conversation(
                     lastMessage.msg
                 }
             }
+            is ImageMessage -> {
+                if (lastMessage.state == MessageState.SendFailed) {
+                    "[图片发送失败]"
+                } else {
+                    "[图片]"
+                }
+            }
         }
     }
 

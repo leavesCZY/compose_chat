@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
+
 /**
  * @Author: leavesC
  * @Date: 2021/6/22 14:44
@@ -155,6 +156,15 @@ internal interface Converters {
                         sender = senderProfile
                     )
                 }
+            } else if (elementType == V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE) {
+                val imageElem = timMessage.imageElem
+                ImageMessage(
+                    msgId = timMessage.msgID ?: "",
+                    timestamp = timMessage.timestamp,
+                    sender = senderProfile,
+                    state = convertMessageState(timMessage.status),
+                    imagePath = imageElem.path ?: ""
+                )
             } else if (withGroupTip && elementType == V2TIMMessage.V2TIM_ELEM_TYPE_GROUP_TIPS) {
                 TextMessage.FriendTextMessage(
                     msgId = timMessage.msgID ?: "",

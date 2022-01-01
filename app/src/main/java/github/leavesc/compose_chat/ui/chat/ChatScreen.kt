@@ -14,7 +14,6 @@ import github.leavesc.compose_chat.base.model.Chat
 import github.leavesc.compose_chat.extend.viewModelInstance
 import github.leavesc.compose_chat.logic.ChatViewModel
 import github.leavesc.compose_chat.model.Screen
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 
 /**
@@ -85,7 +84,9 @@ fun ChatScreen(
         bottomBar = {
             ChatScreenBottomBord(
                 sendMessage = {
-                    chatViewModel.sendMessage(it)
+                    chatViewModel.sendTextMessage(it)
+                }, sendImage = {
+                    chatViewModel.sendImageMessage(it)
                 })
         }
     ) { contentPadding ->

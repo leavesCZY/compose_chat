@@ -23,9 +23,15 @@ interface IMessageProvider {
 
     fun stopReceive(messageListener: MessageListener)
 
-    suspend fun send(
+    suspend fun sendText(
         chat: Chat,
         text: String,
+        channel: Channel<Message>
+    )
+
+    suspend fun sendImage(
+        chat: Chat,
+        imagePath: String,
         channel: Channel<Message>
     )
 

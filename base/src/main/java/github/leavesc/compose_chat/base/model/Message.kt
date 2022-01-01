@@ -29,20 +29,20 @@ sealed class Message(
         TimeUtil.toConversationTime(timestamp)
     }
 
-    val time by lazy {
+    val chatTime by lazy {
         TimeUtil.toChatTime(timestamp)
     }
 
     var tag: Any? = null
 
     override fun toString(): String {
-        return "Message(msgId='$msgId', timestamp=$timestamp, state=$state, sender=$sender, conversationTime='$conversationTime', chatTime='$time', tag=$tag)"
+        return "Message(msgId='$msgId', timestamp=$timestamp, state=$state, sender=$sender, conversationTime='$conversationTime', chatTime='$chatTime', tag=$tag)"
     }
 
 }
 
-class TimeMessage(
-    targetMessage: Message
+data class TimeMessage(
+    val targetMessage: Message
 ) : Message(
     msgId = (targetMessage.timestamp + targetMessage.msgId.hashCode()).toString(),
     timestamp = targetMessage.timestamp,
@@ -116,6 +116,31 @@ sealed class TextMessage(
                 )
             }
         }
+    }
+
+}
+
+class ImageMessage(
+    msgId: String,
+    timestamp: Long,
+    state: MessageState,
+    sender: BaseProfile,
+    val imagePath: String,
+) : Message(
+    msgId = msgId,
+    timestamp = timestamp,
+    state = state,
+    sender = sender
+) {
+
+    fun copy(
+        msgId: String = this.msgId,
+        timestamp: Long = this.timestamp,
+        state: MessageState = this.state,
+        sender: BaseProfile = this.sender,
+        imagePath: String = this.imagePath,
+    ): ImageMessage {
+        return ImageMessage(msgId, timestamp, state, sender, imagePath)
     }
 
 }

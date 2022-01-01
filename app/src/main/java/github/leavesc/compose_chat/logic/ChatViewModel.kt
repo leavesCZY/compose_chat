@@ -111,15 +111,11 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
         }
     }
 
-    fun sendMessage(text: String) {
+    private fun sendMessage(action: suspend (Channel<Message>) -> Unit) {
         viewModelScope.launch {
             val messageChannel = Channel<Message>()
             launch {
-                ComposeChat.messageProvider.send(
-                    chat = chat,
-                    text = text,
-                    channel = messageChannel
-                )
+                action(messageChannel)
             }
             var sendingMessage: Message? = null
             for (message in messageChannel) {
@@ -144,6 +140,26 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                     }
                 }
             }
+        }
+    }
+
+    fun sendTextMessage(text: String) {
+        sendMessage {
+            ComposeChat.messageProvider.sendText(
+                chat = chat,
+                text = text,
+                channel = it
+            )
+        }
+    }
+
+    fun sendImageMessage(imagePath: String) {
+        sendMessage {
+            ComposeChat.messageProvider.sendImage(
+                chat = chat,
+                imagePath = imagePath,
+                channel = it
+            )
         }
     }
 

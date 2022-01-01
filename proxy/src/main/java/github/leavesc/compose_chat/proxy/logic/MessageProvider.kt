@@ -11,6 +11,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import java.lang.ref.SoftReference
 import kotlin.coroutines.resume
 
+
 /**
  * @Author: leavesC
  * @Date: 2021/10/27 14:38
@@ -93,7 +94,7 @@ class MessageProvider : IMessageProvider, Converters {
         chat: Chat,
         lastMessage: Message?
     ): LoadMessageResult {
-        val id = chat.id
+        val chatId = chat.id
         val count = 40
         return suspendCancellableCoroutine { continuation ->
             val callback = object : V2TIMValueCallback<List<V2TIMMessage>> {
@@ -113,7 +114,7 @@ class MessageProvider : IMessageProvider, Converters {
             when (chat) {
                 is Chat.C2C -> {
                     V2TIMManager.getMessageManager().getC2CHistoryMessageList(
-                        id,
+                        chatId,
                         count,
                         lastMessage?.tag as? V2TIMMessage,
                         callback
@@ -121,7 +122,7 @@ class MessageProvider : IMessageProvider, Converters {
                 }
                 is Chat.Group -> {
                     V2TIMManager.getMessageManager().getGroupHistoryMessageList(
-                        id,
+                        chatId,
                         count,
                         lastMessage?.tag as? V2TIMMessage,
                         callback
@@ -131,11 +132,9 @@ class MessageProvider : IMessageProvider, Converters {
         }
     }
 
-    override suspend fun send(chat: Chat, text: String, channel: Channel<Message>) {
-        val id = chat.id
-        val messageId = RandomUtils.generateMessageId()
+    override suspend fun sendText(chat: Chat, text: String, channel: Channel<Message>) {
         val sendingMessage = TextMessage.SelfTextMessage(
-            msgId = messageId, state = MessageState.Sending,
+            msgId = RandomUtils.generateMessageId(), state = MessageState.Sending,
             timestamp = V2TIMManager.getInstance().serverTime, msg = text,
             sender = AppConst.personProfile.value,
         )
@@ -148,7 +147,6 @@ class MessageProvider : IMessageProvider, Converters {
                         channel.send(sendingMessage.copy(state = MessageState.SendFailed))
                     } else {
                         channel.send(msg)
-//                        channel.send(sendingMessage.copy(state = MessageState.Completed))
                     }
                     channel.close()
                 }
@@ -166,13 +164,74 @@ class MessageProvider : IMessageProvider, Converters {
         }
         when (chat) {
             is Chat.C2C -> {
-                V2TIMManager.getInstance().sendC2CTextMessage(text, id, callback)
+                V2TIMManager.getInstance().sendC2CTextMessage(text, chat.id, callback)
             }
             is Chat.Group -> {
                 V2TIMManager.getInstance()
-                    .sendGroupTextMessage(text, id, V2TIMMessage.V2TIM_PRIORITY_HIGH, callback)
+                    .sendGroupTextMessage(text, chat.id, V2TIMMessage.V2TIM_PRIORITY_HIGH, callback)
             }
         }
+    }
+
+    override suspend fun sendImage(chat: Chat, imagePath: String, channel: Channel<Message>) {
+        val messageId = RandomUtils.generateMessageId()
+        val sendingMessage = ImageMessage(
+            msgId = messageId,
+            timestamp = V2TIMManager.getInstance().serverTime,
+            state = MessageState.Sending,
+            sender = AppConst.personProfile.value,
+            imagePath = imagePath,
+        )
+        channel.send(sendingMessage)
+        val imageMessage = V2TIMManager.getMessageManager().createImageMessage(imagePath)
+        val callback = object : V2TIMSendCallback<V2TIMMessage> {
+            override fun onSuccess(t: V2TIMMessage) {
+                coroutineScope.launch {
+                    val msg = convertMessage(t) as? TextMessage
+                    if (msg == null) {
+                        channel.send(sendingMessage.copy(state = MessageState.SendFailed))
+                    } else {
+                        channel.send(msg)
+                    }
+                    channel.close()
+                }
+            }
+
+            override fun onError(code: Int, desc: String?) {
+                coroutineScope.launch {
+                    channel.send(
+                        sendingMessage.copy(state = MessageState.SendFailed).apply {
+                            tag = "code: $code desc: $desc"
+                        })
+                    channel.close()
+                }
+            }
+
+            override fun onProgress(progress: Int) {
+
+            }
+        }
+        val c2cId: String
+        val groupId: String
+        when (chat) {
+            is Chat.C2C -> {
+                c2cId = chat.id
+                groupId = ""
+            }
+            is Chat.Group -> {
+                c2cId = ""
+                groupId = chat.id
+            }
+        }
+        V2TIMManager.getMessageManager().sendMessage(
+            imageMessage,
+            c2cId,
+            groupId,
+            V2TIMMessage.V2TIM_PRIORITY_HIGH,
+            false,
+            null,
+            callback
+        )
     }
 
     override fun startReceive(
