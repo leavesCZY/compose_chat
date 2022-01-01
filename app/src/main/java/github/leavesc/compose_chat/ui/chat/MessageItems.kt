@@ -39,29 +39,30 @@ import github.leavesc.compose_chat.ui.weigets.CoilImage
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-private val friendTextMessageMock = TextMessage.FriendTextMessage(
+private val selfMessageDetailMock = MessageDetail(
     msgId = "业志陈",
     timestamp = 1635218361,
+    state = MessageState.Completed,
     sender = PersonProfile.Empty,
+    isSelfMessage = true
+)
+
+private val friendMessageDetailMock = selfMessageDetailMock.copy(isSelfMessage = false)
+
+private val selfTextMessageMock = TextMessage(
+    detail = selfMessageDetailMock,
     msg = "公众号：字节数组，希望对你有所帮助 \uD83E\uDD23\uD83E\uDD23"
 )
 
-private val selfTextMessageMock = TextMessage.SelfTextMessage(
-    msgId = "业志陈",
-    state = MessageState.Completed,
-    timestamp = 1635218361,
-    sender = PersonProfile.Empty,
-    msg = "掘金：业志陈，希望对你有所帮助 \uD83E\uDD23\uD83E\uDD23"
+private val friendTextMessageMock = TextMessage(
+    detail = friendMessageDetailMock,
+    msg = "公众号：字节数组，希望对你有所帮助 \uD83E\uDD23\uD83E\uDD23"
 )
 
 private val selfImageMessageMock = ImageMessage(
-    msgId = "业志陈",
-    state = MessageState.Completed,
-    timestamp = 1635218361,
-    sender = PersonProfile.Empty,
-    imagePath = "掘金：业志陈，希望对你有所帮助 \uD83E\uDD23\uD83E\uDD23"
+    detail = friendMessageDetailMock,
+    imagePath = "公众号：字节数组，希望对你有所帮助 \uD83E\uDD23\uD83E\uDD23"
 )
-
 
 private val timeMessageMock = TimeMessage(targetMessage = friendTextMessageMock)
 
@@ -135,22 +136,19 @@ fun MessageItems(
 ) {
     val unit = when (message) {
         is TextMessage -> {
-            when (message) {
-                is TextMessage.SelfTextMessage -> {
-                    SelfTextMessageItem(
-                        textMessage = message,
-                        onClickAvatar = onClickSelfAvatar,
-                        onLongPressMessage = onLongPressMessage,
-                    )
-                }
-                is TextMessage.FriendTextMessage -> {
-                    FriendTextMessageItem(
-                        textMessage = message,
-                        showSenderName = showSenderName,
-                        onClickAvatar = onClickFriendAvatar,
-                        onLongPressMessage = onLongPressMessage,
-                    )
-                }
+            if (message.detail.isSelfMessage) {
+                SelfTextMessageItem(
+                    textMessage = message,
+                    onClickAvatar = onClickSelfAvatar,
+                    onLongPressMessage = onLongPressMessage,
+                )
+            } else {
+                FriendTextMessageItem(
+                    textMessage = message,
+                    showSenderName = showSenderName,
+                    onClickAvatar = onClickFriendAvatar,
+                    onLongPressMessage = onLongPressMessage,
+                )
             }
         }
         is TimeMessage -> {
@@ -224,7 +222,7 @@ private fun SelfTextMessageItem(
     ) {
         val (avatarRefs, showName, message, messageState) = createRefs()
         CoilCircleImage(
-            data = textMessage.sender.faceUrl,
+            data = textMessage.detail.sender.faceUrl,
             modifier = Modifier
                 .constrainAs(ref = avatarRefs) {
                     top.linkTo(anchor = parent.top)
@@ -284,7 +282,7 @@ private fun SelfTextMessageItem(
                 bottom.linkTo(anchor = message.bottom)
                 end.linkTo(anchor = message.start, margin = textMessageHorizontalPadding)
             },
-            messageState = textMessage.state,
+            messageState = textMessage.detail.state,
         )
     }
 }
@@ -307,7 +305,7 @@ private fun FriendTextMessageItem(
     ) {
         val (avatarRefs, showName, message, messageState) = createRefs()
         CoilCircleImage(
-            data = textMessage.sender.faceUrl,
+            data = textMessage.detail.sender.faceUrl,
             modifier = Modifier
                 .constrainAs(ref = avatarRefs) {
                     top.linkTo(anchor = parent.top)
@@ -330,7 +328,7 @@ private fun FriendTextMessageItem(
                     )
                 },
             text = if (showSenderName) {
-                textMessage.sender.showName
+                textMessage.detail.sender.showName
             } else {
                 ""
             },
@@ -371,7 +369,7 @@ private fun FriendTextMessageItem(
                 bottom.linkTo(anchor = message.bottom)
                 start.linkTo(anchor = message.end, margin = textMessageHorizontalPadding)
             },
-            messageState = textMessage.state,
+            messageState = textMessage.detail.state,
         )
     }
 }
@@ -385,7 +383,7 @@ private fun TimeMessageItem(timeMessage: TimeMessage) {
             .wrapContentWidth(align = Alignment.CenterHorizontally)
             .background(color = Color.LightGray.copy(alpha = 0.8f), shape = timeMessageShape)
             .padding(all = 4.dp),
-        text = timeMessage.chatTime,
+        text = timeMessage.messageDetail.chatTime,
         style = timeMessageStyle()
     )
 }
@@ -431,7 +429,7 @@ private fun ImageMessageItem(
     ) {
         val (avatarRefs, showName, message, messageState) = createRefs()
         CoilCircleImage(
-            data = imageMessage.sender.faceUrl,
+            data = imageMessage.detail.sender.faceUrl,
             modifier = Modifier
                 .constrainAs(ref = avatarRefs) {
                     top.linkTo(anchor = parent.top)
@@ -473,7 +471,7 @@ private fun ImageMessageItem(
                 bottom.linkTo(anchor = message.bottom)
                 start.linkTo(anchor = message.end, margin = textMessageHorizontalPadding)
             },
-            messageState = imageMessage.state,
+            messageState = imageMessage.detail.state,
         )
     }
 }

@@ -16,23 +16,22 @@ sealed class Conversation(
 ) {
 
     val formatMsg by lazy {
-        when (lastMessage) {
-            is TimeMessage -> {
-                "error"
+        val messageDetail = lastMessage.messageDetail
+        val prefix =
+            if (this is GroupConversation && !messageDetail.isSelfMessage) {
+                messageDetail.sender.showName + " : "
+            } else {
+                ""
             }
-            is TextMessage -> {
-                if (lastMessage.state == MessageState.SendFailed) {
-                    "[发送失败] " + lastMessage.msg
-                } else {
-                    lastMessage.msg
-                }
+        prefix + when (messageDetail.state) {
+            MessageState.Completed -> {
+                lastMessage.formatMessage
             }
-            is ImageMessage -> {
-                if (lastMessage.state == MessageState.SendFailed) {
-                    "[图片发送失败]"
-                } else {
-                    "[图片]"
-                }
+            MessageState.Sending -> {
+                "[发送中] " + lastMessage.formatMessage
+            }
+            MessageState.SendFailed -> {
+                "[发送失败] " + lastMessage.formatMessage
             }
         }
     }
@@ -44,7 +43,14 @@ sealed class Conversation(
         unreadMessageCount: Int,
         lastMessage: Message,
         isPinned: Boolean
-    ) : Conversation(userID, name, faceUrl, unreadMessageCount, lastMessage, isPinned)
+    ) : Conversation(
+        id = userID,
+        name = name,
+        faceUrl = faceUrl,
+        unreadMessageCount = unreadMessageCount,
+        lastMessage = lastMessage,
+        isPinned = isPinned
+    )
 
     class GroupConversation(
         groupId: String,
@@ -53,10 +59,17 @@ sealed class Conversation(
         unreadMessageCount: Int,
         lastMessage: Message,
         isPinned: Boolean
-    ) : Conversation(groupId, name, faceUrl, unreadMessageCount, lastMessage, isPinned)
+    ) : Conversation(
+        id = groupId,
+        name = name,
+        faceUrl = faceUrl,
+        unreadMessageCount = unreadMessageCount,
+        lastMessage = lastMessage,
+        isPinned = isPinned
+    )
 
     override fun toString(): String {
-        return "Conversation(id='$id', name='$name', faceUrl='$faceUrl', unreadMessageCount=$unreadMessageCount, lastMessage=$lastMessage, isPinned=$isPinned)"
+        return "Conversation(id='$id', name='$name', faceUrl='$faceUrl', unreadMessageCount=$unreadMessageCount, lastMessage=$lastMessage, isPinned=$isPinned, formatMsg='$formatMsg')"
     }
 
 }

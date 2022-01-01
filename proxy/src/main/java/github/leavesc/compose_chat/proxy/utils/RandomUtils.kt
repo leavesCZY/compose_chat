@@ -1,5 +1,6 @@
 package github.leavesc.compose_chat.proxy.utils
 
+import com.tencent.imsdk.v2.V2TIMManager
 import kotlin.random.Random
 
 /**
@@ -18,6 +19,10 @@ object RandomUtils {
 
     fun generateMessageId(): String {
         return (System.currentTimeMillis() + randomLong + randomLong).toString()
+    }
+
+    fun generateMessageTimestamp(): Long {
+        return V2TIMManager.getInstance().serverTime
     }
 
 }

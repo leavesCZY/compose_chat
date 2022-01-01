@@ -26,13 +26,13 @@ interface IMessageProvider {
     suspend fun sendText(
         chat: Chat,
         text: String,
-        channel: Channel<Message>
+        messageChannel: Channel<Message>
     )
 
     suspend fun sendImage(
         chat: Chat,
         imagePath: String,
-        channel: Channel<Message>
+        messageChannel: Channel<Message>
     )
 
     suspend fun getHistoryMessage(chat: Chat, lastMessage: Message?): LoadMessageResult

@@ -4,6 +4,8 @@ import com.tencent.imsdk.v2.*
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.base.provider.IFriendshipProvider
+import github.leavesc.compose_chat.proxy.logic.Converters.Companion.convertFriendProfile
+import github.leavesc.compose_chat.proxy.logic.Converters.Companion.deleteC2CConversation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -49,7 +51,7 @@ class FriendshipProvider : IFriendshipProvider, Converters {
     }
 
     override suspend fun getFriendProfile(friendId: String): PersonProfile? {
-        return getFriendInfo(friendId)?.let {
+        return getFriendInfo(friendId = friendId)?.let {
             convertFriendProfile(it)
         }
     }
@@ -59,18 +61,18 @@ class FriendshipProvider : IFriendshipProvider, Converters {
             V2TIMManager.getFriendshipManager().getFriendList(object :
                 V2TIMValueCallback<List<V2TIMFriendInfo>> {
                 override fun onSuccess(result: List<V2TIMFriendInfo>) {
-                    continuation.resume(convertFriend(result))
+                    continuation.resume(value = convertFriend(result))
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    continuation.resume(null)
+                    continuation.resume(value = null)
                 }
             })
         }
     }
 
     private fun convertFriend(friendInfoList: List<V2TIMFriendInfo>): List<PersonProfile> {
-        return friendInfoList.map { convertFriendProfile(it) }
+        return friendInfoList.map { convertFriendProfile(friendInfo = it) }
     }
 
     private suspend fun getFriendInfo(friendId: String): V2TIMFriendInfoResult? {
@@ -78,11 +80,11 @@ class FriendshipProvider : IFriendshipProvider, Converters {
             V2TIMManager.getFriendshipManager().getFriendsInfo(listOf(friendId), object :
                 V2TIMValueCallback<List<V2TIMFriendInfoResult>> {
                 override fun onSuccess(t: List<V2TIMFriendInfoResult>?) {
-                    continuation.resume(t?.getOrNull(0))
+                    continuation.resume(value = t?.getOrNull(0))
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    continuation.resume(null)
+                    continuation.resume(value = null)
                 }
             })
         }
@@ -102,12 +104,12 @@ class FriendshipProvider : IFriendshipProvider, Converters {
             V2TIMManager.getFriendshipManager().addFriend(requiresOpt,
                 object : V2TIMValueCallback<V2TIMFriendOperationResult> {
                     override fun onSuccess(t: V2TIMFriendOperationResult) {
-                        continuation.resume(ActionResult.Success)
+                        continuation.resume(value = ActionResult.Success)
                     }
 
                     override fun onError(code: Int, desc: String?) {
                         continuation.resume(
-                            ActionResult.Failed(
+                            value = ActionResult.Failed(
                                 code = code,
                                 reason = desc ?: ""
                             )
@@ -124,12 +126,12 @@ class FriendshipProvider : IFriendshipProvider, Converters {
                 listOf(friendId), V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH,
                 object : V2TIMValueCallback<List<V2TIMFriendOperationResult>> {
                     override fun onSuccess(t: List<V2TIMFriendOperationResult>) {
-                        continuation.resume(ActionResult.Success)
+                        continuation.resume(value = ActionResult.Success)
                     }
 
                     override fun onError(code: Int, desc: String?) {
                         continuation.resume(
-                            ActionResult.Failed(
+                            value = ActionResult.Failed(
                                 code = code,
                                 reason = desc ?: ""
                             )
@@ -148,12 +150,12 @@ class FriendshipProvider : IFriendshipProvider, Converters {
             V2TIMManager.getFriendshipManager()
                 .setFriendInfo(friendProfile, object : V2TIMCallback {
                     override fun onSuccess() {
-                        continuation.resume(ActionResult.Success)
+                        continuation.resume(value = ActionResult.Success)
                     }
 
                     override fun onError(code: Int, desc: String?) {
                         continuation.resume(
-                            ActionResult.Failed(
+                            value = ActionResult.Failed(
                                 code = code,
                                 reason = desc ?: ""
                             )

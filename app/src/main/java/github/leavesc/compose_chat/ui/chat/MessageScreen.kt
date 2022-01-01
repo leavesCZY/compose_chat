@@ -42,12 +42,12 @@ fun MessageScreen(
         verticalArrangement = Arrangement.Top,
     ) {
         for (message in chatScreenState.messageList) {
-            item(key = message.msgId) {
+            item(key = message.messageDetail.msgId) {
                 MessageItems(
                     message = message,
                     showSenderName = showSenderName,
                     onClickSelfAvatar = {
-                        val messageSenderId = (it as? TextMessage)?.sender?.userId
+                        val messageSenderId = (it as? TextMessage)?.messageDetail?.sender?.userId
                         if (!messageSenderId.isNullOrBlank()) {
                             navController.navigate(
                                 route = Screen.FriendProfileScreen.generateRoute(friendId = messageSenderId)
@@ -55,7 +55,7 @@ fun MessageScreen(
                         }
                     },
                     onClickFriendAvatar = {
-                        val messageSenderId = (it as? TextMessage)?.sender?.userId
+                        val messageSenderId = (it as? TextMessage)?.messageDetail?.sender?.userId
                         if (!messageSenderId.isNullOrBlank()) {
                             navController.navigate(
                                 route = Screen.FriendProfileScreen.generateRoute(friendId = messageSenderId)

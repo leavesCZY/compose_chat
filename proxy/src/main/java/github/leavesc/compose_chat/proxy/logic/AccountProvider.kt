@@ -8,6 +8,7 @@ import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.base.model.ServerState
 import github.leavesc.compose_chat.base.provider.IAccountProvider
 import github.leavesc.compose_chat.proxy.consts.AppConst
+import github.leavesc.compose_chat.proxy.logic.Converters.Companion.convertPersonProfile
 import github.leavesc.compose_chat.proxy.utils.GenerateUserSig
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -39,27 +40,27 @@ class AccountProvider : IAccountProvider, Converters {
 
             override fun onConnecting() {
                 log("onConnecting")
-                dispatchServerState(ServerState.Connecting)
+                dispatchServerState(serverState = ServerState.Connecting)
             }
 
             override fun onConnectSuccess() {
                 log("onConnectSuccess")
-                dispatchServerState(ServerState.ConnectSuccess)
+                dispatchServerState(serverState = ServerState.ConnectSuccess)
             }
 
             override fun onConnectFailed(code: Int, error: String) {
                 log("onConnectFailed")
-                dispatchServerState(ServerState.ConnectFailed)
+                dispatchServerState(serverState = ServerState.ConnectFailed)
             }
 
             override fun onUserSigExpired() {
                 log("onUserSigExpired")
-                dispatchServerState(ServerState.UserSigExpired)
+                dispatchServerState(serverState = ServerState.UserSigExpired)
             }
 
             override fun onKickedOffline() {
                 log("onKickedOffline")
-                dispatchServerState(ServerState.KickedOffline)
+                dispatchServerState(serverState = ServerState.KickedOffline)
             }
 
             override fun onSelfInfoUpdated(info: V2TIMUserFullInfo) {
@@ -71,7 +72,7 @@ class AccountProvider : IAccountProvider, Converters {
 
     private fun dispatchServerState(serverState: ServerState) {
         coroutineScope.launch {
-            serverConnectState.emit(serverState)
+            serverConnectState.emit(value = serverState)
         }
     }
 
@@ -82,12 +83,12 @@ class AccountProvider : IAccountProvider, Converters {
                 .login(formatUserId, GenerateUserSig.genUserSig(formatUserId),
                     object : V2TIMCallback {
                         override fun onSuccess() {
-                            continuation.resume(ActionResult.Success)
+                            continuation.resume(value = ActionResult.Success)
                         }
 
                         override fun onError(code: Int, desc: String?) {
                             continuation.resume(
-                                ActionResult.Failed(
+                                value = ActionResult.Failed(
                                     code = code,
                                     reason = desc ?: ""
                                 )
@@ -101,12 +102,17 @@ class AccountProvider : IAccountProvider, Converters {
         return suspendCancellableCoroutine { continuation ->
             V2TIMManager.getInstance().logout(object : V2TIMCallback {
                 override fun onSuccess() {
-                    dispatchServerState(ServerState.Logout)
-                    continuation.resume(ActionResult.Success)
+                    dispatchServerState(serverState = ServerState.Logout)
+                    continuation.resume(value = ActionResult.Success)
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    continuation.resume(ActionResult.Failed(code = code, reason = desc ?: ""))
+                    continuation.resume(
+                        value = ActionResult.Failed(
+                            code = code,
+                            reason = desc ?: ""
+                        )
+                    )
                 }
             })
         }
@@ -115,7 +121,7 @@ class AccountProvider : IAccountProvider, Converters {
     override fun refreshPersonProfile() {
         coroutineScope.launch {
             getSelfProfileOrigin()?.let {
-                convertPersonProfile(it)
+                convertPersonProfile(userFullInfo = it)
             }?.let {
                 AppConst.personProfile.value = it
                 personProfile.value = it
@@ -135,11 +141,11 @@ class AccountProvider : IAccountProvider, Converters {
             originProfile.selfSignature = signature
             V2TIMManager.getInstance().setSelfInfo(originProfile, object : V2TIMCallback {
                 override fun onSuccess() {
-                    continuation.resume(true)
+                    continuation.resume(value = true)
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    continuation.resume(false)
+                    continuation.resume(value = false)
                 }
             })
         }
@@ -151,11 +157,11 @@ class AccountProvider : IAccountProvider, Converters {
                 .getUsersInfo(listOf(V2TIMManager.getInstance().loginUser), object :
                     V2TIMValueCallback<List<V2TIMUserFullInfo>> {
                     override fun onSuccess(t: List<V2TIMUserFullInfo>) {
-                        continuation.resume(t[0])
+                        continuation.resume(value = t[0])
                     }
 
                     override fun onError(code: Int, desc: String?) {
-                        continuation.resume(null)
+                        continuation.resume(value = null)
                     }
                 })
         }

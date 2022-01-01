@@ -47,11 +47,16 @@ class GroupProvider : IGroupProvider, Converters {
         return suspendCancellableCoroutine { continuation ->
             V2TIMManager.getInstance().joinGroup(groupId, "", object : V2TIMCallback {
                 override fun onSuccess() {
-                    continuation.resume(ActionResult.Success)
+                    continuation.resume(value = ActionResult.Success)
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    continuation.resume(ActionResult.Failed(code = code, reason = desc ?: ""))
+                    continuation.resume(
+                        value = ActionResult.Failed(
+                            code = code,
+                            reason = desc ?: ""
+                        )
+                    )
                 }
             })
         }
@@ -61,11 +66,16 @@ class GroupProvider : IGroupProvider, Converters {
         return suspendCancellableCoroutine { continuation ->
             V2TIMManager.getInstance().quitGroup(groupId, object : V2TIMCallback {
                 override fun onSuccess() {
-                    continuation.resume(ActionResult.Success)
+                    continuation.resume(value = ActionResult.Success)
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    continuation.resume(ActionResult.Failed(code = code, reason = desc ?: ""))
+                    continuation.resume(
+                        value = ActionResult.Failed(
+                            code = code,
+                            reason = desc ?: ""
+                        )
+                    )
                 }
             })
         }
@@ -78,11 +88,16 @@ class GroupProvider : IGroupProvider, Converters {
             v2TIMGroupInfo.faceUrl = avatarUrl
             V2TIMManager.getGroupManager().setGroupInfo(v2TIMGroupInfo, object : V2TIMCallback {
                 override fun onSuccess() {
-                    continuation.resume(ActionResult.Success)
+                    continuation.resume(value = ActionResult.Success)
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    continuation.resume(ActionResult.Failed(code = code, reason = desc ?: ""))
+                    continuation.resume(
+                        value = ActionResult.Failed(
+                            code = code,
+                            reason = desc ?: ""
+                        )
+                    )
                 }
             })
         }
@@ -93,11 +108,11 @@ class GroupProvider : IGroupProvider, Converters {
             V2TIMManager.getGroupManager().getGroupsInfo(listOf(groupId), object :
                 V2TIMValueCallback<List<V2TIMGroupInfoResult>> {
                 override fun onSuccess(t: List<V2TIMGroupInfoResult>) {
-                    continuation.resume(convertGroup(t[0].groupInfo))
+                    continuation.resume(value = convertGroup(t[0].groupInfo))
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    continuation.resume(null)
+                    continuation.resume(value = null)
                 }
             })
         }
@@ -114,11 +129,11 @@ class GroupProvider : IGroupProvider, Converters {
             V2TIMManager.getGroupManager().getJoinedGroupList(object :
                 V2TIMValueCallback<List<V2TIMGroupInfo>> {
                 override fun onSuccess(t: List<V2TIMGroupInfo>) {
-                    continuation.resume(convertGroup(t))
+                    continuation.resume(value = convertGroup(t))
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    continuation.resume(emptyList())
+                    continuation.resume(value = emptyList())
                 }
             })
         }
@@ -137,7 +152,7 @@ class GroupProvider : IGroupProvider, Converters {
     }
 
     private fun convertGroup(groupProfileList: List<V2TIMGroupInfo>?): List<GroupProfile> {
-        return groupProfileList?.mapNotNull { convertGroup(it) } ?: emptyList()
+        return groupProfileList?.mapNotNull { convertGroup(groupProfile = it) } ?: emptyList()
     }
 
     override suspend fun getGroupMemberList(groupId: String): List<GroupMemberProfile> {
@@ -165,7 +180,7 @@ class GroupProvider : IGroupProvider, Converters {
                 object : V2TIMValueCallback<V2TIMGroupMemberInfoResult> {
                     override fun onSuccess(t: V2TIMGroupMemberInfoResult) {
                         continuation.resume(
-                            Pair(
+                            value = Pair(
                                 convertGroupMember(t.memberInfoList),
                                 t.nextSeq
                             )
@@ -173,14 +188,15 @@ class GroupProvider : IGroupProvider, Converters {
                     }
 
                     override fun onError(code: Int, desc: String?) {
-                        continuation.resume(Pair(emptyList(), -111))
+                        continuation.resume(value = Pair(emptyList(), -111))
                     }
                 })
         }
     }
 
     private fun convertGroupMember(groupMemberList: List<V2TIMGroupMemberFullInfo>?): List<GroupMemberProfile> {
-        return groupMemberList?.map { convertGroupMember(it) } ?: emptyList()
+        return groupMemberList?.map { Converters.convertGroupMember(memberFullInfo = it) }
+            ?: emptyList()
     }
 
 }

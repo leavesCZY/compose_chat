@@ -137,7 +137,7 @@ private fun ConversationItem(
                 }
         )
         Text(
-            text = conversation.lastMessage.conversationTime,
+            text = conversation.lastMessage.messageDetail.conversationTime,
             style = MaterialTheme.typography.body2,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,

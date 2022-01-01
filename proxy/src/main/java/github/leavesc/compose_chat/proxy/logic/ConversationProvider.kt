@@ -4,6 +4,8 @@ import com.tencent.imsdk.v2.*
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.Conversation
 import github.leavesc.compose_chat.base.provider.IConversationProvider
+import github.leavesc.compose_chat.proxy.logic.Converters.Companion.convertMessage
+import github.leavesc.compose_chat.proxy.logic.Converters.Companion.getConversationId
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.coroutines.resume
@@ -39,7 +41,7 @@ class ConversationProvider : IConversationProvider, Converters {
 
     override fun getConversationList() {
         coroutineScope.launch {
-            dispatchConversationList(getConversationListOrigin())
+            dispatchConversationList(conversationList = getConversationListOrigin())
         }
     }
 
@@ -48,12 +50,12 @@ class ConversationProvider : IConversationProvider, Converters {
             V2TIMManager.getConversationManager()
                 .pinConversation(getConversationId(conversation), pin, object : V2TIMCallback {
                     override fun onSuccess() {
-                        continuation.resume(ActionResult.Success)
+                        continuation.resume(value = ActionResult.Success)
                     }
 
                     override fun onError(code: Int, desc: String?) {
                         continuation.resume(
-                            ActionResult.Failed(
+                            value = ActionResult.Failed(
                                 code = code,
                                 reason = desc ?: ""
                             )
@@ -64,7 +66,7 @@ class ConversationProvider : IConversationProvider, Converters {
     }
 
     override suspend fun deleteConversation(conversation: Conversation): ActionResult {
-        return deleteConversation(getConversationId(conversation))
+        return Converters.deleteConversation(id = getConversationId(conversation))
     }
 
     private fun dispatchConversationList(conversationList: List<Conversation>) {
@@ -91,7 +93,7 @@ class ConversationProvider : IConversationProvider, Converters {
                 object : V2TIMValueCallback<V2TIMConversationResult> {
                     override fun onSuccess(result: V2TIMConversationResult) {
                         continuation.resume(
-                            Pair(
+                            value = Pair(
                                 convertConversation(result.conversationList),
                                 if (result.isFinished) {
                                     -111
@@ -103,20 +105,21 @@ class ConversationProvider : IConversationProvider, Converters {
                     }
 
                     override fun onError(code: Int, desc: String?) {
-                        continuation.resume(Pair(emptyList(), -111))
+                        continuation.resume(value = Pair(emptyList(), -111))
                     }
                 })
         }
     }
 
     private fun convertConversation(convertersList: List<V2TIMConversation>?): List<Conversation> {
-        return convertersList?.mapNotNull { convertConversation(it) }?.sortedByDescending {
-            if (it.isPinned) {
-                it.lastMessage.timestamp.toDouble() + Long.MAX_VALUE
-            } else {
-                it.lastMessage.timestamp.toDouble()
-            }
-        } ?: emptyList()
+        return convertersList?.mapNotNull { convertConversation(conversation = it) }
+            ?.sortedByDescending {
+                if (it.isPinned) {
+                    it.lastMessage.messageDetail.timestamp.toDouble() + Long.MAX_VALUE
+                } else {
+                    it.lastMessage.messageDetail.timestamp.toDouble()
+                }
+            } ?: emptyList()
     }
 
     private fun convertConversation(conversation: V2TIMConversation): Conversation? {

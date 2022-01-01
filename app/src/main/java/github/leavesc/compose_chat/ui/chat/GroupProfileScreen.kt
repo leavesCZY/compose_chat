@@ -56,7 +56,7 @@ fun GroupProfileScreen(
                 object : (GroupMemberProfile) -> Unit {
                     override fun invoke(member: GroupMemberProfile) {
                         navController.navigate(
-                            route = Screen.FriendProfileScreen.generateRoute(friendId = member.userId)
+                            route = Screen.FriendProfileScreen.generateRoute(friendId = member.detail.userId)
                         )
                     }
                 }
@@ -70,7 +70,7 @@ fun GroupProfileScreen(
                 }
                 val memberList = groupProfileScreenState.memberList
                 memberList.forEach {
-                    item(key = it.userId) {
+                    item(key = it.detail.userId) {
                         GroupMemberItem(groupMemberProfile = it, onClickMember = onClickMember)
                     }
                 }
@@ -115,7 +115,7 @@ private fun GroupMemberItem(
     ) {
         val (avatar, showName, role, divider) = createRefs()
         CoilCircleImage(
-            data = groupMemberProfile.faceUrl,
+            data = groupMemberProfile.detail.faceUrl,
             modifier = Modifier
                 .padding(start = padding * 1.5f, top = padding, bottom = padding)
                 .size(size = 50.dp)
@@ -125,8 +125,8 @@ private fun GroupMemberItem(
                 }
         )
         Text(
-            text = groupMemberProfile.showName + "（ID: ${
-                groupMemberProfile.userId + if (groupMemberProfile.isOwner) {
+            text = groupMemberProfile.detail.showName + "（ID: ${
+                groupMemberProfile.detail.userId + if (groupMemberProfile.isOwner) {
                     " - 群主"
                 } else {
                     ""

@@ -10,13 +10,17 @@ sealed class Chat(val type: Int, val id: String) {
 
     companion object {
 
+        private const val C2C_TYPE = 1
+
+        private const val GROUP_TYPE = 2
+
         fun find(type: Int, id: String): Chat {
             when (type) {
-                1 -> {
-                    return C2C(id)
+                C2C_TYPE -> {
+                    return C2C(id = id)
                 }
-                2 -> {
-                    return Group(id)
+                GROUP_TYPE -> {
+                    return Group(id = id)
                 }
             }
             throw IllegalArgumentException()
@@ -24,8 +28,8 @@ sealed class Chat(val type: Int, val id: String) {
 
     }
 
-    class C2C(id: String) : Chat(1, id)
+    class C2C(id: String) : Chat(C2C_TYPE, id)
 
-    class Group(id: String) : Chat(2, id)
+    class Group(id: String) : Chat(GROUP_TYPE, id)
 
 }

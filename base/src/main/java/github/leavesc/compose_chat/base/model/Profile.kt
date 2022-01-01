@@ -8,13 +8,27 @@ import github.leavesc.compose_chat.base.utils.TimeUtil
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-open class BaseProfile(
-    open val userId: String,
-    open val faceUrl: String,
-    open val nickname: String,
-    open val remark: String,
-    open val signature: String,
+data class PersonProfile(
+    val userId: String,
+    val faceUrl: String,
+    val nickname: String,
+    val remark: String,
+    val signature: String,
+    val isFriend: Boolean = false
 ) {
+
+    companion object {
+
+        val Empty = PersonProfile(
+            userId = "",
+            faceUrl = "",
+            nickname = "",
+            remark = "",
+            signature = "",
+            isFriend = false
+        )
+
+    }
 
     val showName: String
         get() {
@@ -25,52 +39,11 @@ open class BaseProfile(
 
 }
 
-data class PersonProfile(
-    override val userId: String,
-    override val faceUrl: String,
-    override val nickname: String,
-    override val remark: String,
-    override val signature: String,
-    val isFriend: Boolean = false
-) : BaseProfile(
-    userId = userId,
-    faceUrl = faceUrl,
-    nickname = nickname,
-    remark = remark,
-    signature = signature
-) {
-
-    companion object {
-
-        val Empty =
-            PersonProfile(
-                userId = "",
-                faceUrl = "",
-                nickname = "",
-                remark = "",
-                signature = "",
-                isFriend = false
-            )
-
-    }
-
-}
-
 data class GroupMemberProfile(
-    override val userId: String,
-    override val faceUrl: String,
-    override val nickname: String,
-    override val remark: String,
-    override val signature: String,
+    val detail: PersonProfile,
     val role: String,
     val isOwner: Boolean,
     val joinTime: Long
-) : BaseProfile(
-    userId = userId,
-    faceUrl = faceUrl,
-    nickname = nickname,
-    remark = remark,
-    signature = signature
 ) {
 
     val joinTimeFormat =

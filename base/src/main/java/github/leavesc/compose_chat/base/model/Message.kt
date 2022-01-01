@@ -18,11 +18,12 @@ sealed class MessageState {
 
 }
 
-sealed class Message(
+data class MessageDetail(
     val msgId: String,
     val timestamp: Long,
     val state: MessageState,
-    val sender: BaseProfile,
+    val sender: PersonProfile,
+    val isSelfMessage: Boolean
 ) {
 
     val conversationTime by lazy {
@@ -35,112 +36,45 @@ sealed class Message(
 
     var tag: Any? = null
 
-    override fun toString(): String {
-        return "Message(msgId='$msgId', timestamp=$timestamp, state=$state, sender=$sender, conversationTime='$conversationTime', chatTime='$chatTime', tag=$tag)"
-    }
+}
+
+sealed class Message(val messageDetail: MessageDetail) {
+
+    abstract val formatMessage: String
 
 }
 
 data class TimeMessage(
     val targetMessage: Message
 ) : Message(
-    msgId = (targetMessage.timestamp + targetMessage.msgId.hashCode()).toString(),
-    timestamp = targetMessage.timestamp,
-    state = MessageState.Completed,
-    sender = PersonProfile.Empty,
-)
-
-sealed class TextMessage(
-    msgId: String,
-    timestamp: Long,
-    state: MessageState,
-    sender: BaseProfile,
-    val msg: String,
-) : Message(
-    msgId = msgId,
-    timestamp = timestamp,
-    state = state,
-    sender = sender
+    messageDetail = MessageDetail(
+        msgId = (targetMessage.messageDetail.timestamp + targetMessage.messageDetail.msgId.hashCode()).toString(),
+        timestamp = targetMessage.messageDetail.timestamp,
+        state = MessageState.Completed,
+        sender = PersonProfile.Empty,
+        isSelfMessage = false
+    )
 ) {
 
-    class SelfTextMessage(
-        msgId: String,
-        state: MessageState,
-        timestamp: Long,
-        sender: BaseProfile,
-        msg: String,
-    ) : TextMessage(
-        msgId = msgId,
-        timestamp = timestamp,
-        state = state,
-        sender = sender,
-        msg = msg
-    )
-
-    class FriendTextMessage(
-        msgId: String,
-        timestamp: Long,
-        sender: BaseProfile,
-        msg: String,
-    ) : TextMessage(
-        msgId = msgId,
-        timestamp = timestamp,
-        state = MessageState.Completed,
-        sender = sender,
-        msg = msg
-    )
-
-    fun copy(
-        msgId: String = this.msgId,
-        msg: String = this.msg,
-        timestamp: Long = this.timestamp,
-        state: MessageState = this.state,
-        sender: BaseProfile = this.sender
-    ): TextMessage {
-        return when (this) {
-            is FriendTextMessage -> {
-                FriendTextMessage(
-                    msgId = msgId,
-                    msg = msg,
-                    timestamp = timestamp,
-                    sender = sender,
-                )
-            }
-            is SelfTextMessage -> {
-                SelfTextMessage(
-                    msgId = msgId,
-                    msg = msg,
-                    state = state,
-                    timestamp = timestamp,
-                    sender = sender,
-                )
-            }
-        }
-    }
+    override val formatMessage
+        get() = throw IllegalAccessException()
 
 }
 
-class ImageMessage(
-    msgId: String,
-    timestamp: Long,
-    state: MessageState,
-    sender: BaseProfile,
-    val imagePath: String,
-) : Message(
-    msgId = msgId,
-    timestamp = timestamp,
-    state = state,
-    sender = sender
-) {
+data class TextMessage(
+    val detail: MessageDetail,
+    val msg: String,
+) : Message(messageDetail = detail) {
 
-    fun copy(
-        msgId: String = this.msgId,
-        timestamp: Long = this.timestamp,
-        state: MessageState = this.state,
-        sender: BaseProfile = this.sender,
-        imagePath: String = this.imagePath,
-    ): ImageMessage {
-        return ImageMessage(msgId, timestamp, state, sender, imagePath)
-    }
+    override val formatMessage = msg
+
+}
+
+data class ImageMessage(
+    val detail: MessageDetail,
+    val imagePath: String,
+) : Message(messageDetail = detail) {
+
+    override val formatMessage = "[图片]"
 
 }

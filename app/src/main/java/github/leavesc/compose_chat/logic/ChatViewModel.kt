@@ -119,7 +119,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
             }
             var sendingMessage: Message? = null
             for (message in messageChannel) {
-                when (message.state) {
+                when (message.messageDetail.state) {
                     MessageState.Sending -> {
                         sendingMessage = message
                         attachNewMessage(newMessage = message, mushScrollToBottom = true)
@@ -127,14 +127,15 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                     MessageState.Completed, MessageState.SendFailed -> {
                         val sending = sendingMessage ?: return@launch
                         val sendingMessageIndex =
-                            allMessage.indexOfFirst { it.msgId == sending.msgId }
+                            allMessage.indexOfFirst { it.messageDetail.msgId == sending.messageDetail.msgId }
                         if (sendingMessageIndex > -1) {
                             allMessage[sendingMessageIndex] = message
                             refreshViewState()
                         }
-                        if (message.state == MessageState.SendFailed) {
-                            (message.tag as? String)?.let {
-                                showToast(it)
+                        if (message.messageDetail.state == MessageState.SendFailed) {
+                            val failReason = message.messageDetail.tag as? String
+                            if (!failReason.isNullOrBlank()) {
+                                showToast(failReason)
                             }
                         }
                     }
@@ -148,7 +149,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
             ComposeChat.messageProvider.sendText(
                 chat = chat,
                 text = text,
-                channel = it
+                messageChannel = it
             )
         }
     }
@@ -158,14 +159,14 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
             ComposeChat.messageProvider.sendImage(
                 chat = chat,
                 imagePath = imagePath,
-                channel = it
+                messageChannel = it
             )
         }
     }
 
     private fun attachNewMessage(newMessage: Message, mushScrollToBottom: Boolean) {
         val firstMessage = allMessage.getOrNull(0)
-        if (firstMessage == null || newMessage.timestamp - firstMessage.timestamp > 60) {
+        if (firstMessage == null || newMessage.messageDetail.timestamp - firstMessage.messageDetail.timestamp > 60) {
             allMessage.add(0, TimeMessage(targetMessage = newMessage))
         }
         allMessage.add(0, newMessage)
@@ -179,7 +180,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     ) {
         if (newMessageList.isNotEmpty()) {
             if (allMessage.isNotEmpty()) {
-                if (allMessage[allMessage.size - 1].timestamp - newMessageList[0].timestamp > 60) {
+                if (allMessage[allMessage.size - 1].messageDetail.timestamp - newMessageList[0].messageDetail.timestamp > 60) {
                     allMessage.add(TimeMessage(targetMessage = allMessage[allMessage.size - 1]))
                 }
             }
@@ -188,7 +189,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                 val currentMsg = newMessageList[index]
                 val preMsg = newMessageList.getOrNull(index + 1)
                 allMessage.add(currentMsg)
-                if (preMsg == null || currentMsg.timestamp - preMsg.timestamp > 60) {
+                if (preMsg == null || currentMsg.messageDetail.timestamp - preMsg.messageDetail.timestamp > 60) {
                     allMessage.add(TimeMessage(targetMessage = currentMsg))
                     filteredMsg = 1
                 } else if (filteredMsg >= 10) {
