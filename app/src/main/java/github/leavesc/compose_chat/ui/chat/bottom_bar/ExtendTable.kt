@@ -1,4 +1,4 @@
-package github.leavesc.compose_chat.ui.chat
+package github.leavesc.compose_chat.ui.chat.bottom_bar
 
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher

@@ -1,4 +1,4 @@
-package github.leavesc.compose_chat.ui.chat
+package github.leavesc.compose_chat.ui.chat.bottom_bar
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

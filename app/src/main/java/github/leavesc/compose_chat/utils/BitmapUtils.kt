@@ -1,8 +1,6 @@
 package github.leavesc.compose_chat.utils
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
@@ -20,44 +18,22 @@ object BitmapUtils {
 
     fun saveImage(context: Context, imageUri: Uri): File? {
         try {
-            val bitmap = decodeBitmap(context = context, imageUri = imageUri)
-            if (bitmap != null) {
-                return saveBitmap(context = context, bitmap = bitmap)
-            }
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
-        return null
-    }
-
-    fun saveBitmap(context: Context, bitmap: Bitmap): File? {
-        return try {
-            val imageFile = File(context.cacheDir, "$randomFileName.jpg")
+            val inputStream = context.contentResolver?.openInputStream(imageUri) ?: return null
+            val imageFile =
+                File(context.externalCacheDir ?: context.cacheDir, "$randomFileName.jpg")
             if (imageFile.exists()) {
                 imageFile.delete()
             }
             imageFile.createNewFile()
-            copyBitmap(bitmap = bitmap, desc = imageFile)
-            imageFile
+            val outputStream = FileOutputStream(imageFile)
+            inputStream.copyTo(out = outputStream)
+            inputStream.close()
+            outputStream.close()
+            return imageFile
         } catch (e: Throwable) {
             e.printStackTrace()
-            null
-        }
-    }
-
-    fun decodeBitmap(context: Context, imageUri: Uri): Bitmap? {
-        val fileDescriptor = context.contentResolver?.openFileDescriptor(imageUri, "r")
-        if (fileDescriptor != null) {
-            val bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor.fileDescriptor)
-            fileDescriptor.close()
-            return bitmap
         }
         return null
-    }
-
-    private fun copyBitmap(bitmap: Bitmap, desc: File) {
-        val op = FileOutputStream(desc)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, op)
     }
 
 }

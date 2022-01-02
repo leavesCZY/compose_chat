@@ -14,6 +14,8 @@ import github.leavesc.compose_chat.base.model.Chat
 import github.leavesc.compose_chat.extend.viewModelInstance
 import github.leavesc.compose_chat.logic.ChatViewModel
 import github.leavesc.compose_chat.model.Screen
+import github.leavesc.compose_chat.ui.chat.bottom_bar.ChatScreenBottomBar
+import github.leavesc.compose_chat.ui.chat.top_bar.ChatScreenTopBar
 import kotlinx.coroutines.flow.filter
 
 /**
@@ -82,7 +84,7 @@ fun ChatScreen(
             )
         },
         bottomBar = {
-            ChatScreenBottomBord(
+            ChatScreenBottomBar(
                 sendText = {
                     chatViewModel.sendTextMessage(it)
                 }, sendImage = {

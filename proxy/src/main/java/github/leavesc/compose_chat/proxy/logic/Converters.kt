@@ -145,7 +145,7 @@ internal interface Converters {
                 V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE -> {
                     ImageMessage(
                         detail = messageDetail,
-                        imagePath = timMessage.imageElem?.imageList?.getOrNull(1)?.url ?: ""
+                        imagePath = timMessage.imageElem?.imageList?.getOrNull(0)?.url ?: ""
                     )
                 }
                 else -> {

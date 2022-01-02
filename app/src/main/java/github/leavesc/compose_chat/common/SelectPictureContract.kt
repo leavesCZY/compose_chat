@@ -10,7 +10,7 @@ import androidx.activity.result.contract.ActivityResultContract
  * @Date: 2022/1/1 12:35
  * @Desc:
  */
-object SelectPictureContract : ActivityResultContract<Unit, Uri?>() {
+class SelectPictureContract : ActivityResultContract<Unit, Uri?>() {
 
     override fun createIntent(context: Context, input: Unit): Intent {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
