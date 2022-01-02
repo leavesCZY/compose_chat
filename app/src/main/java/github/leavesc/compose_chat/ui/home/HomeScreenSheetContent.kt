@@ -96,23 +96,14 @@ fun HomeScreenSheetContent(
                         homeScreenSheetContentState.toAddFriend(userId)
                     }
                 }
-                CommonButton(text = "加入交流群 A") {
+                CommonButton(text = "加入大群 ~") {
                     homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdA)
                 }
-                CommonButton(text = "加入交流群 B") {
+                CommonButton(text = "加入大大群 ~") {
                     homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdB)
                 }
-                CommonButton(text = "加入交流群 C") {
+                CommonButton(text = "加入大大大群 ~") {
                     homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdC)
-                }
-                CommonButton(text = "加入交流群 D") {
-                    homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdD)
-                }
-                CommonButton(text = "加入交流群 E") {
-                    homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdE)
-                }
-                CommonButton(text = "加入交流群 F") {
-                    homeScreenSheetContentState.toJoinGroup(ComposeChat.groupIdF)
                 }
             }
         }

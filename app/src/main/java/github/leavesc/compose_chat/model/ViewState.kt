@@ -191,7 +191,7 @@ data class ChatScreenState(
     val messageList: List<Message>,
     val mushScrollToBottom: Boolean,
     val showLoadMore: Boolean,
-    val loadFinish: Boolean,
+    val loadFinish: Boolean
 )
 
 data class GroupProfileScreenState(

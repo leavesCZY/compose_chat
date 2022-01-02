@@ -7,15 +7,22 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.base.model.Chat
+import github.leavesc.compose_chat.base.model.ImageMessage
+import github.leavesc.compose_chat.base.model.Message
+import github.leavesc.compose_chat.base.model.TextMessage
+import github.leavesc.compose_chat.extend.navToPreviewImageScreen
 import github.leavesc.compose_chat.extend.viewModelInstance
 import github.leavesc.compose_chat.logic.ChatViewModel
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.chat.bottom_bar.ChatScreenBottomBar
 import github.leavesc.compose_chat.ui.chat.top_bar.ChatScreenTopBar
+import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.flow.filter
 
 /**
@@ -36,6 +43,50 @@ fun ChatScreen(
 
     val screenTopBarTitle by chatViewModel.screenTopBarTitle.collectAsState()
     val chatScreenState by chatViewModel.chatScreenState.collectAsState()
+    val clipboardManager = LocalClipboardManager.current
+    val onClickAvatar: (Message) -> Unit = remember {
+        {
+            val messageSenderId = it.messageDetail.sender.userId
+            if (messageSenderId.isNotBlank()) {
+                navController.navigate(
+                    route = Screen.FriendProfileScreen.generateRoute(friendId = messageSenderId)
+                )
+            }
+        }
+    }
+    val onClickMessage: (Message) -> Unit = remember {
+        {
+            when (it) {
+                is ImageMessage -> {
+                    val imagePath = it.imagePath
+                    if (imagePath.isBlank()) {
+                        showToast("图片路径为空")
+                    } else {
+                        navController.navToPreviewImageScreen(imagePath = imagePath)
+                    }
+                }
+                else -> {
+
+                }
+            }
+        }
+    }
+    val onLongClickMessage: (Message) -> Unit = remember {
+        {
+            when (it) {
+                is TextMessage -> {
+                    val msg = it.msg
+                    if (msg.isNotEmpty()) {
+                        clipboardManager.setText(AnnotatedString(msg))
+                        showToast("已复制")
+                    }
+                }
+                else -> {
+
+                }
+            }
+        }
+    }
 
     val ime = LocalWindowInsets.current.ime
     LaunchedEffect(key1 = chatScreenState) {
@@ -93,11 +144,13 @@ fun ChatScreen(
         }
     ) { contentPadding ->
         MessageScreen(
-            navController = navController,
             listState = listState,
+            chat = chat,
             contentPadding = contentPadding,
             chatScreenState = chatScreenState,
-            chat = chat
+            onClickAvatar = onClickAvatar,
+            onClickMessage = onClickMessage,
+            onLongClickMessage = onLongClickMessage
         )
     }
 }

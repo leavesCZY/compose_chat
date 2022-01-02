@@ -105,18 +105,22 @@ class MessageProvider : IMessageProvider, Converters {
         private fun Message.copyMessage(messageState: MessageState, failReason: Any?): Message {
             return when (this) {
                 is TextMessage -> {
-                    this.copy(detail = this.detail.copy(
-                        state = messageState
+                    this.copy(
+                        detail = this.detail.copy(
+                            state = messageState
+                        )
                     ).apply {
                         tag = failReason
-                    })
+                    }
                 }
                 is ImageMessage -> {
-                    this.copy(detail = this.detail.copy(
-                        state = messageState
+                    this.copy(
+                        detail = this.detail.copy(
+                            state = messageState
+                        )
                     ).apply {
                         tag = failReason
-                    })
+                    }
                 }
                 else -> {
                     throw IllegalArgumentException()

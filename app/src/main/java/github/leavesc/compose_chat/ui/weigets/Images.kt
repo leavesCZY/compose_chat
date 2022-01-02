@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
@@ -45,11 +46,12 @@ fun CoilImage(
     builder: ImageRequest.Builder.() -> Unit = {},
 ) {
     val imagePainter = rememberAsyncImagePainter(
-        ImageRequest.Builder(LocalContext.current)
+        model = ImageRequest.Builder(LocalContext.current)
             .data(data = data)
             .scale(scale = Scale.FIT)
             .apply(block = builder)
-            .build()
+            .build(),
+        filterQuality = FilterQuality.Medium
     )
     Image(
         modifier = modifier,

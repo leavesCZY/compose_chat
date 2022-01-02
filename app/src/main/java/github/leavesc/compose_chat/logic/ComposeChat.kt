@@ -11,17 +11,11 @@ import github.leavesc.compose_chat.proxy.logic.*
  */
 object ComposeChat {
 
-    const val groupIdA = "@TGS#3KGRTDSHY"
+    const val groupIdA = "@TGS#3SSMB3WHI"
 
-    const val groupIdB = "@TGS#3S4RTDSHN"
+    const val groupIdB = "@TGS#3VOZA3WHT"
 
-    const val groupIdC = "@TGS#3QXSTDSHR"
-
-    const val groupIdD = "@TGS#3GR2HLTH3"
-
-    const val groupIdE = "@TGS#3Q65MLTHR"
-
-    const val groupIdF = "@TGS#3XFHNLTH5"
+    const val groupIdC = "@TGS#3W42A3WHP"
 
     val accountProvider: IAccountProvider = AccountProvider()
 

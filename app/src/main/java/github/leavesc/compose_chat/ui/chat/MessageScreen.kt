@@ -8,15 +8,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import github.leavesc.compose_chat.base.model.Chat
-import github.leavesc.compose_chat.extend.navToPreviewImageScreen
+import github.leavesc.compose_chat.base.model.Message
 import github.leavesc.compose_chat.model.ChatScreenState
-import github.leavesc.compose_chat.model.Screen
-import github.leavesc.compose_chat.utils.showToast
 
 /**
  * @Author: leavesC
@@ -26,13 +21,14 @@ import github.leavesc.compose_chat.utils.showToast
  */
 @Composable
 fun MessageScreen(
-    navController: NavController,
     listState: LazyListState,
+    chat: Chat,
     contentPadding: PaddingValues,
     chatScreenState: ChatScreenState,
-    chat: Chat,
+    onClickAvatar: (Message) -> Unit,
+    onClickMessage: (Message) -> Unit,
+    onLongClickMessage: (Message) -> Unit
 ) {
-    val clipboardManager = LocalClipboardManager.current
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -46,44 +42,16 @@ fun MessageScreen(
             item(key = message.messageDetail.msgId) {
                 MessageItems(
                     message = message,
-                    showSenderName = chat is Chat.Group,
-                    onClickSelfAvatar = {
-                        val messageSenderId = it.messageDetail.sender.userId
-                        if (messageSenderId.isNotBlank()) {
-                            navController.navigate(
-                                route = Screen.FriendProfileScreen.generateRoute(friendId = messageSenderId)
-                            )
-                        }
-                    },
-                    onClickFriendAvatar = {
-                        val messageSenderId = it.messageDetail.sender.userId
-                        if (messageSenderId.isNotBlank()) {
-                            navController.navigate(
-                                route = Screen.FriendProfileScreen.generateRoute(friendId = messageSenderId)
-                            )
-                        }
-                    },
-                    onLongPressTextMessage = {
-                        val msg = it.msg
-                        if (msg.isNotEmpty()) {
-                            clipboardManager.setText(AnnotatedString(msg))
-                            showToast("已复制")
-                        }
-                    },
-                    onClickImageMessage = {
-                        val imagePath = it.imagePath
-                        if (imagePath.isBlank()) {
-                            showToast("图片路径为空")
-                        } else {
-                            navController.navToPreviewImageScreen(imagePath = imagePath)
-                        }
-                    }
+                    showPartyName = chat is Chat.Group,
+                    onClickAvatar = onClickAvatar,
+                    onClickMessage = onClickMessage,
+                    onLongClickMessage = onLongClickMessage
                 )
             }
         }
         if (chatScreenState.showLoadMore) {
             item {
-                LoadMoreMessageItem()
+                LoadMoreMessage()
             }
         }
     }

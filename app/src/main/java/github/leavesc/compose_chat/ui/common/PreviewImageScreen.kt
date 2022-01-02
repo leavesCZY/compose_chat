@@ -34,8 +34,7 @@ fun PreviewImageScreen(
         "imagePath: $imagePath"
     }
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier,
         backgroundColor = Color.Black.copy(alpha = 0.9f)
     ) {
         Box(
@@ -45,7 +44,7 @@ fun PreviewImageScreen(
             contentAlignment = Alignment.Center
         ) {
             val imagePainter = rememberAsyncImagePainter(
-                ImageRequest.Builder(LocalContext.current)
+                model = ImageRequest.Builder(LocalContext.current)
                     .data(data = imagePath)
                     .size(size = Size.ORIGINAL)
                     .placeholder(null)
@@ -53,10 +52,9 @@ fun PreviewImageScreen(
                 filterQuality = FilterQuality.Medium,
             )
             Image(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 painter = imagePainter,
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.FillWidth,
                 contentDescription = null,
             )
         }

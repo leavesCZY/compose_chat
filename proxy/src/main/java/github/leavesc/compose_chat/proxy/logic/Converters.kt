@@ -145,13 +145,13 @@ internal interface Converters {
                 V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE -> {
                     ImageMessage(
                         detail = messageDetail,
-                        imagePath = timMessage.imageElem?.imageList?.getOrNull(0)?.url ?: ""
+                        imagePath = timMessage.imageElem?.imageList?.getOrNull(1)?.url ?: ""
                     )
                 }
                 else -> {
                     TextMessage(
                         detail = messageDetail,
-                        msg = "[未知消息类型] - $elemType"
+                        msg = "[不支持的消息类型] - $elemType"
                     )
                 }
             }
