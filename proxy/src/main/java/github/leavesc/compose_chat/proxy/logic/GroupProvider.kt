@@ -195,7 +195,7 @@ class GroupProvider : IGroupProvider, Converters {
     }
 
     private fun convertGroupMember(groupMemberList: List<V2TIMGroupMemberFullInfo>?): List<GroupMemberProfile> {
-        return groupMemberList?.map { Converters.convertGroupMember(memberFullInfo = it) }
+        return groupMemberList?.map { convertGroupMember(memberFullInfo = it) }
             ?: emptyList()
     }
 

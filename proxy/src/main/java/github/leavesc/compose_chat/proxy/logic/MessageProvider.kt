@@ -4,7 +4,6 @@ import com.tencent.imsdk.v2.*
 import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.base.provider.IMessageProvider
 import github.leavesc.compose_chat.proxy.consts.AppConst
-import github.leavesc.compose_chat.proxy.logic.Converters.Companion.convertMessage
 import github.leavesc.compose_chat.proxy.utils.RandomUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel

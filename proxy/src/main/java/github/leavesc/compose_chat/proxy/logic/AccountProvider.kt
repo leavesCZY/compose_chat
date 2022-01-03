@@ -8,7 +8,6 @@ import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.base.model.ServerState
 import github.leavesc.compose_chat.base.provider.IAccountProvider
 import github.leavesc.compose_chat.proxy.consts.AppConst
-import github.leavesc.compose_chat.proxy.logic.Converters.Companion.convertPersonProfile
 import github.leavesc.compose_chat.proxy.utils.GenerateUserSig
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow

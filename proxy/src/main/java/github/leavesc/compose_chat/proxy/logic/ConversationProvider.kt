@@ -6,8 +6,6 @@ import github.leavesc.compose_chat.base.model.C2CConversation
 import github.leavesc.compose_chat.base.model.Conversation
 import github.leavesc.compose_chat.base.model.GroupConversation
 import github.leavesc.compose_chat.base.provider.IConversationProvider
-import github.leavesc.compose_chat.proxy.logic.Converters.Companion.convertMessage
-import github.leavesc.compose_chat.proxy.logic.Converters.Companion.getConversationId
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.coroutines.resume
@@ -68,7 +66,7 @@ class ConversationProvider : IConversationProvider, Converters {
     }
 
     override suspend fun deleteConversation(conversation: Conversation): ActionResult {
-        return Converters.deleteConversation(id = getConversationId(conversation))
+        return deleteConversation(id = getConversationId(conversation))
     }
 
     private fun dispatchConversationList(conversationList: List<Conversation>) {

@@ -4,8 +4,6 @@ import com.tencent.imsdk.v2.*
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.base.provider.IFriendshipProvider
-import github.leavesc.compose_chat.proxy.logic.Converters.Companion.convertFriendProfile
-import github.leavesc.compose_chat.proxy.logic.Converters.Companion.deleteC2CConversation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
