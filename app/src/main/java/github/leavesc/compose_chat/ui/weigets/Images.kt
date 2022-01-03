@@ -48,7 +48,7 @@ fun CoilImage(
     builder: ImageRequest.Builder.() -> Unit = {},
 ) {
     val imagePainter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
+        model = ImageRequest.Builder(context = LocalContext.current)
             .data(data = data)
             .scale(scale = Scale.FIT)
             .apply(block = builder)
@@ -94,7 +94,7 @@ fun OutlinedAvatar(
         CoilCircleImage(
             data = data,
             modifier = Modifier
-                .padding(outlineSize)
+                .padding(all = outlineSize)
                 .fillMaxSize()
         )
     }

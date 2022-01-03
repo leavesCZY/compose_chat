@@ -2,7 +2,7 @@
 
 一个用 Jetpack Compose 实现的 IM APP
 
-![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/adbeccad79d94d0dbff85bc02d7ccf04~tplv-k3u1fbpfcp-watermark.awebp)
+![](https://upload-images.jianshu.io/upload_images/2552605-8e8a3c031ab1e50b.gif)
 
 由于腾讯云 IM SDK 免费版最多只能注册一百个账号，因此如果发现注册不了的话，可以使用以下几个我预先注册好的账号，但多设备同时登陆的话会互相挤掉线 ~~
 
