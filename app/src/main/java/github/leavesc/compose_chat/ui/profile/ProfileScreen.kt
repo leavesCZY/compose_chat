@@ -3,6 +3,7 @@ package github.leavesc.compose_chat.ui.profile
 import android.content.res.Configuration
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -27,6 +28,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.base.model.PersonProfile
+import github.leavesc.compose_chat.extend.LocalNavHostController
+import github.leavesc.compose_chat.extend.navToPreviewImageScreen
 import github.leavesc.compose_chat.extend.scrim
 import github.leavesc.compose_chat.ui.theme.BezierShape
 import github.leavesc.compose_chat.ui.weigets.CoilImage
@@ -95,6 +98,7 @@ private fun ProfileScreen(
     avatarUrl: String,
     content: @Composable () -> Unit
 ) {
+    val navHostController = LocalNavHostController.current
     ConstraintLayout(
         modifier = Modifier
             .background(color = MaterialTheme.colors.background)
@@ -154,6 +158,11 @@ private fun ProfileScreen(
                         x = offsetX.roundToInt(),
                         y = offsetY.roundToInt()
                     )
+                }
+                .clickable {
+                    if (avatarUrl.isNotBlank()) {
+                        navHostController.navToPreviewImageScreen(imagePath = avatarUrl)
+                    }
                 }
                 .pointerInput(key1 = Unit) {
                     detectDragGestures(

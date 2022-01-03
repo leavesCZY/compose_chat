@@ -8,8 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import github.leavesc.compose_chat.base.model.PersonProfile
+import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.extend.navToC2CChatScreen
 import github.leavesc.compose_chat.extend.navToHomeScreen
 import github.leavesc.compose_chat.extend.viewModelInstance
@@ -29,7 +29,6 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun FriendProfileScreen(
-    navController: NavHostController,
     friendId: String
 ) {
     val friendProfileViewModel = viewModelInstance {
@@ -41,6 +40,7 @@ fun FriendProfileScreen(
     val friendProfile by friendProfileViewModel.friendProfile.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val navHostController = LocalNavHostController.current
 
     fun expandSheetContent() {
         coroutineScope.launch {
@@ -70,8 +70,8 @@ fun FriendProfileScreen(
                 if (friendProfile.isFriend) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         CommonButton(text = "去聊天吧") {
-                            navController.popBackStack()
-                            navController.navToC2CChatScreen(friendId = friendProfile.userId)
+                            navHostController.popBackStack()
+                            navHostController.navToC2CChatScreen(friendId = friendProfile.userId)
                         }
                         CommonButton(text = "设置备注") {
                             expandSheetContent()
@@ -85,7 +85,7 @@ fun FriendProfileScreen(
             if (openDeleteFriendDialog) {
                 DeleteFriendDialog(friendProfile = friendProfile, onDeleteFriend = {
                     friendProfileViewModel.deleteFriend(friendId = it)
-                    navController.navToHomeScreen()
+                    navHostController.navToHomeScreen()
                 }, onDismissRequest = {
                     openDeleteFriendDialog = false
                 })

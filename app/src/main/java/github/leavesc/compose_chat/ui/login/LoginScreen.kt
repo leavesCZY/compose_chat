@@ -12,8 +12,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import github.leavesc.compose_chat.R
+import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.extend.navigateWithBack
 import github.leavesc.compose_chat.logic.LoginViewModel
 import github.leavesc.compose_chat.model.Screen
@@ -29,17 +29,18 @@ import kotlinx.coroutines.launch
  * @Github：https://github.com/leavesC
  */
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginScreen() {
     val loginViewModel = viewModel<LoginViewModel>()
     val loginScreenState by loginViewModel.loginScreenState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val textInputService = LocalTextInputService.current
+    val navHostController = LocalNavHostController.current
     LaunchedEffect(key1 = Unit) {
         launch {
             loginViewModel.loginScreenState.collect {
                 if (it.loginSuccess) {
-                    navController.navigateWithBack(
+                    navHostController.navigateWithBack(
                         screen = Screen.HomeScreen
                     )
                     return@collect

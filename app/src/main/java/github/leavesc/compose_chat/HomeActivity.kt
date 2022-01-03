@@ -26,6 +26,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import github.leavesc.compose_chat.base.model.ServerState
 import github.leavesc.compose_chat.cache.AccountCache
+import github.leavesc.compose_chat.extend.ProvideNavHostController
 import github.leavesc.compose_chat.extend.navToLogin
 import github.leavesc.compose_chat.logic.AppViewModel
 import github.leavesc.compose_chat.model.AppTheme
@@ -33,7 +34,7 @@ import github.leavesc.compose_chat.model.HomeScreenTab
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.chat.ChatScreen
 import github.leavesc.compose_chat.ui.chat.GroupProfileScreen
-import github.leavesc.compose_chat.ui.chat.PreviewImageScreen
+import github.leavesc.compose_chat.ui.common.PreviewImageScreen
 import github.leavesc.compose_chat.ui.friend.FriendProfileScreen
 import github.leavesc.compose_chat.ui.home.HomeScreen
 import github.leavesc.compose_chat.ui.login.LoginScreen
@@ -112,67 +113,66 @@ class HomeActivity : ComponentActivity() {
             mutableStateOf(HomeScreenTab.Conversation)
         }
         ProvideWindowInsets {
-            AnimatedNavHost(
-                navController = navController,
-                startDestination = Screen.LoginScreen.route,
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = {
-                            -it
-                        },
-                        animationSpec = tween(300)
-                    )
-                },
-                exitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = {
-                            it
-                        },
-                        animationSpec = tween(300)
-                    )
-                },
-            ) {
-                animatedComposable(
-                    screen = Screen.LoginScreen,
+            ProvideNavHostController(navHostController = navController) {
+                AnimatedNavHost(
+                    navController = navController,
+                    startDestination = Screen.LoginScreen.route,
+                    enterTransition = {
+                        slideInHorizontally(
+                            initialOffsetX = {
+                                -it
+                            },
+                            animationSpec = tween(300)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = {
+                                it
+                            },
+                            animationSpec = tween(300)
+                        )
+                    },
                 ) {
-                    LoginScreen(navController = navController)
-                }
-                animatedComposable(screen = Screen.HomeScreen) {
-                    HomeScreen(
-                        navController = navController,
-                        appTheme = appTheme,
-                        switchToNextTheme = switchToNextTheme,
-                        homeTabSelected = homeScreenSelected,
-                        onHomeTabSelected = {
-                            homeScreenSelected = it
-                        }
-                    )
-                }
-                animatedComposable(screen = Screen.FriendProfileScreen) { backStackEntry ->
-                    FriendProfileScreen(
-                        navController = navController,
-                        friendId = Screen.FriendProfileScreen.getArgument(backStackEntry)
-                    )
-                }
-                animatedComposable(screen = Screen.ChatScreen) { backStackEntry ->
-                    val listState = rememberLazyListState()
-                    ChatScreen(
-                        navController = navController,
-                        listState = listState,
-                        chat = Screen.ChatScreen.getArgument(backStackEntry),
-                    )
-                }
-                animatedComposable(screen = Screen.GroupProfileScreen) { backStackEntry ->
-                    GroupProfileScreen(
-                        navController = navController,
-                        groupId = Screen.GroupProfileScreen.getArgument(backStackEntry),
-                    )
-                }
-                animatedComposable(screen = Screen.PreviewImageScreen) { backStackEntry ->
-                    PreviewImageScreen(
-                        navController = navController,
-                        imagePath = Screen.PreviewImageScreen.getArgument(backStackEntry),
-                    )
+                    animatedComposable(
+                        screen = Screen.LoginScreen,
+                    ) {
+                        LoginScreen()
+                    }
+                    animatedComposable(screen = Screen.HomeScreen) {
+                        HomeScreen(
+                            appTheme = appTheme,
+                            switchToNextTheme = switchToNextTheme,
+                            homeTabSelected = homeScreenSelected,
+                            onHomeTabSelected = {
+                                homeScreenSelected = it
+                            }
+                        )
+                    }
+                    animatedComposable(screen = Screen.FriendProfileScreen) { backStackEntry ->
+                        FriendProfileScreen(
+                            friendId = Screen.FriendProfileScreen.getArgument(backStackEntry)
+                        )
+                    }
+                    animatedComposable(screen = Screen.ChatScreen) { backStackEntry ->
+                        val listState = rememberLazyListState()
+                        ChatScreen(
+                            listState = listState,
+                            chat = Screen.ChatScreen.getArgument(backStackEntry),
+                        )
+                    }
+                    animatedComposable(screen = Screen.GroupProfileScreen) { backStackEntry ->
+                        GroupProfileScreen(
+                            groupId = Screen.GroupProfileScreen.getArgument(backStackEntry),
+                        )
+                    }
+                    animatedComposable(screen = Screen.PreviewImageScreen) { backStackEntry ->
+                        PreviewImageScreen(
+                            imagePath = Screen.PreviewImageScreen.getArgument(
+                                backStackEntry
+                            ),
+                        )
+                    }
                 }
             }
         }

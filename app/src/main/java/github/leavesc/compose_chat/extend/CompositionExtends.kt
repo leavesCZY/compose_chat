@@ -7,6 +7,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
 
 /**
  * @Author: leavesC
@@ -27,6 +28,20 @@ fun ProvideInputMethodManager(content: @Composable () -> Unit) {
         ) as InputMethodManager
     }
     CompositionLocalProvider(LocalInputMethodManager provides inputMethodManager) {
+        content()
+    }
+}
+
+val LocalNavHostController = staticCompositionLocalOf<NavHostController> {
+    error("CompositionLocal NavHostController not present")
+}
+
+@Composable
+fun ProvideNavHostController(
+    navHostController: NavHostController,
+    content: @Composable () -> Unit
+) {
+    CompositionLocalProvider(LocalNavHostController provides navHostController) {
         content()
     }
 }

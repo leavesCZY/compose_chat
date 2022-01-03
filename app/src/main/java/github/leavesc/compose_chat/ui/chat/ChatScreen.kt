@@ -9,13 +9,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
-import androidx.navigation.NavHostController
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.base.model.Chat
 import github.leavesc.compose_chat.base.model.ImageMessage
 import github.leavesc.compose_chat.base.model.Message
 import github.leavesc.compose_chat.base.model.TextMessage
+import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.extend.navToPreviewImageScreen
 import github.leavesc.compose_chat.extend.viewModelInstance
 import github.leavesc.compose_chat.logic.ChatViewModel
@@ -33,7 +33,6 @@ import kotlinx.coroutines.flow.filter
  */
 @Composable
 fun ChatScreen(
-    navController: NavHostController,
     listState: LazyListState,
     chat: Chat
 ) {
@@ -44,11 +43,13 @@ fun ChatScreen(
     val screenTopBarTitle by chatViewModel.screenTopBarTitle.collectAsState()
     val chatScreenState by chatViewModel.chatScreenState.collectAsState()
     val clipboardManager = LocalClipboardManager.current
+    val navHostController = LocalNavHostController.current
+
     val onClickAvatar: (Message) -> Unit = remember {
         {
             val messageSenderId = it.messageDetail.sender.userId
             if (messageSenderId.isNotBlank()) {
-                navController.navigate(
+                navHostController.navigate(
                     route = Screen.FriendProfileScreen.generateRoute(friendId = messageSenderId)
                 )
             }
@@ -62,7 +63,7 @@ fun ChatScreen(
                     if (imagePath.isBlank()) {
                         showToast("图片路径为空")
                     } else {
-                        navController.navToPreviewImageScreen(imagePath = imagePath)
+                        navHostController.navToPreviewImageScreen(imagePath = imagePath)
                     }
                 }
                 else -> {
@@ -116,17 +117,16 @@ fun ChatScreen(
             .statusBarsPadding(),
         topBar = {
             ChatScreenTopBar(
-                navController = navController,
                 title = screenTopBarTitle,
                 onClickMoreMenu = {
                     when (chat) {
                         is Chat.C2C -> {
-                            navController.navigate(
+                            navHostController.navigate(
                                 route = Screen.FriendProfileScreen.generateRoute(friendId = chat.id)
                             )
                         }
                         is Chat.Group -> {
-                            navController.navigate(
+                            navHostController.navigate(
                                 route = Screen.GroupProfileScreen.generateRoute(groupId = chat.id)
                             )
                         }

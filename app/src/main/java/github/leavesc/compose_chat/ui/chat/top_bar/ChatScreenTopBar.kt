@@ -20,8 +20,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.navigation.NavHostController
 import com.google.accompanist.insets.LocalWindowInsets
+import github.leavesc.compose_chat.extend.LocalNavHostController
 
 /**
  * @Author: leavesC
@@ -31,12 +31,12 @@ import com.google.accompanist.insets.LocalWindowInsets
  */
 @Composable
 fun ChatScreenTopBar(
-    navController: NavHostController,
     title: String,
     onClickBackMenu: (() -> Unit)? = null,
     onClickMoreMenu: () -> Unit,
 ) {
     val textInputService = LocalTextInputService.current
+    val navHostController = LocalNavHostController.current
     val ime = LocalWindowInsets.current.ime
     TopAppBar(
         backgroundColor = MaterialTheme.colors.primaryVariant,
@@ -65,7 +65,7 @@ fun ChatScreenTopBar(
                             if (ime.isVisible && textInputService != null) {
                                 textInputService.hideSoftwareKeyboard()
                             } else {
-                                navController.popBackStack()
+                                navHostController.popBackStack()
                             }
                         }
                     }),

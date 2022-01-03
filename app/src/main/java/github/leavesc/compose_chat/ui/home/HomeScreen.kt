@@ -10,11 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.google.accompanist.insets.navigationBarsPadding
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.C2CConversation
 import github.leavesc.compose_chat.base.model.GroupConversation
+import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.extend.navToC2CChatScreen
 import github.leavesc.compose_chat.extend.navToGroupChatScreen
 import github.leavesc.compose_chat.logic.HomeViewModel
@@ -34,7 +34,6 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun HomeScreen(
-    navController: NavHostController,
     appTheme: AppTheme,
     switchToNextTheme: () -> Unit,
     homeTabSelected: HomeScreenTab,
@@ -44,6 +43,7 @@ fun HomeScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scaffoldState = rememberScaffoldState(drawerState = drawerState)
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val navHostController = LocalNavHostController.current
 
     fun sheetContentAnimateToExpanded() {
         coroutineScope.launch {
@@ -67,10 +67,10 @@ fun HomeScreen(
             onClickConversation = {
                 when (it) {
                     is C2CConversation -> {
-                        navController.navToC2CChatScreen(friendId = it.id)
+                        navHostController.navToC2CChatScreen(friendId = it.id)
                     }
                     is GroupConversation -> {
-                        navController.navToGroupChatScreen(groupId = it.id)
+                        navHostController.navToGroupChatScreen(groupId = it.id)
                     }
                 }
             },
@@ -93,10 +93,10 @@ fun HomeScreen(
             joinedGroupList = joinedGroupList,
             friendList = fiendList,
             onClickGroup = {
-                navController.navToGroupChatScreen(groupId = it.id)
+                navHostController.navToGroupChatScreen(groupId = it.id)
             },
             onClickFriend = {
-                navController.navigate(
+                navHostController.navigate(
                     route = Screen.FriendProfileScreen.generateRoute(friendId = it.userId)
                 )
             },
@@ -173,12 +173,12 @@ fun HomeScreen(
                         is ActionResult.Success -> {
                             showToast("加入成功")
                             sheetState.hide()
-                            navController.navToGroupChatScreen(groupId = it)
+                            navHostController.navToGroupChatScreen(groupId = it)
                         }
                         is ActionResult.Failed -> {
                             if (result.code == 10013) {
                                 sheetState.hide()
-                                navController.navToGroupChatScreen(groupId = it)
+                                navHostController.navToGroupChatScreen(groupId = it)
                             } else {
                                 showToast(result.reason)
                             }

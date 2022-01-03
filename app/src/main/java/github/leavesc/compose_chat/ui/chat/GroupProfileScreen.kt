@@ -16,10 +16,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.navigation.NavHostController
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.GroupMemberProfile
+import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.extend.navToHomeScreen
 import github.leavesc.compose_chat.extend.viewModelInstance
 import github.leavesc.compose_chat.logic.GroupProfileViewModel
@@ -38,15 +38,13 @@ import kotlinx.coroutines.launch
  * @Github：https://github.com/leavesC
  */
 @Composable
-fun GroupProfileScreen(
-    navController: NavHostController,
-    groupId: String
-) {
+fun GroupProfileScreen(groupId: String) {
     val groupProfileViewModel = viewModelInstance {
         GroupProfileViewModel(groupId = groupId)
     }
     val groupProfileScreenState by groupProfileViewModel.groupProfileScreenState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+    val navHostController = LocalNavHostController.current
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -55,7 +53,7 @@ fun GroupProfileScreen(
             val onClickMember: (GroupMemberProfile) -> Unit = remember {
                 object : (GroupMemberProfile) -> Unit {
                     override fun invoke(member: GroupMemberProfile) {
-                        navController.navigate(
+                        navHostController.navigate(
                             route = Screen.FriendProfileScreen.generateRoute(friendId = member.detail.userId)
                         )
                     }
@@ -87,7 +85,7 @@ fun GroupProfileScreen(
                         when (val result = groupProfileViewModel.quitGroup()) {
                             ActionResult.Success -> {
                                 showToast("已退出群聊")
-                                navController.navToHomeScreen()
+                                navHostController.navToHomeScreen()
                             }
                             is ActionResult.Failed -> {
                                 showToast(result.reason)
