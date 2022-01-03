@@ -1,6 +1,7 @@
 package github.leavesc.compose_chat.ui.weigets
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,15 +24,16 @@ import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Scale
-import github.leavesc.compose_chat.R
 
 object CoilImageLoader {
 
     fun init(context: Context) {
+        val bgColor = ColorDrawable(android.graphics.Color.parseColor("#1E000000"))
         val imageLoader = ImageLoader.Builder(context)
             .crossfade(true)
             .allowHardware(false)
-            .placeholder(R.drawable.icon_logo_round)
+            .placeholder(bgColor)
+            .error(bgColor)
             .build()
         Coil.setImageLoader(imageLoader)
     }

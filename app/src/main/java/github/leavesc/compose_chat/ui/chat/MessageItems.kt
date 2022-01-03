@@ -416,8 +416,7 @@ private fun ImageMessage(
     CoilImage(
         modifier = Modifier
             .clip(shape = messageShape)
-            .size(size = imageSize)
-            .background(color = Color.LightGray),
+            .size(size = imageSize),
         data = message.imagePath,
         builder = {
             placeholder(drawable = null)

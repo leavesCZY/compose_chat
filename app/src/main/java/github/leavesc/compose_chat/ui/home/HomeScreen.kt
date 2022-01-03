@@ -186,6 +186,10 @@ fun HomeScreen(
         )
     }
 
+    LaunchedEffect(key1 = Unit) {
+        homeViewModel.autoSetAvatarIfNeed()
+    }
+
     ModalBottomSheetLayout(
         modifier = Modifier.navigationBarsPadding(),
         sheetState = sheetState,

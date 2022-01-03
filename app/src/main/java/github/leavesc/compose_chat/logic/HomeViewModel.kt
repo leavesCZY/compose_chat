@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.Conversation
+import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.cache.AccountCache
+import github.leavesc.compose_chat.ui.home.randomFaceUrl
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
 
@@ -66,6 +68,18 @@ class HomeViewModel : ViewModel() {
             )
             showToast(if (updateProfile) "更新成功" else "更新失败")
         }
+    }
+
+    suspend fun autoSetAvatarIfNeed() {
+        val profile = personProfile.value
+        if (profile == PersonProfile.Empty || profile.faceUrl.isNotBlank()) {
+            return
+        }
+        ComposeChat.accountProvider.updatePersonProfile(
+            faceUrl = randomFaceUrl(),
+            nickname = profile.nickname,
+            signature = profile.signature
+        )
     }
 
     fun addFriend(userId: String) {

@@ -29,7 +29,8 @@ fun SetSystemBarsColor(
     )
     systemUiController.setNavigationBarColor(
         color = navigationBarColor,
-        darkIcons = navigationDarkIcons
+        darkIcons = navigationDarkIcons,
+        navigationBarContrastEnforced = false
     )
 }
 
