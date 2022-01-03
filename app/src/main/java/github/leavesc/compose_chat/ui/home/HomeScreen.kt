@@ -120,6 +120,9 @@ fun HomeScreen(
                         signature = signature
                     )
                 },
+                uploadImage = {
+                    homeViewModel.uploadImage(imageUri = it)
+                },
                 logout = {
                     homeViewModel.logout()
                 },

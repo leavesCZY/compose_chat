@@ -221,6 +221,34 @@ class MessageProvider : IMessageProvider, Converters {
         )
     }
 
+    override suspend fun uploadImage(chat: Chat, imagePath: String): String {
+        return suspendCancellableCoroutine { continuation ->
+            val imageMessage = V2TIMManager.getMessageManager().createImageMessage(imagePath)
+            V2TIMManager.getMessageManager().sendMessage(
+                imageMessage,
+                "",
+                chat.id,
+                V2TIMMessage.V2TIM_PRIORITY_HIGH,
+                false,
+                null,
+                object : V2TIMSendCallback<V2TIMMessage> {
+                    override fun onSuccess(message: V2TIMMessage) {
+                        val res = convertMessage(message)
+                        continuation.resume((res as? ImageMessage)?.imagePath ?: "")
+                    }
+
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume("")
+                    }
+
+                    override fun onProgress(progress: Int) {
+
+                    }
+                }
+            )
+        }
+    }
+
     override fun startReceive(
         chat: Chat,
         messageListener: IMessageProvider.MessageListener

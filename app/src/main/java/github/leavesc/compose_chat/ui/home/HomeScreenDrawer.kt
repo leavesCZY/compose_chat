@@ -1,6 +1,7 @@
 package github.leavesc.compose_chat.ui.home
 
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -11,10 +12,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesc.compose_chat.BuildConfig
+import github.leavesc.compose_chat.common.SelectPictureContract
 import github.leavesc.compose_chat.model.HomeScreenDrawerState
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
+import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
 
 /**
@@ -28,7 +31,7 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
     val drawerState = homeScreenDrawerState.drawerState
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberBackdropScaffoldState(initialValue = BackdropValue.Revealed)
-    BackHandler(enabled = drawerState.isOpen || scaffoldState.isConcealed, onBack = {
+    BackHandler(enabled = drawerState.isOpen, onBack = {
         if (scaffoldState.isConcealed) {
             coroutineScope.launch {
                 scaffoldState.reveal()
@@ -103,6 +106,46 @@ private fun DrawerFrontLayer(
     backdropScaffoldState: BackdropScaffoldState,
     homeScreenDrawerState: HomeScreenDrawerState
 ) {
+    var faceUrl by remember(
+        key1 = backdropScaffoldState.isRevealed,
+        key2 = homeScreenDrawerState
+    ) {
+        mutableStateOf(
+            homeScreenDrawerState.userProfile.faceUrl
+        )
+    }
+    var nickname by remember(
+        key1 = backdropScaffoldState.isRevealed,
+        key2 = homeScreenDrawerState
+    ) {
+        mutableStateOf(
+            homeScreenDrawerState.userProfile.nickname
+        )
+    }
+    var signature by remember(
+        key1 = backdropScaffoldState.isRevealed,
+        key2 = homeScreenDrawerState
+    ) {
+        mutableStateOf(
+            homeScreenDrawerState.userProfile.signature
+        )
+    }
+    val coroutineScope = rememberCoroutineScope()
+    val selectPictureLauncher = rememberLauncherForActivityResult(
+        contract = SelectPictureContract()
+    ) { imageUri ->
+        if (imageUri != null) {
+            coroutineScope.launch {
+                val imageUrl = homeScreenDrawerState.uploadImage(imageUri)
+                if (imageUrl.isBlank()) {
+                    showToast("头像上传失败")
+                } else {
+                    faceUrl = imageUrl
+                    showToast("头像已上传")
+                }
+            }
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -112,30 +155,7 @@ private fun DrawerFrontLayer(
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var faceUrl by remember(
-            key1 = backdropScaffoldState.isRevealed,
-            key2 = homeScreenDrawerState
-        ) {
-            mutableStateOf(
-                homeScreenDrawerState.userProfile.faceUrl
-            )
-        }
-        var nickname by remember(
-            key1 = backdropScaffoldState.isRevealed,
-            key2 = homeScreenDrawerState
-        ) {
-            mutableStateOf(
-                homeScreenDrawerState.userProfile.nickname
-            )
-        }
-        var signature by remember(
-            key1 = backdropScaffoldState.isRevealed,
-            key2 = homeScreenDrawerState
-        ) {
-            mutableStateOf(
-                homeScreenDrawerState.userProfile.signature
-            )
-        }
+
         val textFieldModifier = Modifier
             .fillMaxWidth()
             .padding(
@@ -169,6 +189,14 @@ private fun DrawerFrontLayer(
             },
             label = "signature"
         )
+        CommonButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp),
+            text = "选择头像"
+        ) {
+            selectPictureLauncher.launch(Unit)
+        }
         CommonButton(
             modifier = Modifier
                 .fillMaxWidth()

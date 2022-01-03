@@ -35,6 +35,11 @@ interface IMessageProvider {
         messageChannel: Channel<Message>
     )
 
+    suspend fun uploadImage(
+        chat: Chat,
+        imagePath: String
+    ): String
+
     suspend fun getHistoryMessage(chat: Chat, lastMessage: Message?): LoadMessageResult
 
     fun markMessageAsRead(chat: Chat)

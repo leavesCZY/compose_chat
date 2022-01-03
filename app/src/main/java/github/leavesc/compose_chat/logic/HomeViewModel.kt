@@ -1,14 +1,20 @@
 package github.leavesc.compose_chat.logic
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.ActionResult
+import github.leavesc.compose_chat.base.model.Chat
 import github.leavesc.compose_chat.base.model.Conversation
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.cache.AccountCache
 import github.leavesc.compose_chat.ui.home.randomFaceUrl
+import github.leavesc.compose_chat.utils.BitmapUtils
+import github.leavesc.compose_chat.utils.ContextHolder
 import github.leavesc.compose_chat.utils.showToast
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * @Author: leavesC
@@ -67,6 +73,21 @@ class HomeViewModel : ViewModel() {
                 signature = signature
             )
             showToast(if (updateProfile) "更新成功" else "更新失败")
+        }
+    }
+
+    suspend fun uploadImage(imageUri: Uri): String {
+        return withContext(Dispatchers.IO) {
+            val imageFile =
+                BitmapUtils.saveImage(context = ContextHolder.context, imageUri = imageUri)
+            val imagePath = imageFile?.absolutePath
+            if (!imagePath.isNullOrBlank()) {
+                return@withContext ComposeChat.messageProvider.uploadImage(
+                    chat = Chat.Group(id = ComposeChat.groupToUploadAvatar),
+                    imagePath = imagePath
+                )
+            }
+            return@withContext ""
         }
     }
 

@@ -17,6 +17,8 @@ object ComposeChat {
 
     const val groupIdC = "@TGS#3W42A3WHP"
 
+    const val groupToUploadAvatar = "@TGS#aZRGY4WHQ"
+
     val accountProvider: IAccountProvider = AccountProvider()
 
     val conversationProvider: IConversationProvider = ConversationProvider()

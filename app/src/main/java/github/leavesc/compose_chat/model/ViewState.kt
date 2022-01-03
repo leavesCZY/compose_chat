@@ -1,5 +1,6 @@
 package github.leavesc.compose_chat.model
 
+import android.net.Uri
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.DrawerState
 import androidx.compose.material.ModalBottomSheetState
@@ -144,6 +145,7 @@ data class HomeScreenDrawerState(
     val userProfile: PersonProfile,
     val switchToNextTheme: () -> Unit,
     val updateProfile: (faceUrl: String, nickname: String, signature: String) -> Unit,
+    val uploadImage: suspend (Uri) -> String,
     val logout: () -> Unit,
 )
 
