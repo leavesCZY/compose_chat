@@ -5,9 +5,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.DrawerState
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Album
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material.icons.filled.Cabin
+import androidx.compose.material.icons.filled.Sailing
+import androidx.compose.material.icons.filled.TheaterComedy
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavBackStackEntry
 import github.leavesc.compose_chat.base.model.*
@@ -129,13 +129,13 @@ enum class HomeScreenTab(
     val icon: ImageVector
 ) {
     Conversation(
-        icon = Icons.Filled.Favorite
+        icon = Icons.Filled.Cabin
     ),
     Friendship(
-        icon = Icons.Filled.Album,
+        icon = Icons.Filled.Sailing,
     ),
     Person(
-        icon = Icons.Filled.WbSunny,
+        icon = Icons.Filled.TheaterComedy,
     );
 }
 

@@ -19,7 +19,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atLeast
 import github.leavesc.compose_chat.base.model.Conversation
 import github.leavesc.compose_chat.model.ConversationScreenState
-import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
+import github.leavesc.compose_chat.ui.weigets.CircleCoilImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 import github.leavesc.compose_chat.ui.weigets.EmptyView
 
@@ -92,7 +92,7 @@ private fun ConversationItem(
             .padding(top = padding),
     ) {
         val (avatar, unreadMessageCount, nickname, lastMsg, time, divider, dropdownMenu) = createRefs()
-        CoilCircleImage(
+        CircleCoilImage(
             data = conversation.faceUrl,
             modifier = Modifier
                 .padding(start = padding * 1.5f)

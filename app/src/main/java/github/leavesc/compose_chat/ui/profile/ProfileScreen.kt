@@ -32,8 +32,8 @@ import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.extend.navToPreviewImageScreen
 import github.leavesc.compose_chat.extend.scrim
 import github.leavesc.compose_chat.ui.theme.BezierShape
+import github.leavesc.compose_chat.ui.weigets.CircleBorderCoilImage
 import github.leavesc.compose_chat.ui.weigets.CoilImage
-import github.leavesc.compose_chat.ui.weigets.OutlinedAvatar
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -144,7 +144,7 @@ private fun ProfileScreen(
                 .scrim(colors = listOf(Color(color = 0x4D9DA3A8), Color(color = 0x41F7F5F5))),
             data = avatarUrl
         )
-        OutlinedAvatar(
+        CircleBorderCoilImage(
             modifier = Modifier
                 .constrainAs(ref = avatarRefs) {
                     start.linkTo(anchor = backgroundRefs.start)

@@ -6,18 +6,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
-import github.leavesc.compose_chat.utils.log
 
 /**
  * @Author: leavesC
@@ -26,12 +25,9 @@ import github.leavesc.compose_chat.utils.log
  */
 @Composable
 fun PreviewImageScreen(imagePath: String) {
-    log {
-        "imagePath: $imagePath"
-    }
     Scaffold(
         modifier = Modifier,
-        backgroundColor = MaterialTheme.colors.background
+        backgroundColor = Color(0xFF0F0F0F)
     ) {
         Box(
             modifier = Modifier

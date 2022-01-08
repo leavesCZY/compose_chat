@@ -31,7 +31,6 @@ fun HomeScreenBottomBar(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
             .background(color = MaterialTheme.colors.background)
     ) {
         CommonDivider()
@@ -62,46 +61,35 @@ private fun BottomNavigationItem(
     val selectedContentColor = MaterialTheme.colors.primary
     val unselectedContentColor = selectedContentColor.copy(alpha = 0.5f)
     val color = if (tabSelected) selectedContentColor else unselectedContentColor
-    Column(modifier = modifier.clickable {
-        onClickTab()
-    }) {
-        Box(
+    Box(
+        modifier = modifier
+            .height(height = 50.dp)
+            .clickable {
+                onClickTab()
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
             modifier = Modifier
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = screen.icon,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(top = 4.dp, bottom = 2.dp)
-                    .size(size = 28.dp)
-                    .align(alignment = Alignment.TopCenter),
-                tint = color
-            )
-            if (unreadMessageCount > 0 && screen == HomeScreenTab.Conversation) {
-                Text(
-                    text = if (unreadMessageCount > 99) "99+" else unreadMessageCount.toString(),
-                    color = Color.White,
-                    fontSize = 10.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .offset(x = 18.dp, y = (-10).dp)
-                        .size(size = 22.dp)
-                        .background(color = MaterialTheme.colors.primary, shape = CircleShape)
-                        .wrapContentSize(align = Alignment.Center)
-                )
-            }
-        }
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 2.dp),
-            text = screen.name,
-            color = color,
-            style = MaterialTheme.typography.subtitle2,
-            letterSpacing = 0.sp,
-            textAlign = TextAlign.Center,
+                .padding(top = 4.dp, bottom = 2.dp)
+                .size(size = 28.dp)
+                .align(alignment = Alignment.Center),
+            tint = color,
+            imageVector = screen.icon,
+            contentDescription = null
         )
+        if (unreadMessageCount > 0 && screen == HomeScreenTab.Conversation) {
+            Text(
+                text = if (unreadMessageCount > 99) "99+" else unreadMessageCount.toString(),
+                color = Color.White,
+                fontSize = 10.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .offset(x = 18.dp, y = (-10).dp)
+                    .size(size = 22.dp)
+                    .background(color = MaterialTheme.colors.primary, shape = CircleShape)
+                    .wrapContentSize(align = Alignment.Center)
+            )
+        }
     }
 }

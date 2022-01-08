@@ -34,15 +34,6 @@ private val BlueColorPalette = lightColors(
     surface = SurfaceColorBlue,
 )
 
-private val PinkColorPalette = lightColors(
-    primary = PrimaryColorPink,
-    primaryVariant = PrimaryVariantColorPink,
-    secondary = SecondaryColorPink,
-    secondaryVariant = SecondaryVariantColorPink,
-    background = BackgroundColorPink,
-    surface = SurfaceColorPink,
-)
-
 @Composable
 fun ChatTheme(
     appTheme: AppTheme = AppThemeCache.currentTheme,
@@ -58,9 +49,6 @@ fun ChatTheme(
         AppTheme.Blue -> {
             BlueColorPalette
         }
-        AppTheme.Pink -> {
-            PinkColorPalette
-        }
         AppTheme.Gray -> {
             LightColorPalette
         }
@@ -74,9 +62,6 @@ fun ChatTheme(
         }
         AppTheme.Blue -> {
             BlueTypography
-        }
-        AppTheme.Pink -> {
-            PinkTypography
         }
         AppTheme.Gray -> {
             LightTypography

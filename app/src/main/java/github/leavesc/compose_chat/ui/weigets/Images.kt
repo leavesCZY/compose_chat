@@ -3,14 +3,10 @@ package github.leavesc.compose_chat.ui.weigets
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -64,38 +60,27 @@ fun CoilImage(
 }
 
 @Composable
-fun CoilCircleImage(
-    modifier: Modifier = Modifier,
+fun CircleCoilImage(
+    modifier: Modifier,
     data: Any,
 ) {
     CoilImage(
         modifier = modifier.clip(shape = CircleShape),
-        data = data,
-        builder = {
-//            transformations(CircleCropTransformation())
-        }
+        data = data
     )
 }
 
 @Composable
-fun OutlinedAvatar(
-    modifier: Modifier = Modifier,
-    data: String,
+fun CircleBorderCoilImage(
+    modifier: Modifier,
+    data: Any,
     outlineSize: Dp = 4.dp,
-    outlineColor: Color = MaterialTheme.colors.primaryVariant.copy(alpha = 0.4f)
+    outlineColor: Color = MaterialTheme.colors.primaryVariant.copy(alpha = 0.8f)
 ) {
-    Box(
-        modifier = modifier.background(
-            color = outlineColor,
-            shape = CircleShape
-        ),
-        contentAlignment = Alignment.Center,
-    ) {
-        CoilCircleImage(
-            data = data,
-            modifier = Modifier
-                .padding(all = outlineSize)
-                .fillMaxSize()
-        )
-    }
+    CoilImage(
+        modifier = modifier
+            .clip(shape = CircleShape)
+            .border(outlineSize, outlineColor, CircleShape),
+        data = data
+    )
 }

@@ -25,17 +25,9 @@ val SecondaryVariantColorBlue = Color(0xFFF4F4F4)
 val BackgroundColorBlue = Color(0xFFFFFFFF)
 val SurfaceColorBlue = Color(0xFFFFFFFF)
 
-val PrimaryColorPink = Color(0xFFF13F71)
-val PrimaryVariantColorPink = Color(0xFFF13F71)
-val SecondaryColorPink = Color(0xFFF4F4F4)
-val SecondaryVariantColorPink = Color(0xFFF4F4F4)
-val BackgroundColorPink = Color(0xFFFFFFFF)
-val SurfaceColorPink = Color(0xFFFFFFFF)
-
 private val textMessageBgColorLight = PrimaryColorLight
 private val textMessageBgColorDark = SecondaryColorDark
 private val textMessageBgColorBlue = PrimaryColorBlue
-private val textMessageBgColorPink = PrimaryColorPink
 
 val textMessageBgColor: Color
     get() {
@@ -43,7 +35,6 @@ val textMessageBgColor: Color
             AppTheme.Light -> textMessageBgColorLight
             AppTheme.Dark -> textMessageBgColorDark
             AppTheme.Blue -> textMessageBgColorBlue
-            AppTheme.Pink -> textMessageBgColorPink
             AppTheme.Gray -> textMessageBgColorLight
         }
     }

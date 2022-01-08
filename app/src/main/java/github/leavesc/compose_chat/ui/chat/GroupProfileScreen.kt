@@ -26,7 +26,7 @@ import github.leavesc.compose_chat.logic.GroupProfileViewModel
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.home.randomFaceUrl
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
-import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
+import github.leavesc.compose_chat.ui.weigets.CircleCoilImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
@@ -112,7 +112,7 @@ private fun GroupMemberItem(
             },
     ) {
         val (avatar, showName, role, divider) = createRefs()
-        CoilCircleImage(
+        CircleCoilImage(
             data = groupMemberProfile.detail.faceUrl,
             modifier = Modifier
                 .padding(start = padding * 1.5f, top = padding, bottom = padding)

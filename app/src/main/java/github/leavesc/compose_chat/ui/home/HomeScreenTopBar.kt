@@ -5,7 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -55,28 +55,26 @@ fun HomeScreenTopBar(
             Icon(
                 modifier = Modifier
                     .constrainAs(ref = drawerIcon) {
-                        start.linkTo(anchor = parent.start)
+                        start.linkTo(anchor = parent.start, margin = 12.dp)
                         top.linkTo(anchor = parent.top)
                         bottom.linkTo(anchor = parent.bottom)
                     }
                     .size(size = 28.dp)
                     .clickable(onClick = homeScreenTopBarState.openDrawer),
-                imageVector = Icons.Filled.Menu,
+                imageVector = Icons.Filled.AccessTime,
                 contentDescription = null,
                 tint = MaterialTheme.colors.surface
             )
             Icon(
                 modifier = Modifier
                     .constrainAs(ref = appLogo) {
-                        start.linkTo(anchor = drawerIcon.end)
+                        start.linkTo(anchor = parent.start)
+                        end.linkTo(anchor = parent.end)
                         top.linkTo(anchor = drawerIcon.top)
                         bottom.linkTo(anchor = drawerIcon.bottom)
                     }
                     .padding(start = 12.dp)
-                    .size(size = 28.dp)
-                    .clickable {
-                        homeScreenTopBarState.openDrawer()
-                    },
+                    .size(size = 24.dp),
                 painter = painterResource(id = R.drawable.ic_crane_logo),
                 contentDescription = null,
                 tint = MaterialTheme.colors.surface
@@ -84,11 +82,10 @@ fun HomeScreenTopBar(
             Icon(
                 modifier = Modifier
                     .constrainAs(ref = menuIcon) {
-                        end.linkTo(anchor = parent.end)
+                        end.linkTo(anchor = parent.end, margin = 12.dp)
                         top.linkTo(anchor = appLogo.top)
                         bottom.linkTo(anchor = appLogo.bottom)
                     }
-                    .padding(end = 12.dp)
                     .size(size = 28.dp)
                     .clickable {
                         menuExpanded = true

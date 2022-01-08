@@ -15,7 +15,7 @@ import androidx.constraintlayout.compose.Dimension
 import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.model.FriendshipScreenState
-import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
+import github.leavesc.compose_chat.ui.weigets.CircleCoilImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 import github.leavesc.compose_chat.ui.weigets.EmptyView
 
@@ -74,7 +74,7 @@ private fun GroupItem(groupProfile: GroupProfile, onClickGroup: (GroupProfile) -
             },
     ) {
         val (avatar, showName, divider) = createRefs()
-        CoilCircleImage(
+        CircleCoilImage(
             data = groupProfile.faceUrl,
             modifier = Modifier
                 .padding(start = padding * 1.5f, top = padding, bottom = padding)
@@ -122,7 +122,7 @@ private fun FriendshipItem(personProfile: PersonProfile, onClickFriend: (PersonP
             },
     ) {
         val (avatar, showName, signature, divider) = createRefs()
-        CoilCircleImage(
+        CircleCoilImage(
             data = personProfile.faceUrl,
             modifier = Modifier
                 .padding(start = padding * 1.5f, top = padding, bottom = padding)

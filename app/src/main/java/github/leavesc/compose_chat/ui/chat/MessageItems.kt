@@ -30,7 +30,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atMost
 import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.ui.theme.textMessageBgColor
-import github.leavesc.compose_chat.ui.weigets.CoilCircleImage
+import github.leavesc.compose_chat.ui.weigets.CircleCoilImage
 import github.leavesc.compose_chat.ui.weigets.CoilImage
 
 /**
@@ -251,7 +251,7 @@ private fun SelfMessageContainer(
             )
     ) {
         val (avatarRefs, showNameRefs, messageRefs, messageStateRefs) = createRefs()
-        CoilCircleImage(
+        CircleCoilImage(
             data = message.messageDetail.sender.faceUrl,
             modifier = Modifier
                 .constrainAs(ref = avatarRefs) {
@@ -328,7 +328,7 @@ private fun FriendMessageContainer(
             )
     ) {
         val (avatarRefs, showNameRefs, messageRefs, messageStateRefs) = createRefs()
-        CoilCircleImage(
+        CircleCoilImage(
             data = message.messageDetail.sender.faceUrl,
             modifier = Modifier
                 .constrainAs(ref = avatarRefs) {

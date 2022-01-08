@@ -2,19 +2,30 @@ package github.leavesc.compose_chat.ui.home
 
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cabin
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Sailing
+import androidx.compose.material.icons.filled.TheaterComedy
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.BuildConfig
 import github.leavesc.compose_chat.common.SelectPictureContract
 import github.leavesc.compose_chat.model.HomeScreenDrawerState
-import github.leavesc.compose_chat.ui.profile.ProfileScreen
+import github.leavesc.compose_chat.ui.weigets.CircleBorderCoilImage
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
 import github.leavesc.compose_chat.utils.showToast
@@ -60,21 +71,65 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
 
         },
         backLayerContent = {
-            ProfileScreen(
-                personProfile = homeScreenDrawerState.userProfile
+            val userProfile = homeScreenDrawerState.userProfile
+            val faceUrl = userProfile.faceUrl
+            val nickname = userProfile.nickname
+            val signature = userProfile.signature
+            val padding = 20.dp
+            ConstraintLayout(
+                modifier = Modifier
+                    .background(color = MaterialTheme.colors.background)
             ) {
-                Column {
-                    CommonButton(text = "个人资料") {
+                val (avatarRefs, nicknameRefs, signatureRefs, contentRefs) = createRefs()
+                CircleBorderCoilImage(
+                    modifier = Modifier
+                        .constrainAs(ref = avatarRefs) {
+                            start.linkTo(anchor = parent.start, margin = padding)
+                            top.linkTo(anchor = parent.top)
+                        }
+                        .statusBarsPadding()
+                        .size(size = 100.dp),
+                    data = faceUrl
+                )
+                Text(
+                    modifier = Modifier
+                        .constrainAs(ref = nicknameRefs) {
+                            start.linkTo(anchor = avatarRefs.start)
+                            top.linkTo(anchor = avatarRefs.bottom, margin = padding)
+                        },
+                    text = nickname,
+                    style = MaterialTheme.typography.subtitle2
+                )
+                Text(
+                    modifier = Modifier
+                        .constrainAs(ref = signatureRefs) {
+                            start.linkTo(anchor = nicknameRefs.start)
+                            top.linkTo(anchor = nicknameRefs.bottom, margin = padding)
+                        },
+                    text = signature,
+                    style = MaterialTheme.typography.subtitle2
+                )
+                Column(modifier = Modifier
+                    .constrainAs(ref = contentRefs) {
+                        start.linkTo(anchor = parent.start)
+                        top.linkTo(anchor = signatureRefs.bottom, margin = padding)
+                    }) {
+                    Item(text = "个人资料", icon = Icons.Filled.Favorite, onClick = {
                         coroutineScope.launch {
                             scaffoldState.conceal()
                         }
-                    }
-                    CommonButton(text = "切换主题") {
-                        homeScreenDrawerState.switchToNextTheme()
-                    }
-                    CommonButton(text = "切换账号") {
+                    })
+                    Item(text = "切换主题", icon = Icons.Filled.TheaterComedy, onClick = {
+                        coroutineScope.launch {
+                            homeScreenDrawerState.switchToNextTheme()
+                        }
+                    })
+                    Item(text = "切换账号", icon = Icons.Filled.Sailing, onClick = {
                         homeScreenDrawerState.logout()
-                    }
+                    })
+                    Item(text = "关于", icon = Icons.Filled.Cabin, onClick = {
+
+                    })
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -99,6 +154,29 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
             )
         }
     )
+}
+
+@Composable
+private fun Item(text: String, icon: ImageVector, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            }
+            .height(height = 60.dp)
+            .padding(start = 20.dp), verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier.size(size = 28.dp),
+            imageVector = icon,
+            contentDescription = null
+        )
+        Text(
+            modifier = Modifier.padding(start = 20.dp),
+            text = text
+        )
+    }
 }
 
 @Composable
@@ -155,7 +233,6 @@ private fun DrawerFrontLayer(
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         val textFieldModifier = Modifier
             .fillMaxWidth()
             .padding(
