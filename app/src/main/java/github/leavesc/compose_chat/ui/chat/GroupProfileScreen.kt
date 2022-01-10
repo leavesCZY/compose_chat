@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.GroupMemberProfile
@@ -47,7 +48,7 @@ fun GroupProfileScreen(groupId: String) {
     val groupProfileScreenState by groupProfileViewModel.groupProfileScreenState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val navHostController = LocalNavHostController.current
-    Scaffold {
+    Scaffold(modifier = Modifier.navigationBarsPadding()) {
         Box {
             val onClickMember: (GroupMemberProfile) -> Unit = remember {
                 object : (GroupMemberProfile) -> Unit {

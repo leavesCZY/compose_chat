@@ -3,7 +3,6 @@ package github.leavesc.compose_chat.ui.chat
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import com.google.accompanist.insets.LocalWindowInsets
@@ -107,7 +106,6 @@ fun ChatScreen(
     }
 
     Scaffold(
-        modifier = Modifier,
         topBar = {
             ChatScreenTopBar(
                 title = screenTopBarTitle,

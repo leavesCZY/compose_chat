@@ -41,7 +41,7 @@ fun HomeScreenBottomBar(
                             Text(
                                 text = if (unreadMessageCount > 99) "99+" else unreadMessageCount.toString(),
                                 color = Color.White,
-                                fontSize = 12.sp,
+                                fontSize = 14.sp,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .offset(x = 18.dp, y = (-10).dp)

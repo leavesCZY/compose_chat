@@ -62,7 +62,7 @@ fun LoginScreen() {
                         text = stringResource(id = R.string.app_name),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxHeight(fraction = 0.40f)
+                            .fillMaxHeight(fraction = 0.30f)
                             .wrapContentSize(align = Alignment.Center),
                         style = MaterialTheme.typography.titleLarge,
                         fontSize = 34.sp,
@@ -91,7 +91,7 @@ fun LoginScreen() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 30.dp),
-                        text = "登陆"
+                        text = "Go"
                     ) {
                         if (userId.isBlank()) {
                             showToast("请输入 UserID")

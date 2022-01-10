@@ -3,7 +3,10 @@ package github.leavesc.compose_chat.ui.friend
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -172,9 +175,9 @@ private fun SetFriendRemarkScreen(
     androidx.compose.material3.Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(fraction = 0.8f),
+            .fillMaxHeight(fraction = 0.75f)
     ) {
-        Column {
+        Column(modifier = Modifier.padding(top = 20.dp)) {
             CommonOutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()

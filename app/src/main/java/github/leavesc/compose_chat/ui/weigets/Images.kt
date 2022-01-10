@@ -6,8 +6,10 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -15,11 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.input.pointer.consumeAllChanges
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil.Coil
@@ -29,6 +35,8 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import github.leavesc.compose_chat.extend.scrim
 import github.leavesc.compose_chat.ui.theme.BezierShape
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 object CoilImageLoader {
 
@@ -116,6 +124,57 @@ fun BezierImage(modifier: Modifier, data: Any) {
             .clip(shape = BezierShape(animateValue = animateValue))
             .rotate(degrees = animateValue * 10f)
             .scrim(colors = listOf(Color(color = 0x4D9DA3A8), Color(color = 0x41F7F5F5))),
+        data = data
+    )
+}
+
+@Composable
+fun BouncyImage(modifier: Modifier, data: Any) {
+    val coroutineScope = rememberCoroutineScope()
+    var offsetX by remember { mutableStateOf(0f) }
+    var offsetY by remember { mutableStateOf(0f) }
+    fun launchDragAnimate() {
+        coroutineScope.launch {
+            Animatable(
+                initialValue = Offset(x = offsetX, y = offsetY),
+                typeConverter = Offset.VectorConverter
+            ).animateTo(
+                targetValue = Offset(x = 0f, y = 0f),
+                animationSpec = SpringSpec(dampingRatio = Spring.DampingRatioHighBouncy),
+                block = {
+                    offsetX = value.x
+                    offsetY = value.y
+                }
+            )
+        }
+    }
+    CircleBorderImage(
+        modifier = modifier
+            .zIndex(zIndex = Float.MAX_VALUE)
+            .offset {
+                IntOffset(
+                    x = offsetX.roundToInt(),
+                    y = offsetY.roundToInt()
+                )
+            }
+            .pointerInput(key1 = Unit) {
+                detectDragGestures(
+                    onDragStart = {
+
+                    },
+                    onDragCancel = {
+                        launchDragAnimate()
+                    },
+                    onDragEnd = {
+                        launchDragAnimate()
+                    },
+                    onDrag = { change, dragAmount ->
+                        change.consumeAllChanges()
+                        offsetX += dragAmount.x
+                        offsetY += dragAmount.y
+                    },
+                )
+            },
         data = data
     )
 }

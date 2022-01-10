@@ -28,7 +28,7 @@ import github.leavesc.compose_chat.BuildConfig
 import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.model.HomeScreenDrawerState
 import github.leavesc.compose_chat.model.Screen
-import github.leavesc.compose_chat.ui.weigets.CircleBorderImage
+import github.leavesc.compose_chat.ui.weigets.BouncyImage
 import kotlinx.coroutines.launch
 
 /**
@@ -60,7 +60,7 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
         val padding = 20.dp
         ConstraintLayout {
             val (avatarRefs, nicknameRefs, signatureRefs, contentRefs) = createRefs()
-            CircleBorderImage(
+            BouncyImage(
                 modifier = Modifier
                     .constrainAs(ref = avatarRefs) {
                         start.linkTo(anchor = parent.start, margin = padding)

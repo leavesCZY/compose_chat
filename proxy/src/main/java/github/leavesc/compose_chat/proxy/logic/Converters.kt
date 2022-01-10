@@ -35,13 +35,25 @@ internal interface Converters {
     }
 
     fun convertFriendProfile(friendInfo: V2TIMFriendInfo): PersonProfile {
-        return convertPersonProfile(userFullInfo = friendInfo.userProfile)
+        return PersonProfile(
+            userId = friendInfo.userID ?: "",
+            nickname = friendInfo.userProfile.nickName ?: "",
+            remark = friendInfo.friendRemark ?: "",
+            faceUrl = friendInfo.userProfile.faceUrl ?: "",
+            signature = friendInfo.userProfile.selfSignature ?: "",
+            isFriend = true
+        )
     }
 
-    fun convertFriendProfile(v2TIMFriendInfo: V2TIMFriendInfoResult): PersonProfile {
-        return convertPersonProfile(userFullInfo = v2TIMFriendInfo.friendInfo.userProfile).copy(
-            isFriend = v2TIMFriendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_BOTH_WAY ||
-                    v2TIMFriendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_IN_MY_FRIEND_LIST
+    fun convertFriendProfile(friendInfo: V2TIMFriendInfoResult): PersonProfile {
+        return PersonProfile(
+            userId = friendInfo.friendInfo.userID ?: "",
+            nickname = friendInfo.friendInfo.userProfile.nickName ?: "",
+            remark = friendInfo.friendInfo.friendRemark ?: "",
+            faceUrl = friendInfo.friendInfo.userProfile.faceUrl ?: "",
+            signature = friendInfo.friendInfo.userProfile.selfSignature ?: "",
+            isFriend = friendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_BOTH_WAY ||
+                    friendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_IN_MY_FRIEND_LIST
         )
     }
 
@@ -180,6 +192,5 @@ internal interface Converters {
             }
         }
     }
-
 
 }

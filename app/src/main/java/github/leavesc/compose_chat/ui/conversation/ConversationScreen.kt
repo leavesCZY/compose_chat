@@ -112,7 +112,7 @@ private fun ConversationItem(
             Text(
                 text = count,
                 color = Color.White,
-                fontSize = 10.sp,
+                fontSize = 14.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .constrainAs(ref = unreadMessageCount) {
@@ -122,7 +122,7 @@ private fun ConversationItem(
                         width = Dimension.preferredWrapContent.atLeast(dp = 22.dp)
                         height = Dimension.preferredWrapContent.atLeast(dp = 22.dp)
                     }
-                    .background(color = Color.Red, shape = CircleShape)
+                    .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
                     .wrapContentSize(align = Alignment.Center)
             )
         }
