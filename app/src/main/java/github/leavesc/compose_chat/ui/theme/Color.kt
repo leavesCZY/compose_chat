@@ -2,37 +2,26 @@ package github.leavesc.compose_chat.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val PrimaryColorLight = Color(0xFFF04E4E)
-val PrimaryVariantColorLight = Color(0xFFFFFFFF)
-val SecondaryColorLight = Color(0xFFF4F4F4)
-val SecondaryVariantColorLight = Color(0xFFF4F4F4)
+val PrimaryColorLight = Color(0xFF46A7F3)
+val OnPrimaryColorLight = Color(0xFF22202A)
+val PrimaryContainerColorLight = Color(0xFFFFFFFF)
+val SurfaceColorLight = Color(0xFFFFFFFF)
+val OnSurfaceColorLight = Color(0xFF1C1B1F)
 val BackgroundColorLight = Color(0xFFFFFFFF)
-val SurfaceColorLight = Color(0xFFF04E4E)
+val onSecondaryContainerLight = Color(0xFFF4F4F4)
 
-val PrimaryColorDark = Color(0xFFE65956)
-val PrimaryVariantColorDark = Color(0xFF22202A)
-val SecondaryColorDark = Color(0xFF3A3D4D)
-val SecondaryVariantColorDark = Color(0xFF3A3D4D)
-val BackgroundColorDark = Color(0xFF22202C)
-val SurfaceColorDark = Color(0xFFE65956)
+val PrimaryColorDark = Color(0xFF26A69A)
+val OnPrimaryColorDark = Color(0xFFFFFFFF)
+val PrimaryContainerColorDark = Color(0xFF3A3D4D)
+val SurfaceColorDark = Color(0xFF22202A)
+val OnSurfaceColorDark = Color(0xFFFFFFFF)
+val BackgroundColorDark = Color(0xFF22202A)
+val onSecondaryContainerDark = Color(0xFF3A3D4D)
 
-val PrimaryColorBlue = Color(0xFF03A9F4)
-val PrimaryVariantColorBlue = Color(0xFF03A9F4)
-val SecondaryColorBlue = Color(0xFFF4F4F4)
-val SecondaryVariantColorBlue = Color(0xFFF4F4F4)
-val BackgroundColorBlue = Color(0xFFFFFFFF)
-val SurfaceColorBlue = Color(0xFFFFFFFF)
-
-private val textMessageBgColorLight = PrimaryColorLight
-private val textMessageBgColorDark = SecondaryColorDark
-private val textMessageBgColorBlue = PrimaryColorBlue
-
-val textMessageBgColor: Color
-    get() {
-        return when (AppThemeCache.currentTheme) {
-            AppTheme.Light -> textMessageBgColorLight
-            AppTheme.Dark -> textMessageBgColorDark
-            AppTheme.Blue -> textMessageBgColorBlue
-            AppTheme.Gray -> textMessageBgColorLight
-        }
-    }
+val PrimaryColorBlue = Color(0xFFFFEB3B)
+val OnPrimaryColorBlue = Color(0xFFFFFFFF)
+val PrimaryContainerColorBlue = Color(0xFFF4F4F4)
+val SurfaceColorBlue = Color(0xFF2196F3)
+val OnSurfaceColorBlue = Color(0xFF3A3D4D)
+val BackgroundColorBlue = Color(0xFFF16E6E)
+val onSecondaryContainerBlue = Color(0xFFF4F4F4)

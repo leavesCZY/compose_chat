@@ -1,19 +1,20 @@
 package github.leavesc.compose_chat.ui.theme
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import github.leavesc.compose_chat.cache.AppThemeCache
 import github.leavesc.compose_chat.model.AppTheme
 
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryColorLight,
-    primaryVariant = PrimaryVariantColorLight,
-    secondary = SecondaryColorLight,
-    secondaryVariant = SecondaryVariantColorLight,
-    background = BackgroundColorLight,
+    onPrimary = OnPrimaryColorLight,
+    primaryContainer = PrimaryContainerColorLight,
     surface = SurfaceColorLight,
+    onSurface = OnSurfaceColorLight,
+    background = BackgroundColorLight,
+    onSecondaryContainer = onSecondaryContainerLight
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -51,6 +52,9 @@ fun ChatTheme(
         AppTheme.Gray -> {
             LightColorScheme
         }
+        AppTheme.Dark -> {
+            DarkColorScheme
+        }
     }
     val typography = when (appTheme) {
         AppTheme.Light -> {
@@ -60,7 +64,7 @@ fun ChatTheme(
             DarkTypography
         }
         AppTheme.Blue -> {
-            BlueTypography
+            LightTypography
         }
         AppTheme.Gray -> {
             LightTypography

@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,10 +26,10 @@ import github.leavesc.compose_chat.extend.navToHomeScreen
 import github.leavesc.compose_chat.extend.viewModelInstance
 import github.leavesc.compose_chat.logic.GroupProfileViewModel
 import github.leavesc.compose_chat.model.Screen
-import github.leavesc.compose_chat.ui.home.randomFaceUrl
 import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.weigets.CircleCoilImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
+import github.leavesc.compose_chat.utils.randomFaceUrl
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
 
@@ -45,10 +47,7 @@ fun GroupProfileScreen(groupId: String) {
     val groupProfileScreenState by groupProfileViewModel.groupProfileScreenState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val navHostController = LocalNavHostController.current
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
+    Scaffold {
         Box {
             val onClickMember: (GroupMemberProfile) -> Unit = remember {
                 object : (GroupMemberProfile) -> Unit {
@@ -123,14 +122,14 @@ private fun GroupMemberItem(
                 }
         )
         Text(
-            text = groupMemberProfile.detail.showName + "（ID: ${
+            text = groupMemberProfile.detail.showName + "（${
                 groupMemberProfile.detail.userId + if (groupMemberProfile.isOwner) {
                     " - 群主"
                 } else {
                     ""
                 }
             }）",
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.bodySmall,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             modifier = Modifier
@@ -176,67 +175,49 @@ private fun GroupProfileScreenTopBar(
     var menuExpanded by remember {
         mutableStateOf(false)
     }
-    TopAppBar(
-        modifier = Modifier
-            .fillMaxWidth()
-            .statusBarsPadding(),
-        backgroundColor = Color.Transparent,
-        contentColor = Color.Transparent,
-        elevation = 0.dp,
-        contentPadding = PaddingValues(
-            all = 0.dp
-        ),
-    ) {
-        ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            val (menuIcon, menu) = createRefs()
+    SmallTopAppBar(
+        modifier = Modifier.statusBarsPadding(),
+        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent),
+        title = {
+
+        },
+        actions = {
             Icon(
                 modifier = Modifier
-                    .constrainAs(ref = menuIcon) {
-                        end.linkTo(anchor = parent.end)
-                        top.linkTo(anchor = parent.top)
-                        bottom.linkTo(anchor = parent.bottom)
-                    }
                     .padding(end = 12.dp)
                     .size(size = 28.dp)
                     .clickable {
                         menuExpanded = true
                     },
                 imageVector = Icons.Default.MoreVert,
-                contentDescription = null,
-                tint = MaterialTheme.colors.surface
+                contentDescription = null
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize(align = Alignment.TopEnd)
-                    .padding(end = 20.dp)
-                    .constrainAs(ref = menu) {
-                        top.linkTo(anchor = menuIcon.bottom)
-                    }
-            ) {
-                DropdownMenu(
-                    modifier = Modifier.background(color = MaterialTheme.colors.background),
-                    expanded = menuExpanded,
-                    onDismissRequest = {
-                        menuExpanded = false
-                    }
-                ) {
-                    DropdownMenuItem(onClick = {
-                        menuExpanded = false
-                        randomAvatar()
-                    }) {
-                        Text(text = "修改头像", modifier = Modifier)
-                    }
-                    DropdownMenuItem(onClick = {
-                        menuExpanded = false
-                        quitGroup()
-                    }) {
-                        Text(text = "退出群聊", modifier = Modifier)
-                    }
-                }
+        }
+    )
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentSize(align = Alignment.TopEnd)
+            .padding(end = 20.dp)
+    ) {
+        DropdownMenu(
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+            expanded = menuExpanded,
+            onDismissRequest = {
+                menuExpanded = false
+            }
+        ) {
+            DropdownMenuItem(onClick = {
+                menuExpanded = false
+                randomAvatar()
+            }) {
+                Text(text = "修改头像", modifier = Modifier)
+            }
+            DropdownMenuItem(onClick = {
+                menuExpanded = false
+                quitGroup()
+            }) {
+                Text(text = "退出群聊", modifier = Modifier)
             }
         }
     }

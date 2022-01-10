@@ -26,34 +26,35 @@ import github.leavesc.compose_chat.R
 fun ExtendTable(
     selectPictureLauncher: ManagedActivityResultLauncher<Unit, Uri?>
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(height = 180.dp)
-    ) {
-        IconButton(onClick = {
-            selectPictureLauncher.launch(Unit)
-        }) {
-            Column(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .padding(all = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
+    ProvideTextStyle(value = MaterialTheme.typography.bodySmall) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(height = 180.dp)
+        ) {
+            IconButton(onClick = {
+                selectPictureLauncher.launch(Unit)
+            }) {
+                Column(
                     modifier = Modifier
-                        .size(size = 40.dp)
-                        .padding(bottom = 6.dp),
-                    painter = painterResource(id = R.drawable.icon_album),
-                    alignment = Alignment.Center,
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary),
-                    contentDescription = null
-                )
-                Text(
-                    text = "发送图片",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.body1.copy(fontSize = 13.sp)
-                )
+                        .wrapContentWidth()
+                        .padding(all = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .size(size = 40.dp)
+                            .padding(bottom = 6.dp),
+                        painter = painterResource(id = R.drawable.icon_album),
+                        alignment = Alignment.Center,
+                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onPrimary),
+                        contentDescription = null
+                    )
+                    Text(
+                        text = "发送图片",
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }

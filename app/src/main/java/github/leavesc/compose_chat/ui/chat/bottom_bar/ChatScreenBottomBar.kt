@@ -6,10 +6,11 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -22,11 +23,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.accompanist.insets.LocalWindowInsets
 import github.leavesc.compose_chat.common.SelectPictureContract
 import github.leavesc.compose_chat.ui.weigets.navigationBarsWithImePadding
-import github.leavesc.compose_chat.utils.log
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
@@ -137,9 +136,6 @@ fun ChatScreenBottomBar(
     val selectPictureLauncher = rememberLauncherForActivityResult(
         contract = SelectPictureContract()
     ) { imageUri ->
-        log {
-            "imageUri: " + imageUri?.toString()
-        }
         if (imageUri != null) {
             sendImage(imageUri)
         }
@@ -207,14 +203,15 @@ fun ChatScreenBottomBar(
                     start = 12.dp, end = 12.dp, top = 12.dp
                 )
                 .background(
-                    color = MaterialTheme.colors.background,
-                    shape = MaterialTheme.shapes.small
+                    color = MaterialTheme.colorScheme.background,
+                    shape = RoundedCornerShape(size = 6.dp)
                 )
                 .padding(all = 8.dp),
             value = message,
             onValueChange = {
                 onInputChanged(it)
             },
+            textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = {
                 onMessageSent()

@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.BuildConfig
 import github.leavesc.compose_chat.extend.LocalNavHostController
@@ -130,7 +131,7 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
 }
 
 @Composable
-private fun Item(text: String, icon: ImageVector, onClick: () -> Unit) {
+private fun SelectableItem(text: String, icon: ImageVector, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -141,13 +142,16 @@ private fun Item(text: String, icon: ImageVector, onClick: () -> Unit) {
             .padding(start = 20.dp), verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier.size(size = 28.dp),
+            modifier = Modifier.size(size = 24.dp),
             imageVector = icon,
-            contentDescription = null
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            modifier = Modifier.padding(start = 20.dp),
-            text = text
+            modifier = Modifier.padding(start = 10.dp),
+            text = text,
+            fontFamily = FontFamily.Serif,
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }

@@ -4,6 +4,9 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +21,6 @@ import github.leavesc.compose_chat.ui.profile.ProfileScreen
 import github.leavesc.compose_chat.ui.theme.BottomSheetShape
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
-import github.leavesc.compose_chat.ui.weigets.CommonSnackbar
 import kotlinx.coroutines.launch
 
 /**
@@ -63,7 +65,7 @@ fun FriendProfileScreen(
         }
     ) {
         var openDeleteFriendDialog by remember { mutableStateOf(false) }
-        Scaffold(modifier = Modifier.fillMaxSize()) {
+        Scaffold {
             ProfileScreen(
                 personProfile = friendProfile
             ) {
@@ -141,7 +143,6 @@ private fun SetFriendRemarkScreen(
     onSetRemark: (userId: String, remark: String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val scaffoldState = rememberScaffoldState()
 
     fun expandSheetContent(targetValue: ModalBottomSheetValue) {
         coroutineScope.launch {
@@ -168,14 +169,10 @@ private fun SetFriendRemarkScreen(
             friendProfile.remark
         )
     }
-    Scaffold(
+    androidx.compose.material3.Surface(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(fraction = 0.8f),
-        scaffoldState = scaffoldState,
-        snackbarHost = {
-            CommonSnackbar(it)
-        },
     ) {
         Column {
             CommonOutlinedTextField(

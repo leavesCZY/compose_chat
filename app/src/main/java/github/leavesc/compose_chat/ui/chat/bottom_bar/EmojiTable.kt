@@ -2,16 +2,12 @@ package github.leavesc.compose_chat.ui.chat.bottom_bar
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 /**
  * @Author: leavesC
@@ -46,13 +42,7 @@ fun EmojiTable(
                             .weight(weight = 1f)
                             .padding(vertical = 14.dp),
                         text = emoji,
-                        style = TextStyle(
-                            fontFamily = FontFamily.Default,
-                            fontWeight = FontWeight.Light,
-                            fontSize = 19.sp,
-                            color = Color.Black.copy(alpha = 1f),
-                            textAlign = TextAlign.Center,
-                        ),
+                        style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center,
                     )
                 }

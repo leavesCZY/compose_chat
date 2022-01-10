@@ -33,8 +33,6 @@ import kotlinx.coroutines.launch
 fun LoginScreen() {
     val loginViewModel = viewModel<LoginViewModel>()
     val loginScreenState by loginViewModel.loginScreenState.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
-    val scaffoldState = rememberScaffoldState()
     val textInputService = LocalTextInputService.current
     val navHostController = LocalNavHostController.current
     LaunchedEffect(key1 = Unit) {
@@ -66,7 +64,7 @@ fun LoginScreen() {
                             .fillMaxWidth()
                             .fillMaxHeight(fraction = 0.40f)
                             .wrapContentSize(align = Alignment.Center),
-                        style = MaterialTheme.typography.subtitle1,
+                        style = MaterialTheme.typography.titleLarge,
                         fontSize = 34.sp,
                         fontFamily = FontFamily.Serif,
                         textAlign = TextAlign.Center,
@@ -92,13 +90,11 @@ fun LoginScreen() {
                     CommonButton(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 40.dp, end = 40.dp, top = 30.dp),
+                            .padding(top = 30.dp),
                         text = "登陆"
                     ) {
                         if (userId.isBlank()) {
-                            coroutineScope.launch {
-                                scaffoldState.snackbarHostState.showSnackbar(message = "请输入 UserID")
-                            }
+                            showToast("请输入 UserID")
                         } else {
                             textInputService?.hideSoftwareKeyboard()
                             loginViewModel.goToLogin(userId = userId)

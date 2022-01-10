@@ -1,19 +1,22 @@
 package github.leavesc.compose_chat.ui.weigets
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Divider
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.insets.imePadding
 
 /**
  * @Author: leavesC
@@ -30,22 +33,22 @@ fun CommonDivider(modifier: Modifier = Modifier) {
     )
 }
 
-@SuppressLint("ModifierParameter")
 @Composable
 fun CommonButton(
-    modifier: Modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 20.dp, vertical = 10.dp), text: String, onClick: () -> Unit
+    modifier: Modifier = Modifier, text: String, onClick: () -> Unit
 ) {
     Button(
-        modifier = modifier,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .then(other = modifier),
+        content = {
+            Text(text = text)
+        },
         onClick = {
             onClick()
-        }) {
-        Text(
-            text = text
-        )
-    }
+        }
+    )
 }
 
 @Composable
@@ -66,10 +69,11 @@ fun CommonOutlinedTextField(
         label = {
             Text(text = label)
         },
+        textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = MaterialTheme.colors.primary,
-            unfocusedBorderColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.disabled)
-        )
+            focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = ContentAlpha.high),
+            unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = ContentAlpha.disabled),
+        ),
     )
 }
 
@@ -80,7 +84,7 @@ fun EmptyView() {
         modifier = Modifier
             .fillMaxSize()
             .wrapContentSize(align = Alignment.Center),
-        style = MaterialTheme.typography.subtitle2,
+        style = MaterialTheme.typography.bodyMedium,
         fontWeight = FontWeight.Bold,
         fontSize = 49.sp,
     )

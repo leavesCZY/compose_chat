@@ -2,10 +2,11 @@ package github.leavesc.compose_chat.ui.chat.bottom_bar
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Mood
 import androidx.compose.material.icons.outlined.Topic
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,15 +70,15 @@ fun InputSelector(
             contentColor = MaterialTheme.colorScheme.inverseOnSurface
         )
         Button(
-            modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 4.dp),
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
             enabled = sendMessageEnabled,
             onClick = onMessageSent,
             colors = buttonColors
         ) {
             Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                text = "Send"
+                modifier = Modifier,
+                text = "Send",
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }

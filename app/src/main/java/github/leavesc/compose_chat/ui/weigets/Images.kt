@@ -3,9 +3,10 @@ package github.leavesc.compose_chat.ui.weigets
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +37,8 @@ object CoilImageLoader {
 
 }
 
+private val imageBackgroundColor = Color.DarkGray
+
 @Composable
 fun CoilImage(
     modifier: Modifier = Modifier,
@@ -52,7 +55,7 @@ fun CoilImage(
         filterQuality = FilterQuality.Medium
     )
     Image(
-        modifier = modifier,
+        modifier = modifier.background(color = imageBackgroundColor),
         painter = imagePainter,
         contentDescription = null,
         contentScale = contentScale,
@@ -65,7 +68,9 @@ fun CircleCoilImage(
     data: Any,
 ) {
     CoilImage(
-        modifier = modifier.clip(shape = CircleShape),
+        modifier = modifier
+            .clip(shape = CircleShape)
+            .background(color = Color.DarkGray),
         data = data
     )
 }
@@ -80,7 +85,7 @@ fun CircleBorderCoilImage(
     CoilImage(
         modifier = modifier
             .clip(shape = CircleShape)
-            .border(outlineSize, outlineColor, CircleShape),
+            .border(width = outlineSize, color = outlineColor, shape = CircleShape),
         data = data
     )
 }

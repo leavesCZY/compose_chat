@@ -1,16 +1,12 @@
 package github.leavesc.compose_chat.ui.chat
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.base.model.Chat
 import github.leavesc.compose_chat.base.model.ImageMessage
 import github.leavesc.compose_chat.base.model.Message

@@ -7,8 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -16,7 +15,7 @@ import github.leavesc.compose_chat.logic.ComposeChat
 import github.leavesc.compose_chat.model.HomeScreenSheetContentState
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
-import github.leavesc.compose_chat.ui.weigets.CommonSnackbar
+import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
 
 /**
@@ -30,7 +29,6 @@ fun HomeScreenSheetContent(
     homeScreenSheetContentState: HomeScreenSheetContentState,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val scaffoldState = rememberScaffoldState()
 
     fun expandSheetContent(targetValue: ModalBottomSheetValue) {
         coroutineScope.launch {
@@ -85,9 +83,7 @@ fun HomeScreenSheetContent(
                 )
                 CommonButton(text = "添加好友") {
                     if (userId.isBlank()) {
-                        coroutineScope.launch {
-                            scaffoldState.snackbarHostState.showSnackbar(message = "请输入 UserID")
-                        }
+                        showToast("请输入 UserID")
                     } else {
                         homeScreenSheetContentState.toAddFriend(userId)
                     }
