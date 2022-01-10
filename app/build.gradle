@@ -94,6 +94,7 @@ android {
                 "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi",
                 "-Xopt-in=com.google.accompanist.insets.ExperimentalAnimatedInsets",
                 "-Xopt-in=com.google.accompanist.pager.ExperimentalPagerApi",
+                "-Xopt-in=androidx.compose.material3.ExperimentalMaterial3Api",
         ]
         useIR = true
     }
@@ -130,6 +131,7 @@ dependencies {
     implementation all_dependencie['compose-navigation']
     implementation all_dependencie['compose-material']
     implementation all_dependencie['compose-material-icons']
+    implementation all_dependencie['compose-material3']
     implementation all_dependencie['compose-livedata']
     implementation all_dependencie['compose-ui']
     implementation all_dependencie['compose-ui-tooling']

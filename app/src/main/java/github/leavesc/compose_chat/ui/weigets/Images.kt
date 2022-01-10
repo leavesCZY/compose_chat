@@ -75,7 +75,7 @@ fun CircleBorderCoilImage(
     modifier: Modifier,
     data: Any,
     outlineSize: Dp = 4.dp,
-    outlineColor: Color = MaterialTheme.colors.primaryVariant.copy(alpha = 0.8f)
+    outlineColor: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
 ) {
     CoilImage(
         modifier = modifier

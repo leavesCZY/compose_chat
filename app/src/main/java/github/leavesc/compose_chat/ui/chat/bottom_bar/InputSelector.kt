@@ -64,22 +64,16 @@ fun InputSelector(
             }
         )
         Spacer(modifier = Modifier.weight(1f))
-        val contentColor = MaterialTheme.colors.primary
-        val disabledContentColor = contentColor.copy(alpha = ContentAlpha.disabled)
         val buttonColors = ButtonDefaults.buttonColors(
-            backgroundColor = contentColor,
-            contentColor = contentColor,
-            disabledBackgroundColor = disabledContentColor,
-            disabledContentColor = disabledContentColor
+            containerColor = MaterialTheme.colorScheme.inverseSurface,
+            contentColor = MaterialTheme.colorScheme.inverseOnSurface
         )
         Button(
             modifier = Modifier
                 .padding(horizontal = 8.dp, vertical = 4.dp),
             enabled = sendMessageEnabled,
             onClick = onMessageSent,
-            colors = buttonColors,
-            shape = MaterialTheme.shapes.large,
-            contentPadding = PaddingValues(0.dp)
+            colors = buttonColors
         ) {
             Text(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -102,9 +96,9 @@ private fun InputSelectorButton(
                 .size(size = 26.dp),
             imageVector = icon,
             tint = if (selected) {
-                MaterialTheme.colors.primary
+                MaterialTheme.colorScheme.onPrimary
             } else {
-                MaterialTheme.colors.primary.copy(alpha = ContentAlpha.disabled)
+                MaterialTheme.colorScheme.onPrimary.copy(alpha = ContentAlpha.disabled)
             },
             contentDescription = null
         )

@@ -1,26 +1,18 @@
 package github.leavesc.compose_chat.ui.chat.top_bar
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalTextInputService
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.extend.LocalNavHostController
 
 /**
@@ -38,72 +30,43 @@ fun ChatScreenTopBar(
     val textInputService = LocalTextInputService.current
     val navHostController = LocalNavHostController.current
     val ime = LocalWindowInsets.current.ime
-    TopAppBar(
-        backgroundColor = MaterialTheme.colors.primaryVariant,
-        elevation = 1.dp,
-        contentPadding = PaddingValues(
-            all = 0.dp
-        ),
-    ) {
-        ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize(),
-        ) {
-            val (backMenu, showName, moreMenu) = createRefs()
-            Icon(
-                modifier = Modifier
-                    .size(size = 28.dp)
-                    .constrainAs(ref = backMenu) {
-                        start.linkTo(anchor = parent.start, margin = 12.dp)
-                        top.linkTo(anchor = parent.top)
-                        bottom.linkTo(anchor = parent.bottom)
-                    }
-                    .clickable(onClick = {
-                        if (onClickBackMenu != null) {
-                            onClickBackMenu.invoke()
-                        } else {
-                            if (ime.isVisible && textInputService != null) {
-                                textInputService.hideSoftwareKeyboard()
-                            } else {
-                                navHostController.popBackStack()
-                            }
-                        }
-                    }),
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = null,
-                tint = MaterialTheme.colors.surface
-            )
+    CenterAlignedTopAppBar(
+        modifier = Modifier.statusBarsPadding(),
+        title = {
             Text(
                 text = title,
-                modifier = Modifier
-                    .constrainAs(ref = showName) {
-                        start.linkTo(anchor = backMenu.end)
-                        end.linkTo(anchor = moreMenu.start)
-                        top.linkTo(anchor = parent.top)
-                        bottom.linkTo(anchor = parent.bottom)
-                        width = Dimension.fillToConstraints
-                    }
-                    .padding(start = 20.dp, end = 20.dp),
-                style = MaterialTheme.typography.caption.copy(color = MaterialTheme.colors.surface),
-                textAlign = TextAlign.Center,
+                modifier = Modifier,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Icon(
-                modifier = Modifier
-                    .size(size = 28.dp)
-                    .constrainAs(ref = moreMenu) {
-                        top.linkTo(anchor = parent.top)
-                        bottom.linkTo(anchor = parent.bottom)
-                        end.linkTo(anchor = parent.end, margin = 12.dp)
+        },
+        navigationIcon = {
+            IconButton(content = {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Localized description"
+                )
+            }, onClick = {
+                if (onClickBackMenu != null) {
+                    onClickBackMenu.invoke()
+                } else {
+                    if (ime.isVisible && textInputService != null) {
+                        textInputService.hideSoftwareKeyboard()
+                    } else {
+                        navHostController.popBackStack()
                     }
-                    .clickable(onClick = {
-                        onClickMoreMenu()
-                    }),
-                imageVector = Icons.Filled.MoreVert,
-                contentDescription = null,
-                tint = MaterialTheme.colors.surface
-            )
+                }
+            })
+        },
+        actions = {
+            IconButton(content = {
+                Icon(
+                    imageVector = Icons.Filled.MoreVert,
+                    contentDescription = "Localized description"
+                )
+            }, onClick = {
+                onClickMoreMenu()
+            })
         }
-    }
+    )
 }

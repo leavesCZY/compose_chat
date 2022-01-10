@@ -9,7 +9,7 @@ import okhttp3.internal.and
  */
 object StringUtils {
 
-    private val chars = "0123456789ABCDEF"
+    private const val chars = "0123456789ABCDEF"
 
     private val charsArray = chars.toCharArray()
 

@@ -60,11 +60,7 @@ fun HomeScreenSheetContent(
     Scaffold(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(fraction = 0.8f),
-        scaffoldState = scaffoldState,
-        snackbarHost = {
-            CommonSnackbar(it)
-        },
+            .fillMaxHeight(fraction = 0.8f)
     ) {
         LazyColumn {
             item {

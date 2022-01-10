@@ -25,8 +25,8 @@ import com.google.accompanist.insets.imePadding
 fun CommonDivider(modifier: Modifier = Modifier) {
     Divider(
         modifier = modifier,
-        thickness = 1.dp,
-        color = MaterialTheme.colors.secondary,
+        thickness = 0.8.dp,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f),
     )
 }
 
@@ -71,20 +71,6 @@ fun CommonOutlinedTextField(
             unfocusedBorderColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.disabled)
         )
     )
-}
-
-@Composable
-fun CommonSnackbar(state: SnackbarHostState) {
-    SnackbarHost(state) { data ->
-        Snackbar(
-            modifier = Modifier.imePadding(),
-            backgroundColor = MaterialTheme.colors.primary,
-            elevation = 0.dp,
-            content = {
-                Text(text = data.message, color = Color.White)
-            },
-        )
-    }
 }
 
 @Composable

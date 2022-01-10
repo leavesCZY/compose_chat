@@ -39,98 +39,6 @@ import github.leavesc.compose_chat.ui.weigets.CoilImage
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-private val messageDetailMock = MessageDetail(
-    msgId = "业志陈",
-    timestamp = 1635218361,
-    state = MessageState.Completed,
-    sender = PersonProfile.Empty,
-    isSelfMessage = true
-)
-
-private val textMessageMock = TextMessage(
-    detail = messageDetailMock,
-    msg = "公众号：字节数组，希望对你有所帮助"
-)
-
-private val imageMessageMock = ImageMessage(
-    detail = messageDetailMock,
-    imagePath = ""
-)
-
-private val timeMessageMock = TimeMessage(targetMessage = textMessageMock)
-
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PreviewFriendTextMessageItem() {
-    FriendMessageContainer(
-        message = textMessageMock,
-        showPartyName = true,
-        messageContent = {
-            TextMessage(message = textMessageMock)
-        },
-        onClickAvatar = {
-
-        },
-        onClickMessage = {
-
-        },
-        onLongClickMessage = {
-
-        }
-    )
-}
-
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PreviewSelfTextMessageItem() {
-    SelfMessageContainer(
-        message = textMessageMock,
-        messageContent = {
-            TextMessage(message = textMessageMock)
-        },
-        onClickAvatar = {
-
-        },
-        onClickMessage = {
-
-        },
-        onLongClickMessage = {
-
-        }
-    )
-}
-
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PreviewFriendImageMessageItem() {
-    FriendMessageContainer(
-        message = imageMessageMock,
-        showPartyName = true,
-        messageContent = {
-            ImageMessage(message = imageMessageMock)
-        },
-        onClickAvatar = {
-
-        },
-        onClickMessage = {
-
-        },
-        onLongClickMessage = {
-
-        }
-    )
-}
-
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PreviewTimeMessageItem() {
-    TimeMessage(timeMessage = timeMessageMock)
-}
-
 @Composable
 fun MessageItems(
     message: Message,
@@ -288,6 +196,8 @@ private fun SelfMessageContainer(
                     end.linkTo(anchor = showNameRefs.end)
                     width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
                 }
+                .clip(shape = messageShape)
+                .background(color = messageBackground)
                 .combinedClickable(
                     onClick = {
                         onClickMessage(message)
@@ -369,6 +279,8 @@ private fun FriendMessageContainer(
                     start.linkTo(anchor = showNameRefs.start)
                     width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
                 }
+                .clip(shape = messageShape)
+                .background(color = messageBackground)
                 .combinedClickable(
                     onClick = {
                         onClickMessage(message)
@@ -397,8 +309,6 @@ private fun TextMessage(
 ) {
     Text(
         modifier = Modifier
-            .clip(shape = messageShape)
-            .background(color = textMessageBgColor)
             .padding(
                 horizontal = textMessageInnerHorizontalPadding,
                 vertical = textMessageInnerVerticalPadding
@@ -415,26 +325,11 @@ private fun ImageMessage(
 ) {
     CoilImage(
         modifier = Modifier
-            .clip(shape = messageShape)
             .size(size = imageSize),
         data = message.imagePath,
         builder = {
             placeholder(drawable = null)
         })
-}
-
-@Composable
-private fun TimeMessage(timeMessage: TimeMessage) {
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp, bottom = 20.dp)
-            .wrapContentWidth(align = Alignment.CenterHorizontally)
-            .background(color = Color.LightGray.copy(alpha = 0.8f), shape = timeMessageShape)
-            .padding(all = 4.dp),
-        text = timeMessage.messageDetail.chatTime,
-        style = timeMessageStyle()
-    )
 }
 
 @Composable

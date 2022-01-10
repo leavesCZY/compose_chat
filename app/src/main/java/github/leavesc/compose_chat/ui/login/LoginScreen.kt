@@ -1,7 +1,8 @@
 package github.leavesc.compose_chat.ui.login
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +20,7 @@ import github.leavesc.compose_chat.logic.LoginViewModel
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
-import github.leavesc.compose_chat.ui.weigets.CommonSnackbar
+import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
 
 /**
@@ -51,11 +52,7 @@ fun LoginScreen() {
     }
     Scaffold(
         modifier = Modifier
-            .fillMaxSize(),
-        scaffoldState = scaffoldState,
-        snackbarHost = {
-            CommonSnackbar(it)
-        }
+            .fillMaxSize()
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(

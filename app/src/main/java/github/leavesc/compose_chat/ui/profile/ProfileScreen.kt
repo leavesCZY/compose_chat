@@ -101,7 +101,7 @@ private fun ProfileScreen(
     val navHostController = LocalNavHostController.current
     ConstraintLayout(
         modifier = Modifier
-            .background(color = MaterialTheme.colors.background)
+//            .background(color = MaterialTheme.colorScheme.background)
     ) {
         val animateValue by rememberInfiniteTransition().animateFloat(
             initialValue = 0f, targetValue = 1f,
@@ -214,7 +214,7 @@ private fun ProfileScreen(
                 ))
         Text(
             text = introduction,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .constrainAs(ref = introductionRefs) {

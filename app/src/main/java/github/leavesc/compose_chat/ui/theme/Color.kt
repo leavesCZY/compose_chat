@@ -1,8 +1,6 @@
 package github.leavesc.compose_chat.ui.theme
 
 import androidx.compose.ui.graphics.Color
-import github.leavesc.compose_chat.cache.AppThemeCache
-import github.leavesc.compose_chat.model.AppTheme
 
 val PrimaryColorLight = Color(0xFFF04E4E)
 val PrimaryVariantColorLight = Color(0xFFFFFFFF)

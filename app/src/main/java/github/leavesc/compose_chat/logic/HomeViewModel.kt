@@ -8,9 +8,9 @@ import github.leavesc.compose_chat.base.model.Chat
 import github.leavesc.compose_chat.base.model.Conversation
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.cache.AccountCache
-import github.leavesc.compose_chat.ui.home.randomFaceUrl
 import github.leavesc.compose_chat.utils.BitmapUtils
 import github.leavesc.compose_chat.utils.ContextHolder
+import github.leavesc.compose_chat.utils.randomFaceUrl
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

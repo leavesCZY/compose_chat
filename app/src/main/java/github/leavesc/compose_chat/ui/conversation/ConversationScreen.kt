@@ -75,7 +75,7 @@ private fun ConversationItem(
     val bgColor = if (conversation.isPinned) {
         Color.LightGray.copy(alpha = 0.15f)
     } else {
-        MaterialTheme.colors.background
+        MaterialTheme.colorScheme.surface
     }
     ConstraintLayout(
         modifier = Modifier
@@ -151,7 +151,7 @@ private fun ConversationItem(
         )
         Text(
             text = conversation.formatMsg,
-            style = MaterialTheme.typography.body2,
+            style = MaterialTheme.typography.bodySmall,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             modifier = Modifier
@@ -183,7 +183,7 @@ private fun ConversationItem(
                 }
         ) {
             DropdownMenu(
-                modifier = Modifier.background(color = MaterialTheme.colors.background),
+                modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
                 expanded = menuExpanded,
                 onDismissRequest = {
                     menuExpanded = false

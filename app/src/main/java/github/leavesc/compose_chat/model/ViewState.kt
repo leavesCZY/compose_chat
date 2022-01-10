@@ -1,13 +1,12 @@
 package github.leavesc.compose_chat.model
 
-import android.net.Uri
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.DrawerState
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cabin
 import androidx.compose.material.icons.filled.Sailing
 import androidx.compose.material.icons.filled.TheaterComedy
+import androidx.compose.material3.DrawerState
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavBackStackEntry
 import github.leavesc.compose_chat.base.model.*
@@ -39,6 +38,8 @@ sealed class Screen(val route: String) {
 
         private const val previewImageScreen = "previewImageScreen"
         private const val keyPreviewImageScreenPartyType = "keyPreviewImageScreenImagePath"
+
+        private const val updateProfileScreen = "updateProfileScreen"
 
         private fun formatArgument(argument: String): String {
             return try {
@@ -115,6 +116,14 @@ sealed class Screen(val route: String) {
 
     }
 
+    object UpdateProfileScreen : Screen(route = updateProfileScreen) {
+
+        fun generateRoute(): String {
+            return updateProfileScreen
+        }
+
+    }
+
 }
 
 data class LoginScreenState(
@@ -144,9 +153,7 @@ data class HomeScreenDrawerState(
     val appTheme: AppTheme,
     val userProfile: PersonProfile,
     val switchToNextTheme: () -> Unit,
-    val updateProfile: (faceUrl: String, nickname: String, signature: String) -> Unit,
-    val uploadImage: suspend (Uri) -> String,
-    val logout: () -> Unit,
+    val logout: () -> Unit
 )
 
 data class HomeScreenTopBarState(
@@ -157,10 +164,10 @@ data class HomeScreenTopBarState(
 )
 
 data class HomeScreenBottomBarState(
-    val homeScreenList: List<HomeScreenTab>,
-    val homeScreenSelected: HomeScreenTab,
-    val unreadMessageCount: Long,
-    val onHomeScreenTabSelected: (HomeScreenTab) -> Unit
+    val tabList: List<HomeScreenTab>,
+    val tabSelected: HomeScreenTab,
+    val onTabSelected: (HomeScreenTab) -> Unit,
+    val unreadMessageCount: Long
 )
 
 data class HomeScreenSheetContentState(

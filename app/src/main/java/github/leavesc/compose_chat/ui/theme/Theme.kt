@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import github.leavesc.compose_chat.cache.AppThemeCache
 import github.leavesc.compose_chat.model.AppTheme
 
-private val LightColorPalette = lightColors(
+private val LightColorScheme = lightColorScheme(
     primary = PrimaryColorLight,
     primaryVariant = PrimaryVariantColorLight,
     secondary = SecondaryColorLight,
@@ -16,22 +16,24 @@ private val LightColorPalette = lightColors(
     surface = SurfaceColorLight,
 )
 
-private val DarkColorPalette = darkColors(
+private val DarkColorScheme = darkColorScheme(
     primary = PrimaryColorDark,
-    primaryVariant = PrimaryVariantColorDark,
-    secondary = SecondaryColorDark,
-    secondaryVariant = SecondaryVariantColorDark,
-    background = BackgroundColorDark,
+    onPrimary = OnPrimaryColorDark,
+    primaryContainer = PrimaryContainerColorDark,
     surface = SurfaceColorDark,
+    onSurface = OnSurfaceColorDark,
+    background = BackgroundColorDark,
+    onSecondaryContainer = onSecondaryContainerDark
 )
 
-private val BlueColorPalette = lightColors(
+private val BlueColorScheme = lightColorScheme(
     primary = PrimaryColorBlue,
-    primaryVariant = PrimaryVariantColorBlue,
-    secondary = SecondaryColorBlue,
-    secondaryVariant = SecondaryVariantColorBlue,
-    background = BackgroundColorBlue,
+    onPrimary = OnPrimaryColorBlue,
+    primaryContainer = PrimaryContainerColorBlue,
     surface = SurfaceColorBlue,
+    onSurface = OnSurfaceColorBlue,
+    background = BackgroundColorBlue,
+    onSecondaryContainer = onSecondaryContainerBlue
 )
 
 @Composable
@@ -41,16 +43,13 @@ fun ChatTheme(
 ) {
     val colors = when (appTheme) {
         AppTheme.Light -> {
-            LightColorPalette
-        }
-        AppTheme.Dark -> {
-            DarkColorPalette
+            LightColorScheme
         }
         AppTheme.Blue -> {
-            BlueColorPalette
+            BlueColorScheme
         }
         AppTheme.Gray -> {
-            LightColorPalette
+            LightColorScheme
         }
     }
     val typography = when (appTheme) {
@@ -68,9 +67,8 @@ fun ChatTheme(
         }
     }
     MaterialTheme(
-        colors = colors,
+        colorScheme = colors,
         typography = typography,
-        shapes = AppShapes,
         content = content
     )
 }

@@ -56,18 +56,4 @@ val LightTypography = Typography(
     )
 )
 
-val DarkTypography = LightTypography.copy(
-    subtitle1 = LightTypography.subtitle1.copy(color = Color.White),
-    subtitle2 = LightTypography.subtitle2.copy(color = Color.White),
-    body1 = LightTypography.body1.copy(color = Color.White.copy(alpha = mediumAlpha)),
-    body2 = LightTypography.body2.copy(color = Color.White.copy(alpha = mediumAlpha)),
-    caption = LightTypography.caption.copy(color = Color.White),
-)
-
-val BlueTypography = LightTypography.copy(
-    body1 = LightTypography.body1.copy(color = Color.Black),
-)
-
-val PinkTypography = LightTypography.copy(
-    body1 = LightTypography.body1.copy(color = Color.Black),
-)
+val DarkTypography = LightTypography.copy()

@@ -104,7 +104,6 @@ private fun DeleteFriendDialog(
         modifier = Modifier
             .fillMaxWidth()
             .padding(all = 20.dp),
-        backgroundColor = MaterialTheme.colors.background,
         title = {
             Text(text = "确认删除好友吗？")
         },
@@ -117,7 +116,6 @@ private fun DeleteFriendDialog(
                         onDeleteFriend(friendProfile.userId)
                     },
                 text = "删除",
-                color = MaterialTheme.colors.primary
             )
         },
         dismissButton = {

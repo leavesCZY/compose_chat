@@ -144,7 +144,7 @@ private fun GroupMemberItem(
         )
         Text(
             text = "joinTime: ${groupMemberProfile.joinTimeFormat}",
-            style = MaterialTheme.typography.body2,
+            style = MaterialTheme.typography.bodySmall,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             modifier = Modifier

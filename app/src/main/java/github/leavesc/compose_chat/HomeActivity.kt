@@ -10,7 +10,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
@@ -37,6 +37,7 @@ import github.leavesc.compose_chat.ui.chat.GroupProfileScreen
 import github.leavesc.compose_chat.ui.common.PreviewImageScreen
 import github.leavesc.compose_chat.ui.friend.FriendProfileScreen
 import github.leavesc.compose_chat.ui.home.HomeScreen
+import github.leavesc.compose_chat.ui.home.UpdateProfileScreen
 import github.leavesc.compose_chat.ui.login.LoginScreen
 import github.leavesc.compose_chat.ui.theme.ChatTheme
 import github.leavesc.compose_chat.ui.weigets.SetSystemBarsColor
@@ -82,7 +83,7 @@ class HomeActivity : ComponentActivity() {
             ChatTheme(appTheme = appTheme) {
                 SetSystemBarsColor(
                     statusBarColor = Color.Transparent,
-                    navigationBarColor = MaterialTheme.colors.background,
+                    navigationBarColor = MaterialTheme.colorScheme.background,
                     statusBarDarkIcons = appTheme == AppTheme.Light || appTheme == AppTheme.Gray,
                     navigationDarkIcons = appTheme != AppTheme.Dark
                 )
@@ -172,6 +173,9 @@ class HomeActivity : ComponentActivity() {
                                 backStackEntry
                             ),
                         )
+                    }
+                    animatedComposable(screen = Screen.UpdateProfileScreen) {
+                        UpdateProfileScreen()
                     }
                 }
             }

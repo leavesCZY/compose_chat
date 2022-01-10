@@ -196,7 +196,7 @@ fun ChatScreenBottomBar(
 
     Column(
         modifier = Modifier
-            .background(color = MaterialTheme.colors.secondary),
+            .background(color = MaterialTheme.colorScheme.onSecondaryContainer),
     ) {
         BasicTextField(
             modifier = Modifier
@@ -219,8 +219,7 @@ fun ChatScreenBottomBar(
             keyboardActions = KeyboardActions(onSend = {
                 onMessageSent()
             }),
-            textStyle = MaterialTheme.typography.subtitle1.copy(letterSpacing = 2.sp),
-            cursorBrush = SolidColor(MaterialTheme.colors.primary),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             maxLines = 6,
         )
 

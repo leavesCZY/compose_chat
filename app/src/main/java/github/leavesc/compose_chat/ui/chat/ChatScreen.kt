@@ -111,10 +111,7 @@ fun ChatScreen(
     }
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colors.primaryVariant)
-            .statusBarsPadding(),
+        modifier = Modifier,
         topBar = {
             ChatScreenTopBar(
                 title = screenTopBarTitle,

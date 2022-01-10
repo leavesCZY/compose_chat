@@ -2,9 +2,12 @@ package github.leavesc.compose_chat.ui.home
 
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +44,6 @@ fun HomeScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scaffoldState = rememberScaffoldState(drawerState = drawerState)
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val navHostController = LocalNavHostController.current
 
@@ -113,16 +115,6 @@ fun HomeScreen(
                 appTheme = appTheme,
                 userProfile = personProfile,
                 switchToNextTheme = switchToNextTheme,
-                updateProfile = { faceUrl: String, nickname: String, signature: String ->
-                    homeViewModel.updateProfile(
-                        faceUrl = faceUrl,
-                        nickname = nickname,
-                        signature = signature
-                    )
-                },
-                uploadImage = {
-                    homeViewModel.uploadImage(imageUri = it)
-                },
                 logout = {
                     homeViewModel.logout()
                 },
@@ -136,7 +128,7 @@ fun HomeScreen(
             screenSelected = homeTabSelected,
             openDrawer = {
                 coroutineScope.launch {
-                    scaffoldState.drawerState.open()
+                    drawerState.open()
                 }
             },
             onAddFriend = {
@@ -154,10 +146,10 @@ fun HomeScreen(
         key3 = onHomeTabSelected
     ) {
         HomeScreenBottomBarState(
-            homeScreenList = HomeScreenTab.values().toList(),
-            homeScreenSelected = homeTabSelected,
+            tabList = HomeScreenTab.values().toList(),
+            tabSelected = homeTabSelected,
             unreadMessageCount = totalUnreadCount,
-            onHomeScreenTabSelected = onHomeTabSelected
+            onTabSelected = onHomeTabSelected
         )
     }
 
@@ -189,65 +181,70 @@ fun HomeScreen(
         )
     }
 
-    ModalBottomSheetLayout(
-        modifier = Modifier.navigationBarsPadding(),
-        sheetState = sheetState,
-        sheetShape = BottomSheetShape,
-        sheetContent = {
-            HomeScreenSheetContent(homeScreenSheetContentState = homeSheetContentState)
-        }
-    ) {
-        Scaffold(
-            scaffoldState = scaffoldState,
-            topBar = {
-                HomeScreenTopBar(homeScreenTopBarState = homeScreenTopBarState)
-            },
-            bottomBar = {
-                HomeScreenBottomBar(
-                    homeScreenBottomBarState = homeScreenBottomBarState
-                )
-            },
-            drawerContent = {
-                HomeScreenDrawer(
-                    homeScreenDrawerState = homeDrawerViewState
-                )
-            },
-            drawerShape = RoundedCornerShape(0.dp),
-            floatingActionButton = {
-                if (homeTabSelected == HomeScreenTab.Friendship) {
-                    FloatingActionButton(
-                        backgroundColor = MaterialTheme.colors.primary,
-                        onClick = {
-                            sheetContentAnimateToExpanded()
-                        }) {
-                        Icon(
-                            imageVector = Icons.Filled.Favorite,
-                            tint = Color.White,
-                            contentDescription = null,
+    NavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            HomeScreenDrawer(
+                homeScreenDrawerState = homeDrawerViewState
+            )
+        },
+        drawerShape = RoundedCornerShape(0.dp),
+        content = {
+            ModalBottomSheetLayout(
+                modifier = Modifier.navigationBarsPadding(),
+                sheetState = sheetState,
+                sheetShape = BottomSheetShape,
+                sheetContent = {
+                    HomeScreenSheetContent(homeScreenSheetContentState = homeSheetContentState)
+                }
+            ) {
+                Scaffold(
+                    topBar = {
+                        HomeScreenTopBar(homeScreenTopBarState = homeScreenTopBarState)
+                    },
+                    bottomBar = {
+                        HomeScreenBottomBar(
+                            homeScreenBottomBarState = homeScreenBottomBarState
                         )
+                    },
+                    floatingActionButton = {
+                        if (homeTabSelected == HomeScreenTab.Friendship) {
+                            SmallFloatingActionButton(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                content = {
+                                    Icon(
+                                        imageVector = Icons.Filled.Favorite,
+                                        tint = Color.White,
+                                        contentDescription = null,
+                                    )
+                                },
+                                onClick = {
+                                    sheetContentAnimateToExpanded()
+                                })
+                        }
+                    },
+                ) { paddingValues ->
+                    when (homeTabSelected) {
+                        HomeScreenTab.Conversation -> {
+                            ConversationScreen(
+                                paddingValues = paddingValues,
+                                conversationScreenState = conversationScreenState
+                            )
+                        }
+                        HomeScreenTab.Friendship -> {
+                            FriendshipScreen(
+                                paddingValues = paddingValues,
+                                friendshipScreenState = friendshipScreenState
+                            )
+                        }
+                        HomeScreenTab.Person -> {
+                            PersonProfileScreen(
+                                personProfileScreenState = personProfileScreenState
+                            )
+                        }
                     }
-                }
-            },
-        ) { paddingValues ->
-            when (homeTabSelected) {
-                HomeScreenTab.Conversation -> {
-                    ConversationScreen(
-                        paddingValues = paddingValues,
-                        conversationScreenState = conversationScreenState
-                    )
-                }
-                HomeScreenTab.Friendship -> {
-                    FriendshipScreen(
-                        paddingValues = paddingValues,
-                        friendshipScreenState = friendshipScreenState
-                    )
-                }
-                HomeScreenTab.Person -> {
-                    PersonProfileScreen(
-                        personProfileScreenState = personProfileScreenState
-                    )
                 }
             }
         }
-    }
+    )
 }

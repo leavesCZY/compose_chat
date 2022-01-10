@@ -3,9 +3,9 @@ package github.leavesc.compose_chat.ui.friend
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -86,7 +86,7 @@ private fun GroupItem(groupProfile: GroupProfile, onClickGroup: (GroupProfile) -
         )
         Text(
             text = groupProfile.name,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.titleMedium,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             modifier = Modifier
@@ -134,7 +134,7 @@ private fun FriendshipItem(personProfile: PersonProfile, onClickFriend: (PersonP
         )
         Text(
             text = personProfile.showName,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.titleMedium,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             modifier = Modifier
@@ -148,7 +148,7 @@ private fun FriendshipItem(personProfile: PersonProfile, onClickFriend: (PersonP
         )
         Text(
             text = personProfile.signature,
-            style = MaterialTheme.typography.body2,
+            style = MaterialTheme.typography.bodySmall,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             modifier = Modifier

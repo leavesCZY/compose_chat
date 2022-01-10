@@ -10,6 +10,7 @@ ext {
             "compose-constraintlayout"        : "androidx.constraintlayout:constraintlayout-compose:1.0.0-rc02",
             "compose-navigation"              : "androidx.navigation:navigation-compose:2.4.0-rc01",
             "compose-material"                : "androidx.compose.material:material:$compose_version",
+            "compose-material3"               : "androidx.compose.material3:material3:1.0.0-alpha02",
             "compose-material-icons"          : "androidx.compose.material:material-icons-extended:$compose_version",
             "compose-livedata"                : "androidx.compose.runtime:runtime-livedata:$compose_version",
             "compose-ui"                      : "androidx.compose.ui:ui:$compose_version",
