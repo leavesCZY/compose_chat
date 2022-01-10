@@ -27,16 +27,6 @@ private val DarkColorScheme = darkColorScheme(
     onSecondaryContainer = onSecondaryContainerDark
 )
 
-private val BlueColorScheme = lightColorScheme(
-    primary = PrimaryColorBlue,
-    onPrimary = OnPrimaryColorBlue,
-    primaryContainer = PrimaryContainerColorBlue,
-    surface = SurfaceColorBlue,
-    onSurface = OnSurfaceColorBlue,
-    background = BackgroundColorBlue,
-    onSecondaryContainer = onSecondaryContainerBlue
-)
-
 @Composable
 fun ChatTheme(
     appTheme: AppTheme = AppThemeCache.currentTheme,
@@ -46,14 +36,11 @@ fun ChatTheme(
         AppTheme.Light -> {
             LightColorScheme
         }
-        AppTheme.Blue -> {
-            BlueColorScheme
+        AppTheme.Dark -> {
+            DarkColorScheme
         }
         AppTheme.Gray -> {
             LightColorScheme
-        }
-        AppTheme.Dark -> {
-            DarkColorScheme
         }
     }
     val typography = when (appTheme) {
@@ -62,9 +49,6 @@ fun ChatTheme(
         }
         AppTheme.Dark -> {
             DarkTypography
-        }
-        AppTheme.Blue -> {
-            LightTypography
         }
         AppTheme.Gray -> {
             LightTypography

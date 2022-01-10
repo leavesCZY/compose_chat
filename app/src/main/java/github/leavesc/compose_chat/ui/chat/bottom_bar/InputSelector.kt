@@ -2,7 +2,6 @@ package github.leavesc.compose_chat.ui.chat.bottom_bar
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Mood
 import androidx.compose.material.icons.outlined.Topic
@@ -66,8 +65,8 @@ fun InputSelector(
         )
         Spacer(modifier = Modifier.weight(1f))
         val buttonColors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.inverseSurface,
-            contentColor = MaterialTheme.colorScheme.inverseOnSurface
+            containerColor = MaterialTheme.colorScheme.primary,
+            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.46f)
         )
         Button(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
@@ -97,9 +96,9 @@ private fun InputSelectorButton(
                 .size(size = 26.dp),
             imageVector = icon,
             tint = if (selected) {
-                MaterialTheme.colorScheme.onPrimary
+                MaterialTheme.colorScheme.primary
             } else {
-                MaterialTheme.colorScheme.onPrimary.copy(alpha = ContentAlpha.disabled)
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.46f)
             },
             contentDescription = null
         )

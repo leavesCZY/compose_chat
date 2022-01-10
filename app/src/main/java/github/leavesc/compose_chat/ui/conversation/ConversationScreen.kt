@@ -23,7 +23,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atLeast
 import github.leavesc.compose_chat.base.model.Conversation
 import github.leavesc.compose_chat.model.ConversationScreenState
-import github.leavesc.compose_chat.ui.weigets.CircleCoilImage
+import github.leavesc.compose_chat.ui.weigets.CircleImage
 import github.leavesc.compose_chat.ui.weigets.CommonDivider
 import github.leavesc.compose_chat.ui.weigets.EmptyView
 
@@ -79,7 +79,7 @@ private fun ConversationItem(
     val bgColor = if (conversation.isPinned) {
         Color.LightGray.copy(alpha = 0.15f)
     } else {
-        MaterialTheme.colorScheme.surface
+        Color.Transparent
     }
     ConstraintLayout(
         modifier = Modifier
@@ -96,7 +96,7 @@ private fun ConversationItem(
             .padding(top = padding),
     ) {
         val (avatar, unreadMessageCount, nickname, lastMsg, time, divider, dropdownMenu) = createRefs()
-        CircleCoilImage(
+        CircleImage(
             data = conversation.faceUrl,
             modifier = Modifier
                 .padding(start = padding * 1.5f)

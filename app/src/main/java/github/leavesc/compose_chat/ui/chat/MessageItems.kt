@@ -25,7 +25,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atMost
 import github.leavesc.compose_chat.base.model.*
-import github.leavesc.compose_chat.ui.weigets.CircleCoilImage
+import github.leavesc.compose_chat.ui.weigets.CircleImage
 import github.leavesc.compose_chat.ui.weigets.CoilImage
 
 /**
@@ -138,7 +138,7 @@ private fun SelfMessageContainer(
             )
     ) {
         val (avatarRefs, showNameRefs, messageRefs, messageStateRefs) = createRefs()
-        CircleCoilImage(
+        CircleImage(
             data = message.messageDetail.sender.faceUrl,
             modifier = Modifier
                 .constrainAs(ref = avatarRefs) {
@@ -217,7 +217,7 @@ private fun FriendMessageContainer(
             )
     ) {
         val (avatarRefs, showNameRefs, messageRefs, messageStateRefs) = createRefs()
-        CircleCoilImage(
+        CircleImage(
             data = message.messageDetail.sender.faceUrl,
             modifier = Modifier
                 .constrainAs(ref = avatarRefs) {
@@ -342,7 +342,7 @@ private fun StateMessage(modifier: Modifier, messageState: MessageState) {
         MessageState.Sending -> {
             CircularProgressIndicator(
                 modifier = modifier.size(size = 20.dp),
-                color = Color.Red,
+                color = MaterialTheme.colorScheme.primary,
                 strokeWidth = 2.dp
             )
         }
@@ -352,6 +352,6 @@ private fun StateMessage(modifier: Modifier, messageState: MessageState) {
 @Composable
 fun LoadMoreMessage() {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
     }
 }

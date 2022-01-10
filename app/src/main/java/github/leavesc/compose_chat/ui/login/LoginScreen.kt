@@ -108,7 +108,8 @@ fun LoginScreen() {
                         .fillMaxSize()
                         .size(size = 60.dp)
                         .wrapContentSize(align = Alignment.Center),
-                    strokeWidth = 4.dp
+                    strokeWidth = 4.dp,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }

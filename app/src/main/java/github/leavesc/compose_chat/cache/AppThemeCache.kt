@@ -16,7 +16,7 @@ object AppThemeCache {
 
     private const val KEY_APP_THEME = "keyAppTheme"
 
-    private val DefaultAppTheme = AppTheme.Blue
+    private val DefaultAppTheme = AppTheme.Light
 
     private val preferences by lazy {
         ContextHolder.context.getSharedPreferences(KEY_GROUP, Context.MODE_PRIVATE)

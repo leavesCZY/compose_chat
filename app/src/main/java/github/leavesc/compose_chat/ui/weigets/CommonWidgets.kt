@@ -73,7 +73,8 @@ fun CommonOutlinedTextField(
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = ContentAlpha.high),
             unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = ContentAlpha.disabled),
-        ),
+            cursorColor = MaterialTheme.colorScheme.primary
+        )
     )
 }
 

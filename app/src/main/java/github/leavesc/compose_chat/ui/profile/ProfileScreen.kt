@@ -1,7 +1,10 @@
 package github.leavesc.compose_chat.ui.profile
 
 import android.content.res.Configuration
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.SpringSpec
+import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
@@ -9,9 +12,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumeAllChanges
@@ -28,10 +28,8 @@ import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.extend.navToPreviewImageScreen
-import github.leavesc.compose_chat.extend.scrim
-import github.leavesc.compose_chat.ui.theme.BezierShape
-import github.leavesc.compose_chat.ui.weigets.CircleBorderCoilImage
-import github.leavesc.compose_chat.ui.weigets.CoilImage
+import github.leavesc.compose_chat.ui.weigets.BezierImage
+import github.leavesc.compose_chat.ui.weigets.CircleBorderImage
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -97,17 +95,7 @@ private fun ProfileScreen(
     content: @Composable () -> Unit
 ) {
     val navHostController = LocalNavHostController.current
-    ConstraintLayout(
-        modifier = Modifier
-//            .background(color = MaterialTheme.colorScheme.background)
-    ) {
-        val animateValue by rememberInfiniteTransition().animateFloat(
-            initialValue = 0f, targetValue = 1f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(durationMillis = 1200, easing = FastOutSlowInEasing),
-                repeatMode = RepeatMode.Reverse,
-            ),
-        )
+    ConstraintLayout {
         var offsetX by remember { mutableStateOf(0f) }
         var offsetY by remember { mutableStateOf(0f) }
         val coroutineScope = rememberCoroutineScope()
@@ -126,23 +114,11 @@ private fun ProfileScreen(
                 )
             }
         }
-
         val (titleRefs, subtitleRefs, introductionRefs, backgroundRefs, avatarRefs, contentRefs) = createRefs()
-        CoilImage(
-            modifier = Modifier
-                .constrainAs(ref = backgroundRefs) {
+        BezierImage(modifier = Modifier.constrainAs(ref = backgroundRefs) {
 
-                }
-                .fillMaxWidth()
-                .aspectRatio(ratio = 5f / 4f)
-                .zIndex(zIndex = -100f)
-                .scale(scale = (animateValue + 1f) * 1.1f)
-                .clip(shape = BezierShape(animateValue = animateValue))
-                .rotate(degrees = animateValue * 10f)
-                .scrim(colors = listOf(Color(color = 0x4D9DA3A8), Color(color = 0x41F7F5F5))),
-            data = avatarUrl
-        )
-        CircleBorderCoilImage(
+        }, data = avatarUrl)
+        CircleBorderImage(
             modifier = Modifier
                 .constrainAs(ref = avatarRefs) {
                     start.linkTo(anchor = backgroundRefs.start)
@@ -183,8 +159,6 @@ private fun ProfileScreen(
             data = avatarUrl
         )
         Text(text = title,
-            color = Color.White,
-            fontSize = 20.sp,
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -197,8 +171,6 @@ private fun ProfileScreen(
                 .padding(start = 10.dp, end = 10.dp, top = 20.dp))
         Text(
             text = subtitle,
-            color = Color.White.copy(alpha = 0.8f),
-            fontSize = 18.sp,
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier
