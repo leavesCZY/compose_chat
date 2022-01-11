@@ -29,6 +29,7 @@ import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.model.HomeScreenDrawerState
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.weigets.BouncyImage
+import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
 
 /**
@@ -109,7 +110,10 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
                     homeScreenDrawerState.logout()
                 })
                 SelectableItem(text = "关于", icon = Icons.Filled.Favorite, onClick = {
-
+                    showToast(
+                        msg = "这是我的一个 Jetpack Compose 实战项目，希望对你有所帮助呀\n欢迎关注公众号：字节数组",
+                        lengthLong = true
+                    )
                 })
                 Text(
                     modifier = Modifier

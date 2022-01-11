@@ -9,6 +9,7 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -42,7 +43,8 @@ fun FriendProfileScreen(
     LaunchedEffect(key1 = Unit) {
         friendProfileViewModel.getFriendProfile()
     }
-    val friendProfile by friendProfileViewModel.friendProfile.collectAsState()
+    val friendProfileScreenState by friendProfileViewModel.friendProfileScreenState.collectAsState()
+    val personProfile = friendProfileScreenState.personProfile
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val navHostController = LocalNavHostController.current
@@ -57,7 +59,7 @@ fun FriendProfileScreen(
         sheetState = sheetState,
         sheetShape = BottomSheetShape,
         sheetContent = {
-            SetFriendRemarkScreen(friendProfile = friendProfile,
+            SetFriendRemarkScreen(friendProfile = personProfile,
                 modalBottomSheetState = sheetState,
                 onSetRemark = { friendId, remark ->
                     friendProfileViewModel.setFriendRemark(
@@ -70,13 +72,20 @@ fun FriendProfileScreen(
         var openDeleteFriendDialog by remember { mutableStateOf(false) }
         Scaffold {
             ProfileScreen(
-                personProfile = friendProfile
+                title = personProfile.nickname,
+                subtitle = personProfile.signature,
+                introduction = "ID: ${personProfile.userId}" + if (personProfile.remark.isNotBlank()) {
+                    "\nRemark: ${personProfile.remark}"
+                } else {
+                    ""
+                },
+                avatarUrl = personProfile.faceUrl
             ) {
-                if (friendProfile.isFriend) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    if (friendProfileScreenState.showAlterBtb) {
                         CommonButton(text = "去聊天吧") {
                             navHostController.popBackStack()
-                            navHostController.navToC2CChatScreen(friendId = friendProfile.userId)
+                            navHostController.navToC2CChatScreen(friendId = personProfile.userId)
                         }
                         CommonButton(text = "设置备注") {
                             expandSheetContent()
@@ -85,10 +94,15 @@ fun FriendProfileScreen(
                             openDeleteFriendDialog = true
                         }
                     }
+                    if (friendProfileScreenState.showAddBtn) {
+                        CommonButton(text = "添加为好友") {
+                            friendProfileViewModel.addFriend()
+                        }
+                    }
                 }
             }
             if (openDeleteFriendDialog) {
-                DeleteFriendDialog(friendProfile = friendProfile, onDeleteFriend = {
+                DeleteFriendDialog(friendProfile = personProfile, onDeleteFriend = {
                     friendProfileViewModel.deleteFriend(friendId = it)
                     navHostController.navToHomeScreen()
                 }, onDismissRequest = {
@@ -172,7 +186,7 @@ private fun SetFriendRemarkScreen(
             friendProfile.remark
         )
     }
-    androidx.compose.material3.Surface(
+    Surface(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(fraction = 0.75f)

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.ActionResult
 import github.leavesc.compose_chat.base.model.PersonProfile
+import github.leavesc.compose_chat.model.FriendProfileScreenState
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -16,12 +17,31 @@ import kotlinx.coroutines.launch
  */
 class FriendProfileViewModel(private val friendId: String) : ViewModel() {
 
-    val friendProfile = MutableStateFlow(PersonProfile.Empty)
+    val friendProfileScreenState = MutableStateFlow(
+        FriendProfileScreenState(
+            personProfile = PersonProfile.Empty,
+            showAlterBtb = false,
+            showAddBtn = false
+        )
+    )
 
     fun getFriendProfile() {
         viewModelScope.launch {
-            friendProfile.emit(
+            val profile =
                 ComposeChat.friendshipProvider.getFriendProfile(friendId) ?: PersonProfile.Empty
+            val showAlterBtb = profile.isFriend
+            val showAddBtn = if (showAlterBtb) {
+                false
+            } else {
+                val selfId = ComposeChat.accountProvider.personProfile.value.userId
+                selfId.isNotBlank() && selfId != friendId
+            }
+            friendProfileScreenState.emit(
+                FriendProfileScreenState(
+                    personProfile = profile,
+                    showAlterBtb = showAlterBtb,
+                    showAddBtn = showAddBtn
+                )
             )
         }
     }
@@ -51,6 +71,20 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
                     getFriendProfile()
                     ComposeChat.friendshipProvider.getFriendList()
                     ComposeChat.conversationProvider.getConversationList()
+                }
+                is ActionResult.Failed -> {
+                    showToast(result.reason)
+                }
+            }
+        }
+    }
+
+    fun addFriend() {
+        viewModelScope.launch {
+            when (val result = ComposeChat.friendshipProvider.addFriend(friendId = friendId)) {
+                is ActionResult.Success -> {
+                    showToast("添加成功")
+                    getFriendProfile()
                 }
                 is ActionResult.Failed -> {
                     showToast(result.reason)

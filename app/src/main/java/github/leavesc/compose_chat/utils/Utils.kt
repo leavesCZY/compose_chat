@@ -9,8 +9,14 @@ import android.widget.Toast
  * @Desc:
  * @Github：https://github.com/leavesC
  */
-fun showToast(msg: Any?) {
-    Toast.makeText(ContextHolder.context, msg.toString(), Toast.LENGTH_SHORT).show()
+fun showToast(msg: Any?, lengthLong: Boolean = false) {
+    Toast.makeText(
+        ContextHolder.context, msg.toString(), if (lengthLong) {
+            Toast.LENGTH_LONG
+        } else {
+            Toast.LENGTH_SHORT
+        }
+    ).show()
 }
 
 fun log(tag: String = "TAG", log: () -> Any?) {

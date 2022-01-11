@@ -192,6 +192,12 @@ data class FriendshipScreenState(
     val onClickFriend: (PersonProfile) -> Unit
 )
 
+data class FriendProfileScreenState(
+    val personProfile: PersonProfile,
+    val showAlterBtb: Boolean,
+    val showAddBtn: Boolean
+)
+
 data class PersonProfileScreenState(
     val personProfile: PersonProfile
 )

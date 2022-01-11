@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -77,7 +78,7 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfileScreen(
+fun ProfileScreen(
     title: String,
     subtitle: String,
     introduction: String,
@@ -107,6 +108,7 @@ private fun ProfileScreen(
         )
         Text(text = title,
             style = MaterialTheme.typography.titleLarge,
+            fontFamily = FontFamily.Serif,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .constrainAs(ref = titleRefs) {
@@ -119,6 +121,7 @@ private fun ProfileScreen(
         Text(
             text = subtitle,
             style = MaterialTheme.typography.titleMedium,
+            fontFamily = FontFamily.Serif,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .constrainAs(ref = subtitleRefs) {
@@ -132,6 +135,7 @@ private fun ProfileScreen(
         Text(
             text = introduction,
             style = MaterialTheme.typography.bodyMedium,
+            fontFamily = FontFamily.Serif,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .constrainAs(ref = introductionRefs) {
