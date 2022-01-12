@@ -48,10 +48,7 @@ fun LoginScreen() {
         }
         loginViewModel.autoLogin()
     }
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+    Scaffold {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier.fillMaxSize(),

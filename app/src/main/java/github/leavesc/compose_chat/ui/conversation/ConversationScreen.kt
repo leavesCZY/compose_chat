@@ -99,7 +99,7 @@ private fun ConversationItem(
         CircleImage(
             data = conversation.faceUrl,
             modifier = Modifier
-                .padding(start = padding * 1.5f)
+                .padding(start = padding)
                 .size(size = 50.dp)
                 .constrainAs(ref = avatar) {
                     start.linkTo(anchor = parent.start)

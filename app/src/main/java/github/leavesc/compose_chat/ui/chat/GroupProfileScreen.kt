@@ -115,7 +115,7 @@ private fun GroupMemberItem(
         CircleImage(
             data = groupMemberProfile.detail.faceUrl,
             modifier = Modifier
-                .padding(start = padding * 1.5f, top = padding, bottom = padding)
+                .padding(start = padding, top = padding, bottom = padding)
                 .size(size = 50.dp)
                 .constrainAs(ref = avatar) {
                     start.linkTo(anchor = parent.start)

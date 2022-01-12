@@ -317,12 +317,9 @@ private fun ImageMessage(
     message: ImageMessage
 ) {
     CoilImage(
-        modifier = Modifier
-            .size(size = imageSize),
-        data = message.imagePath,
-        builder = {
-            placeholder(drawable = null)
-        })
+        modifier = Modifier.size(size = imageSize),
+        data = message.imagePath
+    )
 }
 
 @Composable

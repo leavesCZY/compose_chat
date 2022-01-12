@@ -40,20 +40,22 @@ import kotlin.math.roundToInt
 
 object CoilImageLoader {
 
+    val ImageBackgroundColor = android.graphics.Color.parseColor("#1E000000")
+
     fun init(context: Context) {
-        val bgColor = ColorDrawable(android.graphics.Color.parseColor("#1E000000"))
+        val bgColor =
+            ColorDrawable(ImageBackgroundColor)
+        Color.White.value
         val imageLoader = ImageLoader.Builder(context)
-            .crossfade(true)
-            .allowHardware(false)
-            .placeholder(bgColor)
-            .error(bgColor)
+            .crossfade(enable = true)
+            .allowHardware(enable = false)
+            .placeholder(drawable = bgColor)
+            .error(drawable = bgColor)
             .build()
         Coil.setImageLoader(imageLoader)
     }
 
 }
-
-private val imageBackgroundColor = Color.DarkGray
 
 @Composable
 fun CoilImage(
@@ -65,16 +67,16 @@ fun CoilImage(
     val imagePainter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(context = LocalContext.current)
             .data(data = data)
-            .scale(scale = Scale.FIT)
+            .scale(scale = Scale.FILL)
             .apply(block = builder)
             .build(),
         filterQuality = FilterQuality.Medium
     )
     Image(
-        modifier = modifier.background(color = imageBackgroundColor),
+        modifier = modifier.background(color = Color(color = CoilImageLoader.ImageBackgroundColor)),
         painter = imagePainter,
-        contentDescription = null,
         contentScale = contentScale,
+        contentDescription = null,
     )
 }
 
@@ -95,13 +97,13 @@ fun CircleImage(
 fun CircleBorderImage(
     modifier: Modifier,
     data: Any,
-    outlineSize: Dp = 4.dp,
-    outlineColor: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+    borderWidth: Dp = 4.dp,
+    borderColor: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
 ) {
     CoilImage(
         modifier = modifier
             .clip(shape = CircleShape)
-            .border(width = outlineSize, color = outlineColor, shape = CircleShape),
+            .border(width = borderWidth, color = borderColor, shape = CircleShape),
         data = data
     )
 }

@@ -8,8 +8,8 @@ import github.leavesc.compose_chat.base.model.Chat
 import github.leavesc.compose_chat.base.model.Conversation
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.cache.AccountCache
-import github.leavesc.compose_chat.utils.BitmapUtils
 import github.leavesc.compose_chat.utils.ContextHolder
+import github.leavesc.compose_chat.utils.ImageUtils
 import github.leavesc.compose_chat.utils.randomFaceUrl
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.Dispatchers
@@ -79,7 +79,7 @@ class HomeViewModel : ViewModel() {
     suspend fun uploadImage(imageUri: Uri): String {
         return withContext(Dispatchers.IO) {
             val imageFile =
-                BitmapUtils.saveImage(context = ContextHolder.context, imageUri = imageUri)
+                ImageUtils.saveImageToCacheDir(context = ContextHolder.context, imageUri = imageUri)
             val imagePath = imageFile?.absolutePath
             if (!imagePath.isNullOrBlank()) {
                 return@withContext ComposeChat.messageProvider.uploadImage(

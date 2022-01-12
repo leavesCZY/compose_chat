@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import github.leavesc.compose_chat.base.model.*
 import github.leavesc.compose_chat.base.provider.IMessageProvider
 import github.leavesc.compose_chat.model.ChatScreenState
-import github.leavesc.compose_chat.utils.BitmapUtils
 import github.leavesc.compose_chat.utils.ContextHolder
+import github.leavesc.compose_chat.utils.ImageUtils
 import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -163,7 +163,10 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
         sendMessage {
             withContext(Dispatchers.IO) {
                 val imageFile =
-                    BitmapUtils.saveImage(context = ContextHolder.context, imageUri = imageUri)
+                    ImageUtils.saveImageToCacheDir(
+                        context = ContextHolder.context,
+                        imageUri = imageUri
+                    )
                 val imagePath = imageFile?.absolutePath
                 if (imagePath.isNullOrBlank()) {
                     showToast("图片获取失败")
