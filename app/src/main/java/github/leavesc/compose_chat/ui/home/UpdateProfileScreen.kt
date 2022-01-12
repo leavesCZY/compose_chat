@@ -1,9 +1,9 @@
 package github.leavesc.compose_chat.ui.home
 
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -17,6 +17,7 @@ import com.google.accompanist.insets.statusBarsPadding
 import github.leavesc.compose_chat.common.SelectPictureContract
 import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.logic.HomeViewModel
+import github.leavesc.compose_chat.ui.weigets.CircleImage
 import github.leavesc.compose_chat.ui.weigets.CommonButton
 import github.leavesc.compose_chat.ui.weigets.CommonOutlinedTextField
 import github.leavesc.compose_chat.utils.randomFaceUrl
@@ -90,25 +91,37 @@ fun UpdateProfileScreen() {
             )
         }) {
         Column(
-            modifier = Modifier.padding(
-                vertical = 20.dp
-            ),
+            modifier = Modifier
+                .verticalScroll(state = rememberScrollState())
+                .padding(
+                    top = 0.dp,
+                    bottom = 20.dp
+                ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val textFieldModifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = 20.dp,
-                    vertical = 5.dp
-                )
+            CircleImage(
+                modifier = Modifier.size(size = 140.dp),
+                data = faceUrl
+            )
             CommonOutlinedTextField(
-                modifier = textFieldModifier,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(height = 120.dp)
+                    .padding(
+                        horizontal = 20.dp,
+                        vertical = 5.dp
+                    ),
                 value = faceUrl,
                 onValueChange = { faceUrl = it },
                 label = "faceUrl",
             )
             CommonOutlinedTextField(
-                modifier = textFieldModifier,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 20.dp,
+                        vertical = 5.dp
+                    ),
                 value = nickname,
                 onValueChange = {
                     if (it.length > 16) {
@@ -119,7 +132,12 @@ fun UpdateProfileScreen() {
                 label = "nickname"
             )
             CommonOutlinedTextField(
-                modifier = textFieldModifier,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 20.dp,
+                        vertical = 5.dp
+                    ),
                 value = signature,
                 onValueChange = {
                     if (it.length > 50) {
