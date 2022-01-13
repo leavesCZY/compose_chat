@@ -1,7 +1,14 @@
 package github.leavesc.compose_chat.ui.home
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.SpringSpec
+import androidx.compose.animation.core.TweenSpec
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cabin
@@ -12,13 +19,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -29,7 +36,9 @@ import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.model.HomeScreenDrawerState
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.weigets.BouncyImage
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 /**
  * @Author: leavesC
@@ -58,7 +67,62 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
         val nickname = userProfile.nickname
         val signature = userProfile.signature
         val padding = 20.dp
-        ConstraintLayout {
+        val maxOffsetY = 1000f
+        var offsetY by remember { mutableStateOf(0f) }
+        var animateJob: Job? = null
+        fun autoDragAnimate() {
+            animateJob?.cancel()
+            animateJob = coroutineScope.launch {
+                Animatable(
+                    initialValue = offsetY,
+                    visibilityThreshold = Spring.DefaultDisplacementThreshold
+                ).animateTo(
+                    targetValue = -maxOffsetY,
+                    animationSpec = TweenSpec(),
+                    block = {
+                        offsetY = this.value
+                    }
+                )
+            }
+        }
+
+        fun resetDragAnimate() {
+            animateJob?.cancel()
+            animateJob = coroutineScope.launch {
+                Animatable(
+                    initialValue = offsetY,
+                    visibilityThreshold = Spring.DefaultDisplacementThreshold
+                ).animateTo(
+                    targetValue = 0f,
+                    animationSpec = SpringSpec(dampingRatio = Spring.DampingRatioHighBouncy),
+                    block = {
+                        offsetY = this.value
+                    }
+                )
+            }
+        }
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset { IntOffset(0, offsetY.roundToInt()) }
+                .draggable(
+                    orientation = Orientation.Vertical,
+                    state = rememberDraggableState { delta ->
+                        var tempY = offsetY + delta
+                        if (tempY >= 0f) {
+                            tempY = 0f
+                        } else if (tempY <= -maxOffsetY) {
+                            tempY = -maxOffsetY
+                        }
+                        offsetY = tempY
+                    }, onDragStarted = {
+
+                    },
+                    onDragStopped = {
+                        resetDragAnimate()
+                    }
+                ),
+        ) {
             val (avatarRefs, nicknameRefs, signatureRefs, contentRefs) = createRefs()
             BouncyImage(
                 modifier = Modifier
@@ -95,8 +159,10 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
                 style = MaterialTheme.typography.titleSmall
             )
             Column(modifier = Modifier
+                .fillMaxSize()
                 .constrainAs(ref = contentRefs) {
                     start.linkTo(anchor = parent.start)
+                    end.linkTo(anchor = parent.end)
                     top.linkTo(anchor = signatureRefs.bottom, margin = padding)
                 }) {
                 SelectableItem(text = "个人资料", icon = Icons.Filled.Cabin, onClick = {
@@ -109,18 +175,19 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
                     homeScreenDrawerState.logout()
                 })
                 SelectableItem(text = "关于作者", icon = Icons.Filled.Favorite, onClick = {
-
+                    autoDragAnimate()
                 })
+                Spacer(modifier = Modifier.weight(weight = 1f))
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentWidth(align = Alignment.CenterHorizontally)
-                        .padding(top = padding),
+                        .weight(weight = 1f),
                     text = "VersionCode: " + BuildConfig.VERSION_CODE + "\n" +
                             "VersionName: " + BuildConfig.VERSION_NAME + "\n" +
                             "BuildTime: " + BuildConfig.BUILD_TIME + "\n" +
                             "公众号: 字节数组" + "\n" +
-                            "我的微信：leavesCZY",
+                            "微信：leavesCZY",
                     textAlign = TextAlign.Center,
                     fontFamily = FontFamily.Serif,
                     fontSize = 14.sp,
