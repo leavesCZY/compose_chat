@@ -7,8 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +31,6 @@ import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Scale
-import github.leavesc.compose_chat.extend.scrim
 import github.leavesc.compose_chat.ui.theme.BezierShape
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -113,19 +110,16 @@ fun BezierImage(modifier: Modifier, data: Any) {
     val animateValue by rememberInfiniteTransition().animateFloat(
         initialValue = 0f, targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1200, easing = FastOutSlowInEasing),
+            animation = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse,
         ),
     )
     CoilImage(
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(ratio = 5f / 4f)
-            .zIndex(zIndex = -100f)
-            .scale(scale = (animateValue + 1f) * 1.1f)
+        modifier = Modifier
+            .scale(scale = (animateValue + 1f) * 1.3f)
             .clip(shape = BezierShape(animateValue = animateValue))
-            .rotate(degrees = animateValue * 10f)
-            .scrim(colors = listOf(Color(color = 0x4D9DA3A8), Color(color = 0x41F7F5F5))),
+            .rotate(degrees = animateValue * 14f)
+            .then(other = modifier),
         data = data
     )
 }

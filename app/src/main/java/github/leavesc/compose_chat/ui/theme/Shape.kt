@@ -19,15 +19,17 @@ val BottomSheetShape = RoundedCornerShape(
 
 class BezierShape(private val animateValue: Float) : Shape {
 
+    private val path = Path()
+
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
         density: Density
     ): Outline {
+        path.reset()
         val width = size.width
         val height = size.height
         val progress = height / 7 * 5 + height / 7 * 2 * animateValue
-        val path = Path()
         path.lineTo(0f, progress / 7 * 5)
         path.quadraticBezierTo(width / 2 + width / 4 * animateValue, height, width, progress)
         path.lineTo(width, 0f)

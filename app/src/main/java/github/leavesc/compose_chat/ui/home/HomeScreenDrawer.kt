@@ -29,7 +29,6 @@ import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.model.HomeScreenDrawerState
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.weigets.BouncyImage
-import github.leavesc.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
 
 /**
@@ -109,11 +108,8 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
                 SelectableItem(text = "切换账号", icon = Icons.Filled.TheaterComedy, onClick = {
                     homeScreenDrawerState.logout()
                 })
-                SelectableItem(text = "关于", icon = Icons.Filled.Favorite, onClick = {
-                    showToast(
-                        msg = "这是我的一个 Jetpack Compose 实战项目，希望对你有所帮助呀\n欢迎关注公众号：字节数组",
-                        lengthLong = true
-                    )
+                SelectableItem(text = "关于作者", icon = Icons.Filled.Favorite, onClick = {
+
                 })
                 Text(
                     modifier = Modifier
@@ -123,7 +119,8 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
                     text = "VersionCode: " + BuildConfig.VERSION_CODE + "\n" +
                             "VersionName: " + BuildConfig.VERSION_NAME + "\n" +
                             "BuildTime: " + BuildConfig.BUILD_TIME + "\n" +
-                            "公众号: 字节数组",
+                            "公众号: 字节数组" + "\n" +
+                            "我的微信：leavesCZY",
                     textAlign = TextAlign.Center,
                     fontFamily = FontFamily.Serif,
                     fontSize = 14.sp,

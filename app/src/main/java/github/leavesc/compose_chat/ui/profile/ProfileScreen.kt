@@ -2,14 +2,12 @@ package github.leavesc.compose_chat.ui.profile
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -22,6 +20,7 @@ import github.leavesc.compose_chat.base.model.GroupProfile
 import github.leavesc.compose_chat.base.model.PersonProfile
 import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.extend.navToPreviewImageScreen
+import github.leavesc.compose_chat.extend.scrim
 import github.leavesc.compose_chat.ui.weigets.BezierImage
 import github.leavesc.compose_chat.ui.weigets.BouncyImage
 
@@ -89,9 +88,16 @@ fun ProfileScreen(
     val navHostController = LocalNavHostController.current
     ConstraintLayout {
         val (titleRefs, subtitleRefs, introductionRefs, backgroundRefs, avatarRefs, contentRefs) = createRefs()
-        BezierImage(modifier = Modifier.constrainAs(ref = backgroundRefs) {
-
-        }, data = avatarUrl)
+        BezierImage(modifier = Modifier
+            .constrainAs(ref = backgroundRefs) {
+                start.linkTo(anchor = parent.start)
+                end.linkTo(anchor = parent.end)
+                top.linkTo(anchor = parent.top)
+            }
+            .aspectRatio(ratio = 5f / 4f)
+            .zIndex(zIndex = -100f)
+            .scrim(colors = listOf(Color(color = 0x5B7B7F83), Color(color = 0x41756464))),
+            data = avatarUrl)
         BouncyImage(
             modifier = Modifier
                 .constrainAs(ref = avatarRefs) {
@@ -111,7 +117,7 @@ fun ProfileScreen(
             style = MaterialTheme.typography.titleLarge,
             fontFamily = FontFamily.Serif,
             textAlign = TextAlign.Center,
-            fontWeight = FontWeight.ExtraBold,
+            fontWeight = FontWeight.Black,
             modifier = Modifier
                 .constrainAs(ref = titleRefs) {
                     start.linkTo(anchor = backgroundRefs.start)
@@ -122,7 +128,7 @@ fun ProfileScreen(
                 .padding(start = 10.dp, end = 10.dp, top = 20.dp))
         Text(
             text = subtitle,
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleSmall,
             fontFamily = FontFamily.Serif,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
