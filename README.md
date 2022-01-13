@@ -24,7 +24,7 @@
 
 ## 下载体验
 
-下载 APK：[compose_chat](https://github.com/leavesC/compose_chat/releases)
+下载 APK：[compose_chat](https://github.com/leavesCZY/compose_chat/releases)
 
 ## 历史版本
 
