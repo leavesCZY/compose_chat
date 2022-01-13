@@ -40,13 +40,23 @@ import kotlinx.coroutines.launch
 fun PreviewImageScreen(imagePath: String) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+
+    fun addImageToAlbum() {
+        coroutineScope.launch {
+            val result = ImageUtils.addImageToAlbum(context = context, data = imagePath)
+            if (result) {
+                showToast("图片已保存到相册")
+            } else {
+                showToast("图片保存失败")
+            }
+        }
+    }
+
     val requestPermissionLaunch = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) {
         if (it) {
-            coroutineScope.launch {
-                ImageUtils.addImageToAlbum(context = context, data = imagePath)
-            }
+            addImageToAlbum()
         } else {
             showToast("请先授予存储权限再保存图片")
         }
@@ -87,9 +97,7 @@ fun PreviewImageScreen(imagePath: String) {
                     if (ImageUtils.mustRequestWriteExternalStoragePermission(context = context)) {
                         requestPermissionLaunch.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     } else {
-                        coroutineScope.launch {
-                            ImageUtils.addImageToAlbum(context = context, data = imagePath)
-                        }
+                        addImageToAlbum()
                     }
                 })
         }

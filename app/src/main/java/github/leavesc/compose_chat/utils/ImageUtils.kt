@@ -12,6 +12,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
 import coil.imageLoader
 import coil.request.ImageRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -54,23 +56,21 @@ object ImageUtils {
     suspend fun addImageToAlbum(
         context: Context,
         data: Any
-    ) {
-        try {
-            val request = ImageRequest.Builder(context)
-                .data(data = data)
-                .build()
-            val toBitmap = context.imageLoader.execute(request).drawable?.toBitmap()
-            if (toBitmap != null) {
-                val result = addBitmapToAlbum(context = context, bitmap = toBitmap)
-                if (result) {
-                    showToast("图片已保存到相册")
-                    return
+    ): Boolean {
+        return withContext(context = Dispatchers.IO) {
+            try {
+                val request = ImageRequest.Builder(context)
+                    .data(data = data)
+                    .build()
+                val bitmap = context.imageLoader.execute(request).drawable?.toBitmap()
+                if (bitmap != null) {
+                    return@withContext addBitmapToAlbum(context = context, bitmap = bitmap)
                 }
+            } catch (e: Throwable) {
+                e.printStackTrace()
             }
-        } catch (e: Throwable) {
-            e.printStackTrace()
+            return@withContext false
         }
-        showToast("图片保存失败")
     }
 
     private fun generateImageName(): String {
