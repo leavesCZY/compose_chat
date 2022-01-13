@@ -1,7 +1,7 @@
 package github.leavesc.compose_chat.ui.chat.top_bar
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Icon
@@ -43,7 +43,7 @@ fun ChatScreenTopBar(
         navigationIcon = {
             IconButton(content = {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
+                    imageVector = Icons.Default.ArrowBackIosNew,
                     contentDescription = "Localized description"
                 )
             }, onClick = {

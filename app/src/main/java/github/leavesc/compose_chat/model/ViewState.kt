@@ -4,8 +4,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cabin
+import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.Sailing
-import androidx.compose.material.icons.filled.TheaterComedy
 import androidx.compose.material3.DrawerState
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavBackStackEntry
@@ -144,7 +144,7 @@ enum class HomeScreenTab(
         icon = Icons.Filled.Sailing,
     ),
     Person(
-        icon = Icons.Filled.TheaterComedy,
+        icon = Icons.Filled.ColorLens,
     );
 }
 

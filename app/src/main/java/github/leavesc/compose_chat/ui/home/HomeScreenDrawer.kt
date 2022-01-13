@@ -12,9 +12,9 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cabin
+import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Sailing
-import androidx.compose.material.icons.filled.TheaterComedy
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -36,7 +36,7 @@ import github.leavesc.compose_chat.extend.LocalNavHostController
 import github.leavesc.compose_chat.model.HomeScreenDrawerState
 import github.leavesc.compose_chat.model.Screen
 import github.leavesc.compose_chat.ui.weigets.BouncyImage
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -48,31 +48,25 @@ import kotlin.math.roundToInt
  */
 @Composable
 fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
-    val navHostController = LocalNavHostController.current
-    val drawerState = homeScreenDrawerState.drawerState
-    val coroutineScope = rememberCoroutineScope()
-
-    fun closeDrawer() {
-        coroutineScope.launch {
-            drawerState.close()
-        }
-    }
-
-    BackHandler(enabled = drawerState.isOpen, onBack = {
-        closeDrawer()
-    })
     Surface(modifier = Modifier.fillMaxSize()) {
-        val userProfile = homeScreenDrawerState.userProfile
-        val faceUrl = userProfile.faceUrl
-        val nickname = userProfile.nickname
-        val signature = userProfile.signature
-        val padding = 20.dp
-        val maxOffsetY = 1000f
+        val navHostController = LocalNavHostController.current
+        val drawerState = homeScreenDrawerState.drawerState
+        val coroutineScope = rememberCoroutineScope()
+
+        fun closeDrawer() {
+            coroutineScope.launch {
+                drawerState.close()
+            }
+        }
+
+        BackHandler(enabled = drawerState.isOpen, onBack = {
+            closeDrawer()
+        })
+
+        val maxOffsetY = 800f
         var offsetY by remember { mutableStateOf(0f) }
-        var animateJob: Job? = null
         fun autoDragAnimate() {
-            animateJob?.cancel()
-            animateJob = coroutineScope.launch {
+            coroutineScope.launch {
                 Animatable(
                     initialValue = offsetY,
                     visibilityThreshold = Spring.DefaultDisplacementThreshold
@@ -86,24 +80,42 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
             }
         }
 
-        fun resetDragAnimate() {
-            animateJob?.cancel()
-            animateJob = coroutineScope.launch {
+        fun cancelDragAnimate() {
+            coroutineScope.launch {
                 Animatable(
                     initialValue = offsetY,
                     visibilityThreshold = Spring.DefaultDisplacementThreshold
                 ).animateTo(
                     targetValue = 0f,
-                    animationSpec = SpringSpec(dampingRatio = Spring.DampingRatioHighBouncy),
+                    animationSpec = SpringSpec(
+                        dampingRatio = Spring.DampingRatioHighBouncy,
+                        stiffness = Spring.StiffnessMedium
+                    ),
                     block = {
                         offsetY = this.value
                     }
                 )
             }
         }
+
+        LaunchedEffect(key1 = Unit) {
+            snapshotFlow {
+                drawerState.isOpen
+            }.filter {
+                !it
+            }.collect {
+                cancelDragAnimate()
+            }
+        }
+
+        val userProfile = homeScreenDrawerState.userProfile
+        val faceUrl = userProfile.faceUrl
+        val nickname = userProfile.nickname
+        val signature = userProfile.signature
+        val padding = 20.dp
+
         ConstraintLayout(
             modifier = Modifier
-                .fillMaxSize()
                 .offset { IntOffset(0, offsetY.roundToInt()) }
                 .draggable(
                     orientation = Orientation.Vertical,
@@ -119,16 +131,18 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
 
                     },
                     onDragStopped = {
-                        resetDragAnimate()
+                        if (offsetY != -maxOffsetY) {
+                            cancelDragAnimate()
+                        }
                     }
                 ),
         ) {
-            val (avatarRefs, nicknameRefs, signatureRefs, contentRefs) = createRefs()
+            val (avatarRefs, nicknameRefs, signatureRefs, contentRefs, aboutAuthorRefs) = createRefs()
             BouncyImage(
                 modifier = Modifier
                     .constrainAs(ref = avatarRefs) {
                         start.linkTo(anchor = parent.start, margin = padding)
-                        top.linkTo(anchor = parent.top, margin = padding)
+                        top.linkTo(anchor = parent.top, margin = padding / 2)
                     }
                     .statusBarsPadding()
                     .size(size = 100.dp),
@@ -159,41 +173,50 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
                 style = MaterialTheme.typography.titleSmall
             )
             Column(modifier = Modifier
-                .fillMaxSize()
                 .constrainAs(ref = contentRefs) {
                     start.linkTo(anchor = parent.start)
                     end.linkTo(anchor = parent.end)
                     top.linkTo(anchor = signatureRefs.bottom, margin = padding)
-                }) {
+                    bottom.linkTo(anchor = parent.bottom)
+                    height = Dimension.fillToConstraints
+                }
+            ) {
                 SelectableItem(text = "个人资料", icon = Icons.Filled.Cabin, onClick = {
                     navHostController.navigate(route = Screen.UpdateProfileScreen.generateRoute())
                 })
                 SelectableItem(text = "切换主题", icon = Icons.Filled.Sailing, onClick = {
                     homeScreenDrawerState.switchToNextTheme()
                 })
-                SelectableItem(text = "切换账号", icon = Icons.Filled.TheaterComedy, onClick = {
+                SelectableItem(text = "切换账号", icon = Icons.Filled.ColorLens, onClick = {
                     homeScreenDrawerState.logout()
                 })
                 SelectableItem(text = "关于作者", icon = Icons.Filled.Favorite, onClick = {
-                    autoDragAnimate()
+                    if (offsetY == -maxOffsetY) {
+                        cancelDragAnimate()
+                    } else {
+                        autoDragAnimate()
+                    }
                 })
-                Spacer(modifier = Modifier.weight(weight = 1f))
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(align = Alignment.CenterHorizontally)
-                        .weight(weight = 1f),
-                    text = "VersionCode: " + BuildConfig.VERSION_CODE + "\n" +
-                            "VersionName: " + BuildConfig.VERSION_NAME + "\n" +
-                            "BuildTime: " + BuildConfig.BUILD_TIME + "\n" +
-                            "公众号: 字节数组" + "\n" +
-                            "微信：leavesCZY",
-                    textAlign = TextAlign.Center,
-                    fontFamily = FontFamily.Serif,
-                    fontSize = 14.sp,
-                    letterSpacing = 2.sp,
-                )
             }
+            Text(
+                modifier = Modifier
+                    .constrainAs(ref = aboutAuthorRefs) {
+                        start.linkTo(anchor = parent.start)
+                        end.linkTo(anchor = parent.end)
+                        top.linkTo(anchor = contentRefs.bottom)
+                    }
+                    .fillMaxWidth()
+                    .wrapContentWidth(align = Alignment.CenterHorizontally),
+                text = "VersionCode: " + BuildConfig.VERSION_CODE + "\n" +
+                        "VersionName: " + BuildConfig.VERSION_NAME + "\n" +
+                        "BuildTime: " + BuildConfig.BUILD_TIME + "\n" +
+                        "公众号: 字节数组" + "\n" +
+                        "微信：leavesCZY",
+                textAlign = TextAlign.Center,
+                fontFamily = FontFamily.Serif,
+                fontSize = 15.sp,
+                letterSpacing = 2.sp,
+            )
         }
     }
 }
