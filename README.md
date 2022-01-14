@@ -2,7 +2,7 @@
 
 一个用 Jetpack Compose 实现的 IM APP
 
-![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/22cfd6b6fcbe4e019d42a1f7c29405e6~tplv-k3u1fbpfcp-watermark.awebp)
+![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/03d22bd09d194396b6e40ada7bb7eed7~tplv-k3u1fbpfcp-watermark.awebp)
 
 由于腾讯云 IM SDK 免费版最多只能注册一百个账号，因此如果发现注册不了的话，可以使用以下几个我预先注册好的账号，但多设备同时登陆的话会互相挤掉线 ~~
 
@@ -27,6 +27,13 @@
 下载 APK：[compose_chat](https://github.com/leavesCZY/compose_chat/releases)
 
 ## 历史版本
+
+### v1.4.4
+
+- 支持保存图片到本地相册
+- 支持修改个人资料时预览头像
+- 为侧滑栏添加拖拽动画
+- 升级依赖库
 
 ### v1.4.3
 
