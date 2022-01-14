@@ -44,7 +44,7 @@ class HomeViewModel : ViewModel() {
     fun deleteConversation(conversation: Conversation) {
         viewModelScope.launch {
             when (val result =
-                ComposeChat.conversationProvider.deleteConversation(conversation = conversation)) {
+                ComposeChat.conversationProvider.deleteConversation(key = conversation.key)) {
                 is ActionResult.Success -> {
                     ComposeChat.conversationProvider.getConversationList()
                 }
@@ -83,7 +83,7 @@ class HomeViewModel : ViewModel() {
             val imagePath = imageFile?.absolutePath
             if (!imagePath.isNullOrBlank()) {
                 return@withContext ComposeChat.messageProvider.uploadImage(
-                    chat = Chat.Group(id = ComposeChat.groupToUploadAvatar),
+                    chat = Chat.Group(id = ComposeChat.groupIdToUploadAvatar),
                     imagePath = imagePath
                 )
             }

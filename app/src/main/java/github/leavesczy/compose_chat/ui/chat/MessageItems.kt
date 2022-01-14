@@ -42,59 +42,45 @@ fun MessageItems(
     onClickMessage: (Message) -> Unit,
     onLongClickMessage: (Message) -> Unit,
 ) {
+    if (message is TimeMessage) {
+        TimeMessage(message = message)
+        return
+    }
+    val messageContent = @Composable {
+        when (message) {
+            is TextMessage -> {
+                TextMessage(message = message)
+            }
+            is ImageMessage -> {
+                ImageMessage(message = message)
+            }
+            else -> {
+
+            }
+        }
+    }
     val isSelfMessage = message.messageDetail.isSelfMessage
-    val unit = when (message) {
-        is TextMessage -> {
-            if (isSelfMessage) {
-                SelfMessageContainer(
-                    message = message,
-                    messageContent = {
-                        TextMessage(message = message)
-                    },
-                    onClickAvatar = onClickAvatar,
-                    onClickMessage = onClickMessage,
-                    onLongClickMessage = onLongClickMessage
-                )
-            } else {
-                FriendMessageContainer(
-                    message = message,
-                    showPartyName = showPartyName,
-                    messageContent = {
-                        TextMessage(message = message)
-                    },
-                    onClickAvatar = onClickAvatar,
-                    onClickMessage = onClickMessage,
-                    onLongClickMessage = onLongClickMessage
-                )
-            }
-        }
-        is TimeMessage -> {
-            TimeMessage(timeMessage = message)
-        }
-        is ImageMessage -> {
-            if (isSelfMessage) {
-                SelfMessageContainer(
-                    message = message,
-                    messageContent = {
-                        ImageMessage(message = message)
-                    },
-                    onClickAvatar = onClickAvatar,
-                    onClickMessage = onClickMessage,
-                    onLongClickMessage = onLongClickMessage
-                )
-            } else {
-                FriendMessageContainer(
-                    message = message,
-                    showPartyName = showPartyName,
-                    messageContent = {
-                        ImageMessage(message = message)
-                    },
-                    onClickAvatar = onClickAvatar,
-                    onClickMessage = onClickMessage,
-                    onLongClickMessage = onLongClickMessage
-                )
-            }
-        }
+    if (isSelfMessage) {
+        SelfMessageContainer(
+            message = message,
+            messageContent = {
+                messageContent()
+            },
+            onClickAvatar = onClickAvatar,
+            onClickMessage = onClickMessage,
+            onLongClickMessage = onLongClickMessage
+        )
+    } else {
+        FriendMessageContainer(
+            message = message,
+            showPartyName = showPartyName,
+            messageContent = {
+                messageContent()
+            },
+            onClickAvatar = onClickAvatar,
+            onClickMessage = onClickMessage,
+            onLongClickMessage = onLongClickMessage
+        )
     }
 }
 
@@ -299,7 +285,7 @@ private fun TextMessage(
 }
 
 @Composable
-private fun TimeMessage(timeMessage: TimeMessage) {
+private fun TimeMessage(message: TimeMessage) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
@@ -307,7 +293,7 @@ private fun TimeMessage(timeMessage: TimeMessage) {
             .wrapContentWidth(align = Alignment.CenterHorizontally)
             .background(color = Color.LightGray.copy(alpha = 0.4f), shape = timeMessageShape)
             .padding(all = 3.dp),
-        text = timeMessage.messageDetail.chatTime,
+        text = message.messageDetail.chatTime,
         style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
     )
 }

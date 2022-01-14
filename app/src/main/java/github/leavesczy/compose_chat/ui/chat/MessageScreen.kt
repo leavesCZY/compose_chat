@@ -32,7 +32,7 @@ fun MessageScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 20.dp),
+            .padding(bottom = 40.dp),
         state = listState,
         reverseLayout = true,
         contentPadding = contentPadding,

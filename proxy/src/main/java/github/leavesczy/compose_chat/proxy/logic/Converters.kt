@@ -94,40 +94,6 @@ internal interface Converters {
         }
     }
 
-    suspend fun deleteConversation(id: String): ActionResult {
-        return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getConversationManager().deleteConversation(
-                id, object : V2TIMCallback {
-                    override fun onSuccess() {
-                        continuation.resume(ActionResult.Success)
-                    }
-
-                    override fun onError(code: Int, desc: String?) {
-                        continuation.resume(ActionResult.Failed(desc ?: ""))
-                    }
-                })
-        }
-    }
-
-    suspend fun deleteC2CConversation(userId: String): ActionResult {
-        return deleteConversation(String.format("c2c_%s", userId))
-    }
-
-    suspend fun deleteGroupConversation(groupId: String): ActionResult {
-        return deleteConversation(String.format("group_%s", groupId))
-    }
-
-    fun getConversationId(conversation: Conversation): String {
-        return when (conversation) {
-            is C2CConversation -> {
-                String.format("c2c_%s", conversation.id)
-            }
-            is GroupConversation -> {
-                String.format("group_%s", conversation.id)
-            }
-        }
-    }
-
     fun convertMessage(messageList: List<V2TIMMessage>?): List<Message> {
         return messageList?.mapNotNull { convertMessage(it) } ?: emptyList()
     }
@@ -191,6 +157,29 @@ internal interface Converters {
                 MessageState.Completed
             }
         }
+    }
+
+    suspend fun deleteConversation(key: String): ActionResult {
+        return suspendCancellableCoroutine { continuation ->
+            V2TIMManager.getConversationManager().deleteConversation(
+                key, object : V2TIMCallback {
+                    override fun onSuccess() {
+                        continuation.resume(ActionResult.Success)
+                    }
+
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(ActionResult.Failed(desc ?: ""))
+                    }
+                })
+        }
+    }
+
+    suspend fun deleteGroupConversation(groupId: String): ActionResult {
+        return deleteConversation(key = GroupConversation.getKey(groupId = groupId))
+    }
+
+    suspend fun deleteC2CConversation(userId: String): ActionResult {
+        return deleteConversation(key = C2CConversation.getKey(userId = userId))
     }
 
 }

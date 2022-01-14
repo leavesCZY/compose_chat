@@ -48,7 +48,7 @@ class ConversationProvider : IConversationProvider, Converters {
     override suspend fun pinConversation(conversation: Conversation, pin: Boolean): ActionResult {
         return suspendCancellableCoroutine { continuation ->
             V2TIMManager.getConversationManager()
-                .pinConversation(getConversationId(conversation), pin, object : V2TIMCallback {
+                .pinConversation(conversation.key, pin, object : V2TIMCallback {
                     override fun onSuccess() {
                         continuation.resume(value = ActionResult.Success)
                     }
@@ -65,8 +65,16 @@ class ConversationProvider : IConversationProvider, Converters {
         }
     }
 
-    override suspend fun deleteConversation(conversation: Conversation): ActionResult {
-        return deleteConversation(id = getConversationId(conversation))
+    override suspend fun deleteConversation(key: String): ActionResult {
+        return super.deleteConversation(key = key)
+    }
+
+    override suspend fun deleteC2CConversation(userId: String): ActionResult {
+        return super.deleteC2CConversation(userId)
+    }
+
+    override suspend fun deleteGroupConversation(groupId: String): ActionResult {
+        return super.deleteGroupConversation(groupId)
     }
 
     private fun dispatchConversationList(conversationList: List<Conversation>) {
@@ -129,7 +137,7 @@ class ConversationProvider : IConversationProvider, Converters {
                     convertMessage(timMessage = conversation.lastMessage)
                         ?: return null
                 return C2CConversation(
-                    userID = conversation.userID ?: "",
+                    userId = conversation.userID ?: "",
                     name = conversation.showName ?: "",
                     faceUrl = conversation.faceUrl ?: "",
                     unreadMessageCount = conversation.unreadCount,

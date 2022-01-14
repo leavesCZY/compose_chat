@@ -48,6 +48,12 @@ class GroupProfileViewModel(private val groupId: String) : ViewModel() {
         return ComposeChat.groupProvider.quitGroup(groupId = groupId)
     }
 
+    fun deleteGroupConversation(groupId: String) {
+        viewModelScope.launch {
+            ComposeChat.conversationProvider.deleteGroupConversation(groupId = groupId)
+        }
+    }
+
     fun setAvatar(avatarUrl: String) {
         viewModelScope.launch {
             when (val result =

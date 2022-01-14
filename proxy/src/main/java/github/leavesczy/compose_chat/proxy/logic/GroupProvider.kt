@@ -24,14 +24,21 @@ class GroupProvider : IGroupProvider, Converters {
     init {
         V2TIMManager.getInstance().addGroupListener(object : V2TIMGroupListener() {
             override fun onMemberEnter(
-                groupID: String,
+                groupId: String,
                 memberList: MutableList<V2TIMGroupMemberInfo>
             ) {
                 getJoinedGroupList()
             }
 
-            override fun onQuitFromGroup(groupID: String) {
+            override fun onGroupCreated(groupId: String?) {
                 getJoinedGroupList()
+            }
+
+            override fun onQuitFromGroup(groupId: String) {
+                getJoinedGroupList()
+                coroutineScope.launch {
+                    deleteGroupConversation(groupId = groupId)
+                }
             }
 
             override fun onGroupInfoChanged(
@@ -78,6 +85,26 @@ class GroupProvider : IGroupProvider, Converters {
                     )
                 }
             })
+        }
+    }
+
+    override suspend fun transferGroupOwner(groupId: String, newOwnerUserID: String): ActionResult {
+        return suspendCancellableCoroutine { continuation ->
+            V2TIMManager.getGroupManager()
+                .transferGroupOwner(groupId, newOwnerUserID, object : V2TIMCallback {
+                    override fun onSuccess() {
+                        continuation.resume(value = ActionResult.Success)
+                    }
+
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(
+                            value = ActionResult.Failed(
+                                code = code,
+                                reason = desc ?: ""
+                            )
+                        )
+                    }
+                })
         }
     }
 
@@ -166,7 +193,13 @@ class GroupProvider : IGroupProvider, Converters {
                 break
             }
         }
-        return memberList.sortedBy { it.joinTime }
+        memberList.sortBy { it.joinTime }
+        val owner = memberList.find { it.isOwner }
+        if (owner != null) {
+            memberList.remove(owner)
+            memberList.add(0, owner)
+        }
+        return memberList
     }
 
     private suspend fun getGroupMemberList(
