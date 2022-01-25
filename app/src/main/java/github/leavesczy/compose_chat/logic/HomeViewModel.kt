@@ -3,10 +3,7 @@ package github.leavesczy.compose_chat.logic
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.base.model.Conversation
-import github.leavesczy.compose_chat.base.model.PersonProfile
+import github.leavesczy.compose_chat.base.model.*
 import github.leavesczy.compose_chat.cache.AccountCache
 import github.leavesczy.compose_chat.utils.ContextHolder
 import github.leavesczy.compose_chat.utils.ImageUtils
@@ -43,8 +40,15 @@ class HomeViewModel : ViewModel() {
 
     fun deleteConversation(conversation: Conversation) {
         viewModelScope.launch {
-            when (val result =
-                ComposeChat.conversationProvider.deleteConversation(key = conversation.key)) {
+            val result = when (conversation) {
+                is C2CConversation -> {
+                    ComposeChat.conversationProvider.deleteC2CConversation(userId = conversation.id)
+                }
+                is GroupConversation -> {
+                    ComposeChat.conversationProvider.deleteGroupConversation(groupId = conversation.id)
+                }
+            }
+            when (result) {
                 is ActionResult.Success -> {
                     ComposeChat.conversationProvider.getConversationList()
                 }

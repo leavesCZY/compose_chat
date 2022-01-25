@@ -174,12 +174,31 @@ internal interface Converters {
         }
     }
 
-    suspend fun deleteGroupConversation(groupId: String): ActionResult {
-        return deleteConversation(key = GroupConversation.getKey(groupId = groupId))
+    suspend fun deleteC2CConversation(userId: String): ActionResult {
+        return deleteConversation(key = getC2CConversationKey(userId = userId))
     }
 
-    suspend fun deleteC2CConversation(userId: String): ActionResult {
-        return deleteConversation(key = C2CConversation.getKey(userId = userId))
+    suspend fun deleteGroupConversation(groupId: String): ActionResult {
+        return deleteConversation(key = getGroupConversationKey(groupId = groupId))
+    }
+
+    fun getConversationKey(conversation: Conversation): String {
+        return when (conversation) {
+            is C2CConversation -> {
+                getC2CConversationKey(userId = conversation.id)
+            }
+            is GroupConversation -> {
+                getGroupConversationKey(groupId = conversation.id)
+            }
+        }
+    }
+
+    private fun getC2CConversationKey(userId: String): String {
+        return String.format("c2c_%s", userId)
+    }
+
+    private fun getGroupConversationKey(groupId: String): String {
+        return String.format("group_%s", groupId)
     }
 
 }

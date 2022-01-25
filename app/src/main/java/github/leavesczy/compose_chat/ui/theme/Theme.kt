@@ -1,8 +1,6 @@
 package github.leavesczy.compose_chat.ui.theme
 
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import github.leavesczy.compose_chat.cache.AppThemeCache
 import github.leavesczy.compose_chat.model.AppTheme
@@ -32,26 +30,20 @@ fun ChatTheme(
     appTheme: AppTheme = AppThemeCache.currentTheme,
     content: @Composable () -> Unit
 ) {
-    val colors = when (appTheme) {
+    val colors: ColorScheme
+    val typography: Typography
+    when (appTheme) {
         AppTheme.Light -> {
-            LightColorScheme
+            colors = LightColorScheme
+            typography = LightTypography
         }
         AppTheme.Dark -> {
-            DarkColorScheme
+            colors = DarkColorScheme
+            typography = LightTypography
         }
         AppTheme.Gray -> {
-            LightColorScheme
-        }
-    }
-    val typography = when (appTheme) {
-        AppTheme.Light -> {
-            LightTypography
-        }
-        AppTheme.Dark -> {
-            DarkTypography
-        }
-        AppTheme.Gray -> {
-            LightTypography
+            colors = LightColorScheme
+            typography = LightTypography
         }
     }
     MaterialTheme(

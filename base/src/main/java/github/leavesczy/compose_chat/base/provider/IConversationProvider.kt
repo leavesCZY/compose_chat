@@ -20,10 +20,8 @@ interface IConversationProvider {
 
     suspend fun pinConversation(conversation: Conversation, pin: Boolean): ActionResult
 
-    suspend fun deleteConversation(key: String): ActionResult
+    suspend fun deleteC2CConversation(userId: String): ActionResult
 
     suspend fun deleteGroupConversation(groupId: String): ActionResult
-
-    suspend fun deleteC2CConversation(userId: String): ActionResult
 
 }

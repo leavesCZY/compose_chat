@@ -50,5 +50,3 @@ val LightTypography = Typography(
         letterSpacing = 0.8.sp,
     )
 )
-
-val DarkTypography = LightTypography.copy()

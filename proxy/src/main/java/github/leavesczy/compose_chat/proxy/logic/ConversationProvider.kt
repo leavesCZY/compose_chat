@@ -48,7 +48,7 @@ class ConversationProvider : IConversationProvider, Converters {
     override suspend fun pinConversation(conversation: Conversation, pin: Boolean): ActionResult {
         return suspendCancellableCoroutine { continuation ->
             V2TIMManager.getConversationManager()
-                .pinConversation(conversation.key, pin, object : V2TIMCallback {
+                .pinConversation(getConversationKey(conversation), pin, object : V2TIMCallback {
                     override fun onSuccess() {
                         continuation.resume(value = ActionResult.Success)
                     }
@@ -63,10 +63,6 @@ class ConversationProvider : IConversationProvider, Converters {
                     }
                 })
         }
-    }
-
-    override suspend fun deleteConversation(key: String): ActionResult {
-        return super.deleteConversation(key = key)
     }
 
     override suspend fun deleteC2CConversation(userId: String): ActionResult {

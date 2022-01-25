@@ -15,8 +15,6 @@ sealed class Conversation(
     val isPinned: Boolean
 ) {
 
-    abstract val key: String
-
     val formatMsg by lazy {
         val messageDetail = lastMessage.messageDetail
         val prefix =
@@ -58,19 +56,7 @@ class C2CConversation(
     unreadMessageCount = unreadMessageCount,
     lastMessage = lastMessage,
     isPinned = isPinned
-) {
-
-    companion object {
-
-        fun getKey(userId: String): String {
-            return String.format("c2c_%s", userId)
-        }
-
-    }
-
-    override val key = getKey(userId = userId)
-
-}
+)
 
 class GroupConversation(
     groupId: String,
@@ -86,16 +72,4 @@ class GroupConversation(
     unreadMessageCount = unreadMessageCount,
     lastMessage = lastMessage,
     isPinned = isPinned
-) {
-
-    companion object {
-
-        fun getKey(groupId: String): String {
-            return String.format("group_%s", groupId)
-        }
-
-    }
-
-    override val key = getKey(groupId = groupId)
-
-}
+)
