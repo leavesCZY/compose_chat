@@ -123,7 +123,7 @@ class HomeActivity : ComponentActivity() {
                             initialOffsetX = {
                                 -it
                             },
-                            animationSpec = tween(300)
+                            animationSpec = tween(200)
                         )
                     },
                     exitTransition = {
@@ -131,7 +131,7 @@ class HomeActivity : ComponentActivity() {
                             targetOffsetX = {
                                 it
                             },
-                            animationSpec = tween(300)
+                            animationSpec = tween(200)
                         )
                     },
                 ) {

@@ -210,8 +210,7 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
                 text = "VersionCode: " + BuildConfig.VERSION_CODE + "\n" +
                         "VersionName: " + BuildConfig.VERSION_NAME + "\n" +
                         "BuildTime: " + BuildConfig.BUILD_TIME + "\n" +
-                        "公众号: 字节数组" + "\n" +
-                        "微信：leavesCZY",
+                        "公众号: 字节数组",
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily.Serif,
                 fontSize = 15.sp,

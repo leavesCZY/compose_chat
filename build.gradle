@@ -6,8 +6,8 @@ subprojects {
 buildscript {
     ext {
         kotlin_version = '1.6.10'
-        compose_version = '1.2.0-alpha01'
-        accompanist_version = '0.24.0-alpha'
+        compose_version = '1.2.0-alpha03'
+        accompanist_version = '0.24.2-alpha'
     }
     repositories {
         google()

@@ -8,7 +8,7 @@ ext {
             "compose-activity"                : 'androidx.activity:activity-compose:1.4.0',
             "compose-lifecycle-viewmodel"     : "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0",
             "compose-constraintlayout"        : "androidx.constraintlayout:constraintlayout-compose:1.0.0",
-            "compose-material3"               : "androidx.compose.material3:material3:1.0.0-alpha03",
+            "compose-material3"               : "androidx.compose.material3:material3:1.0.0-alpha05",
             "compose-material"                : "androidx.compose.material:material:$compose_version",
             "compose-material-icons"          : "androidx.compose.material:material-icons-extended:$compose_version",
             "compose-livedata"                : "androidx.compose.runtime:runtime-livedata:$compose_version",
@@ -18,8 +18,8 @@ ext {
             "accompanist-insets"              : "com.google.accompanist:accompanist-insets:$accompanist_version",
             "accompanist-systemuicontroller"  : "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version",
             "accompanist-navigation-animation": "com.google.accompanist:accompanist-navigation-animation:$accompanist_version",
-            "compose-coil"                    : 'io.coil-kt:coil-compose:2.0.0-alpha06',
+            "compose-coil"                    : 'io.coil-kt:coil-compose:2.0.0-alpha08',
             "kotlinx-coroutines"              : 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0',
-            "tencent-imsdk"                   : "com.tencent.imsdk:imsdk-plus:6.0.1975",
+            "tencent-imsdk"                   : "com.tencent.imsdk:imsdk-plus:6.0.1992",
     ]
 }

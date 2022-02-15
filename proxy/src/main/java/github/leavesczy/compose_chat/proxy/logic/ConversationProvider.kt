@@ -6,8 +6,9 @@ import github.leavesczy.compose_chat.base.model.C2CConversation
 import github.leavesczy.compose_chat.base.model.Conversation
 import github.leavesczy.compose_chat.base.model.GroupConversation
 import github.leavesczy.compose_chat.base.provider.IConversationProvider
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 /**
