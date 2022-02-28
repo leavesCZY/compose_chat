@@ -1,24 +1,18 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-subprojects {
-    apply from: "${rootDir}${File.separator}gradle${File.separator}dependencies.gradle"
-}
-
 buildscript {
     ext {
-        kotlin_version = '1.6.10'
-        compose_version = '1.2.0-alpha03'
-        accompanist_version = '0.24.2-alpha'
+        compose_version = '1.2.0-alpha04'
+        accompanist_version = '0.24.3-alpha'
     }
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.4'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
+}
+
+plugins {
+    id 'com.android.application' version '7.1.2' apply false
+    id 'com.android.library' version '7.1.2' apply false
+    id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
+}
+
+subprojects {
+    apply from: "${rootDir}${File.separator}gradle${File.separator}dependencies.gradle"
 }
 
 task clean(type: Delete) {

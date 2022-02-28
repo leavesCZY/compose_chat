@@ -1,6 +1,6 @@
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
 }
 
 static String generateBuildTime() {
@@ -45,7 +45,7 @@ android {
     }
     signingConfigs {
         releaseConfig {
-            storeFile file("..\\key.jks")
+            storeFile file(rootDir.absolutePath + File.separator + "key.jks")
             keyAlias keyAliasExt.toString()
             storePassword keyPasswordExt.toString()
             keyPassword storePasswordExt.toString()
@@ -103,7 +103,6 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion kotlin_version
     }
     packagingOptions {
         exclude 'META-INF/com/android/build/gradle/*.properties'
