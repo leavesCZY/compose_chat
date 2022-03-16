@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.statusBarsPadding
 import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.model.HomeScreenTab
 import github.leavesczy.compose_chat.model.HomeScreenTopBarState

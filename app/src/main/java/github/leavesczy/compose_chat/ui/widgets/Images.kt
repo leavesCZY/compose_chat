@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.weigets
+package github.leavesczy.compose_chat.ui.widgets
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
@@ -59,6 +59,7 @@ fun CoilImage(
     modifier: Modifier = Modifier,
     data: Any,
     contentScale: ContentScale = ContentScale.Crop,
+    filterQuality: FilterQuality = FilterQuality.Low,
     builder: ImageRequest.Builder.() -> Unit = {},
 ) {
     val imagePainter = rememberAsyncImagePainter(
@@ -67,7 +68,7 @@ fun CoilImage(
             .scale(scale = Scale.FILL)
             .apply(block = builder)
             .build(),
-        filterQuality = FilterQuality.Medium
+        filterQuality = filterQuality
     )
     Image(
         modifier = modifier.background(color = Color(color = CoilImageLoader.ImageBackgroundColor)),

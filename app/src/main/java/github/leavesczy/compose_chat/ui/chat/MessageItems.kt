@@ -25,8 +25,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atMost
 import github.leavesczy.compose_chat.base.model.*
-import github.leavesczy.compose_chat.ui.weigets.CircleImage
-import github.leavesczy.compose_chat.ui.weigets.CoilImage
+import github.leavesczy.compose_chat.ui.widgets.CircleImage
+import github.leavesczy.compose_chat.ui.widgets.CoilImage
 
 /**
  * @Author: leavesCZY
@@ -310,7 +310,7 @@ private fun ImageMessage(
 
 @Composable
 private fun StateMessage(modifier: Modifier, messageState: MessageState) {
-    val unit = when (messageState) {
+    when (messageState) {
         MessageState.Completed -> {
 
         }

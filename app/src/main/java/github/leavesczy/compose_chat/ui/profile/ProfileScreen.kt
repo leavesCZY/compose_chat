@@ -14,14 +14,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.google.accompanist.insets.statusBarsPadding
 import github.leavesczy.compose_chat.base.model.GroupProfile
 import github.leavesczy.compose_chat.base.model.PersonProfile
 import github.leavesczy.compose_chat.extend.LocalNavHostController
 import github.leavesczy.compose_chat.extend.navToPreviewImageScreen
 import github.leavesczy.compose_chat.extend.scrim
-import github.leavesczy.compose_chat.ui.weigets.BezierImage
-import github.leavesczy.compose_chat.ui.weigets.BouncyImage
+import github.leavesczy.compose_chat.ui.widgets.BezierImage
+import github.leavesczy.compose_chat.ui.widgets.BouncyImage
 
 /**
  * @Author: leavesCZY

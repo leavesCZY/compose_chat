@@ -23,8 +23,8 @@ import github.leavesczy.compose_chat.extend.viewModelInstance
 import github.leavesczy.compose_chat.logic.FriendProfileViewModel
 import github.leavesczy.compose_chat.ui.profile.ProfileScreen
 import github.leavesczy.compose_chat.ui.theme.BottomSheetShape
-import github.leavesczy.compose_chat.ui.weigets.CommonButton
-import github.leavesczy.compose_chat.ui.weigets.CommonOutlinedTextField
+import github.leavesczy.compose_chat.ui.widgets.CommonButton
+import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import kotlinx.coroutines.launch
 
 /**

@@ -5,7 +5,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
-import com.google.accompanist.insets.LocalWindowInsets
 import github.leavesczy.compose_chat.base.model.Chat
 import github.leavesczy.compose_chat.base.model.ImageMessage
 import github.leavesczy.compose_chat.base.model.Message
@@ -15,8 +14,8 @@ import github.leavesczy.compose_chat.extend.navToPreviewImageScreen
 import github.leavesczy.compose_chat.extend.viewModelInstance
 import github.leavesczy.compose_chat.logic.ChatViewModel
 import github.leavesczy.compose_chat.model.Screen
-import github.leavesczy.compose_chat.ui.chat.bottom_bar.ChatScreenBottomBar
-import github.leavesczy.compose_chat.ui.chat.top_bar.ChatScreenTopBar
+import github.leavesczy.compose_chat.ui.chat.bottomBar.ChatScreenBottomBar
+import github.leavesczy.compose_chat.ui.chat.topBar.ChatScreenTopBar
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.flow.filter
 
@@ -84,10 +83,9 @@ fun ChatScreen(
         }
     }
 
-    val ime = LocalWindowInsets.current.ime
     LaunchedEffect(key1 = chatScreenState) {
         snapshotFlow {
-            chatScreenState.mushScrollToBottom || ime.isVisible
+            chatScreenState.mushScrollToBottom
         }.filter {
             it
         }.collect {

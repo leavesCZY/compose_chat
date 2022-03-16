@@ -1,5 +1,6 @@
-package github.leavesczy.compose_chat.ui.chat.top_bar
+package github.leavesczy.compose_chat.ui.chat.topBar
 
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.MoreVert
@@ -9,10 +10,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.text.style.TextOverflow
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.statusBarsPadding
 import github.leavesczy.compose_chat.extend.LocalNavHostController
 
 /**
@@ -27,9 +25,7 @@ fun ChatScreenTopBar(
     onClickBackMenu: (() -> Unit)? = null,
     onClickMoreMenu: () -> Unit,
 ) {
-    val textInputService = LocalTextInputService.current
     val navHostController = LocalNavHostController.current
-    val ime = LocalWindowInsets.current.ime
     CenterAlignedTopAppBar(
         modifier = Modifier.statusBarsPadding(),
         title = {
@@ -50,11 +46,7 @@ fun ChatScreenTopBar(
                 if (onClickBackMenu != null) {
                     onClickBackMenu.invoke()
                 } else {
-                    if (ime.isVisible && textInputService != null) {
-                        textInputService.hideSoftwareKeyboard()
-                    } else {
-                        navHostController.popBackStack()
-                    }
+                    navHostController.popBackStack()
                 }
             })
         },

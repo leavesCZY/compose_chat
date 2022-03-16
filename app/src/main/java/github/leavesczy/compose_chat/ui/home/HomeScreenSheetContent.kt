@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.logic.ComposeChat
 import github.leavesczy.compose_chat.model.HomeScreenSheetContentState
-import github.leavesczy.compose_chat.ui.weigets.CommonButton
-import github.leavesczy.compose_chat.ui.weigets.CommonOutlinedTextField
+import github.leavesczy.compose_chat.ui.widgets.CommonButton
+import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
 

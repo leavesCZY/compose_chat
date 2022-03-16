@@ -4,10 +4,10 @@ import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -23,10 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
+import github.leavesczy.compose_chat.ui.theme.BackgroundColorDark
 import github.leavesczy.compose_chat.utils.ImageUtils
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
@@ -41,9 +41,9 @@ fun PreviewImageScreen(imagePath: String) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    fun addImageToAlbum() {
+    fun insertImageToAlbum() {
         coroutineScope.launch {
-            val result = ImageUtils.addImageToAlbum(context = context, data = imagePath)
+            val result = ImageUtils.insertImageToAlbum(context = context, data = imagePath)
             if (result) {
                 showToast("图片已保存到相册")
             } else {
@@ -56,36 +56,19 @@ fun PreviewImageScreen(imagePath: String) {
         contract = ActivityResultContracts.RequestPermission()
     ) {
         if (it) {
-            addImageToAlbum()
+            insertImageToAlbum()
         } else {
             showToast("请先授予存储权限再保存图片")
         }
     }
-    Scaffold(containerColor = Color.Black) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(state = rememberScrollState()),
-            contentAlignment = Alignment.Center
-        ) {
-            val imagePainter = rememberAsyncImagePainter(
-                model = ImageRequest.Builder(context = context)
-                    .data(data = imagePath)
-                    .size(size = Size.ORIGINAL)
-                    .placeholder(drawable = null)
-                    .build(),
-                filterQuality = FilterQuality.Medium,
-            )
-            Image(
-                modifier = Modifier.fillMaxWidth(),
-                painter = imagePainter,
-                contentScale = ContentScale.FillWidth,
-                contentDescription = null,
-            )
+
+    Scaffold(
+        modifier = Modifier
+            .background(color = BackgroundColorDark)
+            .fillMaxSize(),
+        containerColor = BackgroundColorDark,
+        floatingActionButton = {
             IconButton(
-                modifier = Modifier
-                    .align(alignment = Alignment.BottomEnd)
-                    .padding(end = 20.dp, bottom = 20.dp),
                 content = {
                     Icon(
                         imageVector = Icons.Filled.SaveAlt,
@@ -97,9 +80,31 @@ fun PreviewImageScreen(imagePath: String) {
                     if (ImageUtils.mustRequestWriteExternalStoragePermission(context = context)) {
                         requestPermissionLaunch.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     } else {
-                        addImageToAlbum()
+                        insertImageToAlbum()
                     }
                 })
+        }
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            val imagePainter = rememberAsyncImagePainter(
+                model = ImageRequest.Builder(context = context)
+                    .data(data = imagePath)
+                    .size(size = Size.ORIGINAL)
+                    .placeholder(drawable = null)
+                    .build(),
+                filterQuality = FilterQuality.Medium,
+            )
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(state = rememberScrollState()),
+                painter = imagePainter,
+                contentScale = ContentScale.FillWidth,
+                contentDescription = null,
+            )
         }
     }
 }

@@ -15,9 +15,9 @@ import androidx.constraintlayout.compose.Dimension
 import github.leavesczy.compose_chat.base.model.GroupProfile
 import github.leavesczy.compose_chat.base.model.PersonProfile
 import github.leavesczy.compose_chat.model.FriendshipScreenState
-import github.leavesczy.compose_chat.ui.weigets.CircleImage
-import github.leavesczy.compose_chat.ui.weigets.CommonDivider
-import github.leavesczy.compose_chat.ui.weigets.EmptyView
+import github.leavesczy.compose_chat.ui.widgets.CircleImage
+import github.leavesczy.compose_chat.ui.widgets.CommonDivider
+import github.leavesczy.compose_chat.ui.widgets.EmptyView
 
 /**
  * @Author: leavesCZY

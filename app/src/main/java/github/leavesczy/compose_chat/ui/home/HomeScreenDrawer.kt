@@ -30,12 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.google.accompanist.insets.statusBarsPadding
 import github.leavesczy.compose_chat.BuildConfig
 import github.leavesczy.compose_chat.extend.LocalNavHostController
 import github.leavesczy.compose_chat.model.HomeScreenDrawerState
 import github.leavesczy.compose_chat.model.Screen
-import github.leavesczy.compose_chat.ui.weigets.BouncyImage
+import github.leavesczy.compose_chat.ui.widgets.BouncyImage
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt

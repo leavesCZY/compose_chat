@@ -1,7 +1,7 @@
 buildscript {
     ext {
-        compose_version = '1.2.0-alpha04'
-        accompanist_version = '0.24.3-alpha'
+        compose_version = '1.2.0-alpha05'
+        accompanist_version = '0.24.4-alpha'
     }
 }
 

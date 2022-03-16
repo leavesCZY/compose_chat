@@ -13,13 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.insets.statusBarsPadding
 import github.leavesczy.compose_chat.common.SelectPictureContract
 import github.leavesczy.compose_chat.extend.LocalNavHostController
 import github.leavesczy.compose_chat.logic.HomeViewModel
-import github.leavesczy.compose_chat.ui.weigets.CircleImage
-import github.leavesczy.compose_chat.ui.weigets.CommonButton
-import github.leavesczy.compose_chat.ui.weigets.CommonOutlinedTextField
+import github.leavesczy.compose_chat.ui.widgets.CircleImage
+import github.leavesczy.compose_chat.ui.widgets.CommonButton
+import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.utils.randomFaceUrl
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.launch

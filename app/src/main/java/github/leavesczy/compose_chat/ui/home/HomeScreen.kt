@@ -9,11 +9,9 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.insets.navigationBarsPadding
 import github.leavesczy.compose_chat.base.model.ActionResult
 import github.leavesczy.compose_chat.base.model.C2CConversation
 import github.leavesczy.compose_chat.base.model.GroupConversation
@@ -181,7 +179,7 @@ fun HomeScreen(
         )
     }
 
-    NavigationDrawer(
+    ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             HomeScreenDrawer(
@@ -191,7 +189,6 @@ fun HomeScreen(
         drawerShape = RoundedCornerShape(0.dp),
         content = {
             ModalBottomSheetLayout(
-                modifier = Modifier.navigationBarsPadding(),
                 sheetState = sheetState,
                 sheetShape = BottomSheetShape,
                 sheetContent = {

@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.weigets
+package github.leavesczy.compose_chat.ui.widgets
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -53,7 +53,7 @@ object ImageUtils {
         return null
     }
 
-    suspend fun addImageToAlbum(
+    suspend fun insertImageToAlbum(
         context: Context,
         data: Any
     ): Boolean {
@@ -64,7 +64,7 @@ object ImageUtils {
                     .build()
                 val bitmap = context.imageLoader.execute(request).drawable?.toBitmap()
                 if (bitmap != null) {
-                    return@withContext addBitmapToAlbum(context = context, bitmap = bitmap)
+                    return@withContext insertImageToAlbum(context = context, bitmap = bitmap)
                 }
             } catch (e: Throwable) {
                 e.printStackTrace()
@@ -81,7 +81,7 @@ object ImageUtils {
         return "image/jpeg"
     }
 
-    private fun addBitmapToAlbum(
+    private fun insertImageToAlbum(
         context: Context,
         bitmap: Bitmap
     ): Boolean {

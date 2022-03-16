@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.bottom_bar
+package github.leavesczy.compose_chat.ui.chat.bottomBar
 
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher

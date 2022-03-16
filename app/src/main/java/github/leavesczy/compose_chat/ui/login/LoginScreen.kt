@@ -20,8 +20,8 @@ import github.leavesczy.compose_chat.extend.LocalNavHostController
 import github.leavesczy.compose_chat.extend.navigateWithBack
 import github.leavesczy.compose_chat.logic.LoginViewModel
 import github.leavesczy.compose_chat.model.Screen
-import github.leavesczy.compose_chat.ui.weigets.CommonButton
-import github.leavesczy.compose_chat.ui.weigets.CommonOutlinedTextField
+import github.leavesczy.compose_chat.ui.widgets.CommonButton
+import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
 

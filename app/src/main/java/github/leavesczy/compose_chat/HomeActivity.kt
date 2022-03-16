@@ -9,6 +9,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -20,7 +21,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -40,7 +40,7 @@ import github.leavesczy.compose_chat.ui.home.HomeScreen
 import github.leavesczy.compose_chat.ui.home.UpdateProfileScreen
 import github.leavesczy.compose_chat.ui.login.LoginScreen
 import github.leavesczy.compose_chat.ui.theme.ChatTheme
-import github.leavesczy.compose_chat.ui.weigets.SetSystemBarsColor
+import github.leavesczy.compose_chat.ui.widgets.SetSystemBarsColor
 import github.leavesczy.compose_chat.utils.showToast
 
 /**
@@ -83,8 +83,8 @@ class HomeActivity : ComponentActivity() {
             ChatTheme(appTheme = appTheme) {
                 SetSystemBarsColor(
                     statusBarColor = Color.Transparent,
-                    navigationBarColor = MaterialTheme.colorScheme.background,
                     statusBarDarkIcons = appTheme == AppTheme.Light || appTheme == AppTheme.Gray,
+                    navigationBarColor = MaterialTheme.colorScheme.background,
                     navigationDarkIcons = appTheme != AppTheme.Dark
                 )
                 NavigationView(
@@ -113,70 +113,69 @@ class HomeActivity : ComponentActivity() {
         var homeScreenSelected by remember {
             mutableStateOf(HomeScreenTab.Conversation)
         }
-        ProvideWindowInsets {
-            ProvideNavHostController(navHostController = navController) {
-                AnimatedNavHost(
-                    navController = navController,
-                    startDestination = Screen.LoginScreen.route,
-                    enterTransition = {
-                        slideInHorizontally(
-                            initialOffsetX = {
-                                -it
-                            },
-                            animationSpec = tween(200)
-                        )
-                    },
-                    exitTransition = {
-                        slideOutHorizontally(
-                            targetOffsetX = {
-                                it
-                            },
-                            animationSpec = tween(200)
-                        )
-                    },
+        ProvideNavHostController(navHostController = navController) {
+            AnimatedNavHost(
+                modifier = Modifier.navigationBarsPadding(),
+                navController = navController,
+                startDestination = Screen.LoginScreen.route,
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = {
+                            -it
+                        },
+                        animationSpec = tween(200)
+                    )
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = {
+                            it
+                        },
+                        animationSpec = tween(200)
+                    )
+                },
+            ) {
+                animatedComposable(
+                    screen = Screen.LoginScreen,
                 ) {
-                    animatedComposable(
-                        screen = Screen.LoginScreen,
-                    ) {
-                        LoginScreen()
-                    }
-                    animatedComposable(screen = Screen.HomeScreen) {
-                        HomeScreen(
-                            appTheme = appTheme,
-                            switchToNextTheme = switchToNextTheme,
-                            homeTabSelected = homeScreenSelected,
-                            onHomeTabSelected = {
-                                homeScreenSelected = it
-                            }
-                        )
-                    }
-                    animatedComposable(screen = Screen.FriendProfileScreen) { backStackEntry ->
-                        FriendProfileScreen(
-                            friendId = Screen.FriendProfileScreen.getArgument(backStackEntry)
-                        )
-                    }
-                    animatedComposable(screen = Screen.ChatScreen) { backStackEntry ->
-                        val listState = rememberLazyListState()
-                        ChatScreen(
-                            listState = listState,
-                            chat = Screen.ChatScreen.getArgument(backStackEntry),
-                        )
-                    }
-                    animatedComposable(screen = Screen.GroupProfileScreen) { backStackEntry ->
-                        GroupProfileScreen(
-                            groupId = Screen.GroupProfileScreen.getArgument(backStackEntry),
-                        )
-                    }
-                    animatedComposable(screen = Screen.PreviewImageScreen) { backStackEntry ->
-                        PreviewImageScreen(
-                            imagePath = Screen.PreviewImageScreen.getArgument(
-                                backStackEntry
-                            ),
-                        )
-                    }
-                    animatedComposable(screen = Screen.UpdateProfileScreen) {
-                        UpdateProfileScreen()
-                    }
+                    LoginScreen()
+                }
+                animatedComposable(screen = Screen.HomeScreen) {
+                    HomeScreen(
+                        appTheme = appTheme,
+                        switchToNextTheme = switchToNextTheme,
+                        homeTabSelected = homeScreenSelected,
+                        onHomeTabSelected = {
+                            homeScreenSelected = it
+                        }
+                    )
+                }
+                animatedComposable(screen = Screen.FriendProfileScreen) { backStackEntry ->
+                    FriendProfileScreen(
+                        friendId = Screen.FriendProfileScreen.getArgument(backStackEntry)
+                    )
+                }
+                animatedComposable(screen = Screen.ChatScreen) { backStackEntry ->
+                    val listState = rememberLazyListState()
+                    ChatScreen(
+                        listState = listState,
+                        chat = Screen.ChatScreen.getArgument(backStackEntry),
+                    )
+                }
+                animatedComposable(screen = Screen.GroupProfileScreen) { backStackEntry ->
+                    GroupProfileScreen(
+                        groupId = Screen.GroupProfileScreen.getArgument(backStackEntry),
+                    )
+                }
+                animatedComposable(screen = Screen.PreviewImageScreen) { backStackEntry ->
+                    PreviewImageScreen(
+                        imagePath = Screen.PreviewImageScreen.getArgument(
+                            backStackEntry
+                        ),
+                    )
+                }
+                animatedComposable(screen = Screen.UpdateProfileScreen) {
+                    UpdateProfileScreen()
                 }
             }
         }
