@@ -18,11 +18,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowInsetsCompat
 import github.leavesczy.compose_chat.common.SelectPictureContract
-import github.leavesczy.compose_chat.utils.log
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
@@ -34,75 +30,62 @@ private const val TEXT_MSG_MAX_LENGTH = 200
 
 @Composable
 fun ChatScreenBottomBar(
-    sendText: (String) -> Unit,
+    messageInputted: TextFieldValue,
+    onInputChange: (TextFieldValue) -> Unit,
+    sendText: (TextFieldValue) -> Unit,
     sendImage: (Uri) -> Unit
 ) {
     val textInputService = LocalTextInputService.current
-    var currentInputSelector by remember { mutableStateOf(InputSelector.NONE) }
-    var message by remember { mutableStateOf(TextFieldValue()) }
+
+    var currentInputSelector by remember {
+        mutableStateOf(InputSelector.NONE)
+    }
     var sendMessageEnabled by remember {
         mutableStateOf(false)
     }
 
-    val onSelectorChange: (InputSelector) -> Unit = remember {
-        {
-            if (it != currentInputSelector) {
-                currentInputSelector = it
-                if (currentInputSelector != InputSelector.NONE) {
-                    textInputService?.hideSoftwareKeyboard()
-                } else {
-                    textInputService?.showSoftwareKeyboard()
-                }
-            }
-        }
-    }
-
-    fun checkSendMessageEnabled() {
-        sendMessageEnabled = message.text.isNotBlank()
-    }
-
     fun onMessageSent() {
-        val text = message.text
+        val text = messageInputted.text
         if (text.isNotBlank()) {
-            sendText(text)
-            message = TextFieldValue()
+            sendText(messageInputted)
+            onInputChange(TextFieldValue())
         }
-        checkSendMessageEnabled()
     }
 
-    fun onInputChanged(input: TextFieldValue) {
-        message = if (message.text.length >= TEXT_MSG_MAX_LENGTH) {
+    fun onUserInputChanged(input: TextFieldValue) {
+        val newMessage = if (messageInputted.text.length >= TEXT_MSG_MAX_LENGTH) {
             if (input.text.length > TEXT_MSG_MAX_LENGTH) {
                 return
             }
             input
         } else {
             if (input.text.length > TEXT_MSG_MAX_LENGTH) {
-                message.copy(text = input.text.substring(0, TEXT_MSG_MAX_LENGTH))
+                messageInputted.copy(text = input.text.substring(0, TEXT_MSG_MAX_LENGTH))
             } else {
                 input
             }
         }
-        checkSendMessageEnabled()
+        onInputChange(newMessage)
     }
 
     fun onEmojiAppend(emoji: String) {
-        if (message.text.length + emoji.length > TEXT_MSG_MAX_LENGTH) {
+        if (messageInputted.text.length + emoji.length > TEXT_MSG_MAX_LENGTH) {
             return
         }
-        val currentText = message.text
-        val currentSelection = message.selection.end
+        val currentText = messageInputted.text
+        val currentSelection = messageInputted.selection.end
         val currentSelectedText = currentText.substring(0, currentSelection)
         val messageAppend = currentSelectedText + emoji
         val selectedAppend = messageAppend.length
-        message = TextFieldValue(
-            text = messageAppend + currentText.substring(
-                currentSelection,
-                currentText.length
-            ),
-            selection = TextRange(index = selectedAppend)
+        onInputChange(
+            TextFieldValue(
+                text = messageAppend + currentText.substring(
+                    currentSelection,
+                    currentText.length
+                ),
+                selection = TextRange(index = selectedAppend)
+            )
         )
-        checkSendMessageEnabled()
     }
 
     val selectPictureLauncher = rememberLauncherForActivityResult(
@@ -112,26 +95,45 @@ fun ChatScreenBottomBar(
             sendImage(imageUri)
         }
     }
-    val ime = WindowInsets.ime
-    val mLocalDensity = LocalDensity.current
 
-    LaunchedEffect(key1 = "") {
-        snapshotFlow {
-            log {
-                WindowInsetsCompat.CONSUMED.isVisible(WindowInsetsCompat.Type.ime())
+    val onSelectorChange: (InputSelector) -> Unit = remember {
+        {
+            if (it != currentInputSelector) {
+                currentInputSelector = it
+                if (currentInputSelector != InputSelector.NONE) {
+                    textInputService?.hideSoftwareKeyboard()
+                }
             }
-            ime.getBottom(mLocalDensity)
-        }.filter {
-            it > 0
-        }.collect {
-            onSelectorChange(InputSelector.NONE)
         }
+    }
+
+    val ime = WindowInsets.ime
+    val localDensity = LocalDensity.current
+    val density = localDensity.density
+    var imeMaxHeightDp by remember {
+        mutableStateOf(0.dp)
+    }
+
+    LaunchedEffect(key1 = density) {
+        snapshotFlow {
+            ime.getBottom(localDensity)
+        }.collect {
+            val currentImeHeight = (it / density).dp
+            if (currentImeHeight == imeMaxHeightDp) {
+                currentInputSelector = InputSelector.NONE
+            } else {
+                imeMaxHeightDp = maxOf(imeMaxHeightDp, currentImeHeight)
+            }
+        }
+    }
+
+    SideEffect {
+        sendMessageEnabled = messageInputted.text.isNotBlank()
     }
 
     Column(
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.onSecondaryContainer)
-            .imePadding(),
+            .background(color = MaterialTheme.colorScheme.onSecondaryContainer),
     ) {
         BasicTextField(
             modifier = Modifier
@@ -144,9 +146,9 @@ fun ChatScreenBottomBar(
                     shape = RoundedCornerShape(size = 6.dp)
                 )
                 .padding(all = 8.dp),
-            value = message,
+            value = messageInputted,
             onValueChange = {
-                onInputChanged(it)
+                onUserInputChanged(it)
             },
             textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
@@ -154,7 +156,7 @@ fun ChatScreenBottomBar(
                 onMessageSent()
             }),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-            maxLines = 6,
+            maxLines = 6
         )
 
         InputSelector(
@@ -163,25 +165,37 @@ fun ChatScreenBottomBar(
             onInputSelectorChange = onSelectorChange,
             onMessageSent = {
                 onMessageSent()
-            },
+            }
         )
 
-        Box {
+        Box(
+            modifier = Modifier
+                .height(intrinsicSize = IntrinsicSize.Max)
+        ) {
             when (currentInputSelector) {
                 InputSelector.NONE -> {
-
-                }
-                InputSelector.EMOJI -> {
-                    EmojiTable(
-                        onTextAdded = {
-                            onEmojiAppend(it)
-                        }
+                    Box(
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .imePadding()
                     )
                 }
+                InputSelector.EMOJI -> {
+                    Box(modifier = Modifier.heightIn(min = imeMaxHeightDp)) {
+                        EmojiTable(
+                            onTextAdded = {
+                                onEmojiAppend(it)
+                            }
+                        )
+                    }
+                }
                 InputSelector.Picture -> {
-                    ExtendTable(selectPictureLauncher = selectPictureLauncher)
+                    Box(modifier = Modifier.heightIn(min = imeMaxHeightDp)) {
+                        ExtendTable(selectPictureLauncher = selectPictureLauncher)
+                    }
                 }
             }
         }
     }
+
 }

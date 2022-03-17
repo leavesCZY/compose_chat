@@ -36,6 +36,7 @@ fun ChatScreen(
 
     val screenTopBarTitle by chatViewModel.screenTopBarTitle.collectAsState()
     val chatScreenState by chatViewModel.chatScreenState.collectAsState()
+    val messageInputted by chatViewModel.messageInputted.collectAsState()
     val clipboardManager = LocalClipboardManager.current
     val navHostController = LocalNavHostController.current
 
@@ -125,10 +126,14 @@ fun ChatScreen(
         },
         bottomBar = {
             ChatScreenBottomBar(
+                messageInputted = messageInputted,
+                onInputChange = {
+                    chatViewModel.onInputChange(message = it)
+                },
                 sendText = {
-                    chatViewModel.sendTextMessage(it)
+                    chatViewModel.sendTextMessage(text = it.text)
                 }, sendImage = {
-                    chatViewModel.sendImageMessage(it)
+                    chatViewModel.sendImageMessage(imageUri = it)
                 })
         }
     ) { contentPadding ->
