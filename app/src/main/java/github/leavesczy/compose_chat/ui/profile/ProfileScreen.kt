@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import github.leavesczy.compose_chat.base.model.GroupProfile
@@ -94,7 +95,7 @@ fun ProfileScreen(
             }
             .aspectRatio(ratio = 5f / 4f)
             .zIndex(zIndex = -100f)
-            .scrim(colors = listOf(Color(color = 0x5B7B7F83), Color(color = 0x41756464))),
+            .scrim(colors = listOf(Color(color = 0x51444B53), Color(color = 0x418D8282))),
             data = avatarUrl)
         BouncyImage(
             modifier = Modifier
@@ -112,9 +113,10 @@ fun ProfileScreen(
             data = avatarUrl
         )
         Text(text = title,
-            style = MaterialTheme.typography.titleLarge,
-            fontFamily = FontFamily.Serif,
+            fontSize = 22.sp,
+            fontFamily = FontFamily.Monospace,
             textAlign = TextAlign.Center,
+            color = Color.White,
             modifier = Modifier
                 .constrainAs(ref = titleRefs) {
                     start.linkTo(anchor = backgroundRefs.start)
@@ -122,12 +124,13 @@ fun ProfileScreen(
                     top.linkTo(anchor = parent.top)
                 }
                 .statusBarsPadding()
-                .padding(start = 10.dp, end = 10.dp, top = 20.dp))
+                .padding(start = 10.dp, end = 10.dp, top = 30.dp))
         Text(
             text = subtitle,
-            style = MaterialTheme.typography.titleSmall,
-            fontFamily = FontFamily.Serif,
+            fontSize = 16.sp,
+            fontFamily = FontFamily.Monospace,
             textAlign = TextAlign.Center,
+            color = Color.White,
             modifier = Modifier
                 .constrainAs(ref = subtitleRefs) {
                     start.linkTo(anchor = backgroundRefs.start)

@@ -3,7 +3,6 @@ package github.leavesczy.compose_chat.ui.widgets
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -21,31 +20,25 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil.Coil
 import coil.ImageLoader
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.size.Scale
+import coil.compose.AsyncImage
 import github.leavesczy.compose_chat.ui.theme.BezierShape
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 object CoilImageLoader {
 
-    val ImageBackgroundColor = android.graphics.Color.parseColor("#1E000000")
-
     fun init(context: Context) {
         val bgColor =
-            ColorDrawable(ImageBackgroundColor)
-        Color.White.value
+            ColorDrawable(android.graphics.Color.GRAY)
         val imageLoader = ImageLoader.Builder(context)
-            .crossfade(enable = true)
-            .allowHardware(enable = false)
+            .crossfade(enable = false)
+            .allowHardware(enable = true)
             .placeholder(drawable = bgColor)
             .error(drawable = bgColor)
             .build()
@@ -56,25 +49,17 @@ object CoilImageLoader {
 
 @Composable
 fun CoilImage(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     data: Any,
     contentScale: ContentScale = ContentScale.Crop,
     filterQuality: FilterQuality = FilterQuality.Low,
-    builder: ImageRequest.Builder.() -> Unit = {},
 ) {
-    val imagePainter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(context = LocalContext.current)
-            .data(data = data)
-            .scale(scale = Scale.FILL)
-            .apply(block = builder)
-            .build(),
-        filterQuality = filterQuality
-    )
-    Image(
-        modifier = modifier.background(color = Color(color = CoilImageLoader.ImageBackgroundColor)),
-        painter = imagePainter,
+    AsyncImage(
+        modifier = modifier,
+        model = data,
         contentScale = contentScale,
-        contentDescription = null,
+        filterQuality = filterQuality,
+        contentDescription = null
     )
 }
 

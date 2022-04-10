@@ -14,9 +14,11 @@ interface IConversationProvider {
 
     val conversationList: StateFlow<List<Conversation>>
 
-    val totalUnreadCount: StateFlow<Long>
+    val totalUnreadMessageCount: StateFlow<Long>
 
     fun getConversationList()
+
+    fun getTotalUnreadMessageCount()
 
     suspend fun pinConversation(conversation: Conversation, pin: Boolean): ActionResult
 

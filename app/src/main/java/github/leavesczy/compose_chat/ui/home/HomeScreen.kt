@@ -162,16 +162,12 @@ fun HomeScreen(
                     when (val result = homeViewModel.joinGroup(groupId = it)) {
                         is ActionResult.Success -> {
                             showToast("加入成功")
+                            homeViewModel.getJoinedGroupList()
                             sheetState.hide()
                             navHostController.navToGroupChatScreen(groupId = it)
                         }
                         is ActionResult.Failed -> {
-                            if (result.code == 10013) {
-                                sheetState.hide()
-                                navHostController.navToGroupChatScreen(groupId = it)
-                            } else {
-                                showToast(result.reason)
-                            }
+                            showToast(result.reason)
                         }
                     }
                 }
@@ -179,7 +175,7 @@ fun HomeScreen(
         )
     }
 
-    ModalNavigationDrawer(
+    DismissibleNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             HomeScreenDrawer(

@@ -2,7 +2,7 @@ package github.leavesczy.compose_chat.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val PrimaryColorLight = Color(0xFF46A7F3)
+val PrimaryColorLight = Color(0xFF5A6BC7)
 val OnPrimaryColorLight = Color(0xFF22202A)
 val PrimaryContainerColorLight = Color(0xFFFFFFFF)
 val SurfaceColorLight = Color(0xFFFFFFFF)

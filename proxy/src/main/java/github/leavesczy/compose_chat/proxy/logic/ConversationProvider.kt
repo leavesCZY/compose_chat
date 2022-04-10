@@ -21,7 +21,7 @@ class ConversationProvider : IConversationProvider, Converters {
 
     override val conversationList = MutableStateFlow<List<Conversation>>(emptyList())
 
-    override val totalUnreadCount = MutableStateFlow(0L)
+    override val totalUnreadMessageCount = MutableStateFlow(0L)
 
     init {
         V2TIMManager.getConversationManager()
@@ -35,7 +35,7 @@ class ConversationProvider : IConversationProvider, Converters {
                 }
 
                 override fun onTotalUnreadMessageCountChanged(totalUnreadCount: Long) {
-                    this@ConversationProvider.totalUnreadCount.value = totalUnreadCount
+                    this@ConversationProvider.totalUnreadMessageCount.value = totalUnreadCount
                 }
             })
     }
@@ -44,6 +44,19 @@ class ConversationProvider : IConversationProvider, Converters {
         coroutineScope.launch {
             dispatchConversationList(conversationList = getConversationListOrigin())
         }
+    }
+
+    override fun getTotalUnreadMessageCount() {
+        V2TIMManager.getConversationManager()
+            .getTotalUnreadMessageCount(object : V2TIMValueCallback<Long> {
+                override fun onSuccess(totalUnreadCount: Long) {
+                    totalUnreadMessageCount.value = totalUnreadCount
+                }
+
+                override fun onError(code: Int, desc: String?) {
+                    totalUnreadMessageCount.value = 0
+                }
+            })
     }
 
     override suspend fun pinConversation(conversation: Conversation, pin: Boolean): ActionResult {

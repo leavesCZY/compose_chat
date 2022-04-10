@@ -11,11 +11,11 @@ import github.leavesczy.compose_chat.proxy.logic.*
  */
 object ComposeChat {
 
-    const val groupIdA = "@TGS#3SSMB3WHI"
+    const val groupId01 = "@TGS#3SSMB3WHI"
 
-    const val groupIdB = "@TGS#3VOZA3WHT"
+    const val groupId02 = "@TGS#3VOZA3WHT"
 
-    const val groupIdC = "@TGS#3W42A3WHP"
+    const val groupId03 = "@TGS#3W42A3WHP"
 
     const val groupIdToUploadAvatar = "@TGS#aZRGY4WHQ"
 

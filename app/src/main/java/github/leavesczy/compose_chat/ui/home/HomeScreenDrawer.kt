@@ -1,31 +1,23 @@
 package github.leavesczy.compose_chat.ui.home
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.SpringSpec
-import androidx.compose.animation.core.TweenSpec
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cabin
 import androidx.compose.material.icons.filled.ColorLens
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Sailing
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -35,9 +27,7 @@ import github.leavesczy.compose_chat.extend.LocalNavHostController
 import github.leavesczy.compose_chat.model.HomeScreenDrawerState
 import github.leavesczy.compose_chat.model.Screen
 import github.leavesczy.compose_chat.ui.widgets.BouncyImage
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 /**
  * @Author: leavesCZY
@@ -62,80 +52,13 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
             closeDrawer()
         })
 
-        val maxOffsetY = 800f
-        var offsetY by remember { mutableStateOf(0f) }
-        fun autoDragAnimate() {
-            coroutineScope.launch {
-                Animatable(
-                    initialValue = offsetY,
-                    visibilityThreshold = Spring.DefaultDisplacementThreshold
-                ).animateTo(
-                    targetValue = -maxOffsetY,
-                    animationSpec = TweenSpec(),
-                    block = {
-                        offsetY = this.value
-                    }
-                )
-            }
-        }
-
-        fun cancelDragAnimate() {
-            coroutineScope.launch {
-                Animatable(
-                    initialValue = offsetY,
-                    visibilityThreshold = Spring.DefaultDisplacementThreshold
-                ).animateTo(
-                    targetValue = 0f,
-                    animationSpec = SpringSpec(
-                        dampingRatio = Spring.DampingRatioHighBouncy,
-                        stiffness = Spring.StiffnessMedium
-                    ),
-                    block = {
-                        offsetY = this.value
-                    }
-                )
-            }
-        }
-
-        LaunchedEffect(key1 = Unit) {
-            snapshotFlow {
-                drawerState.isOpen
-            }.filter {
-                !it
-            }.collect {
-                cancelDragAnimate()
-            }
-        }
-
         val userProfile = homeScreenDrawerState.userProfile
         val faceUrl = userProfile.faceUrl
         val nickname = userProfile.nickname
         val signature = userProfile.signature
         val padding = 20.dp
 
-        ConstraintLayout(
-            modifier = Modifier
-                .offset { IntOffset(0, offsetY.roundToInt()) }
-                .draggable(
-                    orientation = Orientation.Vertical,
-                    state = rememberDraggableState { delta ->
-                        var tempY = offsetY + delta
-                        if (tempY >= 0f) {
-                            tempY = 0f
-                        } else if (tempY <= -maxOffsetY) {
-                            tempY = -maxOffsetY
-                        }
-                        offsetY = tempY
-                    }, onDragStarted = {
-
-                    },
-                    onDragStopped = {
-                        if (offsetY != -maxOffsetY) {
-                            cancelDragAnimate()
-                        }
-                    }
-                ),
-        ) {
+        ConstraintLayout(modifier = Modifier) {
             val (avatarRefs, nicknameRefs, signatureRefs, contentRefs, aboutAuthorRefs) = createRefs()
             BouncyImage(
                 modifier = Modifier
@@ -189,27 +112,20 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
                 SelectableItem(text = "切换账号", icon = Icons.Filled.ColorLens, onClick = {
                     homeScreenDrawerState.logout()
                 })
-                SelectableItem(text = "关于作者", icon = Icons.Filled.Favorite, onClick = {
-                    if (offsetY == -maxOffsetY) {
-                        cancelDragAnimate()
-                    } else {
-                        autoDragAnimate()
-                    }
-                })
             }
             Text(
                 modifier = Modifier
                     .constrainAs(ref = aboutAuthorRefs) {
                         start.linkTo(anchor = parent.start)
                         end.linkTo(anchor = parent.end)
-                        top.linkTo(anchor = contentRefs.bottom)
+                        bottom.linkTo(anchor = contentRefs.bottom, margin = 20.dp)
                     }
                     .fillMaxWidth()
                     .wrapContentWidth(align = Alignment.CenterHorizontally),
-                text = "VersionCode: " + BuildConfig.VERSION_CODE + "\n" +
+                text = "公众号: 字节数组" + "\n" +
+                        "VersionCode: " + BuildConfig.VERSION_CODE + "\n" +
                         "VersionName: " + BuildConfig.VERSION_NAME + "\n" +
-                        "BuildTime: " + BuildConfig.BUILD_TIME + "\n" +
-                        "公众号: 字节数组",
+                        "BuildTime: " + BuildConfig.BUILD_TIME,
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily.Serif,
                 fontSize = 15.sp,

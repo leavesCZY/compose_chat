@@ -105,14 +105,21 @@ android {
         kotlinCompilerExtensionVersion compose_version
     }
     packagingOptions {
-        exclude 'META-INF/com/android/build/gradle/*.properties'
-        exclude 'META-INF/*.properties'
-        exclude 'META-INF/*.version'
-        exclude 'META-INF/{AL2.0,LGPL2.1}'
-        exclude 'META-INF/*.md'
-        exclude 'META-INF/CHANGES'
-        exclude 'DebugProbesKt.bin'
-        exclude 'kotlin-tooling-metadata.json'
+        jniLibs {
+            excludes += ['META-INF/{AL2.0,LGPL2.1}']
+        }
+        resources {
+            excludes += [
+                    'META-INF/{AL2.0,LGPL2.1}',
+                    'META-INF/CHANGES',
+                    'META-INF/com/android/build/gradle/app-metadata.properties',
+                    'META-INF/*.properties',
+                    'META-INF/*.version',
+                    'META-INF/*.md',
+                    'DebugProbesKt.bin',
+                    'kotlin-tooling-metadata.json'
+            ]
+        }
     }
 }
 

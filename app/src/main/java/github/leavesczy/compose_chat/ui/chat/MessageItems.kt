@@ -92,7 +92,7 @@ private val textMessageSenderNameVerticalPadding = 3.dp
 private val textMessageHorizontalPadding = 6.dp
 private val textMessageInnerHorizontalPadding = 6.dp
 private val textMessageInnerVerticalPadding = 6.dp
-private val imageSize = 120.dp
+private val imageSize = 180.dp
 private val messageShape = RoundedCornerShape(size = 6.dp)
 private val timeMessageShape = RoundedCornerShape(size = 4.dp)
 private val messageBackground: Color
@@ -149,7 +149,7 @@ private fun SelfMessageContainer(
                 },
             text = "",
             style = messageSenderNameStyle,
-            textAlign = TextAlign.End,
+            textAlign = TextAlign.End
         )
         Box(
             modifier = Modifier
@@ -180,7 +180,7 @@ private fun SelfMessageContainer(
                 bottom.linkTo(anchor = messageRefs.bottom)
                 end.linkTo(anchor = messageRefs.start, margin = textMessageHorizontalPadding)
             },
-            messageState = message.messageDetail.state,
+            messageState = message.messageDetail.state
         )
     }
 }
@@ -279,8 +279,8 @@ private fun TextMessage(
                 vertical = textMessageInnerVerticalPadding
             ),
         text = message.msg,
-        style = MaterialTheme.typography.bodyMedium,
-        textAlign = TextAlign.Start,
+        style = MaterialTheme.typography.bodyMedium.copy(color = Color.White),
+        textAlign = TextAlign.Start
     )
 }
 
@@ -294,14 +294,12 @@ private fun TimeMessage(message: TimeMessage) {
             .background(color = Color.LightGray.copy(alpha = 0.4f), shape = timeMessageShape)
             .padding(all = 3.dp),
         text = message.messageDetail.chatTime,
-        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp)
     )
 }
 
 @Composable
-private fun ImageMessage(
-    message: ImageMessage
-) {
+private fun ImageMessage(message: ImageMessage) {
     CoilImage(
         modifier = Modifier.size(size = imageSize),
         data = message.imagePath

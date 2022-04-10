@@ -129,7 +129,7 @@ private fun DeleteFriendDialog(
         confirmButton = {
             Text(
                 modifier = Modifier
-                    .padding(all = 20.dp)
+                    .padding(all = 16.dp)
                     .clickable {
                         onDismissRequest()
                         onDeleteFriend(friendProfile.userId)
@@ -140,7 +140,7 @@ private fun DeleteFriendDialog(
         dismissButton = {
             Text(
                 modifier = Modifier
-                    .padding(all = 20.dp)
+                    .padding(all = 16.dp)
                     .clickable {
                         onDismissRequest()
                     },

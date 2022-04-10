@@ -23,7 +23,7 @@ class HomeViewModel : ViewModel() {
 
     val conversationList = ComposeChat.conversationProvider.conversationList
 
-    val totalUnreadCount = ComposeChat.conversationProvider.totalUnreadCount
+    val totalUnreadCount = ComposeChat.conversationProvider.totalUnreadMessageCount
 
     val fiendList = ComposeChat.friendshipProvider.friendList
 
@@ -33,7 +33,8 @@ class HomeViewModel : ViewModel() {
 
     init {
         ComposeChat.conversationProvider.getConversationList()
-        ComposeChat.groupProvider.getJoinedGroupList()
+        ComposeChat.conversationProvider.getTotalUnreadMessageCount()
+        getJoinedGroupList()
         ComposeChat.friendshipProvider.getFriendList()
         ComposeChat.accountProvider.refreshPersonProfile()
     }
@@ -119,6 +120,10 @@ class HomeViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun getJoinedGroupList() {
+        ComposeChat.groupProvider.getJoinedGroupList()
     }
 
     suspend fun joinGroup(groupId: String): ActionResult {

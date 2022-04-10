@@ -61,11 +61,11 @@ fun LoginScreen() {
                         text = stringResource(id = R.string.app_name),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxHeight(fraction = 0.30f)
-                            .wrapContentSize(align = Alignment.Center),
+                            .fillMaxHeight(fraction = 0.20f)
+                            .wrapContentSize(align = Alignment.BottomCenter),
                         style = MaterialTheme.typography.titleLarge,
-                        fontSize = 34.sp,
-                        fontFamily = FontFamily.Serif,
+                        fontSize = 38.sp,
+                        fontFamily = FontFamily.Cursive,
                         textAlign = TextAlign.Center,
                     )
                 }
@@ -74,7 +74,7 @@ fun LoginScreen() {
                     CommonOutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 40.dp, end = 40.dp),
+                            .padding(top = 60.dp, start = 40.dp, end = 40.dp),
                         value = userId,
                         onValueChange = { value ->
                             val realValue = value.trimStart().trimEnd()
