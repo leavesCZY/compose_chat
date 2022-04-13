@@ -28,7 +28,6 @@ sealed class LoadMessageResult {
 }
 
 enum class ServerState {
-    Nothing,
     Logout,
     Connecting,
     ConnectSuccess,

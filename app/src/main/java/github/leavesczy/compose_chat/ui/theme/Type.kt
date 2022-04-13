@@ -12,41 +12,41 @@ val LightTypography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 20.sp,
         lineHeight = 26.0.sp,
-        letterSpacing = 0.8.sp,
+        letterSpacing = 0.4.sp
     ),
     titleMedium = TextStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Normal,
         fontSize = 18.sp,
         lineHeight = 24.0.sp,
-        letterSpacing = 0.8.sp,
+        letterSpacing = 0.4.sp
     ),
     titleSmall = TextStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 22.0.sp,
-        letterSpacing = 0.8.sp,
+        letterSpacing = 0.4.sp
     ),
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Normal,
         fontSize = 18.sp,
         lineHeight = 22.0.sp,
-        letterSpacing = 0.8.sp,
+        letterSpacing = 0.4.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 20.0.sp,
-        letterSpacing = 0.8.sp,
+        letterSpacing = 0.4.sp
     ),
     bodySmall = TextStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 18.0.sp,
-        letterSpacing = 0.8.sp,
+        letterSpacing = 0.4.sp
     )
 )

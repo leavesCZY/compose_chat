@@ -1,7 +1,6 @@
 package github.leavesczy.compose_chat.ui.widgets
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,13 +33,9 @@ import kotlin.math.roundToInt
 object CoilImageLoader {
 
     fun init(context: Context) {
-        val bgColor =
-            ColorDrawable(android.graphics.Color.GRAY)
-        val imageLoader = ImageLoader.Builder(context)
+        val imageLoader = ImageLoader.Builder(context = context)
             .crossfade(enable = false)
-            .allowHardware(enable = true)
-            .placeholder(drawable = bgColor)
-            .error(drawable = bgColor)
+            .allowHardware(enable = false)
             .build()
         Coil.setImageLoader(imageLoader)
     }
@@ -53,9 +48,10 @@ fun CoilImage(
     data: Any,
     contentScale: ContentScale = ContentScale.Crop,
     filterQuality: FilterQuality = FilterQuality.Low,
+    backgroundColor: Color = Color.Gray
 ) {
     AsyncImage(
-        modifier = modifier,
+        modifier = modifier.background(color = backgroundColor),
         model = data,
         contentScale = contentScale,
         filterQuality = filterQuality,
@@ -70,8 +66,7 @@ fun CircleImage(
 ) {
     CoilImage(
         modifier = modifier
-            .clip(shape = CircleShape)
-            .background(color = Color.DarkGray),
+            .clip(shape = CircleShape),
         data = data
     )
 }

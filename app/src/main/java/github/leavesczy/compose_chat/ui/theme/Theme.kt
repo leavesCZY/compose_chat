@@ -1,7 +1,12 @@
 package github.leavesczy.compose_chat.ui.theme
 
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
 import github.leavesczy.compose_chat.cache.AppThemeCache
 import github.leavesczy.compose_chat.model.AppTheme
 
@@ -49,6 +54,16 @@ fun ChatTheme(
     MaterialTheme(
         colorScheme = colors,
         typography = typography,
-        content = content
+        content = {
+            content()
+            if (appTheme == AppTheme.Gray) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    drawRect(
+                        color = Color.LightGray,
+                        blendMode = BlendMode.Saturation
+                    )
+                }
+            }
+        }
     )
 }

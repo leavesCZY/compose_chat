@@ -1,14 +1,16 @@
 package github.leavesczy.compose_chat.proxy.logic
 
+import android.graphics.BitmapFactory
 import com.tencent.imsdk.v2.*
 import github.leavesczy.compose_chat.base.model.*
 import github.leavesczy.compose_chat.base.provider.IMessageProvider
 import github.leavesczy.compose_chat.proxy.consts.AppConst
 import github.leavesczy.compose_chat.proxy.utils.RandomUtils
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import java.lang.ref.SoftReference
 import kotlin.coroutines.resume
 
@@ -30,7 +32,7 @@ class MessageProvider : IMessageProvider, Converters {
                 val partId = msg.groupID ?: msg.userID ?: ""
                 val messageListener = messageListenerMap[partId]?.get()
                 if (messageListener != null) {
-                    val message = convertMessage(msg) ?: return
+                    val message = convertMessage(msg)
                     messageListener.onReceiveMessage(
                         message = message
                     )
@@ -58,7 +60,7 @@ class MessageProvider : IMessageProvider, Converters {
         lastMessage: Message?
     ): LoadMessageResult {
         val chatId = chat.id
-        val count = 40
+        val count = 60
         return suspendCancellableCoroutine { continuation ->
             val callback = object : V2TIMValueCallback<List<V2TIMMessage>> {
                 override fun onSuccess(t: List<V2TIMMessage>) {
@@ -95,109 +97,48 @@ class MessageProvider : IMessageProvider, Converters {
         }
     }
 
-    private class SendMessageCallback(
-        private val coroutineScope: CoroutineScope,
-        private val preSendMessage: Message,
-        private val messageChannel: Channel<Message>
-    ) : V2TIMSendCallback<V2TIMMessage> {
-
-        private fun Message.copyMessage(messageState: MessageState, failReason: Any?): Message {
-            return when (this) {
-                is TextMessage -> {
-                    this.copy(
-                        detail = this.detail.copy(
-                            state = messageState
-                        )
-                    ).apply {
-                        tag = failReason
-                    }
-                }
-                is ImageMessage -> {
-                    this.copy(
-                        detail = this.detail.copy(
-                            state = messageState
-                        )
-                    ).apply {
-                        tag = failReason
-                    }
-                }
-                else -> {
-                    throw IllegalArgumentException()
-                }
-            }
-        }
-
-        override fun onSuccess(t: V2TIMMessage) {
-            coroutineScope.launch {
-                messageChannel.send(
-                    element = preSendMessage.copyMessage(
-                        messageState = MessageState.Completed,
-                        failReason = null
-                    )
-                )
-                messageChannel.close()
-            }
-        }
-
-        override fun onError(code: Int, desc: String?) {
-            coroutineScope.launch {
-                messageChannel.send(
-                    element = preSendMessage.copyMessage(
-                        messageState = MessageState.SendFailed,
-                        failReason = "code: $code desc: $desc"
-                    )
-                )
-                messageChannel.close()
-            }
-        }
-
-        override fun onProgress(progress: Int) {
-
-        }
-
-    }
-
-    override suspend fun sendText(chat: Chat, text: String, messageChannel: Channel<Message>) {
-        val messageDetail = generatePreSendMessageDetail()
-        val preSendMessage = TextMessage(
-            detail = messageDetail,
+    override suspend fun sendText(chat: Chat, text: String): Channel<Message> {
+        val localTempMessage = TextMessage(
+            detail = generatePreSendMessageDetail(),
             msg = text
         )
-        messageChannel.send(element = preSendMessage)
-        val callback = SendMessageCallback(
-            coroutineScope = coroutineScope,
-            preSendMessage = preSendMessage,
-            messageChannel = messageChannel
+        val createdMessage = V2TIMManager.getMessageManager().createTextMessage(text)
+        return sendMessage(
+            chat = chat,
+            timMessage = createdMessage,
+            localTempMessage = localTempMessage
         )
-        when (chat) {
-            is Chat.C2C -> {
-                V2TIMManager.getInstance().sendC2CTextMessage(text, chat.id, callback)
-            }
-            is Chat.Group -> {
-                V2TIMManager.getInstance()
-                    .sendGroupTextMessage(text, chat.id, V2TIMMessage.V2TIM_PRIORITY_HIGH, callback)
-            }
-        }
     }
 
     override suspend fun sendImage(
         chat: Chat,
-        imagePath: String,
-        messageChannel: Channel<Message>
-    ) {
-        val messageDetail = generatePreSendMessageDetail()
-        val preSendMessage = ImageMessage(
-            detail = messageDetail,
-            imagePath = imagePath,
-        )
-        messageChannel.send(element = preSendMessage)
-        val imageMessage = V2TIMManager.getMessageManager().createImageMessage(imagePath)
-        val callback =
-            SendMessageCallback(
-                coroutineScope = coroutineScope,
-                preSendMessage = preSendMessage,
-                messageChannel = messageChannel
+        imagePath: String
+    ): Channel<Message> {
+        return withContext(context = Dispatchers.IO) {
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            BitmapFactory.decodeFile(imagePath, options)
+            val localTempMessage = ImageMessage(
+                detail = generatePreSendMessageDetail(),
+                original = ImageElement(options.outWidth, options.outHeight, imagePath),
+                large = null,
+                thumb = null
             )
+            val createdMessage = V2TIMManager.getMessageManager().createImageMessage(imagePath)
+            return@withContext sendMessage(
+                chat = chat,
+                timMessage = createdMessage,
+                localTempMessage = localTempMessage
+            )
+        }
+    }
+
+    private suspend fun sendMessage(
+        chat: Chat,
+        timMessage: V2TIMMessage,
+        localTempMessage: Message
+    ): Channel<Message> {
+        val messageChannel = Channel<Message>(capacity = 2)
         val c2cId: String
         val groupId: String
         when (chat) {
@@ -210,15 +151,51 @@ class MessageProvider : IMessageProvider, Converters {
                 groupId = chat.id
             }
         }
+        messageChannel.send(localTempMessage)
         V2TIMManager.getMessageManager().sendMessage(
-            imageMessage,
+            timMessage,
             c2cId,
             groupId,
             V2TIMMessage.V2TIM_PRIORITY_HIGH,
             false,
             null,
-            callback
+            object : V2TIMSendCallback<V2TIMMessage> {
+                override fun onSuccess(messsage: V2TIMMessage) {
+                    coroutineScope.launch {
+                        val convertMessage = convertMessage(messsage)
+                        messageChannel.send(element = convertMessage)
+                        messageChannel.close()
+                    }
+                }
+
+                override fun onError(code: Int, desc: String?) {
+                    coroutineScope.launch {
+                        messageChannel.send(element = localTempMessage.resetToFailed(failReason = "code: $code desc: $desc"))
+                        messageChannel.close()
+                    }
+                }
+
+                override fun onProgress(progress: Int) {
+
+                }
+            }
         )
+        return messageChannel
+    }
+
+    private fun Message.resetToFailed(failReason: String): Message {
+        val failedState = MessageState.SendFailed(failReason = failReason)
+        return when (this) {
+            is TextMessage -> {
+                this.copy(detail = this.detail.copy(state = failedState))
+            }
+            is ImageMessage -> {
+                this.copy(detail = this.detail.copy(state = failedState))
+            }
+            is TimeMessage -> {
+                throw IllegalArgumentException()
+            }
+        }
     }
 
     override suspend fun uploadImage(chat: Chat, imagePath: String): String {
@@ -234,7 +211,7 @@ class MessageProvider : IMessageProvider, Converters {
                 object : V2TIMSendCallback<V2TIMMessage> {
                     override fun onSuccess(message: V2TIMMessage) {
                         val res = convertMessage(message)
-                        continuation.resume((res as? ImageMessage)?.imagePath ?: "")
+                        continuation.resume((res as? ImageMessage)?.original?.url ?: "")
                     }
 
                     override fun onError(code: Int, desc: String?) {

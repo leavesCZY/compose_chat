@@ -95,7 +95,7 @@ fun FriendProfileScreen(
                         }
                     }
                     if (friendProfileScreenState.showAddBtn) {
-                        CommonButton(text = "添加为好友") {
+                        CommonButton(text = "加为好友") {
                             friendProfileViewModel.addFriend()
                         }
                     }

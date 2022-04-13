@@ -1,5 +1,7 @@
 package github.leavesczy.compose_chat.utils
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 
@@ -9,13 +11,27 @@ import android.widget.Toast
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-fun showToast(msg: Any?, lengthLong: Boolean = false) {
-    Toast.makeText(
-        ContextHolder.context, msg.toString(), if (lengthLong) {
-            Toast.LENGTH_LONG
-        } else {
-            Toast.LENGTH_SHORT
+private val mainHandler by lazy {
+    Handler(Looper.getMainLooper())
+}
+
+fun showToast(msg: Any?) {
+    val message = msg?.toString()
+    if (message.isNullOrBlank()) {
+        return
+    }
+    if (Looper.myLooper() == Looper.getMainLooper()) {
+        showToast(message = message)
+    } else {
+        mainHandler.post {
+            showToast(message = message)
         }
+    }
+}
+
+private fun showToast(message: String) {
+    Toast.makeText(
+        ContextHolder.context, message, Toast.LENGTH_SHORT
     ).show()
 }
 

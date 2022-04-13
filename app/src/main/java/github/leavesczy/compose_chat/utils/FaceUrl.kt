@@ -1,5 +1,7 @@
 package github.leavesczy.compose_chat.utils
 
+import kotlin.random.Random
+
 /**
  * @Author: leavesCZY
  * @Date: 2022/1/9 0:56
@@ -7,7 +9,21 @@ package github.leavesczy.compose_chat.utils
  * @Github：https://github.com/leavesCZY
  */
 fun randomFaceUrl(): String {
-    return faceUrlList.random()
+    return if (Random.nextBoolean()) {
+        faceUrlList.random()
+    } else {
+        randomOnlineImageUrl()
+    }
+}
+
+private val rangeForRandom = (0..100000)
+
+private fun randomOnlineImageUrl(
+    seed: Int = rangeForRandom.random(),
+    width: Int = 500,
+    height: Int = width,
+): String {
+    return "https://picsum.photos/seed/$seed/$width/$height"
 }
 
 private val faceUrlList = listOf(

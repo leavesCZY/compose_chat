@@ -141,11 +141,10 @@ class ConversationProvider : IConversationProvider, Converters {
     }
 
     private fun convertConversation(conversation: V2TIMConversation): Conversation? {
+        val lastConversationMessage = conversation.lastMessage ?: return null
         return when (conversation.type) {
             V2TIMConversation.V2TIM_C2C -> {
-                val lastMessage =
-                    convertMessage(timMessage = conversation.lastMessage)
-                        ?: return null
+                val lastMessage = convertMessage(timMessage = lastConversationMessage)
                 return C2CConversation(
                     userId = conversation.userID ?: "",
                     name = conversation.showName ?: "",
@@ -156,9 +155,7 @@ class ConversationProvider : IConversationProvider, Converters {
                 )
             }
             V2TIMConversation.V2TIM_GROUP -> {
-                val lastMessage =
-                    convertMessage(timMessage = conversation.lastMessage)
-                        ?: return null
+                val lastMessage = convertMessage(timMessage = lastConversationMessage)
                 return GroupConversation(
                     groupId = conversation.groupID ?: "",
                     name = conversation.showName ?: "",

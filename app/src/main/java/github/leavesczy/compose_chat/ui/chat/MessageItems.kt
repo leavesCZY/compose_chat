@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -85,27 +84,13 @@ fun MessageItems(
 }
 
 private val avatarSize = 44.dp
-private val itemHorizontalPadding = 12.dp
+private val itemHorizontalPadding = 10.dp
 private val itemVerticalPadding = 10.dp
 private val textMessageWidthAtMost = 230.dp
 private val textMessageSenderNameVerticalPadding = 3.dp
-private val textMessageHorizontalPadding = 6.dp
-private val textMessageInnerHorizontalPadding = 6.dp
-private val textMessageInnerVerticalPadding = 6.dp
-private val imageSize = 180.dp
+private val textMessageHorizontalPadding = 8.dp
 private val messageShape = RoundedCornerShape(size = 6.dp)
 private val timeMessageShape = RoundedCornerShape(size = 4.dp)
-private val messageBackground: Color
-    @Composable
-    get() {
-        return MaterialTheme.colorScheme.primary
-    }
-
-private val messageSenderNameStyle: TextStyle
-    @Composable
-    get() {
-        return MaterialTheme.typography.bodySmall
-    }
 
 @Composable
 private fun SelfMessageContainer(
@@ -148,7 +133,7 @@ private fun SelfMessageContainer(
                     )
                 },
             text = "",
-            style = messageSenderNameStyle,
+            style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.End
         )
         Box(
@@ -162,7 +147,6 @@ private fun SelfMessageContainer(
                     width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
                 }
                 .clip(shape = messageShape)
-                .background(color = messageBackground)
                 .combinedClickable(
                     onClick = {
                         onClickMessage(message)
@@ -231,7 +215,7 @@ private fun FriendMessageContainer(
             } else {
                 ""
             },
-            style = messageSenderNameStyle,
+            style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Start,
         )
         Box(
@@ -245,7 +229,6 @@ private fun FriendMessageContainer(
                     width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
                 }
                 .clip(shape = messageShape)
-                .background(color = messageBackground)
                 .combinedClickable(
                     onClick = {
                         onClickMessage(message)
@@ -274,9 +257,10 @@ private fun TextMessage(
 ) {
     Text(
         modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.primary)
             .padding(
-                horizontal = textMessageInnerHorizontalPadding,
-                vertical = textMessageInnerVerticalPadding
+                horizontal = 6.dp,
+                vertical = 6.dp
             ),
         text = message.msg,
         style = MaterialTheme.typography.bodyMedium.copy(color = Color.White),
@@ -300,19 +284,33 @@ private fun TimeMessage(message: TimeMessage) {
 
 @Composable
 private fun ImageMessage(message: ImageMessage) {
+    val imageElement = message.large ?: message.original
+    val imageWidth = imageElement.width
+    val imageHeight = imageElement.height
+    val maxImageRatio = 1.9f
+    val widgetWidth = 190.dp
+    val widgetHeight = if (imageWidth <= 0 || imageHeight <= 0) {
+        widgetWidth
+    } else {
+        widgetWidth * (minOf(maxImageRatio, 1.0f * imageHeight / imageWidth))
+    }
     CoilImage(
-        modifier = Modifier.size(size = imageSize),
-        data = message.imagePath
+        modifier = Modifier.size(width = widgetWidth, height = widgetHeight),
+        data = imageElement.url
     )
 }
 
 @Composable
 private fun StateMessage(modifier: Modifier, messageState: MessageState) {
     when (messageState) {
-        MessageState.Completed -> {
-
+        MessageState.Sending -> {
+            CircularProgressIndicator(
+                modifier = modifier.size(size = 20.dp),
+                color = MaterialTheme.colorScheme.primary,
+                strokeWidth = 2.dp
+            )
         }
-        MessageState.SendFailed -> {
+        is MessageState.SendFailed -> {
             Image(
                 modifier = modifier.size(size = 20.dp),
                 imageVector = Icons.Outlined.Warning,
@@ -320,12 +318,8 @@ private fun StateMessage(modifier: Modifier, messageState: MessageState) {
                 colorFilter = ColorFilter.tint(color = Color.Red)
             )
         }
-        MessageState.Sending -> {
-            CircularProgressIndicator(
-                modifier = modifier.size(size = 20.dp),
-                color = MaterialTheme.colorScheme.primary,
-                strokeWidth = 2.dp
-            )
+        MessageState.Completed -> {
+
         }
     }
 }

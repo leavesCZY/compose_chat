@@ -36,7 +36,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
 
     private val messageListener = object : IMessageProvider.MessageListener {
         override fun onReceiveMessage(message: Message) {
-            attachNewMessage(newMessage = message, mushScrollToBottom = false)
+            attachNewMessage(newMessage = message, mushScrollToBottom = true)
             markMessageAsRead()
         }
     }
@@ -119,68 +119,80 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
         }
     }
 
-    private fun sendMessage(action: suspend (Channel<Message>) -> Unit) {
-        viewModelScope.launch {
-            val messageChannel = Channel<Message>()
-            launch {
-                action(messageChannel)
-            }
-            var sendingMessage: Message? = null
-            for (message in messageChannel) {
-                when (message.messageDetail.state) {
-                    MessageState.Sending -> {
-                        sendingMessage = message
-                        attachNewMessage(newMessage = message, mushScrollToBottom = true)
-                    }
-                    MessageState.Completed, MessageState.SendFailed -> {
-                        val sending = sendingMessage ?: return@launch
-                        val sendingMessageIndex =
-                            allMessage.indexOfFirst { it.messageDetail.msgId == sending.messageDetail.msgId }
-                        if (sendingMessageIndex > -1) {
-                            allMessage[sendingMessageIndex] = message
-                            refreshViewState()
-                        }
-                        if (message.messageDetail.state == MessageState.SendFailed) {
-                            val failReason = message.tag as? String
-                            if (!failReason.isNullOrBlank()) {
-                                showToast(failReason)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     fun sendTextMessage(text: String) {
-        sendMessage {
-            ComposeChat.messageProvider.sendText(
-                chat = chat,
-                text = text,
-                messageChannel = it
-            )
+        viewModelScope.launch {
+            val messageChannel = ComposeChat.messageProvider.sendText(chat = chat, text = text)
+            handleMessageChannel(messageChannel = messageChannel)
         }
     }
 
     fun sendImageMessage(imageUri: Uri) {
-        sendMessage {
-            withContext(Dispatchers.IO) {
+        viewModelScope.launch {
+            val imagePath = withContext(Dispatchers.IO) {
                 val imageFile =
                     ImageUtils.saveImageToCacheDir(
                         context = ContextHolder.context,
                         imageUri = imageUri
                     )
-                val imagePath = imageFile?.absolutePath
-                if (imagePath.isNullOrBlank()) {
-                    showToast("图片获取失败")
-                } else {
-                    ComposeChat.messageProvider.sendImage(
-                        chat = chat,
-                        imagePath = imagePath,
-                        messageChannel = it
+                imageFile?.absolutePath
+            }
+            if (imagePath.isNullOrBlank()) {
+                showToast("图片获取失败")
+            } else {
+                val messageChannel =
+                    ComposeChat.messageProvider.sendImage(chat = chat, imagePath = imagePath)
+                handleMessageChannel(messageChannel = messageChannel)
+            }
+        }
+    }
+
+    private suspend fun handleMessageChannel(messageChannel: Channel<Message>) {
+        lateinit var sendingMessage: Message
+        for (message in messageChannel) {
+            when (val state = message.messageDetail.state) {
+                MessageState.Sending -> {
+                    sendingMessage = message
+                    attachNewMessage(newMessage = message, mushScrollToBottom = true)
+                }
+                MessageState.Completed -> {
+                    resetMessageState(
+                        msgId = sendingMessage.messageDetail.msgId,
+                        messageState = state
                     )
                 }
+                is MessageState.SendFailed -> {
+                    resetMessageState(
+                        msgId = sendingMessage.messageDetail.msgId,
+                        messageState = state
+                    )
+                    val failReason = state.failReason
+                    if (failReason.isNotBlank()) {
+                        showToast(failReason)
+                    }
+                }
             }
+        }
+    }
+
+    private fun resetMessageState(msgId: String, messageState: MessageState) {
+        val index =
+            allMessage.indexOfFirst { it.messageDetail.msgId == msgId }
+        if (index >= 0) {
+            val targetMessage = allMessage[index]
+            val messageDetail = targetMessage.messageDetail
+            val newMessage = when (targetMessage) {
+                is ImageMessage -> {
+                    targetMessage.copy(detail = messageDetail.copy(state = messageState))
+                }
+                is TextMessage -> {
+                    targetMessage.copy(detail = messageDetail.copy(state = messageState))
+                }
+                is TimeMessage -> {
+                    throw IllegalArgumentException()
+                }
+            }
+            allMessage[index] = newMessage
+            refreshViewState()
         }
     }
 

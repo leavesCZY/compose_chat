@@ -4,10 +4,12 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
 import coil.imageLoader
@@ -28,6 +30,8 @@ import kotlin.random.Random
  */
 object ImageUtils {
 
+    private const val MAX_BITMAP_SIZE = 1.5 * 1024 * 1024
+
     private val Context.imageOutputDir: File
         get() = externalCacheDir ?: cacheDir
 
@@ -36,21 +40,47 @@ object ImageUtils {
 
     fun saveImageToCacheDir(context: Context, imageUri: Uri): File? {
         try {
-            val inputStream = context.contentResolver?.openInputStream(imageUri) ?: return null
-            val imageFile = File(context.imageOutputDir, "$randomFileName.jpg")
-            if (imageFile.exists()) {
-                imageFile.delete()
-            }
-            imageFile.createNewFile()
-            val outputStream = FileOutputStream(imageFile)
-            inputStream.copyTo(out = outputStream)
-            inputStream.close()
-            outputStream.close()
-            return imageFile
+            val options = BitmapFactory.Options()
+            val imageInputStream = context.contentResolver?.openInputStream(imageUri) ?: return null
+            val decodeBitmap =
+                BitmapFactory.decodeStream(imageInputStream, null, options) ?: return null
+            val compressedImageOutputStream = compressImage(decodeBitmap)
+            val imageTempFile = createImageFile(context = context)
+            val imageTempFileOutputStream = FileOutputStream(imageTempFile)
+            val bitmapInputStream =
+                ByteArrayInputStream(compressedImageOutputStream.toByteArray())
+            bitmapInputStream.copyTo(out = imageTempFileOutputStream)
+            imageInputStream.close()
+            imageTempFileOutputStream.close()
+            compressedImageOutputStream.close()
+            bitmapInputStream.close()
+            return imageTempFile
         } catch (e: Throwable) {
             e.printStackTrace()
+            Log.e("TAg", e.message ?: "")
         }
         return null
+    }
+
+    private fun compressImage(image: Bitmap): ByteArrayOutputStream {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+        var options = 100
+        while (byteArrayOutputStream.toByteArray().size > MAX_BITMAP_SIZE) {
+            byteArrayOutputStream.reset()
+            image.compress(Bitmap.CompressFormat.JPEG, options, byteArrayOutputStream)
+            options -= 10
+        }
+        return byteArrayOutputStream
+    }
+
+    private fun createImageFile(context: Context): File {
+        val imageFile = File(context.imageOutputDir, "$randomFileName.jpg")
+        if (imageFile.exists()) {
+            imageFile.delete()
+        }
+        imageFile.createNewFile()
+        return imageFile
     }
 
     suspend fun insertImageToAlbum(

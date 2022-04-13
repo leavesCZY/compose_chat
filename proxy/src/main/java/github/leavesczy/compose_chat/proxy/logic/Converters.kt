@@ -95,15 +95,10 @@ internal interface Converters {
     }
 
     fun convertMessage(messageList: List<V2TIMMessage>?): List<Message> {
-        return messageList?.mapNotNull { convertMessage(it) } ?: emptyList()
+        return messageList?.map { convertMessage(it) } ?: emptyList()
     }
 
-    fun convertMessage(timMessage: V2TIMMessage?): Message? {
-        val groupId = timMessage?.groupID
-        val userId = timMessage?.userID
-        if (groupId.isNullOrBlank() && userId.isNullOrBlank()) {
-            return null
-        }
+    fun convertMessage(timMessage: V2TIMMessage): Message {
         val senderProfile = PersonProfile(
             userId = timMessage.sender,
             faceUrl = timMessage.faceUrl ?: "",
@@ -126,10 +121,23 @@ internal interface Converters {
                 )
             }
             V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE -> {
-                ImageMessage(
-                    detail = messageDetail,
-                    imagePath = timMessage.imageElem?.imageList?.getOrNull(0)?.url ?: ""
-                )
+                val imageList = timMessage.imageElem?.imageList
+                if (imageList.isNullOrEmpty()) {
+                    TextMessage(
+                        detail = messageDetail,
+                        msg = "[不支持的消息类型] - $elemType"
+                    )
+                } else {
+                    val origin = imageList[0].toImageElement()
+                    val large = imageList.getOrNull(1).toImageElement()
+                    val thumb = imageList.getOrNull(2).toImageElement()
+                    ImageMessage(
+                        detail = messageDetail,
+                        original = origin!!,
+                        large = large,
+                        thumb = thumb
+                    )
+                }
             }
             else -> {
                 TextMessage(
@@ -142,6 +150,13 @@ internal interface Converters {
         return message
     }
 
+    private fun V2TIMImageElem.V2TIMImage?.toImageElement(): ImageElement? {
+        if (this == null) {
+            return null
+        }
+        return ImageElement(width = width, height = height, url = url)
+    }
+
     private fun convertMessageState(state: Int): MessageState {
         return when (state) {
             V2TIMMessage.V2TIM_MSG_STATUS_SENDING -> {
@@ -151,7 +166,7 @@ internal interface Converters {
                 MessageState.Completed
             }
             V2TIMMessage.V2TIM_MSG_STATUS_SEND_FAIL -> {
-                MessageState.SendFailed
+                MessageState.SendFailed("unknown")
             }
             else -> {
                 MessageState.Completed

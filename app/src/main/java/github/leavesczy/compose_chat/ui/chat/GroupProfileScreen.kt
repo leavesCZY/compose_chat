@@ -71,7 +71,7 @@ fun GroupProfileScreen(groupId: String) {
                     }
                 }
                 item {
-                    Spacer(modifier = Modifier.height(height = 40.dp))
+                    Spacer(modifier = Modifier.height(height = 80.dp))
                 }
             }
             GroupProfileScreenTopBar(
@@ -100,7 +100,7 @@ private fun GroupMemberItem(
     groupMemberProfile: GroupMemberProfile,
     onClickMember: (GroupMemberProfile) -> Unit
 ) {
-    val padding = 12.dp
+    val padding = 10.dp
     ConstraintLayout(
         modifier = Modifier
             .zIndex(zIndex = 10f)
@@ -132,11 +132,12 @@ private fun GroupMemberItem(
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             modifier = Modifier
-                .padding(start = padding, top = padding, end = padding)
+                .padding(start = padding, end = padding)
                 .constrainAs(ref = showName) {
                     start.linkTo(anchor = avatar.end)
                     top.linkTo(anchor = parent.top)
                     end.linkTo(anchor = parent.end)
+                    bottom.linkTo(anchor = role.top)
                     width = Dimension.fillToConstraints
                 }
         )
@@ -149,8 +150,9 @@ private fun GroupMemberItem(
                 .padding(start = padding, end = padding)
                 .constrainAs(ref = role) {
                     start.linkTo(anchor = showName.start)
-                    top.linkTo(anchor = showName.bottom, margin = padding / 2)
+                    top.linkTo(anchor = showName.bottom)
                     end.linkTo(anchor = parent.end)
+                    bottom.linkTo(anchor = parent.bottom)
                     width = Dimension.fillToConstraints
                 }
         )
@@ -159,7 +161,7 @@ private fun GroupMemberItem(
                 .constrainAs(ref = divider) {
                     start.linkTo(anchor = avatar.end, margin = padding)
                     end.linkTo(anchor = parent.end)
-                    top.linkTo(anchor = avatar.bottom)
+                    bottom.linkTo(anchor = parent.bottom)
                     width = Dimension.fillToConstraints
                 }
         )

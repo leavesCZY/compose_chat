@@ -12,7 +12,7 @@ sealed class MessageState {
 
     object Sending : MessageState()
 
-    object SendFailed : MessageState()
+    class SendFailed(val failReason: String) : MessageState()
 
     object Completed : MessageState()
 
@@ -70,9 +70,13 @@ data class TextMessage(
 
 }
 
+data class ImageElement(val width: Int, val height: Int, val url: String)
+
 data class ImageMessage(
     val detail: MessageDetail,
-    val imagePath: String,
+    val original: ImageElement,
+    val large: ImageElement?,
+    val thumb: ImageElement?,
 ) : Message(messageDetail = detail) {
 
     override val formatMessage = "[图片]"

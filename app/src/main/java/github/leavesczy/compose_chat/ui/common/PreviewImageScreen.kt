@@ -89,15 +89,16 @@ fun PreviewImageScreen(imagePath: String) {
             contentAlignment = Alignment.Center
         ) {
             CoilImage(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(state = rememberScrollState()),
                 data = ImageRequest.Builder(context = LocalContext.current)
                     .data(data = imagePath)
                     .size(size = Size.ORIGINAL)
                     .scale(scale = Scale.FILL)
                     .build(),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(state = rememberScrollState()),
-                contentScale = ContentScale.FillWidth
+                contentScale = ContentScale.FillWidth,
+                backgroundColor = BackgroundColorDark
             )
         }
     }

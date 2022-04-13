@@ -25,15 +25,13 @@ interface IMessageProvider {
 
     suspend fun sendText(
         chat: Chat,
-        text: String,
-        messageChannel: Channel<Message>
-    )
+        text: String
+    ): Channel<Message>
 
     suspend fun sendImage(
         chat: Chat,
-        imagePath: String,
-        messageChannel: Channel<Message>
-    )
+        imagePath: String
+    ): Channel<Message>
 
     suspend fun uploadImage(
         chat: Chat,

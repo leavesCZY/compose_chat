@@ -30,7 +30,7 @@ sealed class Conversation(
             MessageState.Sending -> {
                 "[发送中] " + lastMessage.formatMessage
             }
-            MessageState.SendFailed -> {
+            is MessageState.SendFailed -> {
                 "[发送失败] " + lastMessage.formatMessage
             }
         }

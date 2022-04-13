@@ -17,7 +17,7 @@ ext {
             "compose-ui-test-junit4"          : "androidx.compose.ui:ui-test-junit4:$compose_version",
             "accompanist-systemuicontroller"  : "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version",
             "accompanist-navigation-animation": "com.google.accompanist:accompanist-navigation-animation:$accompanist_version",
-            "compose-coil"                    : 'io.coil-kt:coil-compose:2.0.0-rc02',
+            "compose-coil"                    : 'io.coil-kt:coil-compose:2.0.0-rc03',
             "kotlinx-coroutines"              : 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1',
             "tencent-imsdk"                   : "com.tencent.imsdk:imsdk-plus:6.1.2166",
     ]

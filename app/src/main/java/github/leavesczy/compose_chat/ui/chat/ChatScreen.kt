@@ -54,7 +54,7 @@ fun ChatScreen(
         {
             when (it) {
                 is ImageMessage -> {
-                    val imagePath = it.imagePath
+                    val imagePath = it.original.url
                     if (imagePath.isBlank()) {
                         showToast("图片路径为空")
                     } else {
@@ -84,7 +84,7 @@ fun ChatScreen(
         }
     }
 
-    LaunchedEffect(key1 = chatScreenState) {
+    LaunchedEffect(key1 = chatScreenState.mushScrollToBottom) {
         snapshotFlow {
             chatScreenState.mushScrollToBottom
         }.filter {

@@ -7,14 +7,11 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -57,11 +54,6 @@ class HomeActivity : ComponentActivity() {
         setContent {
             val appViewModel = viewModel<AppViewModel>()
             val appTheme by appViewModel.appTheme.collectAsState()
-            val switchToNextTheme = remember {
-                {
-                    appViewModel.switchToNextTheme()
-                }
-            }
             val navController = rememberAnimatedNavController()
             LaunchedEffect(key1 = Unit) {
                 appViewModel.serverConnectState.collect {
@@ -71,7 +63,7 @@ class HomeActivity : ComponentActivity() {
                             AccountCache.onUserLogout()
                             navController.navToLogin()
                         }
-                        ServerState.Logout -> {
+                        ServerState.Logout, ServerState.UserSigExpired -> {
                             navController.navToLogin()
                         }
                         else -> {
@@ -90,16 +82,10 @@ class HomeActivity : ComponentActivity() {
                 NavigationView(
                     navController = navController,
                     appTheme = appTheme,
-                    switchToNextTheme = switchToNextTheme
-                )
-                if (appTheme == AppTheme.Gray) {
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        drawRect(
-                            color = Color.LightGray,
-                            blendMode = BlendMode.Saturation
-                        )
+                    switchToNextTheme = {
+                        appViewModel.switchToNextTheme()
                     }
-                }
+                )
             }
         }
     }
@@ -110,7 +96,7 @@ class HomeActivity : ComponentActivity() {
         appTheme: AppTheme,
         switchToNextTheme: () -> Unit
     ) {
-        var homeScreenSelected by remember {
+        var homeTabSelected by remember {
             mutableStateOf(HomeScreenTab.Conversation)
         }
         ProvideNavHostController(navHostController = navController) {
@@ -123,7 +109,7 @@ class HomeActivity : ComponentActivity() {
                         initialOffsetX = {
                             -it
                         },
-                        animationSpec = tween(200)
+                        animationSpec = tween(300)
                     )
                 },
                 exitTransition = {
@@ -131,7 +117,7 @@ class HomeActivity : ComponentActivity() {
                         targetOffsetX = {
                             it
                         },
-                        animationSpec = tween(200)
+                        animationSpec = tween(300)
                     )
                 },
             ) {
@@ -144,9 +130,9 @@ class HomeActivity : ComponentActivity() {
                     HomeScreen(
                         appTheme = appTheme,
                         switchToNextTheme = switchToNextTheme,
-                        homeTabSelected = homeScreenSelected,
+                        homeTabSelected = homeTabSelected,
                         onHomeTabSelected = {
-                            homeScreenSelected = it
+                            homeTabSelected = it
                         }
                     )
                 }
