@@ -1,7 +1,6 @@
 package github.leavesczy.compose_chat.logic
 
 import android.net.Uri
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.model.*
@@ -51,8 +50,6 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     )
 
     val screenTopBarTitle = MutableStateFlow("")
-
-    val messageInputted = MutableStateFlow(TextFieldValue())
 
     init {
         ComposeChat.messageProvider.startReceive(chat = chat, messageListener = messageListener)
@@ -250,12 +247,6 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
 
     private fun markMessageAsRead() {
         ComposeChat.messageProvider.markMessageAsRead(chat = chat)
-    }
-
-    fun onInputChange(message: TextFieldValue) {
-        viewModelScope.launch {
-            messageInputted.emit(message)
-        }
     }
 
     override fun onCleared() {

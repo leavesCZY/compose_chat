@@ -19,7 +19,7 @@ sealed class Conversation(
         val messageDetail = lastMessage.messageDetail
         val prefix =
             if (this is GroupConversation && !messageDetail.isSelfMessage) {
-                messageDetail.sender.showName + " : "
+                messageDetail.sender.showName + "："
             } else {
                 ""
             }

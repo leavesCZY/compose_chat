@@ -20,7 +20,7 @@ private val rangeForRandom = (0..100000)
 
 private fun randomOnlineImageUrl(
     seed: Int = rangeForRandom.random(),
-    width: Int = 500,
+    width: Int = 300,
     height: Int = width,
 ): String {
     return "https://picsum.photos/seed/$seed/$width/$height"

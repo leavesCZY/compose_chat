@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.bottomBar
+package github.leavesczy.compose_chat.ui.chat
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*

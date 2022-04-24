@@ -40,14 +40,18 @@ fun ConversationScreen(
 ) {
     Scaffold(
         modifier = Modifier
-            .padding(bottom = paddingValues.calculateBottomPadding())
+            .padding(paddingValues = paddingValues)
             .fillMaxSize()
     ) {
-        if (conversationScreenState.conversationList.isEmpty()) {
+        val conversationList = conversationScreenState.conversationList
+        if (conversationList.isEmpty()) {
             EmptyView()
         } else {
-            LazyColumn(state = conversationScreenState.listState) {
-                conversationScreenState.conversationList.forEach {
+            LazyColumn(
+                state = conversationScreenState.listState,
+                contentPadding = PaddingValues(bottom = 60.dp),
+            ) {
+                conversationList.forEach {
                     item(key = it.id) {
                         ConversationItem(
                             conversation = it,
@@ -56,9 +60,6 @@ fun ConversationScreen(
                             onPinnedConversation = conversationScreenState.onPinnedConversation
                         )
                     }
-                }
-                item {
-                    Spacer(modifier = Modifier.height(40.dp))
                 }
             }
         }

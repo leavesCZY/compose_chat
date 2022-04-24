@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.topBar
+package github.leavesczy.compose_chat.ui.chat
 
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
@@ -22,7 +22,7 @@ import github.leavesczy.compose_chat.extend.LocalNavHostController
 @Composable
 fun ChatScreenTopBar(
     title: String,
-    onClickBackMenu: (() -> Unit)? = null,
+    onClickBackMenu: (() -> Unit),
     onClickMoreMenu: () -> Unit,
 ) {
     val navHostController = LocalNavHostController.current
@@ -40,21 +40,17 @@ fun ChatScreenTopBar(
             IconButton(content = {
                 Icon(
                     imageVector = Icons.Default.ArrowBackIosNew,
-                    contentDescription = "Localized description"
+                    contentDescription = null
                 )
             }, onClick = {
-                if (onClickBackMenu != null) {
-                    onClickBackMenu.invoke()
-                } else {
-                    navHostController.popBackStack()
-                }
+                onClickBackMenu()
             })
         },
         actions = {
             IconButton(content = {
                 Icon(
                     imageVector = Icons.Filled.MoreVert,
-                    contentDescription = "Localized description"
+                    contentDescription = null
                 )
             }, onClick = {
                 onClickMoreMenu()

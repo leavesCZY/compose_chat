@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import github.leavesczy.compose_chat.cache.AppThemeCache
 import github.leavesczy.compose_chat.model.AppTheme
 
-private val LightColorScheme = lightColorScheme(
+val LightColorScheme = lightColorScheme(
     primary = PrimaryColorLight,
     onPrimary = OnPrimaryColorLight,
     primaryContainer = PrimaryContainerColorLight,
@@ -20,7 +20,7 @@ private val LightColorScheme = lightColorScheme(
     onSecondaryContainer = onSecondaryContainerLight
 )
 
-private val DarkColorScheme = darkColorScheme(
+val DarkColorScheme = darkColorScheme(
     primary = PrimaryColorDark,
     onPrimary = OnPrimaryColorDark,
     primaryContainer = PrimaryContainerColorDark,
@@ -40,15 +40,15 @@ fun ChatTheme(
     when (appTheme) {
         AppTheme.Light -> {
             colors = LightColorScheme
-            typography = LightTypography
+            typography = AppTypography
         }
         AppTheme.Dark -> {
             colors = DarkColorScheme
-            typography = LightTypography
+            typography = AppTypography
         }
         AppTheme.Gray -> {
             colors = LightColorScheme
-            typography = LightTypography
+            typography = AppTypography
         }
     }
     MaterialTheme(

@@ -45,7 +45,7 @@ sealed class Message(val messageDetail: MessageDetail) {
 }
 
 data class TimeMessage(
-    val targetMessage: Message
+    private val targetMessage: Message
 ) : Message(
     messageDetail = MessageDetail(
         msgId = (targetMessage.messageDetail.timestamp + targetMessage.messageDetail.msgId.hashCode()).toString(),
@@ -56,28 +56,29 @@ data class TimeMessage(
     )
 ) {
 
-    override val formatMessage
-        get() = throw IllegalAccessException()
+    override val formatMessage = messageDetail.chatTime
 
 }
 
-data class TextMessage(
-    val detail: MessageDetail,
-    val msg: String,
-) : Message(messageDetail = detail) {
+data class TextMessage(private val detail: MessageDetail, private val text: String) :
+    Message(messageDetail = detail) {
 
-    override val formatMessage = msg
+    override val formatMessage = text
 
 }
 
 data class ImageElement(val width: Int, val height: Int, val url: String)
 
 data class ImageMessage(
-    val detail: MessageDetail,
-    val original: ImageElement,
-    val large: ImageElement?,
-    val thumb: ImageElement?,
+    private val detail: MessageDetail,
+    private val original: ImageElement,
+    private val large: ImageElement?,
+    private val thumb: ImageElement?,
 ) : Message(messageDetail = detail) {
+
+    val preview = large ?: original
+
+    val previewUrl = preview.url
 
     override val formatMessage = "[图片]"
 

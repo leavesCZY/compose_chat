@@ -41,10 +41,10 @@ fun CommonButton(
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .padding(horizontal = 20.dp, vertical = 8.dp)
             .then(other = modifier),
         content = {
-            Text(text = text, fontSize = 18.sp, color = Color.White)
+            Text(text = text, fontSize = 16.sp, color = Color.White)
         },
         onClick = {
             onClick()
@@ -88,6 +88,6 @@ fun EmptyView() {
             .wrapContentSize(align = Alignment.Center),
         style = MaterialTheme.typography.bodyMedium,
         fontWeight = FontWeight.Bold,
-        fontSize = 49.sp,
+        fontSize = 52.sp
     )
 }

@@ -59,7 +59,7 @@ fun FriendProfileScreen(
         sheetState = sheetState,
         sheetShape = BottomSheetShape,
         sheetContent = {
-            SetFriendRemarkScreen(friendProfile = personProfile,
+            SetFriendRemarkSheetContent(friendProfile = personProfile,
                 modalBottomSheetState = sheetState,
                 onSetRemark = { friendId, remark ->
                     friendProfileViewModel.setFriendRemark(
@@ -74,7 +74,7 @@ fun FriendProfileScreen(
             ProfileScreen(
                 title = personProfile.nickname,
                 subtitle = personProfile.signature,
-                introduction = "ID: ${personProfile.userId}" + if (personProfile.remark.isNotBlank()) {
+                introduction = "ID: ${personProfile.id}" + if (personProfile.remark.isNotBlank()) {
                     "\nRemark: ${personProfile.remark}"
                 } else {
                     ""
@@ -85,7 +85,7 @@ fun FriendProfileScreen(
                     if (friendProfileScreenState.showAlterBtb) {
                         CommonButton(text = "去聊天吧") {
                             navHostController.popBackStack()
-                            navHostController.navToC2CChatScreen(friendId = personProfile.userId)
+                            navHostController.navToC2CChatScreen(friendId = personProfile.id)
                         }
                         CommonButton(text = "设置备注") {
                             expandSheetContent()
@@ -132,7 +132,7 @@ private fun DeleteFriendDialog(
                     .padding(all = 16.dp)
                     .clickable {
                         onDismissRequest()
-                        onDeleteFriend(friendProfile.userId)
+                        onDeleteFriend(friendProfile.id)
                     },
                 text = "删除",
             )
@@ -154,7 +154,7 @@ private fun DeleteFriendDialog(
 }
 
 @Composable
-private fun SetFriendRemarkScreen(
+private fun SetFriendRemarkSheetContent(
     friendProfile: PersonProfile,
     modalBottomSheetState: ModalBottomSheetState,
     onSetRemark: (userId: String, remark: String) -> Unit
@@ -204,10 +204,10 @@ private fun SetFriendRemarkScreen(
                 onValueChange = {
                     remark = it
                 },
-                label = "Set Remark",
+                label = "输入备注",
             )
             CommonButton(text = "设置备注") {
-                onSetRemark(friendProfile.userId, remark)
+                onSetRemark(friendProfile.id, remark)
             }
         }
     }

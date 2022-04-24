@@ -26,7 +26,7 @@ internal interface Converters {
 
     fun convertPersonProfile(userFullInfo: V2TIMUserFullInfo): PersonProfile {
         return PersonProfile(
-            userId = userFullInfo.userID ?: "",
+            id = userFullInfo.userID ?: "",
             nickname = userFullInfo.nickName ?: "",
             remark = userFullInfo.nickName ?: "",
             faceUrl = userFullInfo.faceUrl ?: "",
@@ -36,7 +36,7 @@ internal interface Converters {
 
     fun convertFriendProfile(friendInfo: V2TIMFriendInfo): PersonProfile {
         return PersonProfile(
-            userId = friendInfo.userID ?: "",
+            id = friendInfo.userID ?: "",
             nickname = friendInfo.userProfile.nickName ?: "",
             remark = friendInfo.friendRemark ?: "",
             faceUrl = friendInfo.userProfile.faceUrl ?: "",
@@ -47,7 +47,7 @@ internal interface Converters {
 
     fun convertFriendProfile(friendInfo: V2TIMFriendInfoResult): PersonProfile {
         return PersonProfile(
-            userId = friendInfo.friendInfo.userID ?: "",
+            id = friendInfo.friendInfo.userID ?: "",
             nickname = friendInfo.friendInfo.userProfile.nickName ?: "",
             remark = friendInfo.friendInfo.friendRemark ?: "",
             faceUrl = friendInfo.friendInfo.userProfile.faceUrl ?: "",
@@ -63,7 +63,7 @@ internal interface Converters {
         val fullInfo = memberFullInfo as? V2TIMGroupMemberFullInfo
         val role = fullInfo?.role ?: -11111
         val detail = PersonProfile(
-            userId = memberFullInfo.userID ?: "",
+            id = memberFullInfo.userID ?: "",
             faceUrl = memberFullInfo.faceUrl ?: "",
             nickname = memberFullInfo.nickName ?: "",
             remark = memberFullInfo.friendRemark ?: "",
@@ -100,7 +100,7 @@ internal interface Converters {
 
     fun convertMessage(timMessage: V2TIMMessage): Message {
         val senderProfile = PersonProfile(
-            userId = timMessage.sender,
+            id = timMessage.sender,
             faceUrl = timMessage.faceUrl ?: "",
             nickname = timMessage.nickName ?: "",
             remark = timMessage.friendRemark ?: "",
@@ -117,7 +117,7 @@ internal interface Converters {
             V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> {
                 TextMessage(
                     detail = messageDetail,
-                    msg = timMessage.textElem?.text ?: ""
+                    text = timMessage.textElem?.text ?: ""
                 )
             }
             V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE -> {
@@ -125,7 +125,7 @@ internal interface Converters {
                 if (imageList.isNullOrEmpty()) {
                     TextMessage(
                         detail = messageDetail,
-                        msg = "[不支持的消息类型] - $elemType"
+                        text = "[不支持的消息类型] - $elemType"
                     )
                 } else {
                     val origin = imageList[0].toImageElement()
@@ -142,7 +142,7 @@ internal interface Converters {
             else -> {
                 TextMessage(
                     detail = messageDetail,
-                    msg = "[不支持的消息类型] - $elemType"
+                    text = "[不支持的消息类型] - $elemType"
                 )
             }
         }

@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.bottomBar
+package github.leavesczy.compose_chat.ui.chat
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 /**
  * @Author: leavesCZY
@@ -16,15 +17,14 @@ import androidx.compose.ui.unit.dp
  * @Github：https://github.com/leavesCZY
  */
 
-private const val EMOJI_COLUMNS = 8
+private const val EMOJI_COLUMNS = 7
 
 @Composable
 fun EmojiTable(
-    modifier: Modifier = Modifier,
     onTextAdded: (String) -> Unit
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
     ) {
         repeat(4) { x ->
@@ -40,9 +40,9 @@ fun EmojiTable(
                                 onTextAdded(emoji)
                             })
                             .weight(weight = 1f)
-                            .padding(vertical = 14.dp),
+                            .padding(vertical = 10.dp),
                         text = emoji,
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 19.sp),
                         textAlign = TextAlign.Center,
                     )
                 }

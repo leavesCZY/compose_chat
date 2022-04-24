@@ -32,14 +32,19 @@ fun FriendshipScreen(
 ) {
     Scaffold(
         modifier = Modifier
-            .padding(bottom = paddingValues.calculateBottomPadding())
+            .padding(paddingValues = paddingValues)
             .fillMaxSize()
     ) {
         if (friendshipScreenState.joinedGroupList.isEmpty() && friendshipScreenState.friendList.isEmpty()) {
             EmptyView()
         } else {
-            LazyColumn(state = friendshipScreenState.listState) {
-                friendshipScreenState.joinedGroupList.forEach {
+            LazyColumn(
+                state = friendshipScreenState.listState,
+                contentPadding = PaddingValues(bottom = 60.dp),
+            ) {
+                val joinedGroupList = friendshipScreenState.joinedGroupList
+                val friendList = friendshipScreenState.friendList
+                joinedGroupList.forEach {
                     item(key = it.id) {
                         GroupItem(
                             groupProfile = it,
@@ -47,16 +52,13 @@ fun FriendshipScreen(
                         )
                     }
                 }
-                friendshipScreenState.friendList.forEach {
-                    item(key = it.userId) {
-                        FriendshipItem(
+                friendList.forEach {
+                    item(key = it.id) {
+                        FriendItem(
                             personProfile = it,
                             onClickFriend = friendshipScreenState.onClickFriend
                         )
                     }
-                }
-                item {
-                    Spacer(modifier = Modifier.height(40.dp))
                 }
             }
         }
@@ -112,7 +114,7 @@ private fun GroupItem(groupProfile: GroupProfile, onClickGroup: (GroupProfile) -
 }
 
 @Composable
-private fun FriendshipItem(personProfile: PersonProfile, onClickFriend: (PersonProfile) -> Unit) {
+private fun FriendItem(personProfile: PersonProfile, onClickFriend: (PersonProfile) -> Unit) {
     val padding = 12.dp
     ConstraintLayout(
         modifier = Modifier

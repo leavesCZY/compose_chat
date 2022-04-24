@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
 import coil.imageLoader
@@ -57,7 +56,9 @@ object ImageUtils {
             return imageTempFile
         } catch (e: Throwable) {
             e.printStackTrace()
-            Log.e("TAg", e.message ?: "")
+            log {
+                e.message
+            }
         }
         return null
     }

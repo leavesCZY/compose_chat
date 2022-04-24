@@ -9,7 +9,7 @@ import github.leavesczy.compose_chat.base.utils.TimeUtil
  * @Github：https://github.com/leavesCZY
  */
 data class PersonProfile(
-    val userId: String,
+    val id: String,
     val faceUrl: String,
     val nickname: String,
     val remark: String,
@@ -20,7 +20,7 @@ data class PersonProfile(
     companion object {
 
         val Empty = PersonProfile(
-            userId = "",
+            id = "",
             faceUrl = "",
             nickname = "",
             remark = "",
@@ -34,7 +34,7 @@ data class PersonProfile(
         get() {
             return remark.takeIf { it.isNotBlank() }
                 ?: nickname.takeIf { it.isNotBlank() }
-                ?: userId
+                ?: id
         }
 
 }

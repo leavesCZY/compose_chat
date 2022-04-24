@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.bottomBar
+package github.leavesczy.compose_chat.ui.chat
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -10,6 +10,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.mapSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalDensity
@@ -28,20 +30,34 @@ import github.leavesczy.compose_chat.common.SelectPictureContract
  */
 private const val TEXT_MSG_MAX_LENGTH = 200
 
+private val TextFieldValueSaver = run {
+    val textKey = "text"
+    mapSaver(
+        save = { mapOf(textKey to it.text) },
+        restore = { TextFieldValue(text = it[textKey] as String) }
+    )
+}
+
 @Composable
 fun ChatScreenBottomBar(
-    messageInputted: TextFieldValue,
-    onInputChange: (TextFieldValue) -> Unit,
     sendText: (TextFieldValue) -> Unit,
     sendImage: (Uri) -> Unit
 ) {
     val textInputService = LocalTextInputService.current
 
-    var currentInputSelector by remember {
+    var messageInputted by rememberSaveable(stateSaver = TextFieldValueSaver) {
+        mutableStateOf(TextFieldValue(""))
+    }
+
+    var currentInputSelector by rememberSaveable {
         mutableStateOf(InputSelector.NONE)
     }
-    var sendMessageEnabled by remember {
+    var sendMessageEnabled by rememberSaveable {
         mutableStateOf(false)
+    }
+
+    fun onInputChange(newMessage: TextFieldValue) {
+        messageInputted = newMessage
     }
 
     fun onMessageSent() {

@@ -9,11 +9,14 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
@@ -37,7 +40,7 @@ import github.leavesczy.compose_chat.ui.home.HomeScreen
 import github.leavesczy.compose_chat.ui.home.UpdateProfileScreen
 import github.leavesczy.compose_chat.ui.login.LoginScreen
 import github.leavesczy.compose_chat.ui.theme.ChatTheme
-import github.leavesczy.compose_chat.ui.widgets.SetSystemBarsColor
+import github.leavesczy.compose_chat.ui.widgets.SetSystemBarColor
 import github.leavesczy.compose_chat.utils.showToast
 
 /**
@@ -55,7 +58,12 @@ class HomeActivity : ComponentActivity() {
             val appViewModel = viewModel<AppViewModel>()
             val appTheme by appViewModel.appTheme.collectAsState()
             val navController = rememberAnimatedNavController()
+            val localFocusManager = LocalFocusManager.current
+            val localLifecycleOwner = LocalLifecycleOwner.current
             LaunchedEffect(key1 = Unit) {
+                if (savedInstanceState != null) {
+                    navController.navToLogin()
+                }
                 appViewModel.serverConnectState.collect {
                     when (it) {
                         ServerState.KickedOffline -> {
@@ -72,13 +80,20 @@ class HomeActivity : ComponentActivity() {
                     }
                 }
             }
+            DisposableEffect(key1 = Unit) {
+                val observer = object : DefaultLifecycleObserver {
+                    override fun onStop(owner: LifecycleOwner) {
+                        super.onStop(owner)
+                        localFocusManager.clearFocus(force = true)
+                    }
+                }
+                localLifecycleOwner.lifecycle.addObserver(observer)
+                onDispose {
+                    localLifecycleOwner.lifecycle.removeObserver(observer)
+                }
+            }
             ChatTheme(appTheme = appTheme) {
-                SetSystemBarsColor(
-                    statusBarColor = Color.Transparent,
-                    statusBarDarkIcons = appTheme == AppTheme.Light || appTheme == AppTheme.Gray,
-                    navigationBarColor = MaterialTheme.colorScheme.background,
-                    navigationDarkIcons = appTheme != AppTheme.Dark
-                )
+                SetSystemBarColor(appTheme = appTheme)
                 NavigationView(
                     navController = navController,
                     appTheme = appTheme,
@@ -96,7 +111,7 @@ class HomeActivity : ComponentActivity() {
         appTheme: AppTheme,
         switchToNextTheme: () -> Unit
     ) {
-        var homeTabSelected by remember {
+        var homeTabSelected by rememberSaveable {
             mutableStateOf(HomeScreenTab.Conversation)
         }
         ProvideNavHostController(navHostController = navController) {
@@ -121,9 +136,7 @@ class HomeActivity : ComponentActivity() {
                     )
                 },
             ) {
-                animatedComposable(
-                    screen = Screen.LoginScreen,
-                ) {
+                animatedComposable(screen = Screen.LoginScreen) {
                     LoginScreen()
                 }
                 animatedComposable(screen = Screen.HomeScreen) {
@@ -145,23 +158,23 @@ class HomeActivity : ComponentActivity() {
                     val listState = rememberLazyListState()
                     ChatScreen(
                         listState = listState,
-                        chat = Screen.ChatScreen.getArgument(backStackEntry),
+                        chat = Screen.ChatScreen.getArgument(backStackEntry)
                     )
                 }
                 animatedComposable(screen = Screen.GroupProfileScreen) { backStackEntry ->
                     GroupProfileScreen(
-                        groupId = Screen.GroupProfileScreen.getArgument(backStackEntry),
+                        groupId = Screen.GroupProfileScreen.getArgument(backStackEntry)
                     )
+                }
+                animatedComposable(screen = Screen.UpdateProfileScreen) {
+                    UpdateProfileScreen()
                 }
                 animatedComposable(screen = Screen.PreviewImageScreen) { backStackEntry ->
                     PreviewImageScreen(
                         imagePath = Screen.PreviewImageScreen.getArgument(
                             backStackEntry
-                        ),
+                        )
                     )
-                }
-                animatedComposable(screen = Screen.UpdateProfileScreen) {
-                    UpdateProfileScreen()
                 }
             }
         }

@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import github.leavesczy.compose_chat.base.model.ActionResult
@@ -52,7 +51,7 @@ fun GroupProfileScreen(groupId: String) {
                 object : (GroupMemberProfile) -> Unit {
                     override fun invoke(member: GroupMemberProfile) {
                         navHostController.navigate(
-                            route = Screen.FriendProfileScreen.generateRoute(friendId = member.detail.userId)
+                            route = Screen.FriendProfileScreen.generateRoute(friendId = member.detail.id)
                         )
                     }
                 }
@@ -60,18 +59,16 @@ fun GroupProfileScreen(groupId: String) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 80.dp)
             ) {
                 item(key = true) {
                     ProfileScreen(groupProfile = groupProfileScreenState.groupProfile)
                 }
                 val memberList = groupProfileScreenState.memberList
                 memberList.forEach {
-                    item(key = it.detail.userId) {
+                    item(key = it.detail.id) {
                         GroupMemberItem(groupMemberProfile = it, onClickMember = onClickMember)
                     }
-                }
-                item {
-                    Spacer(modifier = Modifier.height(height = 80.dp))
                 }
             }
             GroupProfileScreenTopBar(
@@ -103,7 +100,6 @@ private fun GroupMemberItem(
     val padding = 10.dp
     ConstraintLayout(
         modifier = Modifier
-            .zIndex(zIndex = 10f)
             .fillMaxWidth()
             .clickable {
                 onClickMember(groupMemberProfile)
@@ -122,7 +118,7 @@ private fun GroupMemberItem(
         )
         Text(
             text = groupMemberProfile.detail.showName + "（${
-                groupMemberProfile.detail.userId + if (groupMemberProfile.isOwner) {
+                groupMemberProfile.detail.id + if (groupMemberProfile.isOwner) {
                     " - 群主"
                 } else {
                     ""

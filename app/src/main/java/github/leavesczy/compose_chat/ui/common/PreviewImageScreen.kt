@@ -1,6 +1,7 @@
 package github.leavesczy.compose_chat.ui.common
 
 import android.Manifest
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -13,8 +14,7 @@ import androidx.compose.material.icons.filled.SaveAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,8 +23,12 @@ import androidx.compose.ui.platform.LocalContext
 import coil.request.ImageRequest
 import coil.size.Scale
 import coil.size.Size
+import github.leavesczy.compose_chat.cache.AppThemeCache
+import github.leavesczy.compose_chat.extend.LocalNavHostController
+import github.leavesczy.compose_chat.model.AppTheme
 import github.leavesczy.compose_chat.ui.theme.BackgroundColorDark
 import github.leavesczy.compose_chat.ui.widgets.CoilImage
+import github.leavesczy.compose_chat.ui.widgets.SetSystemBarColor
 import github.leavesczy.compose_chat.utils.ImageUtils
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
@@ -36,9 +40,23 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun PreviewImageScreen(imagePath: String) {
+    val navHostController = LocalNavHostController.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-
+    var resumed by remember {
+        mutableStateOf(true)
+    }
+    SetSystemBarColor(
+        appTheme = if (resumed) {
+            AppTheme.Dark
+        } else {
+            AppThemeCache.currentTheme
+        }
+    )
+    BackHandler(enabled = true) {
+        resumed = false
+        navHostController.popBackStack()
+    }
     fun insertImageToAlbum() {
         coroutineScope.launch {
             val result = ImageUtils.insertImageToAlbum(context = context, data = imagePath)

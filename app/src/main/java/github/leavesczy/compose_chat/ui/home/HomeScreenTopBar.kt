@@ -11,9 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.model.HomeScreenTab
 import github.leavesczy.compose_chat.model.HomeScreenTopBarState
 
@@ -36,19 +34,13 @@ fun HomeScreenTopBar(
     CenterAlignedTopAppBar(
         modifier = Modifier.statusBarsPadding(),
         title = {
-            Icon(
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .size(size = 24.dp),
-                painter = painterResource(id = R.drawable.ic_crane_logo),
-                contentDescription = null
-            )
+
         },
         navigationIcon = {
             IconButton(content = {
                 Icon(
                     imageVector = Icons.Filled.Menu,
-                    contentDescription = "Localized description"
+                    contentDescription = null
                 )
             }, onClick = {
                 homeScreenTopBarState.openDrawer()
@@ -58,7 +50,7 @@ fun HomeScreenTopBar(
             IconButton(content = {
                 Icon(
                     imageVector = Icons.Filled.MoreVert,
-                    contentDescription = "Localized description"
+                    contentDescription = null
                 )
             }, onClick = {
                 menuExpanded = true

@@ -7,7 +7,6 @@ import github.leavesczy.compose_chat.base.model.*
 import github.leavesczy.compose_chat.cache.AccountCache
 import github.leavesczy.compose_chat.utils.ContextHolder
 import github.leavesczy.compose_chat.utils.ImageUtils
-import github.leavesczy.compose_chat.utils.randomFaceUrl
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -94,18 +93,6 @@ class HomeViewModel : ViewModel() {
             }
             return@withContext ""
         }
-    }
-
-    suspend fun autoSetAvatarIfNeed() {
-        val profile = personProfile.value
-        if (profile == PersonProfile.Empty || profile.faceUrl.isNotBlank()) {
-            return
-        }
-        ComposeChat.accountProvider.updatePersonProfile(
-            faceUrl = randomFaceUrl(),
-            nickname = profile.nickname,
-            signature = profile.signature
-        )
     }
 
     fun addFriend(userId: String) {

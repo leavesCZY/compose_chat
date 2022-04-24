@@ -35,7 +35,7 @@ import github.leavesczy.compose_chat.ui.widgets.BouncyImage
 fun PreviewProfileScreen() {
     ProfileScreen(
         personProfile = PersonProfile(
-            userId = "公众号：字节数组",
+            id = "公众号：字节数组",
             faceUrl = "",
             nickname = "业志陈",
             remark = "",
@@ -56,7 +56,7 @@ fun ProfileScreen(
     ProfileScreen(
         title = personProfile.showName,
         subtitle = personProfile.signature,
-        introduction = "ID: ${personProfile.userId}",
+        introduction = "ID: ${personProfile.id}",
         avatarUrl = personProfile.faceUrl,
         content = content
     )

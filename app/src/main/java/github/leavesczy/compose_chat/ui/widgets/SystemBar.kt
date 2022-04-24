@@ -3,6 +3,9 @@ package github.leavesczy.compose_chat.ui.widgets
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import github.leavesczy.compose_chat.model.AppTheme
+import github.leavesczy.compose_chat.ui.theme.DarkColorScheme
+import github.leavesczy.compose_chat.ui.theme.LightColorScheme
 
 /**
  * @Author: leavesCZY
@@ -11,7 +14,23 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun SetSystemBarsColor(
+fun SetSystemBarColor(
+    appTheme: AppTheme
+) {
+    SetSystemBarColor(
+        statusBarColor = Color.Transparent,
+        statusBarDarkIcons = appTheme == AppTheme.Light || appTheme == AppTheme.Gray,
+        navigationBarColor = if (appTheme == AppTheme.Dark) {
+            DarkColorScheme.background
+        } else {
+            LightColorScheme.background
+        },
+        navigationDarkIcons = appTheme != AppTheme.Dark
+    )
+}
+
+@Composable
+private fun SetSystemBarColor(
     statusBarColor: Color,
     statusBarDarkIcons: Boolean,
     navigationBarColor: Color,

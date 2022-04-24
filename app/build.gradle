@@ -7,20 +7,6 @@ static String generateBuildTime() {
     return new Date().format("yyyy_MM_dd_HH_mm_ss", TimeZone.getTimeZone('Asia/Shanghai'))
 }
 
-static String generateBuildConfigTime() {
-    return new Date().format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone('Asia/Shanghai'))
-}
-
-void generateBuildConfigField(String type, String fieldName, Object value) {
-    if (type == "String") {
-        android.defaultConfig.buildConfigField(type, fieldName, "\"$value\"")
-    } else if (type == "boolean") {
-        android.defaultConfig.buildConfigField(type, fieldName, Boolean.parseBoolean(value))
-    } else {
-        android.defaultConfig.buildConfigField(type, fieldName, value)
-    }
-}
-
 android {
     compileSdk compileSdkVersionExt.toInteger()
     buildToolsVersion buildToolsVersionExt.toString()
@@ -40,8 +26,7 @@ android {
                 outputFileName = "chat_${variant.name}_versionCode_${versionCode}_versionName_${versionName}_${generateBuildTime()}.apk"
             }
         }
-        generateBuildConfigField("String", "BUILD_TIME", generateBuildConfigTime())
-        generateBuildConfigField("String", "VERSION_NAME", versionName)
+        buildConfigField("String", "VERSION_NAME", "\"" + versionName + "\"")
     }
     signingConfigs {
         releaseConfig {

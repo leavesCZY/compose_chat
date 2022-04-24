@@ -4,19 +4,16 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material3.*
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import github.leavesczy.compose_chat.common.SelectPictureContract
-import github.leavesczy.compose_chat.extend.LocalNavHostController
 import github.leavesczy.compose_chat.logic.HomeViewModel
-import github.leavesczy.compose_chat.ui.widgets.CircleImage
+import github.leavesczy.compose_chat.ui.profile.ProfileScreen
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.utils.randomFaceUrl
@@ -31,20 +28,19 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun UpdateProfileScreen() {
-    val navHostController = LocalNavHostController.current
     val homeViewModel = viewModel<HomeViewModel>()
     val userProfile by homeViewModel.personProfile.collectAsState()
-    var faceUrl by remember(key1 = userProfile) {
+    var faceUrl by rememberSaveable {
         mutableStateOf(
             userProfile.faceUrl
         )
     }
-    var nickname by remember(key1 = userProfile) {
+    var nickname by rememberSaveable {
         mutableStateOf(
             userProfile.nickname
         )
     }
-    var signature by remember(key1 = userProfile) {
+    var signature by rememberSaveable {
         mutableStateOf(
             userProfile.signature
         )
@@ -65,108 +61,74 @@ fun UpdateProfileScreen() {
             }
         }
     }
-    Scaffold(modifier = Modifier,
-        topBar = {
-            CenterAlignedTopAppBar(
-                modifier = Modifier.statusBarsPadding(),
-                navigationIcon = {
-                    IconButton(content = {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBackIosNew,
-                            contentDescription = "Localized description"
-                        )
-                    }, onClick = {
-                        navHostController.popBackStack()
-                    })
-                },
-                title = {
-                    Text(
-                        text = "个人资料",
-                        modifier = Modifier,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            )
-        }) {
-        Column(
+    Scaffold {
+        Box(
             modifier = Modifier
+                .fillMaxSize()
                 .verticalScroll(state = rememberScrollState())
-                .padding(
-                    top = 0.dp,
-                    bottom = 20.dp
-                ),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircleImage(
-                modifier = Modifier.size(size = 140.dp),
-                data = faceUrl
-            )
-            CommonOutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(height = 120.dp)
-                    .padding(
-                        horizontal = 20.dp,
-                        vertical = 5.dp
-                    ),
-                value = faceUrl,
-                onValueChange = { faceUrl = it },
-                label = "faceUrl",
-            )
-            CommonOutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = 20.dp,
-                        vertical = 5.dp
-                    ),
-                value = nickname,
-                onValueChange = {
-                    if (it.length > 16) {
-                        return@CommonOutlinedTextField
+            ProfileScreen(
+                title = nickname,
+                subtitle = signature,
+                introduction = "",
+                avatarUrl = faceUrl
+            ) {
+                Column(
+                    modifier = Modifier.padding(bottom = 30.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CommonOutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                horizontal = 20.dp,
+                                vertical = 5.dp
+                            ),
+                        value = nickname,
+                        onValueChange = {
+                            if (it.length > 16) {
+                                return@CommonOutlinedTextField
+                            }
+                            nickname = it
+                        },
+                        label = "nickname"
+                    )
+                    CommonOutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                horizontal = 20.dp,
+                                vertical = 5.dp
+                            ),
+                        value = signature,
+                        onValueChange = {
+                            if (it.length > 50) {
+                                return@CommonOutlinedTextField
+                            }
+                            signature = it
+                        },
+                        label = "signature"
+                    )
+                    CommonButton(
+                        text = "随机头像"
+                    ) {
+                        faceUrl = randomFaceUrl()
                     }
-                    nickname = it
-                },
-                label = "nickname"
-            )
-            CommonOutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = 20.dp,
-                        vertical = 5.dp
-                    ),
-                value = signature,
-                onValueChange = {
-                    if (it.length > 50) {
-                        return@CommonOutlinedTextField
+                    CommonButton(
+                        text = "选择头像"
+                    ) {
+                        selectPictureLauncher.launch(Unit)
                     }
-                    signature = it
-                },
-                label = "signature"
-            )
-            CommonButton(
-                modifier = Modifier.fillMaxWidth(),
-                text = "选择头像"
-            ) {
-                selectPictureLauncher.launch(Unit)
-            }
-            CommonButton(
-                modifier = Modifier.fillMaxWidth(),
-                text = "随机头像"
-            ) {
-                faceUrl = randomFaceUrl()
-            }
-            CommonButton(
-                modifier = Modifier.fillMaxWidth(),
-                text = "保存设置"
-            ) {
-                homeViewModel.updateProfile(
-                    faceUrl,
-                    nickname,
-                    signature
-                )
+                    CommonButton(
+                        text = "保存设置"
+                    ) {
+                        homeViewModel.updateProfile(
+                            faceUrl,
+                            nickname,
+                            signature
+                        )
+                    }
+                }
             }
         }
     }

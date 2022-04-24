@@ -97,7 +97,7 @@ fun HomeScreen(
             },
             onClickFriend = {
                 navHostController.navigate(
-                    route = Screen.FriendProfileScreen.generateRoute(friendId = it.userId)
+                    route = Screen.FriendProfileScreen.generateRoute(friendId = it.id)
                 )
             },
         )
@@ -175,14 +175,14 @@ fun HomeScreen(
         )
     }
 
-    DismissibleNavigationDrawer(
+    ModalNavigationDrawer(
         drawerState = drawerState,
+        drawerShape = RoundedCornerShape(0.dp),
         drawerContent = {
             HomeScreenDrawer(
                 homeScreenDrawerState = homeDrawerViewState
             )
         },
-        drawerShape = RoundedCornerShape(0.dp),
         content = {
             ModalBottomSheetLayout(
                 sheetState = sheetState,
@@ -202,7 +202,7 @@ fun HomeScreen(
                     },
                     floatingActionButton = {
                         if (homeTabSelected == HomeScreenTab.Friendship) {
-                            SmallFloatingActionButton(
+                            FloatingActionButton(
                                 containerColor = MaterialTheme.colorScheme.primary,
                                 content = {
                                     Icon(

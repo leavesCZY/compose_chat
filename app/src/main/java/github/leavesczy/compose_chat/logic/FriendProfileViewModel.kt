@@ -33,7 +33,7 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
             val showAddBtn = if (showAlterBtb) {
                 false
             } else {
-                val selfId = ComposeChat.accountProvider.personProfile.value.userId
+                val selfId = ComposeChat.accountProvider.personProfile.value.id
                 selfId.isNotBlank() && selfId != friendId
             }
             friendProfileScreenState.emit(

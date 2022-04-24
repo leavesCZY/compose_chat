@@ -32,10 +32,10 @@ fun MessageScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 40.dp),
+            .padding(paddingValues = contentPadding),
         state = listState,
         reverseLayout = true,
-        contentPadding = contentPadding,
+        contentPadding = PaddingValues(bottom = 80.dp),
         verticalArrangement = Arrangement.Top,
     ) {
         for (message in chatScreenState.messageList) {
@@ -50,7 +50,7 @@ fun MessageScreen(
             }
         }
         if (chatScreenState.showLoadMore) {
-            item {
+            item(key = "loadMore") {
                 LoadMoreMessage()
             }
         }

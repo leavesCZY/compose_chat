@@ -124,8 +124,7 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
                     .wrapContentWidth(align = Alignment.CenterHorizontally),
                 text = "公众号: 字节数组" + "\n" +
                         "VersionCode: " + BuildConfig.VERSION_CODE + "\n" +
-                        "VersionName: " + BuildConfig.VERSION_NAME + "\n" +
-                        "BuildTime: " + BuildConfig.BUILD_TIME,
+                        "VersionName: " + BuildConfig.VERSION_NAME,
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily.Serif,
                 fontSize = 15.sp,
@@ -156,7 +155,7 @@ private fun SelectableItem(text: String, icon: ImageVector, onClick: () -> Unit)
             modifier = Modifier.padding(start = 10.dp),
             text = text,
             fontFamily = FontFamily.Serif,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }

@@ -6,13 +6,19 @@ package github.leavesczy.compose_chat.model
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-enum class AppTheme(val type: Int) {
+enum class AppTheme {
 
-    Light(0), Dark(1), Gray(2);
+    Light, Dark, Gray;
+
+    companion object {
+
+        val DefaultAppTheme = Light
+
+    }
 
     fun nextTheme(): AppTheme {
         val values = values()
-        return values.getOrElse(type + 1) {
+        return values.getOrElse(ordinal + 1) {
             values[0]
         }
     }

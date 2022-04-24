@@ -100,7 +100,7 @@ class MessageProvider : IMessageProvider, Converters {
     override suspend fun sendText(chat: Chat, text: String): Channel<Message> {
         val localTempMessage = TextMessage(
             detail = generatePreSendMessageDetail(),
-            msg = text
+            text = text
         )
         val createdMessage = V2TIMManager.getMessageManager().createTextMessage(text)
         return sendMessage(
@@ -187,10 +187,10 @@ class MessageProvider : IMessageProvider, Converters {
         val failedState = MessageState.SendFailed(failReason = failReason)
         return when (this) {
             is TextMessage -> {
-                this.copy(detail = this.detail.copy(state = failedState))
+                this.copy(detail = this.messageDetail.copy(state = failedState))
             }
             is ImageMessage -> {
-                this.copy(detail = this.detail.copy(state = failedState))
+                this.copy(detail = this.messageDetail.copy(state = failedState))
             }
             is TimeMessage -> {
                 throw IllegalArgumentException()
@@ -211,7 +211,7 @@ class MessageProvider : IMessageProvider, Converters {
                 object : V2TIMSendCallback<V2TIMMessage> {
                     override fun onSuccess(message: V2TIMMessage) {
                         val res = convertMessage(message)
-                        continuation.resume((res as? ImageMessage)?.original?.url ?: "")
+                        continuation.resume((res as? ImageMessage)?.previewUrl ?: "")
                     }
 
                     override fun onError(code: Int, desc: String?) {

@@ -262,7 +262,7 @@ private fun TextMessage(
                 horizontal = 6.dp,
                 vertical = 6.dp
             ),
-        text = message.msg,
+        text = message.formatMessage,
         style = MaterialTheme.typography.bodyMedium.copy(color = Color.White),
         textAlign = TextAlign.Start
     )
@@ -277,16 +277,16 @@ private fun TimeMessage(message: TimeMessage) {
             .wrapContentWidth(align = Alignment.CenterHorizontally)
             .background(color = Color.LightGray.copy(alpha = 0.4f), shape = timeMessageShape)
             .padding(all = 3.dp),
-        text = message.messageDetail.chatTime,
+        text = message.formatMessage,
         style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp)
     )
 }
 
 @Composable
 private fun ImageMessage(message: ImageMessage) {
-    val imageElement = message.large ?: message.original
-    val imageWidth = imageElement.width
-    val imageHeight = imageElement.height
+    val preview = message.preview
+    val imageWidth = preview.width
+    val imageHeight = preview.height
     val maxImageRatio = 1.9f
     val widgetWidth = 190.dp
     val widgetHeight = if (imageWidth <= 0 || imageHeight <= 0) {
@@ -296,7 +296,7 @@ private fun ImageMessage(message: ImageMessage) {
     }
     CoilImage(
         modifier = Modifier.size(width = widgetWidth, height = widgetHeight),
-        data = imageElement.url
+        data = preview.url
     )
 }
 

@@ -6,11 +6,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-val LightTypography = Typography(
+val AppTypography = Typography(
     titleLarge = TextStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Normal,
-        fontSize = 20.sp,
+        fontSize = 19.sp,
         lineHeight = 26.0.sp,
         letterSpacing = 0.4.sp
     ),
@@ -24,14 +24,14 @@ val LightTypography = Typography(
     titleSmall = TextStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
+        fontSize = 17.sp,
         lineHeight = 22.0.sp,
         letterSpacing = 0.4.sp
     ),
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Normal,
-        fontSize = 18.sp,
+        fontSize = 17.sp,
         lineHeight = 22.0.sp,
         letterSpacing = 0.4.sp
     ),

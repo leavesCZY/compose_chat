@@ -2,7 +2,7 @@
 
 一个用 Jetpack Compose 实现的 IM APP
 
-![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/53e38f63e36f4fb99b34eefbb304a36b~tplv-k3u1fbpfcp-zoom-1.image)
+![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/83d980bca0e040129674055cb1148876~tplv-k3u1fbpfcp-watermark.image)
 
 由于腾讯云 IM SDK 免费版最多只能注册一百个账号，因此如果发现注册不了的话，可以使用以下几个我预先注册好的账号，但多设备同时登陆的话会互相挤掉线 ~~
 
@@ -30,7 +30,8 @@
 
 ### v1.4.7
 
-- 发送图片前检测是否需要进行压缩
+- 升级 targetSdkVersion 到 31
+- 发送图片消息前检测是否需要进行压缩
 - 优化图片消息的显示比例
 - 统一消息的发送逻辑
 - 修复 bug

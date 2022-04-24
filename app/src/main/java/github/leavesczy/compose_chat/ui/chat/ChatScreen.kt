@@ -14,8 +14,6 @@ import github.leavesczy.compose_chat.extend.navToPreviewImageScreen
 import github.leavesczy.compose_chat.extend.viewModelInstance
 import github.leavesczy.compose_chat.logic.ChatViewModel
 import github.leavesczy.compose_chat.model.Screen
-import github.leavesczy.compose_chat.ui.chat.bottomBar.ChatScreenBottomBar
-import github.leavesczy.compose_chat.ui.chat.topBar.ChatScreenTopBar
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.flow.filter
 
@@ -36,13 +34,12 @@ fun ChatScreen(
 
     val screenTopBarTitle by chatViewModel.screenTopBarTitle.collectAsState()
     val chatScreenState by chatViewModel.chatScreenState.collectAsState()
-    val messageInputted by chatViewModel.messageInputted.collectAsState()
     val clipboardManager = LocalClipboardManager.current
     val navHostController = LocalNavHostController.current
 
     val onClickAvatar: (Message) -> Unit = remember {
         {
-            val messageSenderId = it.messageDetail.sender.userId
+            val messageSenderId = it.messageDetail.sender.id
             if (messageSenderId.isNotBlank()) {
                 navHostController.navigate(
                     route = Screen.FriendProfileScreen.generateRoute(friendId = messageSenderId)
@@ -54,7 +51,7 @@ fun ChatScreen(
         {
             when (it) {
                 is ImageMessage -> {
-                    val imagePath = it.original.url
+                    val imagePath = it.previewUrl
                     if (imagePath.isBlank()) {
                         showToast("图片路径为空")
                     } else {
@@ -71,7 +68,7 @@ fun ChatScreen(
         {
             when (it) {
                 is TextMessage -> {
-                    val msg = it.msg
+                    val msg = it.formatMessage
                     if (msg.isNotEmpty()) {
                         clipboardManager.setText(AnnotatedString(msg))
                         showToast("已复制")
@@ -108,6 +105,9 @@ fun ChatScreen(
         topBar = {
             ChatScreenTopBar(
                 title = screenTopBarTitle,
+                onClickBackMenu = {
+                    navHostController.popBackStack()
+                },
                 onClickMoreMenu = {
                     when (chat) {
                         is Chat.C2C -> {
@@ -126,10 +126,6 @@ fun ChatScreen(
         },
         bottomBar = {
             ChatScreenBottomBar(
-                messageInputted = messageInputted,
-                onInputChange = {
-                    chatViewModel.onInputChange(message = it)
-                },
                 sendText = {
                     chatViewModel.sendTextMessage(text = it.text)
                 }, sendImage = {

@@ -27,8 +27,11 @@ import github.leavesczy.compose_chat.model.HomeScreenTab
 fun HomeScreenBottomBar(
     homeScreenBottomBarState: HomeScreenBottomBarState
 ) {
+    val tabList = homeScreenBottomBarState.tabList
+    val unreadMessageCount = homeScreenBottomBarState.unreadMessageCount
+    val tabSelected = homeScreenBottomBarState.tabSelected
     NavigationBar(modifier = Modifier.height(height = 60.dp)) {
-        homeScreenBottomBarState.tabList.forEach { tab ->
+        tabList.forEach { tab ->
             NavigationBarItem(
                 icon = {
                     Icon(
@@ -36,7 +39,6 @@ fun HomeScreenBottomBar(
                         contentDescription = null
                     )
                     if (tab == HomeScreenTab.Conversation) {
-                        val unreadMessageCount = homeScreenBottomBarState.unreadMessageCount
                         if (unreadMessageCount > 0) {
                             Text(
                                 text = if (unreadMessageCount > 99) "99+" else unreadMessageCount.toString(),
@@ -55,7 +57,7 @@ fun HomeScreenBottomBar(
                         }
                     }
                 },
-                selected = homeScreenBottomBarState.tabSelected == tab,
+                selected = tabSelected == tab,
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary
                 ),
