@@ -1,8 +1,8 @@
 # compose_chat
 
-一个用 Jetpack Compose 实现的 IM APP
+Jetpack Compose 实现一个 IM APP
 
-![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9c962ec62fbd43df95201a3de8a77e19~tplv-k3u1fbpfcp-zoom-1.image)
+![9c962ec62fbd43df95201a3de8a77e19_tplv-k3u1fbpfcp-zoom-1](https://user-images.githubusercontent.com/30774063/164979443-c533353f-7e47-4024-a1bc-e63005ff8938.gif)
 
 由于腾讯云 IM SDK 免费版最多只能注册一百个账号，因此如果发现注册不了的话，可以使用以下几个我预先注册好的账号，但多设备同时登陆的话会互相挤掉线 ~~
 
