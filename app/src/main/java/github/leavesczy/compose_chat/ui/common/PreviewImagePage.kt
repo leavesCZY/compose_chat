@@ -28,7 +28,7 @@ import github.leavesczy.compose_chat.extend.LocalNavHostController
 import github.leavesczy.compose_chat.model.AppTheme
 import github.leavesczy.compose_chat.ui.theme.BackgroundColorDark
 import github.leavesczy.compose_chat.ui.widgets.CoilImage
-import github.leavesczy.compose_chat.ui.widgets.SetSystemBarColor
+import github.leavesczy.compose_chat.ui.widgets.SystemBarColor
 import github.leavesczy.compose_chat.utils.ImageUtils
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
@@ -39,14 +39,14 @@ import kotlinx.coroutines.launch
  * @Desc:
  */
 @Composable
-fun PreviewImageScreen(imagePath: String) {
+fun PreviewImagePage(imagePath: String) {
     val navHostController = LocalNavHostController.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var resumed by remember {
         mutableStateOf(true)
     }
-    SetSystemBarColor(
+    SystemBarColor(
         appTheme = if (resumed) {
             AppTheme.Dark
         } else {

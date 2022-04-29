@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import github.leavesczy.compose_chat.extend.LocalNavHostController
 
 /**
  * @Author: leavesCZY
@@ -20,12 +19,11 @@ import github.leavesczy.compose_chat.extend.LocalNavHostController
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun ChatScreenTopBar(
+fun ChatPageTopBar(
     title: String,
     onClickBackMenu: (() -> Unit),
     onClickMoreMenu: () -> Unit,
 ) {
-    val navHostController = LocalNavHostController.current
     CenterAlignedTopAppBar(
         modifier = Modifier.statusBarsPadding(),
         title = {

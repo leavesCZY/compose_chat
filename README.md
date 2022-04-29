@@ -1,6 +1,6 @@
 # compose_chat
 
-Jetpack Compose 实现一个 IM APP
+一个用 Jetpack Compose 实现的 IM APP
 
 ![9c962ec62fbd43df95201a3de8a77e19_tplv-k3u1fbpfcp-zoom-1](https://user-images.githubusercontent.com/30774063/164979443-c533353f-7e47-4024-a1bc-e63005ff8938.gif)
 
@@ -36,7 +36,7 @@ Jetpack Compose 实现一个 IM APP
 ### v1.4.7
 
 - 升级 targetSdkVersion 到 31
-- 发送图片消息前检测是否需要进行压缩
+- 发送图片消息前先检测是否需要对图片进行压缩
 - 优化图片消息的显示比例
 - 统一消息的发送逻辑
 - 修复 bug
@@ -53,7 +53,7 @@ Jetpack Compose 实现一个 IM APP
 ### v1.4.4
 
 - 支持保存图片到本地相册
-- 支持修改个人资料时预览头像
+- 支持修改个人资料时进行效果预览
 - 为侧滑栏添加拖拽动画
 - 升级依赖库
 
@@ -69,12 +69,12 @@ Jetpack Compose 实现一个 IM APP
 
 ### v1.4.0
 
-- 支持发送图片
+- 支持发送图片消息
 - 支持应用全局黑白化
 
 ### v1.2.1
 
-- 支持修改群头像
+- 群主能够修改群头像
 
 ### v1.2.0
 
@@ -83,5 +83,5 @@ Jetpack Compose 实现一个 IM APP
 
 ### v1.0.0
 
-- 支持单聊
+- 支持私聊
 - 支持发送文本消息

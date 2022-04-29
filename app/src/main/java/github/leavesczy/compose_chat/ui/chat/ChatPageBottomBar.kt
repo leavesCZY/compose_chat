@@ -30,6 +30,8 @@ import github.leavesczy.compose_chat.common.SelectPictureContract
  */
 private const val TEXT_MSG_MAX_LENGTH = 200
 
+private val DEFAULT_KEYBOARD_HEIGHT = 305.dp
+
 private val TextFieldValueSaver = run {
     val textKey = "text"
     mapSaver(
@@ -39,7 +41,7 @@ private val TextFieldValueSaver = run {
 }
 
 @Composable
-fun ChatScreenBottomBar(
+fun ChatPageBottomBar(
     sendText: (TextFieldValue) -> Unit,
     sendImage: (Uri) -> Unit
 ) {
@@ -84,7 +86,7 @@ fun ChatScreenBottomBar(
         onInputChange(newMessage)
     }
 
-    fun onEmojiAppend(emoji: String) {
+    fun appendEmoji(emoji: String) {
         if (messageInputted.text.length + emoji.length > TEXT_MSG_MAX_LENGTH) {
             return
         }
@@ -184,30 +186,42 @@ fun ChatScreenBottomBar(
             }
         )
 
-        Box(
-            modifier = Modifier
-                .height(intrinsicSize = IntrinsicSize.Max)
-        ) {
-            when (currentInputSelector) {
-                InputSelector.NONE -> {
-                    Box(
-                        modifier = Modifier
-                            .wrapContentHeight()
-                            .imePadding()
-                    )
+        when (currentInputSelector) {
+            InputSelector.NONE -> {
+                Box(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .imePadding()
+                )
+            }
+            InputSelector.EMOJI, InputSelector.Picture -> {
+                val maxHeight = if (imeMaxHeightDp <= 0.dp) {
+                    DEFAULT_KEYBOARD_HEIGHT
+                } else {
+                    imeMaxHeightDp
                 }
-                InputSelector.EMOJI -> {
-                    Box(modifier = Modifier.heightIn(min = imeMaxHeightDp)) {
-                        EmojiTable(
-                            onTextAdded = {
-                                onEmojiAppend(it)
+                Box(modifier = Modifier.heightIn(min = imeMaxHeightDp, max = maxHeight)) {
+                    when (currentInputSelector) {
+                        InputSelector.EMOJI -> {
+                            EmojiTable(
+                                appendEmoji = {
+                                    appendEmoji(it)
+                                }
+                            )
+                        }
+                        InputSelector.Picture -> {
+                            Box(
+                                modifier = Modifier.heightIn(
+                                    min = imeMaxHeightDp,
+                                    max = maxHeight
+                                )
+                            ) {
+                                ExtendTable(selectPictureLauncher = selectPictureLauncher)
                             }
-                        )
-                    }
-                }
-                InputSelector.Picture -> {
-                    Box(modifier = Modifier.heightIn(min = imeMaxHeightDp)) {
-                        ExtendTable(selectPictureLauncher = selectPictureLauncher)
+                        }
+                        else -> {
+
+                        }
                     }
                 }
             }

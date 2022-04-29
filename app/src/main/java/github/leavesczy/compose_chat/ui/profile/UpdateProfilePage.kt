@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.home
+package github.leavesczy.compose_chat.ui.profile
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import github.leavesczy.compose_chat.common.SelectPictureContract
 import github.leavesczy.compose_chat.logic.HomeViewModel
-import github.leavesczy.compose_chat.ui.profile.ProfileScreen
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.utils.randomFaceUrl
@@ -27,7 +26,7 @@ import kotlinx.coroutines.launch
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun UpdateProfileScreen() {
+fun UpdateProfilePage() {
     val homeViewModel = viewModel<HomeViewModel>()
     val userProfile by homeViewModel.personProfile.collectAsState()
     var faceUrl by rememberSaveable {
@@ -67,7 +66,7 @@ fun UpdateProfileScreen() {
                 .fillMaxSize()
                 .verticalScroll(state = rememberScrollState())
         ) {
-            ProfileScreen(
+            ProfilePanel(
                 title = nickname,
                 subtitle = signature,
                 introduction = "",
@@ -120,7 +119,7 @@ fun UpdateProfileScreen() {
                         selectPictureLauncher.launch(Unit)
                     }
                     CommonButton(
-                        text = "保存设置"
+                        text = "确认修改"
                     ) {
                         homeViewModel.updateProfile(
                             faceUrl,

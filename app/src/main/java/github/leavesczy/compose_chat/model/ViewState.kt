@@ -20,26 +20,26 @@ import github.leavesczy.compose_chat.utils.StringUtils
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-sealed class Screen(val route: String) {
+sealed class Page(val route: String) {
 
     private companion object {
-        private const val loginScreen = "loginScreen"
-        private const val homeScreen = "homeScreen"
+        private const val loginPage = "loginPage"
+        private const val homePage = "homePage"
 
-        private const val friendProfileScreen = "friendProfileScreen"
+        private const val friendProfilePage = "friendProfilePage"
         private const val keyFriendId = "keyFriendId"
 
-        private const val groupProfileScreen = "groupProfileScreen"
+        private const val groupProfilePage = "groupProfilePage"
         private const val keyGroupId = "keyGroupId"
 
-        private const val chatScreen = "chatScreen"
-        private const val keyChatScreenPartyType = "keyChatScreenPartyType"
-        private const val keyChatScreenPartyId = "keyChatScreenPartyId"
+        private const val chatPage = "chatPage"
+        private const val keyChatPagePartyType = "keyChatPagePartyType"
+        private const val keyChatPagePartyId = "keyChatPagePartyId"
 
-        private const val previewImageScreen = "previewImageScreen"
-        private const val keyPreviewImageScreenPartyType = "keyPreviewImageScreenImagePath"
+        private const val previewImagePage = "previewImagePage"
+        private const val keyPreviewImagePageImagePath = "keyPreviewImagePageImagePath"
 
-        private const val updateProfileScreen = "updateProfileScreen"
+        private const val updateProfilePage = "updateProfilePage"
 
         private fun formatArgument(argument: String): String {
             return try {
@@ -60,14 +60,14 @@ sealed class Screen(val route: String) {
         }
     }
 
-    object LoginScreen : Screen(route = loginScreen)
+    object LoginPage : Page(route = loginPage)
 
-    object HomeScreen : Screen(route = homeScreen)
+    object HomePage : Page(route = homePage)
 
-    object FriendProfileScreen : Screen(route = friendProfileScreen + "/{${keyFriendId}}") {
+    object FriendProfilePage : Page(route = friendProfilePage + "/{${keyFriendId}}") {
 
         fun generateRoute(friendId: String): String {
-            return friendProfileScreen + "/${formatArgument(argument = friendId)}"
+            return friendProfilePage + "/${formatArgument(argument = friendId)}"
         }
 
         fun getArgument(entry: NavBackStackEntry): String {
@@ -76,10 +76,10 @@ sealed class Screen(val route: String) {
 
     }
 
-    object GroupProfileScreen : Screen(route = groupProfileScreen + "/{${keyGroupId}}") {
+    object GroupProfilePage : Page(route = groupProfilePage + "/{${keyGroupId}}") {
 
         fun generateRoute(groupId: String): String {
-            return groupProfileScreen + "/${formatArgument(argument = groupId)}"
+            return groupProfilePage + "/${formatArgument(argument = groupId)}"
         }
 
         fun getArgument(entry: NavBackStackEntry): String {
@@ -88,45 +88,45 @@ sealed class Screen(val route: String) {
 
     }
 
-    object ChatScreen :
-        Screen(route = chatScreen + "/{${keyChatScreenPartyType}}" + "/{${keyChatScreenPartyId}}") {
+    object ChatPage :
+        Page(route = chatPage + "/{${keyChatPagePartyType}}" + "/{${keyChatPagePartyId}}") {
 
         fun generateRoute(chat: Chat): String {
-            return chatScreen + "/${chat.type}" + "/${formatArgument(argument = chat.id)}"
+            return chatPage + "/${chat.type}" + "/${formatArgument(argument = chat.id)}"
         }
 
         fun getArgument(entry: NavBackStackEntry): Chat {
-            val type = entry.getIntArgument(key = keyChatScreenPartyType)
-            val id = decodeArgument(entry.getStringArgument(key = keyChatScreenPartyId))
+            val type = entry.getIntArgument(key = keyChatPagePartyType)
+            val id = decodeArgument(entry.getStringArgument(key = keyChatPagePartyId))
             return Chat.find(type = type, id = id)
         }
 
     }
 
-    object PreviewImageScreen :
-        Screen(route = previewImageScreen + "/{${keyPreviewImageScreenPartyType}}") {
+    object PreviewImagePage :
+        Page(route = previewImagePage + "/{${keyPreviewImagePageImagePath}}") {
 
         fun generateRoute(imagePath: String): String {
-            return previewImageScreen + "/${formatArgument(argument = imagePath)}"
+            return previewImagePage + "/${formatArgument(argument = imagePath)}"
         }
 
         fun getArgument(entry: NavBackStackEntry): String {
-            return decodeArgument(entry.getStringArgument(key = keyPreviewImageScreenPartyType))
+            return decodeArgument(entry.getStringArgument(key = keyPreviewImagePageImagePath))
         }
 
     }
 
-    object UpdateProfileScreen : Screen(route = updateProfileScreen) {
+    object UpdateProfilePage : Page(route = updateProfilePage) {
 
         fun generateRoute(): String {
-            return updateProfileScreen
+            return updateProfilePage
         }
 
     }
 
 }
 
-data class LoginScreenState(
+data class LoginPageState(
     val showLogo: Boolean,
     val showInput: Boolean,
     val showLoading: Boolean,
@@ -134,7 +134,7 @@ data class LoginScreenState(
     val lastLoginUserId: String
 )
 
-enum class HomeScreenTab(
+enum class HomePageTab(
     val icon: ImageVector
 ) {
     Conversation(
@@ -148,7 +148,7 @@ enum class HomeScreenTab(
     );
 }
 
-data class HomeScreenDrawerState(
+data class HomePageDrawerState(
     val drawerState: DrawerState,
     val appTheme: AppTheme,
     val userProfile: PersonProfile,
@@ -156,27 +156,27 @@ data class HomeScreenDrawerState(
     val logout: () -> Unit
 )
 
-data class HomeScreenTopBarState(
-    val screenSelected: HomeScreenTab,
+data class HomePageTopBarState(
+    val pageSelected: HomePageTab,
     val openDrawer: () -> Unit,
     val onAddFriend: () -> Unit,
     val onJoinGroup: () -> Unit,
 )
 
-data class HomeScreenBottomBarState(
-    val tabList: List<HomeScreenTab>,
-    val tabSelected: HomeScreenTab,
-    val onTabSelected: (HomeScreenTab) -> Unit,
+data class HomePageBottomBarState(
+    val tabList: List<HomePageTab>,
+    val tabSelected: HomePageTab,
+    val onTabSelected: (HomePageTab) -> Unit,
     val unreadMessageCount: Long
 )
 
-data class HomeScreenSheetContentState(
+data class HomePageFriendshipPanelState(
     val modalBottomSheetState: ModalBottomSheetState,
-    val toAddFriend: (userId: String) -> Unit,
-    val toJoinGroup: (groupId: String) -> Unit
+    val addFriend: (userId: String) -> Unit,
+    val joinGroup: (groupId: String) -> Unit
 )
 
-data class ConversationScreenState(
+data class ConversationPageState(
     val listState: LazyListState,
     val conversationList: List<Conversation>,
     val onClickConversation: (Conversation) -> Unit,
@@ -184,7 +184,7 @@ data class ConversationScreenState(
     val onPinnedConversation: (Conversation, Boolean) -> Unit
 )
 
-data class FriendshipScreenState(
+data class FriendshipPageState(
     val listState: LazyListState,
     val joinedGroupList: List<GroupProfile>,
     val friendList: List<PersonProfile>,
@@ -192,24 +192,24 @@ data class FriendshipScreenState(
     val onClickFriend: (PersonProfile) -> Unit
 )
 
-data class FriendProfileScreenState(
+data class FriendProfilePageState(
     val personProfile: PersonProfile,
     val showAlterBtb: Boolean,
     val showAddBtn: Boolean
 )
 
-data class PersonProfileScreenState(
+data class PersonProfilePageState(
     val personProfile: PersonProfile
 )
 
-data class ChatScreenState(
+data class ChatPageState(
     val messageList: List<Message>,
     val mushScrollToBottom: Boolean,
     val showLoadMore: Boolean,
     val loadFinish: Boolean
 )
 
-data class GroupProfileScreenState(
+data class GroupProfilePageState(
     val groupProfile: GroupProfile,
     val memberList: List<GroupMemberProfile>
 )

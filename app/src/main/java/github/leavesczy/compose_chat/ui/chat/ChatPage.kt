@@ -10,10 +10,10 @@ import github.leavesczy.compose_chat.base.model.ImageMessage
 import github.leavesczy.compose_chat.base.model.Message
 import github.leavesczy.compose_chat.base.model.TextMessage
 import github.leavesczy.compose_chat.extend.LocalNavHostController
-import github.leavesczy.compose_chat.extend.navToPreviewImageScreen
+import github.leavesczy.compose_chat.extend.navToPreviewImagePage
 import github.leavesczy.compose_chat.extend.viewModelInstance
 import github.leavesczy.compose_chat.logic.ChatViewModel
-import github.leavesczy.compose_chat.model.Screen
+import github.leavesczy.compose_chat.model.Page
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.flow.filter
 
@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.filter
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun ChatScreen(
+fun ChatPage(
     listState: LazyListState,
     chat: Chat
 ) {
@@ -32,8 +32,8 @@ fun ChatScreen(
         ChatViewModel(chat = chat)
     }
 
-    val screenTopBarTitle by chatViewModel.screenTopBarTitle.collectAsState()
-    val chatScreenState by chatViewModel.chatScreenState.collectAsState()
+    val topBarTitle by chatViewModel.topBarTitle.collectAsState()
+    val chatPageState by chatViewModel.chatPageState.collectAsState()
     val clipboardManager = LocalClipboardManager.current
     val navHostController = LocalNavHostController.current
 
@@ -42,7 +42,7 @@ fun ChatScreen(
             val messageSenderId = it.messageDetail.sender.id
             if (messageSenderId.isNotBlank()) {
                 navHostController.navigate(
-                    route = Screen.FriendProfileScreen.generateRoute(friendId = messageSenderId)
+                    route = Page.FriendProfilePage.generateRoute(friendId = messageSenderId)
                 )
             }
         }
@@ -55,7 +55,7 @@ fun ChatScreen(
                     if (imagePath.isBlank()) {
                         showToast("图片路径为空")
                     } else {
-                        navHostController.navToPreviewImageScreen(imagePath = imagePath)
+                        navHostController.navToPreviewImagePage(imagePath = imagePath)
                     }
                 }
                 else -> {
@@ -81,9 +81,9 @@ fun ChatScreen(
         }
     }
 
-    LaunchedEffect(key1 = chatScreenState.mushScrollToBottom) {
+    LaunchedEffect(key1 = chatPageState.mushScrollToBottom) {
         snapshotFlow {
-            chatScreenState.mushScrollToBottom
+            chatPageState.mushScrollToBottom
         }.filter {
             it
         }.collect {
@@ -95,7 +95,7 @@ fun ChatScreen(
         snapshotFlow {
             listState.firstVisibleItemIndex
         }.filter {
-            !chatScreenState.loadFinish
+            !chatPageState.loadFinish
         }.collect {
             chatViewModel.loadMoreMessage()
         }
@@ -103,8 +103,8 @@ fun ChatScreen(
 
     Scaffold(
         topBar = {
-            ChatScreenTopBar(
-                title = screenTopBarTitle,
+            ChatPageTopBar(
+                title = topBarTitle,
                 onClickBackMenu = {
                     navHostController.popBackStack()
                 },
@@ -112,12 +112,12 @@ fun ChatScreen(
                     when (chat) {
                         is Chat.C2C -> {
                             navHostController.navigate(
-                                route = Screen.FriendProfileScreen.generateRoute(friendId = chat.id)
+                                route = Page.FriendProfilePage.generateRoute(friendId = chat.id)
                             )
                         }
                         is Chat.Group -> {
                             navHostController.navigate(
-                                route = Screen.GroupProfileScreen.generateRoute(groupId = chat.id)
+                                route = Page.GroupProfilePage.generateRoute(groupId = chat.id)
                             )
                         }
                     }
@@ -125,7 +125,7 @@ fun ChatScreen(
             )
         },
         bottomBar = {
-            ChatScreenBottomBar(
+            ChatPageBottomBar(
                 sendText = {
                     chatViewModel.sendTextMessage(text = it.text)
                 }, sendImage = {
@@ -133,11 +133,11 @@ fun ChatScreen(
                 })
         }
     ) { contentPadding ->
-        MessageScreen(
+        MessagePanel(
             listState = listState,
             chat = chat,
             contentPadding = contentPadding,
-            chatScreenState = chatScreenState,
+            chatPageState = chatPageState,
             onClickAvatar = onClickAvatar,
             onClickMessage = onClickMessage,
             onLongClickMessage = onLongClickMessage

@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
@@ -24,6 +26,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atMost
 import github.leavesczy.compose_chat.base.model.*
+import github.leavesczy.compose_chat.model.ChatPageState
 import github.leavesczy.compose_chat.ui.widgets.CircleImage
 import github.leavesczy.compose_chat.ui.widgets.CoilImage
 
@@ -34,7 +37,45 @@ import github.leavesczy.compose_chat.ui.widgets.CoilImage
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun MessageItems(
+fun MessagePanel(
+    listState: LazyListState,
+    chat: Chat,
+    contentPadding: PaddingValues,
+    chatPageState: ChatPageState,
+    onClickAvatar: (Message) -> Unit,
+    onClickMessage: (Message) -> Unit,
+    onLongClickMessage: (Message) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues = contentPadding),
+        state = listState,
+        reverseLayout = true,
+        contentPadding = PaddingValues(bottom = 80.dp),
+        verticalArrangement = Arrangement.Top,
+    ) {
+        for (message in chatPageState.messageList) {
+            item(key = message.messageDetail.msgId) {
+                MessageItems(
+                    message = message,
+                    showPartyName = chat is Chat.Group,
+                    onClickAvatar = onClickAvatar,
+                    onClickMessage = onClickMessage,
+                    onLongClickMessage = onLongClickMessage
+                )
+            }
+        }
+        if (chatPageState.showLoadMore) {
+            item(key = "loadMore") {
+                MessageLoading()
+            }
+        }
+    }
+}
+
+@Composable
+private fun MessageItems(
     message: Message,
     showPartyName: Boolean,
     onClickAvatar: (Message) -> Unit,
@@ -54,7 +95,7 @@ fun MessageItems(
                 ImageMessage(message = message)
             }
             else -> {
-
+                throw IllegalArgumentException()
             }
         }
     }
@@ -325,7 +366,7 @@ private fun StateMessage(modifier: Modifier, messageState: MessageState) {
 }
 
 @Composable
-fun LoadMoreMessage() {
+private fun MessageLoading() {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
         CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
     }

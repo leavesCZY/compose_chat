@@ -12,8 +12,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import github.leavesczy.compose_chat.model.HomeScreenTab
-import github.leavesczy.compose_chat.model.HomeScreenTopBarState
+import github.leavesczy.compose_chat.model.HomePageTab
+import github.leavesczy.compose_chat.model.HomePageTopBarState
 
 /**
  * @Author: leavesCZY
@@ -22,10 +22,8 @@ import github.leavesczy.compose_chat.model.HomeScreenTopBarState
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun HomeScreenTopBar(
-    homeScreenTopBarState: HomeScreenTopBarState,
-) {
-    if (homeScreenTopBarState.screenSelected == HomeScreenTab.Person) {
+fun HomePageTopBar(homePageTopBarState: HomePageTopBarState) {
+    if (homePageTopBarState.pageSelected == HomePageTab.Person) {
         return
     }
     var menuExpanded by remember {
@@ -43,7 +41,7 @@ fun HomeScreenTopBar(
                     contentDescription = null
                 )
             }, onClick = {
-                homeScreenTopBarState.openDrawer()
+                homePageTopBarState.openDrawer()
             })
         },
         actions = {
@@ -72,13 +70,13 @@ fun HomeScreenTopBar(
         ) {
             DropdownMenuItem(onClick = {
                 menuExpanded = false
-                homeScreenTopBarState.onAddFriend()
+                homePageTopBarState.onAddFriend()
             }) {
                 Text(text = "添加好友")
             }
             DropdownMenuItem(onClick = {
                 menuExpanded = false
-                homeScreenTopBarState.onJoinGroup()
+                homePageTopBarState.onJoinGroup()
             }) {
                 Text(text = "加入群聊")
             }

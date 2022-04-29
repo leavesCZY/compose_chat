@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.model.ActionResult
 import github.leavesczy.compose_chat.base.model.PersonProfile
-import github.leavesczy.compose_chat.model.FriendProfileScreenState
+import github.leavesczy.compose_chat.model.FriendProfilePageState
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -17,8 +17,8 @@ import kotlinx.coroutines.launch
  */
 class FriendProfileViewModel(private val friendId: String) : ViewModel() {
 
-    val friendProfileScreenState = MutableStateFlow(
-        FriendProfileScreenState(
+    val friendProfilePageState = MutableStateFlow(
+        FriendProfilePageState(
             personProfile = PersonProfile.Empty,
             showAlterBtb = false,
             showAddBtn = false
@@ -36,8 +36,8 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
                 val selfId = ComposeChat.accountProvider.personProfile.value.id
                 selfId.isNotBlank() && selfId != friendId
             }
-            friendProfileScreenState.emit(
-                FriendProfileScreenState(
+            friendProfilePageState.emit(
+                FriendProfilePageState(
                     personProfile = profile,
                     showAlterBtb = showAlterBtb,
                     showAddBtn = showAddBtn

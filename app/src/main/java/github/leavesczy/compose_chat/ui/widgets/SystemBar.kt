@@ -14,10 +14,10 @@ import github.leavesczy.compose_chat.ui.theme.LightColorScheme
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun SetSystemBarColor(
+fun SystemBarColor(
     appTheme: AppTheme
 ) {
-    SetSystemBarColor(
+    SystemBarColor(
         statusBarColor = Color.Transparent,
         statusBarDarkIcons = appTheme == AppTheme.Light || appTheme == AppTheme.Gray,
         navigationBarColor = if (appTheme == AppTheme.Dark) {
@@ -30,7 +30,7 @@ fun SetSystemBarColor(
 }
 
 @Composable
-private fun SetSystemBarColor(
+private fun SystemBarColor(
     statusBarColor: Color,
     statusBarDarkIcons: Boolean,
     navigationBarColor: Color,

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.model.ActionResult
 import github.leavesczy.compose_chat.cache.AccountCache
-import github.leavesczy.compose_chat.model.LoginScreenState
+import github.leavesczy.compose_chat.model.LoginPageState
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -17,8 +17,8 @@ import kotlinx.coroutines.launch
  */
 class LoginViewModel : ViewModel() {
 
-    val loginScreenState = MutableStateFlow(
-        LoginScreenState(
+    val loginPageState = MutableStateFlow(
+        LoginPageState(
             showLogo = false,
             showInput = false,
             showLoading = false,
@@ -31,7 +31,7 @@ class LoginViewModel : ViewModel() {
         val lastLoginUserId = AccountCache.lastLoginUserId
         if (lastLoginUserId.isBlank() || !AccountCache.canAutoLogin) {
             dispatchViewState(
-                LoginScreenState(
+                LoginPageState(
                     showLogo = true,
                     showInput = true,
                     showLoading = false,
@@ -41,7 +41,7 @@ class LoginViewModel : ViewModel() {
             )
         } else {
             dispatchViewState(
-                LoginScreenState(
+                LoginPageState(
                     showLogo = false,
                     showInput = false,
                     showLoading = true,
@@ -55,7 +55,7 @@ class LoginViewModel : ViewModel() {
 
     fun goToLogin(userId: String) {
         dispatchViewState(
-            LoginScreenState(
+            LoginPageState(
                 showLogo = true,
                 showInput = true,
                 showLoading = true,
@@ -73,7 +73,7 @@ class LoginViewModel : ViewModel() {
                 is ActionResult.Failed -> {
                     showToast(loginResult.reason)
                     dispatchViewState(
-                        LoginScreenState(
+                        LoginPageState(
                             showLogo = true,
                             showInput = true,
                             showLoading = false,
@@ -85,7 +85,7 @@ class LoginViewModel : ViewModel() {
                 is ActionResult.Success -> {
                     AccountCache.onUserLogin(userId = formatUserId)
                     dispatchViewState(
-                        LoginScreenState(
+                        LoginPageState(
                             showLogo = false,
                             showInput = false,
                             showLoading = false,
@@ -98,8 +98,8 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    private fun dispatchViewState(loginScreenState: LoginScreenState) {
-        this.loginScreenState.value = loginScreenState
+    private fun dispatchViewState(loginPageState: LoginPageState) {
+        this.loginPageState.value = loginPageState
     }
 
 }

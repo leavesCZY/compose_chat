@@ -12,7 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.logic.ComposeChat
-import github.leavesczy.compose_chat.model.HomeScreenSheetContentState
+import github.leavesczy.compose_chat.model.HomePageFriendshipPanelState
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.utils.showToast
@@ -25,19 +25,17 @@ import kotlinx.coroutines.launch
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun HomeScreenSheetContent(
-    homeScreenSheetContentState: HomeScreenSheetContentState,
-) {
+fun HomePageFriendshipPanel(homePageFriendshipPanelState: HomePageFriendshipPanelState) {
     val coroutineScope = rememberCoroutineScope()
 
     fun expandSheetContent(targetValue: ModalBottomSheetValue) {
         coroutineScope.launch {
-            homeScreenSheetContentState.modalBottomSheetState.animateTo(targetValue = targetValue)
+            homePageFriendshipPanelState.modalBottomSheetState.animateTo(targetValue = targetValue)
         }
     }
 
-    BackHandler(enabled = homeScreenSheetContentState.modalBottomSheetState.isVisible, onBack = {
-        when (homeScreenSheetContentState.modalBottomSheetState.currentValue) {
+    BackHandler(enabled = homePageFriendshipPanelState.modalBottomSheetState.isVisible, onBack = {
+        when (homePageFriendshipPanelState.modalBottomSheetState.currentValue) {
             ModalBottomSheetValue.Hidden -> {
 
             }
@@ -50,7 +48,7 @@ fun HomeScreenSheetContent(
         }
     })
 
-    var userId by remember(key1 = homeScreenSheetContentState.modalBottomSheetState.isVisible) {
+    var userId by remember(key1 = homePageFriendshipPanelState.modalBottomSheetState.isVisible) {
         mutableStateOf(
             ""
         )
@@ -85,17 +83,17 @@ fun HomeScreenSheetContent(
                     if (userId.isBlank()) {
                         showToast("请输入 UserID")
                     } else {
-                        homeScreenSheetContentState.toAddFriend(userId)
+                        homePageFriendshipPanelState.addFriend(userId)
                     }
                 }
                 CommonButton(text = "加入交流群 0x01") {
-                    homeScreenSheetContentState.toJoinGroup(ComposeChat.groupId01)
+                    homePageFriendshipPanelState.joinGroup(ComposeChat.groupId01)
                 }
                 CommonButton(text = "加入交流群 0x02") {
-                    homeScreenSheetContentState.toJoinGroup(ComposeChat.groupId02)
+                    homePageFriendshipPanelState.joinGroup(ComposeChat.groupId02)
                 }
                 CommonButton(text = "加入交流群 0x03") {
-                    homeScreenSheetContentState.toJoinGroup(ComposeChat.groupId03)
+                    homePageFriendshipPanelState.joinGroup(ComposeChat.groupId03)
                 }
             }
         }

@@ -40,7 +40,7 @@ internal object TimeUtil {
         // 昨天凌晨
         tempCalendar.add(Calendar.DATE, -1)
         if (calendar.after(tempCalendar)) {
-            return "昨天"
+            return "昨天" + format_HH_mm.format(date)
         }
         // 前天凌晨
         tempCalendar.add(Calendar.DATE, -1)

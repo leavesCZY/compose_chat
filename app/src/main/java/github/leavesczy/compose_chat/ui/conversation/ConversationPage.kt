@@ -22,7 +22,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atLeast
 import github.leavesczy.compose_chat.base.model.Conversation
-import github.leavesczy.compose_chat.model.ConversationScreenState
+import github.leavesczy.compose_chat.model.ConversationPageState
 import github.leavesczy.compose_chat.ui.widgets.CircleImage
 import github.leavesczy.compose_chat.ui.widgets.CommonDivider
 import github.leavesczy.compose_chat.ui.widgets.EmptyView
@@ -34,30 +34,30 @@ import github.leavesczy.compose_chat.ui.widgets.EmptyView
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun ConversationScreen(
+fun ConversationPage(
     paddingValues: PaddingValues,
-    conversationScreenState: ConversationScreenState,
+    conversationPageState: ConversationPageState,
 ) {
     Scaffold(
         modifier = Modifier
             .padding(paddingValues = paddingValues)
             .fillMaxSize()
     ) {
-        val conversationList = conversationScreenState.conversationList
+        val conversationList = conversationPageState.conversationList
         if (conversationList.isEmpty()) {
             EmptyView()
         } else {
             LazyColumn(
-                state = conversationScreenState.listState,
+                state = conversationPageState.listState,
                 contentPadding = PaddingValues(bottom = 60.dp),
             ) {
                 conversationList.forEach {
                     item(key = it.id) {
                         ConversationItem(
                             conversation = it,
-                            onClickConversation = conversationScreenState.onClickConversation,
-                            onDeleteConversation = conversationScreenState.onDeleteConversation,
-                            onPinnedConversation = conversationScreenState.onPinnedConversation
+                            onClickConversation = conversationPageState.onClickConversation,
+                            onDeleteConversation = conversationPageState.onDeleteConversation,
+                            onPinnedConversation = conversationPageState.onPinnedConversation
                         )
                     }
                 }

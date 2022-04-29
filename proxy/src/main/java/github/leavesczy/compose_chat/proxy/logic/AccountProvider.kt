@@ -63,7 +63,7 @@ class AccountProvider : IAccountProvider, Converters {
             }
 
             override fun onSelfInfoUpdated(info: V2TIMUserFullInfo) {
-                refreshPersonProfile()
+                getPersonProfile()
             }
         })
         V2TIMManager.getInstance().initSDK(context, AppConst.APP_ID, config)
@@ -117,7 +117,7 @@ class AccountProvider : IAccountProvider, Converters {
         }
     }
 
-    override fun refreshPersonProfile() {
+    override fun getPersonProfile() {
         coroutineScope.launch {
             getSelfProfileOrigin()?.let {
                 convertPersonProfile(userFullInfo = it)

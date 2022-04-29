@@ -20,11 +20,11 @@ import androidx.constraintlayout.compose.Dimension
 import github.leavesczy.compose_chat.base.model.ActionResult
 import github.leavesczy.compose_chat.base.model.GroupMemberProfile
 import github.leavesczy.compose_chat.extend.LocalNavHostController
-import github.leavesczy.compose_chat.extend.navToHomeScreen
+import github.leavesczy.compose_chat.extend.navToHomePage
 import github.leavesczy.compose_chat.extend.viewModelInstance
 import github.leavesczy.compose_chat.logic.GroupProfileViewModel
-import github.leavesczy.compose_chat.model.Screen
-import github.leavesczy.compose_chat.ui.profile.ProfileScreen
+import github.leavesczy.compose_chat.model.Page
+import github.leavesczy.compose_chat.ui.profile.ProfilePanel
 import github.leavesczy.compose_chat.ui.widgets.CircleImage
 import github.leavesczy.compose_chat.ui.widgets.CommonDivider
 import github.leavesczy.compose_chat.utils.randomFaceUrl
@@ -38,11 +38,11 @@ import kotlinx.coroutines.launch
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun GroupProfileScreen(groupId: String) {
+fun GroupProfilePage(groupId: String) {
     val groupProfileViewModel = viewModelInstance {
         GroupProfileViewModel(groupId = groupId)
     }
-    val groupProfileScreenState by groupProfileViewModel.groupProfileScreenState.collectAsState()
+    val groupProfilePageState by groupProfileViewModel.groupProfilePageState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val navHostController = LocalNavHostController.current
     Scaffold {
@@ -51,7 +51,7 @@ fun GroupProfileScreen(groupId: String) {
                 object : (GroupMemberProfile) -> Unit {
                     override fun invoke(member: GroupMemberProfile) {
                         navHostController.navigate(
-                            route = Screen.FriendProfileScreen.generateRoute(friendId = member.detail.id)
+                            route = Page.FriendProfilePage.generateRoute(friendId = member.detail.id)
                         )
                     }
                 }
@@ -62,16 +62,16 @@ fun GroupProfileScreen(groupId: String) {
                 contentPadding = PaddingValues(bottom = 80.dp)
             ) {
                 item(key = true) {
-                    ProfileScreen(groupProfile = groupProfileScreenState.groupProfile)
+                    ProfilePanel(groupProfile = groupProfilePageState.groupProfile)
                 }
-                val memberList = groupProfileScreenState.memberList
+                val memberList = groupProfilePageState.memberList
                 memberList.forEach {
                     item(key = it.detail.id) {
                         GroupMemberItem(groupMemberProfile = it, onClickMember = onClickMember)
                     }
                 }
             }
-            GroupProfileScreenTopBar(
+            GroupProfilePageTopBar(
                 randomAvatar = {
                     groupProfileViewModel.setAvatar(avatarUrl = randomFaceUrl())
                 },
@@ -80,7 +80,7 @@ fun GroupProfileScreen(groupId: String) {
                         when (val result = groupProfileViewModel.quitGroup()) {
                             ActionResult.Success -> {
                                 showToast("已退出群聊")
-                                navHostController.navToHomeScreen()
+                                navHostController.navToHomePage()
                             }
                             is ActionResult.Failed -> {
                                 showToast(result.reason)
@@ -165,7 +165,7 @@ private fun GroupMemberItem(
 }
 
 @Composable
-private fun GroupProfileScreenTopBar(
+private fun GroupProfilePageTopBar(
     randomAvatar: () -> Unit,
     quitGroup: () -> Unit,
 ) {

@@ -16,13 +16,13 @@ import github.leavesczy.compose_chat.base.model.ActionResult
 import github.leavesczy.compose_chat.base.model.C2CConversation
 import github.leavesczy.compose_chat.base.model.GroupConversation
 import github.leavesczy.compose_chat.extend.LocalNavHostController
-import github.leavesczy.compose_chat.extend.navToC2CChatScreen
-import github.leavesczy.compose_chat.extend.navToGroupChatScreen
+import github.leavesczy.compose_chat.extend.navToC2CChatPage
+import github.leavesczy.compose_chat.extend.navToGroupChatPage
 import github.leavesczy.compose_chat.logic.HomeViewModel
 import github.leavesczy.compose_chat.model.*
-import github.leavesczy.compose_chat.ui.conversation.ConversationScreen
-import github.leavesczy.compose_chat.ui.friend.FriendshipScreen
-import github.leavesczy.compose_chat.ui.person.PersonProfileScreen
+import github.leavesczy.compose_chat.ui.conversation.ConversationPage
+import github.leavesczy.compose_chat.ui.friend.FriendshipPage
+import github.leavesczy.compose_chat.ui.profile.PersonProfilePage
 import github.leavesczy.compose_chat.ui.theme.BottomSheetShape
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
@@ -34,11 +34,11 @@ import kotlinx.coroutines.launch
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun HomeScreen(
+fun HomePage(
     appTheme: AppTheme,
     switchToNextTheme: () -> Unit,
-    homeTabSelected: HomeScreenTab,
-    onHomeTabSelected: (HomeScreenTab) -> Unit
+    homeTabSelected: HomePageTab,
+    onHomeTabSelected: (HomePageTab) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -60,17 +60,17 @@ fun HomeScreen(
     val personProfile by homeViewModel.personProfile.collectAsState()
 
     val conversationListState = rememberLazyListState()
-    val conversationScreenState = remember(key1 = conversationList) {
-        ConversationScreenState(
+    val conversationPageState = remember(key1 = conversationList) {
+        ConversationPageState(
             listState = conversationListState,
             conversationList = conversationList,
             onClickConversation = {
                 when (it) {
                     is C2CConversation -> {
-                        navHostController.navToC2CChatScreen(friendId = it.id)
+                        navHostController.navToC2CChatPage(friendId = it.id)
                     }
                     is GroupConversation -> {
-                        navHostController.navToGroupChatScreen(groupId = it.id)
+                        navHostController.navToGroupChatPage(groupId = it.id)
                     }
                 }
             },
@@ -86,29 +86,29 @@ fun HomeScreen(
         )
     }
 
-    val friendShipListState = rememberLazyListState()
-    val friendshipScreenState = remember(key1 = joinedGroupList, key2 = fiendList) {
-        FriendshipScreenState(
-            listState = friendShipListState,
+    val friendshipListState = rememberLazyListState()
+    val friendshipPageState = remember(key1 = joinedGroupList, key2 = fiendList) {
+        FriendshipPageState(
+            listState = friendshipListState,
             joinedGroupList = joinedGroupList,
             friendList = fiendList,
             onClickGroup = {
-                navHostController.navToGroupChatScreen(groupId = it.id)
+                navHostController.navToGroupChatPage(groupId = it.id)
             },
             onClickFriend = {
                 navHostController.navigate(
-                    route = Screen.FriendProfileScreen.generateRoute(friendId = it.id)
+                    route = Page.FriendProfilePage.generateRoute(friendId = it.id)
                 )
             },
         )
     }
-    val personProfileScreenState = remember(key1 = personProfile) {
-        PersonProfileScreenState(personProfile = personProfile)
+    val personProfilePageState = remember(key1 = personProfile) {
+        PersonProfilePageState(personProfile = personProfile)
     }
 
     val homeDrawerViewState =
         remember(key1 = personProfile, key2 = appTheme, key3 = switchToNextTheme) {
-            HomeScreenDrawerState(
+            HomePageDrawerState(
                 drawerState = drawerState,
                 appTheme = appTheme,
                 userProfile = personProfile,
@@ -119,11 +119,11 @@ fun HomeScreen(
             )
         }
 
-    val homeScreenTopBarState = remember(
+    val homePageTopBarState = remember(
         key1 = homeTabSelected
     ) {
-        HomeScreenTopBarState(
-            screenSelected = homeTabSelected,
+        HomePageTopBarState(
+            pageSelected = homeTabSelected,
             openDrawer = {
                 coroutineScope.launch {
                     drawerState.open()
@@ -138,33 +138,33 @@ fun HomeScreen(
         )
     }
 
-    val homeScreenBottomBarState = remember(
+    val homePageBottomBarState = remember(
         key1 = homeTabSelected,
         key2 = totalUnreadCount,
         key3 = onHomeTabSelected
     ) {
-        HomeScreenBottomBarState(
-            tabList = HomeScreenTab.values().toList(),
+        HomePageBottomBarState(
+            tabList = HomePageTab.values().toList(),
             tabSelected = homeTabSelected,
             unreadMessageCount = totalUnreadCount,
             onTabSelected = onHomeTabSelected
         )
     }
 
-    val homeSheetContentState = remember {
-        HomeScreenSheetContentState(
+    val homePageFriendshipPanelState = remember {
+        HomePageFriendshipPanelState(
             modalBottomSheetState = sheetState,
-            toAddFriend = {
+            addFriend = {
                 homeViewModel.addFriend(userId = it)
             },
-            toJoinGroup = {
+            joinGroup = {
                 coroutineScope.launch {
                     when (val result = homeViewModel.joinGroup(groupId = it)) {
                         is ActionResult.Success -> {
                             showToast("加入成功")
                             homeViewModel.getJoinedGroupList()
                             sheetState.hide()
-                            navHostController.navToGroupChatScreen(groupId = it)
+                            navHostController.navToGroupChatPage(groupId = it)
                         }
                         is ActionResult.Failed -> {
                             showToast(result.reason)
@@ -179,8 +179,8 @@ fun HomeScreen(
         drawerState = drawerState,
         drawerShape = RoundedCornerShape(0.dp),
         drawerContent = {
-            HomeScreenDrawer(
-                homeScreenDrawerState = homeDrawerViewState
+            HomePageDrawer(
+                homePageDrawerState = homeDrawerViewState
             )
         },
         content = {
@@ -188,20 +188,20 @@ fun HomeScreen(
                 sheetState = sheetState,
                 sheetShape = BottomSheetShape,
                 sheetContent = {
-                    HomeScreenSheetContent(homeScreenSheetContentState = homeSheetContentState)
+                    HomePageFriendshipPanel(homePageFriendshipPanelState = homePageFriendshipPanelState)
                 }
             ) {
                 Scaffold(
                     topBar = {
-                        HomeScreenTopBar(homeScreenTopBarState = homeScreenTopBarState)
+                        HomePageTopBar(homePageTopBarState = homePageTopBarState)
                     },
                     bottomBar = {
-                        HomeScreenBottomBar(
-                            homeScreenBottomBarState = homeScreenBottomBarState
+                        HomePageBottomBar(
+                            homePageBottomBarState = homePageBottomBarState
                         )
                     },
                     floatingActionButton = {
-                        if (homeTabSelected == HomeScreenTab.Friendship) {
+                        if (homeTabSelected == HomePageTab.Friendship) {
                             FloatingActionButton(
                                 containerColor = MaterialTheme.colorScheme.primary,
                                 content = {
@@ -218,21 +218,21 @@ fun HomeScreen(
                     },
                 ) { paddingValues ->
                     when (homeTabSelected) {
-                        HomeScreenTab.Conversation -> {
-                            ConversationScreen(
+                        HomePageTab.Conversation -> {
+                            ConversationPage(
                                 paddingValues = paddingValues,
-                                conversationScreenState = conversationScreenState
+                                conversationPageState = conversationPageState
                             )
                         }
-                        HomeScreenTab.Friendship -> {
-                            FriendshipScreen(
+                        HomePageTab.Friendship -> {
+                            FriendshipPage(
                                 paddingValues = paddingValues,
-                                friendshipScreenState = friendshipScreenState
+                                friendshipPageState = friendshipPageState
                             )
                         }
-                        HomeScreenTab.Person -> {
-                            PersonProfileScreen(
-                                personProfileScreenState = personProfileScreenState
+                        HomePageTab.Person -> {
+                            PersonProfilePage(
+                                personProfilePageState = personProfilePageState
                             )
                         }
                     }

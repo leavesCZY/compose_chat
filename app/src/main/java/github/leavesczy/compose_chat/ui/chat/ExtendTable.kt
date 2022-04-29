@@ -3,9 +3,7 @@ package github.leavesczy.compose_chat.ui.chat
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.InsertPhoto
 import androidx.compose.material3.Icon
@@ -26,25 +24,26 @@ import androidx.compose.ui.unit.dp
 fun ExtendTable(
     selectPictureLauncher: ManagedActivityResultLauncher<Unit, Uri?>
 ) {
-    Column(
-        modifier = Modifier
-            .padding(all = 20.dp)
-            .clickable {
-                selectPictureLauncher.launch(Unit)
-            },
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
+    Row(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .size(size = 45.dp),
-            imageVector = Icons.Filled.InsertPhoto,
-            contentDescription = null
-        )
-        Text(
-            text = "发送图片",
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodySmall
-        )
+                .clickable {
+                    selectPictureLauncher.launch(Unit)
+                }
+                .padding(all = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                modifier = Modifier.size(size = 45.dp),
+                imageVector = Icons.Filled.InsertPhoto,
+                contentDescription = null
+            )
+            Text(
+                text = "发送图片",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
     }
 }
 

@@ -1,7 +1,9 @@
 package github.leavesczy.compose_chat.ui.chat
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,32 +22,20 @@ import androidx.compose.ui.unit.sp
 private const val EMOJI_COLUMNS = 7
 
 @Composable
-fun EmojiTable(
-    onTextAdded: (String) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        repeat(4) { x ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                repeat(EMOJI_COLUMNS) { y ->
-                    val emoji = emojis[x * EMOJI_COLUMNS + y]
-                    Text(
-                        modifier = Modifier
-                            .clickable(onClick = {
-                                onTextAdded(emoji)
-                            })
-                            .weight(weight = 1f)
-                            .padding(vertical = 10.dp),
-                        text = emoji,
-                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 19.sp),
-                        textAlign = TextAlign.Center,
-                    )
-                }
+fun EmojiTable(appendEmoji: (String) -> Unit) {
+    LazyVerticalGrid(columns = GridCells.Fixed(count = EMOJI_COLUMNS)) {
+        emojis.forEach { emoji ->
+            item(emoji) {
+                Text(
+                    modifier = Modifier
+                        .clickable(onClick = {
+                            appendEmoji(emoji)
+                        })
+                        .padding(top = 12.dp, bottom = 12.dp),
+                    text = emoji,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 19.sp),
+                    textAlign = TextAlign.Center,
+                )
             }
         }
     }

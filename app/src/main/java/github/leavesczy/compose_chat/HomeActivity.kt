@@ -30,17 +30,17 @@ import github.leavesczy.compose_chat.extend.ProvideNavHostController
 import github.leavesczy.compose_chat.extend.navToLogin
 import github.leavesczy.compose_chat.logic.AppViewModel
 import github.leavesczy.compose_chat.model.AppTheme
-import github.leavesczy.compose_chat.model.HomeScreenTab
-import github.leavesczy.compose_chat.model.Screen
-import github.leavesczy.compose_chat.ui.chat.ChatScreen
-import github.leavesczy.compose_chat.ui.chat.GroupProfileScreen
-import github.leavesczy.compose_chat.ui.common.PreviewImageScreen
-import github.leavesczy.compose_chat.ui.friend.FriendProfileScreen
-import github.leavesczy.compose_chat.ui.home.HomeScreen
-import github.leavesczy.compose_chat.ui.home.UpdateProfileScreen
-import github.leavesczy.compose_chat.ui.login.LoginScreen
+import github.leavesczy.compose_chat.model.HomePageTab
+import github.leavesczy.compose_chat.model.Page
+import github.leavesczy.compose_chat.ui.chat.ChatPage
+import github.leavesczy.compose_chat.ui.chat.GroupProfilePage
+import github.leavesczy.compose_chat.ui.common.PreviewImagePage
+import github.leavesczy.compose_chat.ui.friend.FriendProfilePage
+import github.leavesczy.compose_chat.ui.home.HomePage
+import github.leavesczy.compose_chat.ui.login.LoginPage
+import github.leavesczy.compose_chat.ui.profile.UpdateProfilePage
 import github.leavesczy.compose_chat.ui.theme.ChatTheme
-import github.leavesczy.compose_chat.ui.widgets.SetSystemBarColor
+import github.leavesczy.compose_chat.ui.widgets.SystemBarColor
 import github.leavesczy.compose_chat.utils.showToast
 
 /**
@@ -93,7 +93,7 @@ class HomeActivity : ComponentActivity() {
                 }
             }
             ChatTheme(appTheme = appTheme) {
-                SetSystemBarColor(appTheme = appTheme)
+                SystemBarColor(appTheme = appTheme)
                 NavigationView(
                     navController = navController,
                     appTheme = appTheme,
@@ -112,13 +112,13 @@ class HomeActivity : ComponentActivity() {
         switchToNextTheme: () -> Unit
     ) {
         var homeTabSelected by rememberSaveable {
-            mutableStateOf(HomeScreenTab.Conversation)
+            mutableStateOf(HomePageTab.Conversation)
         }
         ProvideNavHostController(navHostController = navController) {
             AnimatedNavHost(
                 modifier = Modifier.navigationBarsPadding(),
                 navController = navController,
-                startDestination = Screen.LoginScreen.route,
+                startDestination = Page.LoginPage.route,
                 enterTransition = {
                     slideInHorizontally(
                         initialOffsetX = {
@@ -136,11 +136,11 @@ class HomeActivity : ComponentActivity() {
                     )
                 },
             ) {
-                animatedComposable(screen = Screen.LoginScreen) {
-                    LoginScreen()
+                animatedComposable(page = Page.LoginPage) {
+                    LoginPage()
                 }
-                animatedComposable(screen = Screen.HomeScreen) {
-                    HomeScreen(
+                animatedComposable(page = Page.HomePage) {
+                    HomePage(
                         appTheme = appTheme,
                         switchToNextTheme = switchToNextTheme,
                         homeTabSelected = homeTabSelected,
@@ -149,29 +149,29 @@ class HomeActivity : ComponentActivity() {
                         }
                     )
                 }
-                animatedComposable(screen = Screen.FriendProfileScreen) { backStackEntry ->
-                    FriendProfileScreen(
-                        friendId = Screen.FriendProfileScreen.getArgument(backStackEntry)
+                animatedComposable(page = Page.FriendProfilePage) { backStackEntry ->
+                    FriendProfilePage(
+                        friendId = Page.FriendProfilePage.getArgument(backStackEntry)
                     )
                 }
-                animatedComposable(screen = Screen.ChatScreen) { backStackEntry ->
+                animatedComposable(page = Page.ChatPage) { backStackEntry ->
                     val listState = rememberLazyListState()
-                    ChatScreen(
+                    ChatPage(
                         listState = listState,
-                        chat = Screen.ChatScreen.getArgument(backStackEntry)
+                        chat = Page.ChatPage.getArgument(backStackEntry)
                     )
                 }
-                animatedComposable(screen = Screen.GroupProfileScreen) { backStackEntry ->
-                    GroupProfileScreen(
-                        groupId = Screen.GroupProfileScreen.getArgument(backStackEntry)
+                animatedComposable(page = Page.GroupProfilePage) { backStackEntry ->
+                    GroupProfilePage(
+                        groupId = Page.GroupProfilePage.getArgument(backStackEntry)
                     )
                 }
-                animatedComposable(screen = Screen.UpdateProfileScreen) {
-                    UpdateProfileScreen()
+                animatedComposable(page = Page.UpdateProfilePage) {
+                    UpdateProfilePage()
                 }
-                animatedComposable(screen = Screen.PreviewImageScreen) { backStackEntry ->
-                    PreviewImageScreen(
-                        imagePath = Screen.PreviewImageScreen.getArgument(
+                animatedComposable(page = Page.PreviewImagePage) { backStackEntry ->
+                    PreviewImagePage(
+                        imagePath = Page.PreviewImagePage.getArgument(
                             backStackEntry
                         )
                     )
@@ -181,11 +181,11 @@ class HomeActivity : ComponentActivity() {
     }
 
     private fun NavGraphBuilder.animatedComposable(
-        screen: Screen,
+        page: Page,
         content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
     ) {
         composable(
-            route = screen.route
+            route = page.route
         ) { backStackEntry ->
             content(backStackEntry)
         }

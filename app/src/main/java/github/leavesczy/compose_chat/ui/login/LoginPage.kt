@@ -19,7 +19,7 @@ import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.extend.LocalNavHostController
 import github.leavesczy.compose_chat.extend.navigateWithBack
 import github.leavesczy.compose_chat.logic.LoginViewModel
-import github.leavesczy.compose_chat.model.Screen
+import github.leavesczy.compose_chat.model.Page
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.utils.showToast
@@ -32,17 +32,17 @@ import kotlinx.coroutines.launch
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun LoginScreen() {
+fun LoginPage() {
     val loginViewModel = viewModel<LoginViewModel>()
-    val loginScreenState by loginViewModel.loginScreenState.collectAsState()
+    val loginPageState by loginViewModel.loginPageState.collectAsState()
     val textInputService = LocalTextInputService.current
     val navHostController = LocalNavHostController.current
     LaunchedEffect(key1 = Unit) {
         launch {
-            loginViewModel.loginScreenState.collect {
+            loginViewModel.loginPageState.collect {
                 if (it.loginSuccess) {
                     navHostController.navigateWithBack(
-                        screen = Screen.HomeScreen
+                        page = Page.HomePage
                     )
                     return@collect
                 }
@@ -56,7 +56,7 @@ fun LoginScreen() {
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (loginScreenState.showLogo) {
+                if (loginPageState.showLogo) {
                     Text(
                         text = stringResource(id = R.string.app_name),
                         modifier = Modifier
@@ -69,8 +69,8 @@ fun LoginScreen() {
                         textAlign = TextAlign.Center,
                     )
                 }
-                if (loginScreenState.showInput) {
-                    var userId by remember { mutableStateOf(loginScreenState.lastLoginUserId) }
+                if (loginPageState.showInput) {
+                    var userId by remember { mutableStateOf(loginPageState.lastLoginUserId) }
                     CommonOutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -101,7 +101,7 @@ fun LoginScreen() {
                     }
                 }
             }
-            if (loginScreenState.showLoading) {
+            if (loginPageState.showLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .fillMaxSize()

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.model.*
 import github.leavesczy.compose_chat.base.provider.IMessageProvider
-import github.leavesczy.compose_chat.model.ChatScreenState
+import github.leavesczy.compose_chat.model.ChatPageState
 import github.leavesczy.compose_chat.utils.ContextHolder
 import github.leavesczy.compose_chat.utils.ImageUtils
 import github.leavesczy.compose_chat.utils.showToast
@@ -40,8 +40,8 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
         }
     }
 
-    val chatScreenState = MutableStateFlow(
-        ChatScreenState(
+    val chatPageState = MutableStateFlow(
+        ChatPageState(
             messageList = emptyList(),
             showLoadMore = false,
             loadFinish = false,
@@ -49,11 +49,11 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
         )
     )
 
-    val screenTopBarTitle = MutableStateFlow("")
+    val topBarTitle = MutableStateFlow("")
 
     init {
         ComposeChat.messageProvider.startReceive(chat = chat, messageListener = messageListener)
-        ComposeChat.accountProvider.refreshPersonProfile()
+        ComposeChat.accountProvider.getPersonProfile()
         when (chat) {
             is Chat.C2C -> {
                 getFriendProfile(friendId = chat.id)
@@ -67,7 +67,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     private fun getFriendProfile(friendId: String) {
         viewModelScope.launch {
             ComposeChat.friendshipProvider.getFriendProfile(friendId = friendId)?.let {
-                screenTopBarTitle.emit(it.showName)
+                topBarTitle.emit(it.showName)
             }
         }
     }
@@ -75,13 +75,13 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     private fun getGroupProfile(groupId: String) {
         viewModelScope.launch {
             ComposeChat.groupProvider.getGroupInfo(groupId = groupId)?.let {
-                screenTopBarTitle.emit(it.name)
+                topBarTitle.emit(it.name)
             }
         }
     }
 
     fun loadMoreMessage() {
-        if (loadMessageJob != null || chatScreenState.value.loadFinish) {
+        if (loadMessageJob != null || chatPageState.value.loadFinish) {
             return
         }
         refreshViewState(
@@ -233,11 +233,11 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     }
 
     private fun refreshViewState(
-        showLoadMore: Boolean = chatScreenState.value.showLoadMore,
-        loadFinish: Boolean = chatScreenState.value.loadFinish,
+        showLoadMore: Boolean = chatPageState.value.showLoadMore,
+        loadFinish: Boolean = chatPageState.value.loadFinish,
         mushScrollToBottom: Boolean = false,
     ) {
-        chatScreenState.value = ChatScreenState(
+        chatPageState.value = ChatPageState(
             messageList = allMessage.toList(),
             showLoadMore = showLoadMore,
             loadFinish = loadFinish,

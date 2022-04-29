@@ -14,7 +14,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import github.leavesczy.compose_chat.base.model.GroupProfile
 import github.leavesczy.compose_chat.base.model.PersonProfile
-import github.leavesczy.compose_chat.model.FriendshipScreenState
+import github.leavesczy.compose_chat.model.FriendshipPageState
 import github.leavesczy.compose_chat.ui.widgets.CircleImage
 import github.leavesczy.compose_chat.ui.widgets.CommonDivider
 import github.leavesczy.compose_chat.ui.widgets.EmptyView
@@ -26,29 +26,29 @@ import github.leavesczy.compose_chat.ui.widgets.EmptyView
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun FriendshipScreen(
+fun FriendshipPage(
     paddingValues: PaddingValues,
-    friendshipScreenState: FriendshipScreenState,
+    friendshipPageState: FriendshipPageState,
 ) {
     Scaffold(
         modifier = Modifier
             .padding(paddingValues = paddingValues)
             .fillMaxSize()
     ) {
-        if (friendshipScreenState.joinedGroupList.isEmpty() && friendshipScreenState.friendList.isEmpty()) {
+        if (friendshipPageState.joinedGroupList.isEmpty() && friendshipPageState.friendList.isEmpty()) {
             EmptyView()
         } else {
             LazyColumn(
-                state = friendshipScreenState.listState,
+                state = friendshipPageState.listState,
                 contentPadding = PaddingValues(bottom = 60.dp),
             ) {
-                val joinedGroupList = friendshipScreenState.joinedGroupList
-                val friendList = friendshipScreenState.friendList
+                val joinedGroupList = friendshipPageState.joinedGroupList
+                val friendList = friendshipPageState.friendList
                 joinedGroupList.forEach {
                     item(key = it.id) {
                         GroupItem(
                             groupProfile = it,
-                            onClickGroup = friendshipScreenState.onClickGroup
+                            onClickGroup = friendshipPageState.onClickGroup
                         )
                     }
                 }
@@ -56,7 +56,7 @@ fun FriendshipScreen(
                     item(key = it.id) {
                         FriendItem(
                             personProfile = it,
-                            onClickFriend = friendshipScreenState.onClickFriend
+                            onClickFriend = friendshipPageState.onClickFriend
                         )
                     }
                 }

@@ -24,8 +24,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import github.leavesczy.compose_chat.BuildConfig
 import github.leavesczy.compose_chat.extend.LocalNavHostController
-import github.leavesczy.compose_chat.model.HomeScreenDrawerState
-import github.leavesczy.compose_chat.model.Screen
+import github.leavesczy.compose_chat.model.HomePageDrawerState
+import github.leavesczy.compose_chat.model.Page
 import github.leavesczy.compose_chat.ui.widgets.BouncyImage
 import kotlinx.coroutines.launch
 
@@ -36,10 +36,10 @@ import kotlinx.coroutines.launch
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
+fun HomePageDrawer(homePageDrawerState: HomePageDrawerState) {
     Surface(modifier = Modifier.fillMaxSize()) {
         val navHostController = LocalNavHostController.current
-        val drawerState = homeScreenDrawerState.drawerState
+        val drawerState = homePageDrawerState.drawerState
         val coroutineScope = rememberCoroutineScope()
 
         fun closeDrawer() {
@@ -52,7 +52,7 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
             closeDrawer()
         })
 
-        val userProfile = homeScreenDrawerState.userProfile
+        val userProfile = homePageDrawerState.userProfile
         val faceUrl = userProfile.faceUrl
         val nickname = userProfile.nickname
         val signature = userProfile.signature
@@ -104,13 +104,13 @@ fun HomeScreenDrawer(homeScreenDrawerState: HomeScreenDrawerState) {
                 }
             ) {
                 SelectableItem(text = "个人资料", icon = Icons.Filled.Cabin, onClick = {
-                    navHostController.navigate(route = Screen.UpdateProfileScreen.generateRoute())
+                    navHostController.navigate(route = Page.UpdateProfilePage.generateRoute())
                 })
                 SelectableItem(text = "切换主题", icon = Icons.Filled.Sailing, onClick = {
-                    homeScreenDrawerState.switchToNextTheme()
+                    homePageDrawerState.switchToNextTheme()
                 })
                 SelectableItem(text = "切换账号", icon = Icons.Filled.ColorLens, onClick = {
-                    homeScreenDrawerState.logout()
+                    homePageDrawerState.logout()
                 })
             }
             Text(

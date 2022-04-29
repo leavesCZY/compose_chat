@@ -1,6 +1,5 @@
 package github.leavesczy.compose_chat.ui.chat
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Mood
@@ -11,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 /**
@@ -19,18 +17,6 @@ import androidx.compose.ui.unit.dp
  * @Date: 2022/1/2 15:02
  * @Desc:
  */
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PreviewEmojiTable() {
-    InputSelector(currentInputSelector = InputSelector.EMOJI,
-        onInputSelectorChange = {
-
-        }, sendMessageEnabled = true, onMessageSent = {
-
-        })
-}
-
 enum class InputSelector {
     NONE,
     EMOJI,

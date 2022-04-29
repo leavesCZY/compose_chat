@@ -16,11 +16,11 @@ fun randomFaceUrl(): String {
     }
 }
 
-private val rangeForRandom = (0..100000)
+private val rangeForRandom = (100..100000)
 
 private fun randomOnlineImageUrl(
     seed: Int = rangeForRandom.random(),
-    width: Int = 300,
+    width: Int = 400,
     height: Int = width,
 ): String {
     return "https://picsum.photos/seed/$seed/$width/$height"

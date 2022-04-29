@@ -25,7 +25,7 @@ interface IAccountProvider {
 
     suspend fun logout(): ActionResult
 
-    fun refreshPersonProfile()
+    fun getPersonProfile()
 
     suspend fun updatePersonProfile(faceUrl: String, nickname: String, signature: String): Boolean
 

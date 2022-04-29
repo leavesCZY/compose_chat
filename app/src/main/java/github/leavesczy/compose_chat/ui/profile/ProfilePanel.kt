@@ -18,7 +18,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import github.leavesczy.compose_chat.base.model.GroupProfile
 import github.leavesczy.compose_chat.base.model.PersonProfile
 import github.leavesczy.compose_chat.extend.LocalNavHostController
-import github.leavesczy.compose_chat.extend.navToPreviewImageScreen
+import github.leavesczy.compose_chat.extend.navToPreviewImagePage
 import github.leavesczy.compose_chat.extend.scrim
 import github.leavesczy.compose_chat.ui.widgets.BezierImage
 import github.leavesczy.compose_chat.ui.widgets.BouncyImage
@@ -32,8 +32,8 @@ import github.leavesczy.compose_chat.ui.widgets.BouncyImage
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewProfileScreen() {
-    ProfileScreen(
+fun PreviewProfilePage() {
+    ProfilePanel(
         personProfile = PersonProfile(
             id = "公众号：字节数组",
             faceUrl = "",
@@ -49,11 +49,11 @@ fun PreviewProfileScreen() {
 }
 
 @Composable
-fun ProfileScreen(
+fun ProfilePanel(
     personProfile: PersonProfile,
     content: @Composable () -> Unit = {}
 ) {
-    ProfileScreen(
+    ProfilePanel(
         title = personProfile.showName,
         subtitle = personProfile.signature,
         introduction = "ID: ${personProfile.id}",
@@ -63,11 +63,11 @@ fun ProfileScreen(
 }
 
 @Composable
-fun ProfileScreen(
+fun ProfilePanel(
     groupProfile: GroupProfile,
     content: @Composable () -> Unit = {}
 ) {
-    ProfileScreen(
+    ProfilePanel(
         title = groupProfile.name,
         subtitle = groupProfile.introduction,
         introduction = "GroupID: ${groupProfile.id}\nCreateTime: ${groupProfile.createTimeFormat}\nMemberCount: ${groupProfile.memberCount}",
@@ -77,7 +77,7 @@ fun ProfileScreen(
 }
 
 @Composable
-fun ProfileScreen(
+fun ProfilePanel(
     title: String,
     subtitle: String,
     introduction: String,
@@ -107,7 +107,7 @@ fun ProfileScreen(
                 .size(size = 100.dp)
                 .clickable {
                     if (avatarUrl.isNotBlank()) {
-                        navHostController.navToPreviewImageScreen(imagePath = avatarUrl)
+                        navHostController.navToPreviewImagePage(imagePath = avatarUrl)
                     }
                 },
             data = avatarUrl

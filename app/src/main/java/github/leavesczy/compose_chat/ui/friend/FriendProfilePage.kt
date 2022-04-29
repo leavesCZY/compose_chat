@@ -17,11 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.base.model.PersonProfile
 import github.leavesczy.compose_chat.extend.LocalNavHostController
-import github.leavesczy.compose_chat.extend.navToC2CChatScreen
-import github.leavesczy.compose_chat.extend.navToHomeScreen
+import github.leavesczy.compose_chat.extend.navToC2CChatPage
+import github.leavesczy.compose_chat.extend.navToHomePage
 import github.leavesczy.compose_chat.extend.viewModelInstance
 import github.leavesczy.compose_chat.logic.FriendProfileViewModel
-import github.leavesczy.compose_chat.ui.profile.ProfileScreen
+import github.leavesczy.compose_chat.ui.profile.ProfilePanel
 import github.leavesczy.compose_chat.ui.theme.BottomSheetShape
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun FriendProfileScreen(
+fun FriendProfilePage(
     friendId: String
 ) {
     val friendProfileViewModel = viewModelInstance {
@@ -43,8 +43,8 @@ fun FriendProfileScreen(
     LaunchedEffect(key1 = Unit) {
         friendProfileViewModel.getFriendProfile()
     }
-    val friendProfileScreenState by friendProfileViewModel.friendProfileScreenState.collectAsState()
-    val personProfile = friendProfileScreenState.personProfile
+    val friendProfilePageState by friendProfileViewModel.friendProfilePageState.collectAsState()
+    val personProfile = friendProfilePageState.personProfile
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val navHostController = LocalNavHostController.current
@@ -59,7 +59,7 @@ fun FriendProfileScreen(
         sheetState = sheetState,
         sheetShape = BottomSheetShape,
         sheetContent = {
-            SetFriendRemarkSheetContent(friendProfile = personProfile,
+            SetFriendRemarkPanel(friendProfile = personProfile,
                 modalBottomSheetState = sheetState,
                 onSetRemark = { friendId, remark ->
                     friendProfileViewModel.setFriendRemark(
@@ -71,7 +71,7 @@ fun FriendProfileScreen(
     ) {
         var openDeleteFriendDialog by remember { mutableStateOf(false) }
         Scaffold {
-            ProfileScreen(
+            ProfilePanel(
                 title = personProfile.nickname,
                 subtitle = personProfile.signature,
                 introduction = "ID: ${personProfile.id}" + if (personProfile.remark.isNotBlank()) {
@@ -82,10 +82,10 @@ fun FriendProfileScreen(
                 avatarUrl = personProfile.faceUrl
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    if (friendProfileScreenState.showAlterBtb) {
+                    if (friendProfilePageState.showAlterBtb) {
                         CommonButton(text = "去聊天吧") {
                             navHostController.popBackStack()
-                            navHostController.navToC2CChatScreen(friendId = personProfile.id)
+                            navHostController.navToC2CChatPage(friendId = personProfile.id)
                         }
                         CommonButton(text = "设置备注") {
                             expandSheetContent()
@@ -94,7 +94,7 @@ fun FriendProfileScreen(
                             openDeleteFriendDialog = true
                         }
                     }
-                    if (friendProfileScreenState.showAddBtn) {
+                    if (friendProfilePageState.showAddBtn) {
                         CommonButton(text = "加为好友") {
                             friendProfileViewModel.addFriend()
                         }
@@ -104,7 +104,7 @@ fun FriendProfileScreen(
             if (openDeleteFriendDialog) {
                 DeleteFriendDialog(friendProfile = personProfile, onDeleteFriend = {
                     friendProfileViewModel.deleteFriend(friendId = it)
-                    navHostController.navToHomeScreen()
+                    navHostController.navToHomePage()
                 }, onDismissRequest = {
                     openDeleteFriendDialog = false
                 })
@@ -154,7 +154,7 @@ private fun DeleteFriendDialog(
 }
 
 @Composable
-private fun SetFriendRemarkSheetContent(
+private fun SetFriendRemarkPanel(
     friendProfile: PersonProfile,
     modalBottomSheetState: ModalBottomSheetState,
     onSetRemark: (userId: String, remark: String) -> Unit

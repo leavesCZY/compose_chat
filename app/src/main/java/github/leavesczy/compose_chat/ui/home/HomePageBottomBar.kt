@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import github.leavesczy.compose_chat.model.HomeScreenBottomBarState
-import github.leavesczy.compose_chat.model.HomeScreenTab
+import github.leavesczy.compose_chat.model.HomePageBottomBarState
+import github.leavesczy.compose_chat.model.HomePageTab
 
 /**
  * @Author: leavesCZY
@@ -24,12 +24,12 @@ import github.leavesczy.compose_chat.model.HomeScreenTab
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun HomeScreenBottomBar(
-    homeScreenBottomBarState: HomeScreenBottomBarState
+fun HomePageBottomBar(
+    homePageBottomBarState: HomePageBottomBarState
 ) {
-    val tabList = homeScreenBottomBarState.tabList
-    val unreadMessageCount = homeScreenBottomBarState.unreadMessageCount
-    val tabSelected = homeScreenBottomBarState.tabSelected
+    val tabList = homePageBottomBarState.tabList
+    val unreadMessageCount = homePageBottomBarState.unreadMessageCount
+    val tabSelected = homePageBottomBarState.tabSelected
     NavigationBar(modifier = Modifier.height(height = 60.dp)) {
         tabList.forEach { tab ->
             NavigationBarItem(
@@ -38,7 +38,7 @@ fun HomeScreenBottomBar(
                         imageVector = tab.icon,
                         contentDescription = null
                     )
-                    if (tab == HomeScreenTab.Conversation) {
+                    if (tab == HomePageTab.Conversation) {
                         if (unreadMessageCount > 0) {
                             Text(
                                 text = if (unreadMessageCount > 99) "99+" else unreadMessageCount.toString(),
@@ -62,7 +62,7 @@ fun HomeScreenBottomBar(
                     selectedIconColor = MaterialTheme.colorScheme.primary
                 ),
                 onClick = {
-                    homeScreenBottomBarState.onTabSelected(tab)
+                    homePageBottomBarState.onTabSelected(tab)
                 }
             )
         }

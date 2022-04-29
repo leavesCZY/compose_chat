@@ -33,9 +33,9 @@ class HomeViewModel : ViewModel() {
     init {
         ComposeChat.conversationProvider.getConversationList()
         ComposeChat.conversationProvider.getTotalUnreadMessageCount()
-        getJoinedGroupList()
         ComposeChat.friendshipProvider.getFriendList()
-        ComposeChat.accountProvider.refreshPersonProfile()
+        ComposeChat.accountProvider.getPersonProfile()
+        getJoinedGroupList()
     }
 
     fun deleteConversation(conversation: Conversation) {

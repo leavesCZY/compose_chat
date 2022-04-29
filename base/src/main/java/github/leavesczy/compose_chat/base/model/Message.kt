@@ -44,30 +44,12 @@ sealed class Message(val messageDetail: MessageDetail) {
 
 }
 
-data class TimeMessage(
-    private val targetMessage: Message
-) : Message(
-    messageDetail = MessageDetail(
-        msgId = (targetMessage.messageDetail.timestamp + targetMessage.messageDetail.msgId.hashCode()).toString(),
-        timestamp = targetMessage.messageDetail.timestamp,
-        state = MessageState.Completed,
-        sender = PersonProfile.Empty,
-        isSelfMessage = false
-    )
-) {
-
-    override val formatMessage = messageDetail.chatTime
-
-}
-
 data class TextMessage(private val detail: MessageDetail, private val text: String) :
     Message(messageDetail = detail) {
 
     override val formatMessage = text
 
 }
-
-data class ImageElement(val width: Int, val height: Int, val url: String)
 
 data class ImageMessage(
     private val detail: MessageDetail,
@@ -81,5 +63,23 @@ data class ImageMessage(
     val previewUrl = preview.url
 
     override val formatMessage = "[图片]"
+
+}
+
+data class ImageElement(val width: Int, val height: Int, val url: String)
+
+data class TimeMessage(
+    private val targetMessage: Message
+) : Message(
+    messageDetail = MessageDetail(
+        msgId = (targetMessage.messageDetail.timestamp + targetMessage.messageDetail.msgId.hashCode()).toString(),
+        timestamp = targetMessage.messageDetail.timestamp,
+        state = MessageState.Completed,
+        sender = PersonProfile.Empty,
+        isSelfMessage = false
+    )
+) {
+
+    override val formatMessage = messageDetail.chatTime
 
 }

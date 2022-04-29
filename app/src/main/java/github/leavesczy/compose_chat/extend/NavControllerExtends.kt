@@ -3,7 +3,7 @@ package github.leavesczy.compose_chat.extend
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.model.Screen
+import github.leavesczy.compose_chat.model.Page
 
 /**
  * @Author: leavesCZY
@@ -11,45 +11,45 @@ import github.leavesczy.compose_chat.model.Screen
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-fun NavController.navigate(screen: Screen) {
-    navigate(route = screen.route)
+fun NavController.navigate(page: Page) {
+    navigate(route = page.route)
 }
 
 fun NavController.navToLogin() {
-    navigate(route = Screen.LoginScreen.route) {
-        popUpTo(route = Screen.HomeScreen.route) {
+    navigate(route = Page.LoginPage.route) {
+        popUpTo(route = Page.HomePage.route) {
             inclusive = true
         }
     }
 }
 
-fun NavController.navigateWithBack(screen: Screen) {
+fun NavController.navigateWithBack(page: Page) {
     popBackStack()
-    navigate(route = screen.route)
+    navigate(route = page.route)
 }
 
-private fun NavController.navToChatScreen(chat: Chat) {
-    navigate(route = Screen.ChatScreen.generateRoute(chat = chat)) {
-        popUpTo(route = Screen.ChatScreen.route) {
+private fun NavController.navToChatPage(chat: Chat) {
+    navigate(route = Page.ChatPage.generateRoute(chat = chat)) {
+        popUpTo(route = Page.ChatPage.route) {
             inclusive = true
         }
     }
 }
 
-fun NavController.navToC2CChatScreen(friendId: String) {
-    navToChatScreen(chat = Chat.C2C(id = friendId))
+fun NavController.navToC2CChatPage(friendId: String) {
+    navToChatPage(chat = Chat.C2C(id = friendId))
 }
 
-fun NavController.navToGroupChatScreen(groupId: String) {
-    navToChatScreen(chat = Chat.Group(id = groupId))
+fun NavController.navToGroupChatPage(groupId: String) {
+    navToChatPage(chat = Chat.Group(id = groupId))
 }
 
-fun NavController.navToHomeScreen() {
-    popBackStack(route = Screen.HomeScreen.route, inclusive = false)
+fun NavController.navToHomePage() {
+    popBackStack(route = Page.HomePage.route, inclusive = false)
 }
 
-fun NavController.navToPreviewImageScreen(imagePath: String) {
-    navigate(route = Screen.PreviewImageScreen.generateRoute(imagePath = imagePath))
+fun NavController.navToPreviewImagePage(imagePath: String) {
+    navigate(route = Page.PreviewImagePage.generateRoute(imagePath = imagePath))
 }
 
 fun NavBackStackEntry.getStringArgument(key: String): String {

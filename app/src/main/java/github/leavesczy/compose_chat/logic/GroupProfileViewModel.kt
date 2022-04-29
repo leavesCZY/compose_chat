@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.model.ActionResult
 import github.leavesczy.compose_chat.base.model.GroupProfile
-import github.leavesczy.compose_chat.model.GroupProfileScreenState
+import github.leavesczy.compose_chat.model.GroupProfilePageState
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -17,8 +17,8 @@ import kotlinx.coroutines.launch
  */
 class GroupProfileViewModel(private val groupId: String) : ViewModel() {
 
-    val groupProfileScreenState = MutableStateFlow(
-        GroupProfileScreenState(
+    val groupProfilePageState = MutableStateFlow(
+        GroupProfilePageState(
             groupProfile = GroupProfile.Empty,
             memberList = emptyList()
         )
@@ -32,7 +32,7 @@ class GroupProfileViewModel(private val groupId: String) : ViewModel() {
     private fun getGroupProfile() {
         viewModelScope.launch {
             ComposeChat.groupProvider.getGroupInfo(groupId = groupId)?.let {
-                groupProfileScreenState.emit(value = groupProfileScreenState.value.copy(groupProfile = it))
+                groupProfilePageState.emit(value = groupProfilePageState.value.copy(groupProfile = it))
             }
         }
     }
@@ -40,18 +40,12 @@ class GroupProfileViewModel(private val groupId: String) : ViewModel() {
     private fun getGroupMemberList() {
         viewModelScope.launch {
             val memberList = ComposeChat.groupProvider.getGroupMemberList(groupId = groupId)
-            groupProfileScreenState.emit(value = groupProfileScreenState.value.copy(memberList = memberList))
+            groupProfilePageState.emit(value = groupProfilePageState.value.copy(memberList = memberList))
         }
     }
 
     suspend fun quitGroup(): ActionResult {
         return ComposeChat.groupProvider.quitGroup(groupId = groupId)
-    }
-
-    fun deleteGroupConversation(groupId: String) {
-        viewModelScope.launch {
-            ComposeChat.conversationProvider.deleteGroupConversation(groupId = groupId)
-        }
     }
 
     fun setAvatar(avatarUrl: String) {
