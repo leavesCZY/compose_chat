@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 include ':app'
-include ':base'
+include ':common'
 include ':proxy'

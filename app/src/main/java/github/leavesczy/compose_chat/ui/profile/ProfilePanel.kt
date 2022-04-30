@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
-import github.leavesczy.compose_chat.base.model.GroupProfile
-import github.leavesczy.compose_chat.base.model.PersonProfile
+import github.leavesczy.compose_chat.common.model.GroupProfile
+import github.leavesczy.compose_chat.common.model.PersonProfile
 import github.leavesczy.compose_chat.extend.LocalNavHostController
 import github.leavesczy.compose_chat.extend.navToPreviewImagePage
 import github.leavesczy.compose_chat.extend.scrim

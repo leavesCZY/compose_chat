@@ -1,6 +1,6 @@
 package github.leavesczy.compose_chat.logic
 
-import github.leavesczy.compose_chat.base.provider.*
+import github.leavesczy.compose_chat.common.provider.*
 import github.leavesczy.compose_chat.proxy.logic.*
 
 /**

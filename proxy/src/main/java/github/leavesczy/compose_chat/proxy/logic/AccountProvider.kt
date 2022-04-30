@@ -1,12 +1,11 @@
 package github.leavesczy.compose_chat.proxy.logic
 
 import android.content.Context
-import android.util.Log
 import com.tencent.imsdk.v2.*
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.PersonProfile
-import github.leavesczy.compose_chat.base.model.ServerState
-import github.leavesczy.compose_chat.base.provider.IAccountProvider
+import github.leavesczy.compose_chat.common.model.ActionResult
+import github.leavesczy.compose_chat.common.model.PersonProfile
+import github.leavesczy.compose_chat.common.model.ServerState
+import github.leavesczy.compose_chat.common.provider.IAccountProvider
 import github.leavesczy.compose_chat.proxy.consts.AppConst
 import github.leavesczy.compose_chat.proxy.utils.GenerateUserSig
 import kotlinx.coroutines.channels.BufferOverflow
@@ -34,31 +33,26 @@ class AccountProvider : IAccountProvider, Converters {
 
     override fun init(context: Context) {
         val config = V2TIMSDKConfig()
-        config.logLevel = V2TIMSDKConfig.V2TIM_LOG_WARN
+        config.logLevel = V2TIMSDKConfig.V2TIM_LOG_DEBUG
         V2TIMManager.getInstance().addIMSDKListener(object : V2TIMSDKListener() {
 
             override fun onConnecting() {
-                log("onConnecting")
                 dispatchServerState(serverState = ServerState.Connecting)
             }
 
             override fun onConnectSuccess() {
-                log("onConnectSuccess")
                 dispatchServerState(serverState = ServerState.ConnectSuccess)
             }
 
             override fun onConnectFailed(code: Int, error: String) {
-                log("onConnectFailed")
                 dispatchServerState(serverState = ServerState.ConnectFailed)
             }
 
             override fun onUserSigExpired() {
-                log("onUserSigExpired")
                 dispatchServerState(serverState = ServerState.UserSigExpired)
             }
 
             override fun onKickedOffline() {
-                log("onKickedOffline")
                 dispatchServerState(serverState = ServerState.KickedOffline)
             }
 
@@ -93,7 +87,8 @@ class AccountProvider : IAccountProvider, Converters {
                                 )
                             )
                         }
-                    })
+                    }
+                )
         }
     }
 
@@ -119,12 +114,7 @@ class AccountProvider : IAccountProvider, Converters {
 
     override fun getPersonProfile() {
         coroutineScope.launch {
-            getSelfProfileOrigin()?.let {
-                convertPersonProfile(userFullInfo = it)
-            }?.let {
-                AppConst.personProfile.value = it
-                personProfile.value = it
-            }
+            personProfile.value = getSelfProfile() ?: PersonProfile.Empty
         }
     }
 
@@ -132,42 +122,22 @@ class AccountProvider : IAccountProvider, Converters {
         faceUrl: String,
         nickname: String,
         signature: String
-    ): Boolean {
-        val originProfile = getSelfProfileOrigin() ?: return false
+    ): ActionResult {
+        val originProfile = getSelfProfileOrigin() ?: return ActionResult.Failed("更新失败")
         return suspendCancellableCoroutine { continuation ->
             originProfile.faceUrl = faceUrl
             originProfile.setNickname(nickname)
             originProfile.selfSignature = signature
             V2TIMManager.getInstance().setSelfInfo(originProfile, object : V2TIMCallback {
                 override fun onSuccess() {
-                    continuation.resume(value = true)
+                    continuation.resume(value = ActionResult.Success)
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    continuation.resume(value = false)
+                    continuation.resume(value = ActionResult.Failed("code: $code desc: $desc"))
                 }
             })
         }
-    }
-
-    private suspend fun getSelfProfileOrigin(): V2TIMUserFullInfo? {
-        return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getInstance()
-                .getUsersInfo(listOf(V2TIMManager.getInstance().loginUser), object :
-                    V2TIMValueCallback<List<V2TIMUserFullInfo>> {
-                    override fun onSuccess(t: List<V2TIMUserFullInfo>) {
-                        continuation.resume(value = t[0])
-                    }
-
-                    override fun onError(code: Int, desc: String?) {
-                        continuation.resume(value = null)
-                    }
-                })
-        }
-    }
-
-    private fun log(log: String) {
-        Log.e("AccountProvider", log)
     }
 
 }

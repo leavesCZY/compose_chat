@@ -12,8 +12,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import github.leavesczy.compose_chat.base.model.GroupProfile
-import github.leavesczy.compose_chat.base.model.PersonProfile
+import github.leavesczy.compose_chat.common.model.GroupProfile
+import github.leavesczy.compose_chat.common.model.PersonProfile
 import github.leavesczy.compose_chat.model.FriendshipPageState
 import github.leavesczy.compose_chat.ui.widgets.CircleImage
 import github.leavesczy.compose_chat.ui.widgets.CommonDivider

@@ -2,8 +2,8 @@ package github.leavesczy.compose_chat.logic
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import github.leavesczy.compose_chat.base.model.ActionResult
 import github.leavesczy.compose_chat.cache.AccountCache
+import github.leavesczy.compose_chat.common.model.ActionResult
 import github.leavesczy.compose_chat.model.LoginPageState
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.flow.MutableStateFlow

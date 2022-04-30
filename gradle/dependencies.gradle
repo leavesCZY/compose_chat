@@ -3,9 +3,9 @@ ext {
             "androidx-junit"                  : 'junit:junit:4.13.2',
             "androidx-test-ext"               : 'androidx.test.ext:junit:1.1.3',
             "androidx-espresso"               : 'androidx.test.espresso:espresso-core:3.4.0',
-            "androidx-appcompat"              : 'androidx.appcompat:appcompat:1.6.0-alpha01',
+            "androidx-appcompat"              : 'androidx.appcompat:appcompat:1.6.0-alpha03',
             "androidx-material"               : 'com.google.android.material:material:1.7.0-alpha01',
-            "compose-activity"                : 'androidx.activity:activity-compose:1.6.0-alpha01',
+            "compose-activity"                : 'androidx.activity:activity-compose:1.6.0-alpha03',
             "compose-lifecycle-viewmodel"     : "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0-beta01",
             "compose-constraintlayout"        : "androidx.constraintlayout:constraintlayout-compose:1.0.0",
             "compose-material3"               : "androidx.compose.material3:material3:1.0.0-alpha10",
@@ -19,6 +19,6 @@ ext {
             "accompanist-navigation-animation": "com.google.accompanist:accompanist-navigation-animation:$accompanist_version",
             "compose-coil"                    : 'io.coil-kt:coil-compose:2.0.0-rc03',
             "kotlinx-coroutines"              : 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1',
-            "tencent-imsdk"                   : "com.tencent.imsdk:imsdk-plus:6.1.2166",
+            "tencent-imsdk"                   : "com.tencent.imsdk:imsdk-plus:6.2.2363",
     ]
 }

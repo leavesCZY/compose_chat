@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atMost
-import github.leavesczy.compose_chat.base.model.*
+import github.leavesczy.compose_chat.common.model.*
 import github.leavesczy.compose_chat.model.ChatPageState
 import github.leavesczy.compose_chat.ui.widgets.CircleImage
 import github.leavesczy.compose_chat.ui.widgets.CoilImage
@@ -59,7 +59,7 @@ fun MessagePanel(
             item(key = message.messageDetail.msgId) {
                 MessageItems(
                     message = message,
-                    showPartyName = chat is Chat.Group,
+                    showPartyName = chat is GroupChat,
                     onClickAvatar = onClickAvatar,
                     onClickMessage = onClickMessage,
                     onLongClickMessage = onLongClickMessage

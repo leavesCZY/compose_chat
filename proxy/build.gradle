@@ -26,5 +26,5 @@ dependencies {
     androidTestImplementation all_dependencie['androidx-espresso']
     implementation all_dependencie['kotlinx-coroutines']
     implementation all_dependencie['tencent-imsdk']
-    implementation project(path: ':base')
+    implementation project(path: ':common')
 }

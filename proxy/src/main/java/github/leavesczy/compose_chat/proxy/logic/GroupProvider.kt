@@ -1,10 +1,10 @@
 package github.leavesczy.compose_chat.proxy.logic
 
 import com.tencent.imsdk.v2.*
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.GroupMemberProfile
-import github.leavesczy.compose_chat.base.model.GroupProfile
-import github.leavesczy.compose_chat.base.provider.IGroupProvider
+import github.leavesczy.compose_chat.common.model.ActionResult
+import github.leavesczy.compose_chat.common.model.GroupMemberProfile
+import github.leavesczy.compose_chat.common.model.GroupProfile
+import github.leavesczy.compose_chat.common.provider.IGroupProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -153,16 +153,16 @@ class GroupProvider : IGroupProvider, Converters {
 
     private suspend fun getJoinedGroupListOrigin(): List<GroupProfile> {
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getGroupManager().getJoinedGroupList(object :
-                V2TIMValueCallback<List<V2TIMGroupInfo>> {
-                override fun onSuccess(t: List<V2TIMGroupInfo>) {
-                    continuation.resume(value = convertGroup(t))
-                }
+            V2TIMManager.getGroupManager()
+                .getJoinedGroupList(object : V2TIMValueCallback<List<V2TIMGroupInfo>> {
+                    override fun onSuccess(t: List<V2TIMGroupInfo>) {
+                        continuation.resume(value = convertGroup(t))
+                    }
 
-                override fun onError(code: Int, desc: String?) {
-                    continuation.resume(value = emptyList())
-                }
-            })
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(value = emptyList())
+                    }
+                })
         }
     }
 

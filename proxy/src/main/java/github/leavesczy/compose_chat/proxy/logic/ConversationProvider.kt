@@ -1,11 +1,11 @@
 package github.leavesczy.compose_chat.proxy.logic
 
 import com.tencent.imsdk.v2.*
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.C2CConversation
-import github.leavesczy.compose_chat.base.model.Conversation
-import github.leavesczy.compose_chat.base.model.GroupConversation
-import github.leavesczy.compose_chat.base.provider.IConversationProvider
+import github.leavesczy.compose_chat.common.model.ActionResult
+import github.leavesczy.compose_chat.common.model.C2CConversation
+import github.leavesczy.compose_chat.common.model.Conversation
+import github.leavesczy.compose_chat.common.model.GroupConversation
+import github.leavesczy.compose_chat.common.provider.IConversationProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -146,7 +146,7 @@ class ConversationProvider : IConversationProvider, Converters {
             V2TIMConversation.V2TIM_C2C -> {
                 val lastMessage = convertMessage(timMessage = lastConversationMessage)
                 return C2CConversation(
-                    userId = conversation.userID ?: "",
+                    id = conversation.userID ?: "",
                     name = conversation.showName ?: "",
                     faceUrl = conversation.faceUrl ?: "",
                     unreadMessageCount = conversation.unreadCount,
@@ -157,7 +157,7 @@ class ConversationProvider : IConversationProvider, Converters {
             V2TIMConversation.V2TIM_GROUP -> {
                 val lastMessage = convertMessage(timMessage = lastConversationMessage)
                 return GroupConversation(
-                    groupId = conversation.groupID ?: "",
+                    id = conversation.groupID ?: "",
                     name = conversation.showName ?: "",
                     faceUrl = conversation.faceUrl ?: "",
                     unreadMessageCount = conversation.unreadCount,

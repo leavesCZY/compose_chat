@@ -39,10 +39,7 @@ fun HomePageFriendshipPanel(homePageFriendshipPanelState: HomePageFriendshipPane
             ModalBottomSheetValue.Hidden -> {
 
             }
-            ModalBottomSheetValue.Expanded -> {
-                expandSheetContent(targetValue = ModalBottomSheetValue.HalfExpanded)
-            }
-            ModalBottomSheetValue.HalfExpanded -> {
+            ModalBottomSheetValue.Expanded, ModalBottomSheetValue.HalfExpanded -> {
                 expandSheetContent(targetValue = ModalBottomSheetValue.Hidden)
             }
         }

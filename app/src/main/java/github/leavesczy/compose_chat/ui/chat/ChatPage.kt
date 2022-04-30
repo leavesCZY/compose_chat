@@ -5,10 +5,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
-import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.base.model.ImageMessage
-import github.leavesczy.compose_chat.base.model.Message
-import github.leavesczy.compose_chat.base.model.TextMessage
+import github.leavesczy.compose_chat.common.model.*
 import github.leavesczy.compose_chat.extend.LocalNavHostController
 import github.leavesczy.compose_chat.extend.navToPreviewImagePage
 import github.leavesczy.compose_chat.extend.viewModelInstance
@@ -110,12 +107,12 @@ fun ChatPage(
                 },
                 onClickMoreMenu = {
                     when (chat) {
-                        is Chat.C2C -> {
+                        is PrivateChat -> {
                             navHostController.navigate(
                                 route = Page.FriendProfilePage.generateRoute(friendId = chat.id)
                             )
                         }
-                        is Chat.Group -> {
+                        is GroupChat -> {
                             navHostController.navigate(
                                 route = Page.GroupProfilePage.generateRoute(groupId = chat.id)
                             )

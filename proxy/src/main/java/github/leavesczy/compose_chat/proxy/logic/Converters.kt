@@ -1,7 +1,7 @@
 package github.leavesczy.compose_chat.proxy.logic
 
 import com.tencent.imsdk.v2.*
-import github.leavesczy.compose_chat.base.model.*
+import github.leavesczy.compose_chat.common.model.*
 import github.leavesczy.compose_chat.proxy.coroutineScope.ChatCoroutineScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -23,6 +23,31 @@ internal interface Converters {
 
     val coroutineScope: CoroutineScope
         get() = chatCoroutineScope
+
+    suspend fun getSelfProfileOrigin(): V2TIMUserFullInfo? {
+        return suspendCancellableCoroutine { continuation ->
+            V2TIMManager.getInstance()
+                .getUsersInfo(listOf(V2TIMManager.getInstance().loginUser), object :
+                    V2TIMValueCallback<List<V2TIMUserFullInfo>> {
+                    override fun onSuccess(t: List<V2TIMUserFullInfo>) {
+                        continuation.resume(value = t[0])
+                    }
+
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(value = null)
+                    }
+                })
+        }
+    }
+
+    suspend fun getSelfProfile(): PersonProfile? {
+        val profile = getSelfProfileOrigin()
+        return if (profile == null) {
+            null
+        } else {
+            convertPersonProfile(profile)
+        }
+    }
 
     fun convertPersonProfile(userFullInfo: V2TIMUserFullInfo): PersonProfile {
         return PersonProfile(

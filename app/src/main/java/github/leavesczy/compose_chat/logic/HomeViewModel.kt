@@ -3,8 +3,8 @@ package github.leavesczy.compose_chat.logic
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import github.leavesczy.compose_chat.base.model.*
 import github.leavesczy.compose_chat.cache.AccountCache
+import github.leavesczy.compose_chat.common.model.*
 import github.leavesczy.compose_chat.utils.ContextHolder
 import github.leavesczy.compose_chat.utils.ImageUtils
 import github.leavesczy.compose_chat.utils.showToast
@@ -71,12 +71,19 @@ class HomeViewModel : ViewModel() {
         signature: String
     ) {
         viewModelScope.launch {
-            val updateProfile = ComposeChat.accountProvider.updatePersonProfile(
+            val result = ComposeChat.accountProvider.updatePersonProfile(
                 faceUrl = faceUrl,
                 nickname = nickname,
                 signature = signature
             )
-            showToast(if (updateProfile) "更新成功" else "更新失败")
+            when (result) {
+                is ActionResult.Success -> {
+                    showToast("更新成功")
+                }
+                is ActionResult.Failed -> {
+                    showToast(result.reason)
+                }
+            }
         }
     }
 
@@ -87,7 +94,7 @@ class HomeViewModel : ViewModel() {
             val imagePath = imageFile?.absolutePath
             if (!imagePath.isNullOrBlank()) {
                 return@withContext ComposeChat.messageProvider.uploadImage(
-                    chat = Chat.Group(id = ComposeChat.groupIdToUploadAvatar),
+                    chat = GroupChat(id = ComposeChat.groupIdToUploadAvatar),
                     imagePath = imagePath
                 )
             }

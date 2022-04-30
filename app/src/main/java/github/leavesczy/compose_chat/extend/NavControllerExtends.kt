@@ -2,7 +2,9 @@ package github.leavesczy.compose_chat.extend
 
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import github.leavesczy.compose_chat.base.model.Chat
+import github.leavesczy.compose_chat.common.model.Chat
+import github.leavesczy.compose_chat.common.model.GroupChat
+import github.leavesczy.compose_chat.common.model.PrivateChat
 import github.leavesczy.compose_chat.model.Page
 
 /**
@@ -11,10 +13,6 @@ import github.leavesczy.compose_chat.model.Page
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-fun NavController.navigate(page: Page) {
-    navigate(route = page.route)
-}
-
 fun NavController.navToLogin() {
     navigate(route = Page.LoginPage.route) {
         popUpTo(route = Page.HomePage.route) {
@@ -36,12 +34,12 @@ private fun NavController.navToChatPage(chat: Chat) {
     }
 }
 
-fun NavController.navToC2CChatPage(friendId: String) {
-    navToChatPage(chat = Chat.C2C(id = friendId))
+fun NavController.navToPrivateChatPage(friendId: String) {
+    navToChatPage(chat = PrivateChat(id = friendId))
 }
 
 fun NavController.navToGroupChatPage(groupId: String) {
-    navToChatPage(chat = Chat.Group(id = groupId))
+    navToChatPage(chat = GroupChat(id = groupId))
 }
 
 fun NavController.navToHomePage() {

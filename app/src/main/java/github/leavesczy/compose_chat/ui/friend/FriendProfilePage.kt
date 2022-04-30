@@ -15,10 +15,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import github.leavesczy.compose_chat.base.model.PersonProfile
+import github.leavesczy.compose_chat.common.model.PersonProfile
 import github.leavesczy.compose_chat.extend.LocalNavHostController
-import github.leavesczy.compose_chat.extend.navToC2CChatPage
 import github.leavesczy.compose_chat.extend.navToHomePage
+import github.leavesczy.compose_chat.extend.navToPrivateChatPage
 import github.leavesczy.compose_chat.extend.viewModelInstance
 import github.leavesczy.compose_chat.logic.FriendProfileViewModel
 import github.leavesczy.compose_chat.ui.profile.ProfilePanel
@@ -85,7 +85,7 @@ fun FriendProfilePage(
                     if (friendProfilePageState.showAlterBtb) {
                         CommonButton(text = "去聊天吧") {
                             navHostController.popBackStack()
-                            navHostController.navToC2CChatPage(friendId = personProfile.id)
+                            navHostController.navToPrivateChatPage(friendId = personProfile.id)
                         }
                         CommonButton(text = "设置备注") {
                             expandSheetContent()
@@ -172,10 +172,7 @@ private fun SetFriendRemarkPanel(
             ModalBottomSheetValue.Hidden -> {
 
             }
-            ModalBottomSheetValue.Expanded -> {
-                expandSheetContent(targetValue = ModalBottomSheetValue.HalfExpanded)
-            }
-            ModalBottomSheetValue.HalfExpanded -> {
+            ModalBottomSheetValue.Expanded, ModalBottomSheetValue.HalfExpanded -> {
                 expandSheetContent(targetValue = ModalBottomSheetValue.Hidden)
             }
         }

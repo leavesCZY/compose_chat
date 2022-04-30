@@ -9,7 +9,7 @@ import androidx.compose.material.icons.filled.Sailing
 import androidx.compose.material3.DrawerState
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavBackStackEntry
-import github.leavesczy.compose_chat.base.model.*
+import github.leavesczy.compose_chat.common.model.*
 import github.leavesczy.compose_chat.extend.getIntArgument
 import github.leavesczy.compose_chat.extend.getStringArgument
 import github.leavesczy.compose_chat.utils.StringUtils

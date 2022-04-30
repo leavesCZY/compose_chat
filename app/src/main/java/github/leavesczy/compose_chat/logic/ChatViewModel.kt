@@ -3,8 +3,8 @@ package github.leavesczy.compose_chat.logic
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import github.leavesczy.compose_chat.base.model.*
-import github.leavesczy.compose_chat.base.provider.IMessageProvider
+import github.leavesczy.compose_chat.common.model.*
+import github.leavesczy.compose_chat.common.provider.IMessageProvider
 import github.leavesczy.compose_chat.model.ChatPageState
 import github.leavesczy.compose_chat.utils.ContextHolder
 import github.leavesczy.compose_chat.utils.ImageUtils
@@ -55,10 +55,10 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
         ComposeChat.messageProvider.startReceive(chat = chat, messageListener = messageListener)
         ComposeChat.accountProvider.getPersonProfile()
         when (chat) {
-            is Chat.C2C -> {
+            is PrivateChat -> {
                 getFriendProfile(friendId = chat.id)
             }
-            is Chat.Group -> {
+            is GroupChat -> {
                 getGroupProfile(groupId = chat.id)
             }
         }
@@ -162,7 +162,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                         msgId = sendingMessage.messageDetail.msgId,
                         messageState = state
                     )
-                    val failReason = state.failReason
+                    val failReason = state.reason
                     if (failReason.isNotBlank()) {
                         showToast(failReason)
                     }

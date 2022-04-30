@@ -24,8 +24,8 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import github.leavesczy.compose_chat.base.model.ServerState
 import github.leavesczy.compose_chat.cache.AccountCache
+import github.leavesczy.compose_chat.common.model.ServerState
 import github.leavesczy.compose_chat.extend.ProvideNavHostController
 import github.leavesczy.compose_chat.extend.navToLogin
 import github.leavesczy.compose_chat.logic.AppViewModel

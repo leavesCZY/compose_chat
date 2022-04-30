@@ -1,9 +1,9 @@
 package github.leavesczy.compose_chat.proxy.logic
 
 import com.tencent.imsdk.v2.*
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.PersonProfile
-import github.leavesczy.compose_chat.base.provider.IFriendshipProvider
+import github.leavesczy.compose_chat.common.model.ActionResult
+import github.leavesczy.compose_chat.common.model.PersonProfile
+import github.leavesczy.compose_chat.common.provider.IFriendshipProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine

@@ -12,7 +12,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-inline fun <reified VM : ViewModel> viewModelInstance(crossinline create: () -> VM): VM =
+inline fun <reified T : ViewModel> viewModelInstance(crossinline create: () -> T): T =
     viewModel(factory = object :
         ViewModelProvider.NewInstanceFactory() {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

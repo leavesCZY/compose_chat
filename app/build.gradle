@@ -73,13 +73,14 @@ android {
                 "-Xallow-jvm-ir-dependencies",
                 "-Xskip-prerelease-check",
                 "-Xopt-in=kotlin.RequiresOptIn",
-                "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                "-Xuse-experimental=androidx.compose.animation.ExperimentalAnimationApi",
                 "-Xopt-in=androidx.compose.material.ExperimentalMaterialApi",
                 "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+                "-Xopt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+                "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi",
                 "-Xopt-in=com.google.accompanist.insets.ExperimentalAnimatedInsets",
                 "-Xopt-in=com.google.accompanist.pager.ExperimentalPagerApi",
-                "-Xopt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+                "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-Xuse-experimental=androidx.compose.animation.ExperimentalAnimationApi",
         ]
         useIR = true
     }
@@ -127,6 +128,6 @@ dependencies {
     androidTestImplementation all_dependencie['compose-ui-test-junit4']
     implementation all_dependencie['accompanist-systemuicontroller']
     implementation all_dependencie['accompanist-navigation-animation']
-    implementation project(path: ':base')
+    implementation project(path: ':common')
     implementation project(path: ':proxy')
 }

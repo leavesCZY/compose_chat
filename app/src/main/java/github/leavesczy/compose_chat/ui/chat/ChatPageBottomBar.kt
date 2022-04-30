@@ -15,7 +15,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalTextInputService
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -45,7 +45,7 @@ fun ChatPageBottomBar(
     sendText: (TextFieldValue) -> Unit,
     sendImage: (Uri) -> Unit
 ) {
-    val textInputService = LocalTextInputService.current
+    val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
     var messageInputted by rememberSaveable(stateSaver = TextFieldValueSaver) {
         mutableStateOf(TextFieldValue(""))
@@ -119,7 +119,7 @@ fun ChatPageBottomBar(
             if (it != currentInputSelector) {
                 currentInputSelector = it
                 if (currentInputSelector != InputSelector.NONE) {
-                    textInputService?.hideSoftwareKeyboard()
+                    softwareKeyboardController?.hide()
                 }
             }
         }
@@ -128,7 +128,7 @@ fun ChatPageBottomBar(
     val ime = WindowInsets.ime
     val localDensity = LocalDensity.current
     val density = localDensity.density
-    var imeMaxHeightDp by remember {
+    var keyboardHeightDp by remember {
         mutableStateOf(0.dp)
     }
 
@@ -136,11 +136,10 @@ fun ChatPageBottomBar(
         snapshotFlow {
             ime.getBottom(localDensity)
         }.collect {
-            val currentImeHeight = (it / density).dp
-            if (currentImeHeight == imeMaxHeightDp) {
+            val currentKeyboardHeightDp = (it / density).dp
+            keyboardHeightDp = maxOf(currentKeyboardHeightDp, keyboardHeightDp)
+            if (currentKeyboardHeightDp == keyboardHeightDp) {
                 currentInputSelector = InputSelector.NONE
-            } else {
-                imeMaxHeightDp = maxOf(imeMaxHeightDp, currentImeHeight)
             }
         }
     }
@@ -195,12 +194,12 @@ fun ChatPageBottomBar(
                 )
             }
             InputSelector.EMOJI, InputSelector.Picture -> {
-                val maxHeight = if (imeMaxHeightDp <= 0.dp) {
+                val maxHeight = if (keyboardHeightDp <= 0.dp) {
                     DEFAULT_KEYBOARD_HEIGHT
                 } else {
-                    imeMaxHeightDp
+                    keyboardHeightDp
                 }
-                Box(modifier = Modifier.heightIn(min = imeMaxHeightDp, max = maxHeight)) {
+                Box(modifier = Modifier.heightIn(min = keyboardHeightDp, max = maxHeight)) {
                     when (currentInputSelector) {
                         InputSelector.EMOJI -> {
                             EmojiTable(
@@ -212,7 +211,7 @@ fun ChatPageBottomBar(
                         InputSelector.Picture -> {
                             Box(
                                 modifier = Modifier.heightIn(
-                                    min = imeMaxHeightDp,
+                                    min = keyboardHeightDp,
                                     max = maxHeight
                                 )
                             ) {

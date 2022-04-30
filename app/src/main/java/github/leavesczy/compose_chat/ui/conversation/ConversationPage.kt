@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atLeast
-import github.leavesczy.compose_chat.base.model.Conversation
+import github.leavesczy.compose_chat.common.model.Conversation
 import github.leavesczy.compose_chat.model.ConversationPageState
 import github.leavesczy.compose_chat.ui.widgets.CircleImage
 import github.leavesczy.compose_chat.ui.widgets.CommonDivider

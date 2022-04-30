@@ -12,12 +12,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.C2CConversation
-import github.leavesczy.compose_chat.base.model.GroupConversation
+import github.leavesczy.compose_chat.common.model.ActionResult
+import github.leavesczy.compose_chat.common.model.C2CConversation
+import github.leavesczy.compose_chat.common.model.GroupConversation
 import github.leavesczy.compose_chat.extend.LocalNavHostController
-import github.leavesczy.compose_chat.extend.navToC2CChatPage
 import github.leavesczy.compose_chat.extend.navToGroupChatPage
+import github.leavesczy.compose_chat.extend.navToPrivateChatPage
 import github.leavesczy.compose_chat.logic.HomeViewModel
 import github.leavesczy.compose_chat.model.*
 import github.leavesczy.compose_chat.ui.conversation.ConversationPage
@@ -67,7 +67,7 @@ fun HomePage(
             onClickConversation = {
                 when (it) {
                     is C2CConversation -> {
-                        navHostController.navToC2CChatPage(friendId = it.id)
+                        navHostController.navToPrivateChatPage(friendId = it.id)
                     }
                     is GroupConversation -> {
                         navHostController.navToGroupChatPage(groupId = it.id)

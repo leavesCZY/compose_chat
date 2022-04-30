@@ -2,10 +2,8 @@ package github.leavesczy.compose_chat.proxy.logic
 
 import android.graphics.BitmapFactory
 import com.tencent.imsdk.v2.*
-import github.leavesczy.compose_chat.base.model.*
-import github.leavesczy.compose_chat.base.provider.IMessageProvider
-import github.leavesczy.compose_chat.proxy.consts.AppConst
-import github.leavesczy.compose_chat.proxy.utils.RandomUtils
+import github.leavesczy.compose_chat.common.model.*
+import github.leavesczy.compose_chat.common.provider.IMessageProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -13,6 +11,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.lang.ref.SoftReference
 import kotlin.coroutines.resume
+import kotlin.random.Random
 
 /**
  * @Author: leavesCZY
@@ -46,19 +45,16 @@ class MessageProvider : IMessageProvider, Converters {
     override fun markMessageAsRead(chat: Chat) {
         val id = chat.id
         when (chat) {
-            is Chat.C2C -> {
+            is PrivateChat -> {
                 V2TIMManager.getMessageManager().markC2CMessageAsRead(id, null)
             }
-            is Chat.Group -> {
+            is GroupChat -> {
                 V2TIMManager.getMessageManager().markGroupMessageAsRead(id, null)
             }
         }
     }
 
-    override suspend fun getHistoryMessage(
-        chat: Chat,
-        lastMessage: Message?
-    ): LoadMessageResult {
+    override suspend fun getHistoryMessage(chat: Chat, lastMessage: Message?): LoadMessageResult {
         val chatId = chat.id
         val count = 60
         return suspendCancellableCoroutine { continuation ->
@@ -77,7 +73,7 @@ class MessageProvider : IMessageProvider, Converters {
                 }
             }
             when (chat) {
-                is Chat.C2C -> {
+                is PrivateChat -> {
                     V2TIMManager.getMessageManager().getC2CHistoryMessageList(
                         chatId,
                         count,
@@ -85,7 +81,7 @@ class MessageProvider : IMessageProvider, Converters {
                         callback
                     )
                 }
-                is Chat.Group -> {
+                is GroupChat -> {
                     V2TIMManager.getMessageManager().getGroupHistoryMessageList(
                         chatId,
                         count,
@@ -142,11 +138,11 @@ class MessageProvider : IMessageProvider, Converters {
         val c2cId: String
         val groupId: String
         when (chat) {
-            is Chat.C2C -> {
+            is PrivateChat -> {
                 c2cId = chat.id
                 groupId = ""
             }
-            is Chat.Group -> {
+            is GroupChat -> {
                 c2cId = ""
                 groupId = chat.id
             }
@@ -184,7 +180,7 @@ class MessageProvider : IMessageProvider, Converters {
     }
 
     private fun Message.resetToFailed(failReason: String): Message {
-        val failedState = MessageState.SendFailed(failReason = failReason)
+        val failedState = MessageState.SendFailed(reason = failReason)
         return when (this) {
             is TextMessage -> {
                 this.copy(detail = this.messageDetail.copy(state = failedState))
@@ -254,14 +250,22 @@ class MessageProvider : IMessageProvider, Converters {
         }
     }
 
-    private fun generatePreSendMessageDetail(): MessageDetail {
+    private suspend fun generatePreSendMessageDetail(): MessageDetail {
         return MessageDetail(
-            msgId = RandomUtils.generateMessageId(),
-            timestamp = RandomUtils.generateMessageTimestamp(),
+            msgId = generateMessageId(),
+            timestamp = generateMessageTimestamp(),
             state = MessageState.Sending,
-            sender = AppConst.personProfile.value,
+            sender = getSelfProfile() ?: PersonProfile.Empty,
             isSelfMessage = true
         )
+    }
+
+    private fun generateMessageId(): String {
+        return (System.currentTimeMillis() + Random.nextInt(1024, 2048)).toString()
+    }
+
+    private fun generateMessageTimestamp(): Long {
+        return V2TIMManager.getInstance().serverTime
     }
 
 }
