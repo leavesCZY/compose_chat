@@ -117,6 +117,7 @@ dependencies {
     implementation all_dependencie['androidx-material']
     implementation all_dependencie['kotlinx-coroutines']
     implementation all_dependencie['compose-coil']
+    implementation all_dependencie['compose-coil-gif']
     implementation all_dependencie['compose-activity']
     implementation all_dependencie['compose-lifecycle-viewmodel']
     implementation all_dependencie['compose-constraintlayout']

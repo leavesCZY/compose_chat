@@ -126,11 +126,10 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     fun sendImageMessage(imageUri: Uri) {
         viewModelScope.launch {
             val imagePath = withContext(Dispatchers.IO) {
-                val imageFile =
-                    ImageUtils.saveImageToCacheDir(
-                        context = ContextHolder.context,
-                        imageUri = imageUri
-                    )
+                val imageFile = ImageUtils.saveImageToCacheDir(
+                    context = ContextHolder.context,
+                    imageUri = imageUri
+                )
                 imageFile?.absolutePath
             }
             if (imagePath.isNullOrBlank()) {

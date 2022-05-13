@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat
+package github.leavesczy.compose_chat.ui.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,7 +24,6 @@ import github.leavesczy.compose_chat.extend.navToHomePage
 import github.leavesczy.compose_chat.extend.viewModelInstance
 import github.leavesczy.compose_chat.logic.GroupProfileViewModel
 import github.leavesczy.compose_chat.model.Page
-import github.leavesczy.compose_chat.ui.profile.ProfilePanel
 import github.leavesczy.compose_chat.ui.widgets.CircleImage
 import github.leavesczy.compose_chat.ui.widgets.CommonDivider
 import github.leavesczy.compose_chat.utils.randomFaceUrl

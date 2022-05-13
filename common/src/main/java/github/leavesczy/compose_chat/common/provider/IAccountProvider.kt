@@ -1,6 +1,6 @@
 package github.leavesczy.compose_chat.common.provider
 
-import android.content.Context
+import android.app.Application
 import github.leavesczy.compose_chat.common.model.ActionResult
 import github.leavesczy.compose_chat.common.model.PersonProfile
 import github.leavesczy.compose_chat.common.model.ServerState
@@ -19,7 +19,7 @@ interface IAccountProvider {
 
     val serverConnectState: SharedFlow<ServerState>
 
-    fun init(context: Context)
+    fun init(application: Application)
 
     suspend fun login(userId: String): ActionResult
 

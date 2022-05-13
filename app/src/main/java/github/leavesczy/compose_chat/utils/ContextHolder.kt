@@ -13,8 +13,8 @@ object ContextHolder {
     lateinit var context: Application
         private set
 
-    fun init(context: Application) {
-        this.context = context
+    fun init(application: Application) {
+        this.context = application
     }
 
 }

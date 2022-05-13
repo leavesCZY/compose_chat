@@ -33,11 +33,11 @@ import github.leavesczy.compose_chat.model.AppTheme
 import github.leavesczy.compose_chat.model.HomePageTab
 import github.leavesczy.compose_chat.model.Page
 import github.leavesczy.compose_chat.ui.chat.ChatPage
-import github.leavesczy.compose_chat.ui.chat.GroupProfilePage
 import github.leavesczy.compose_chat.ui.common.PreviewImagePage
 import github.leavesczy.compose_chat.ui.friend.FriendProfilePage
 import github.leavesczy.compose_chat.ui.home.HomePage
 import github.leavesczy.compose_chat.ui.login.LoginPage
+import github.leavesczy.compose_chat.ui.profile.GroupProfilePage
 import github.leavesczy.compose_chat.ui.profile.UpdateProfilePage
 import github.leavesczy.compose_chat.ui.theme.ChatTheme
 import github.leavesczy.compose_chat.ui.widgets.SystemBarColor

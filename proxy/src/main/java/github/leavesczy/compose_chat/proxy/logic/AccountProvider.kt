@@ -1,6 +1,6 @@
 package github.leavesczy.compose_chat.proxy.logic
 
-import android.content.Context
+import android.app.Application
 import com.tencent.imsdk.v2.*
 import github.leavesczy.compose_chat.common.model.ActionResult
 import github.leavesczy.compose_chat.common.model.PersonProfile
@@ -31,9 +31,9 @@ class AccountProvider : IAccountProvider, Converters {
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
-    override fun init(context: Context) {
+    override fun init(application: Application) {
         val config = V2TIMSDKConfig()
-        config.logLevel = V2TIMSDKConfig.V2TIM_LOG_DEBUG
+        config.logLevel = V2TIMSDKConfig.V2TIM_LOG_WARN
         V2TIMManager.getInstance().addIMSDKListener(object : V2TIMSDKListener() {
 
             override fun onConnecting() {
@@ -60,7 +60,7 @@ class AccountProvider : IAccountProvider, Converters {
                 getPersonProfile()
             }
         })
-        V2TIMManager.getInstance().initSDK(context, AppConst.APP_ID, config)
+        V2TIMManager.getInstance().initSDK(application, AppConst.APP_ID, config)
     }
 
     private fun dispatchServerState(serverState: ServerState) {
