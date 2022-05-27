@@ -1,6 +1,7 @@
 package github.leavesczy.compose_chat.ui.common
 
 import android.Manifest
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,6 +40,7 @@ import kotlinx.coroutines.launch
  * @Date: 2022/1/1 17:45
  * @Desc:
  */
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PreviewImagePage(imagePath: String) {
     val navHostController = LocalNavHostController.current

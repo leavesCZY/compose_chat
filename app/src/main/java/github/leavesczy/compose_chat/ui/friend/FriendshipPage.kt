@@ -1,5 +1,6 @@
 package github.leavesczy.compose_chat.ui.friend
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,6 +26,7 @@ import github.leavesczy.compose_chat.ui.widgets.EmptyView
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FriendshipPage(
     paddingValues: PaddingValues,

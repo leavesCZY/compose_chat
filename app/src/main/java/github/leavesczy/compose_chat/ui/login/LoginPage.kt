@@ -1,5 +1,6 @@
 package github.leavesczy.compose_chat.ui.login
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +32,7 @@ import kotlinx.coroutines.launch
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LoginPage() {
     val loginViewModel = viewModel<LoginViewModel>()

@@ -1,5 +1,6 @@
 package github.leavesczy.compose_chat.ui.home
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomePageFriendshipPanel(homePageFriendshipPanelState: HomePageFriendshipPanelState) {
     val coroutineScope = rememberCoroutineScope()

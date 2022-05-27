@@ -5,6 +5,7 @@ pluginManagement {
         mavenCentral()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -12,6 +13,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-include ':app'
-include ':common'
-include ':proxy'
+
+include(":app")
+include(":proxy")
+include(":common")

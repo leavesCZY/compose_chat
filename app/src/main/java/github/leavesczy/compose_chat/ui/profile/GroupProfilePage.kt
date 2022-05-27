@@ -1,5 +1,6 @@
 package github.leavesczy.compose_chat.ui.profile
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -36,6 +37,7 @@ import kotlinx.coroutines.launch
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun GroupProfilePage(groupId: String) {
     val groupProfileViewModel = viewModelInstance {

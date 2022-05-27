@@ -1,5 +1,6 @@
 package github.leavesczy.compose_chat.ui.profile
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun UpdateProfilePage() {
     val homeViewModel = viewModel<HomeViewModel>()
