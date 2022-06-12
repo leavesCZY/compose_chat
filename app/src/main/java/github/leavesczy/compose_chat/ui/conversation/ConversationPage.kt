@@ -5,17 +5,14 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -42,14 +39,19 @@ fun ConversationPage(
         modifier = Modifier
             .padding(paddingValues = paddingValues)
             .fillMaxSize()
-    ) {
+    ) { contentPadding ->
         val conversationList = conversationPageState.conversationList
         if (conversationList.isEmpty()) {
-            EmptyView()
+            EmptyView(contentPadding = contentPadding)
         } else {
             LazyColumn(
                 state = conversationPageState.listState,
-                contentPadding = PaddingValues(bottom = 60.dp),
+                contentPadding = PaddingValues(
+                    start = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
+                    top = contentPadding.calculateTopPadding(),
+                    end = contentPadding.calculateEndPadding(LayoutDirection.Ltr),
+                    bottom = contentPadding.calculateBottomPadding() + 60.dp
+                ),
             ) {
                 conversationList.forEach {
                     item(key = it.id) {
@@ -194,18 +196,18 @@ private fun ConversationItem(
                     menuExpanded = false
                 }
             ) {
-                DropdownMenuItem(onClick = {
+                DropdownMenuItem(text = {
+                    Text(text = if (conversation.isPinned) "取消置顶" else "置顶会话")
+                }, onClick = {
                     menuExpanded = false
                     onPinnedConversation(conversation, !conversation.isPinned)
-                }) {
-                    Text(text = if (conversation.isPinned) "取消置顶" else "置顶会话")
-                }
-                DropdownMenuItem(onClick = {
+                })
+                DropdownMenuItem(text = {
+                    Text(text = "删除会话")
+                }, onClick = {
                     menuExpanded = false
                     onDeleteConversation(conversation)
-                }) {
-                    Text(text = "删除会话")
-                }
+                })
             }
         }
     }

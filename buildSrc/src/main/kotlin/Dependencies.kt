@@ -5,7 +5,7 @@
  */
 object Dependencies {
 
-    const val composeVersion = "1.2.0-beta02"
+    const val composeVersion = "1.2.0-beta03"
 
     object Test {
         const val junit = "junit:junit:4.13.2"
@@ -25,8 +25,8 @@ object Dependencies {
         const val activity = "androidx.activity:activity-compose:1.6.0-alpha03"
         const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0-rc01"
         const val constraintLayout =
-            "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha01"
-        const val material3 = "androidx.compose.material3:material3:1.0.0-alpha12"
+            "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha02"
+        const val material3 = "androidx.compose.material3:material3:1.0.0-alpha13"
         const val material = "androidx.compose.material:material:$composeVersion"
         const val materialIcons =
             "androidx.compose.material:material-icons-extended:$composeVersion"
@@ -36,7 +36,7 @@ object Dependencies {
     }
 
     object Accompanist {
-        private const val version = "0.24.9-beta"
+        private const val version = "0.24.10-beta"
         const val systemUiController =
             "com.google.accompanist:accompanist-systemuicontroller:$version"
         const val navigation =
@@ -50,7 +50,7 @@ object Dependencies {
     }
 
     object Base {
-        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1"
+        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.2"
         const val imSdk = "com.tencent.imsdk:imsdk-plus:6.2.2363"
     }
 

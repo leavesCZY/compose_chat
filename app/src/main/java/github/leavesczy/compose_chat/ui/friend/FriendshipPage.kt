@@ -1,6 +1,5 @@
 package github.leavesczy.compose_chat.ui.friend
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -26,7 +26,6 @@ import github.leavesczy.compose_chat.ui.widgets.EmptyView
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FriendshipPage(
     paddingValues: PaddingValues,
@@ -36,13 +35,18 @@ fun FriendshipPage(
         modifier = Modifier
             .padding(paddingValues = paddingValues)
             .fillMaxSize()
-    ) {
+    ) { contentPadding ->
         if (friendshipPageState.joinedGroupList.isEmpty() && friendshipPageState.friendList.isEmpty()) {
-            EmptyView()
+            EmptyView(contentPadding = contentPadding)
         } else {
             LazyColumn(
                 state = friendshipPageState.listState,
-                contentPadding = PaddingValues(bottom = 60.dp),
+                contentPadding = PaddingValues(
+                    start = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
+                    top = contentPadding.calculateTopPadding(),
+                    end = contentPadding.calculateEndPadding(LayoutDirection.Ltr),
+                    bottom = contentPadding.calculateBottomPadding() + 60.dp
+                ),
             ) {
                 val joinedGroupList = friendshipPageState.joinedGroupList
                 val friendList = friendshipPageState.friendList

@@ -14,9 +14,7 @@ import github.leavesczy.compose_chat.ui.theme.LightColorScheme
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun SystemBarColor(
-    appTheme: AppTheme
-) {
+fun SystemBarColor(appTheme: AppTheme) {
     SystemBarColor(
         statusBarColor = Color.Transparent,
         statusBarDarkIcons = appTheme == AppTheme.Light || appTheme == AppTheme.Gray,

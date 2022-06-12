@@ -1,6 +1,5 @@
 package github.leavesczy.compose_chat.ui.profile
 
-import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -10,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -29,28 +27,10 @@ import github.leavesczy.compose_chat.ui.widgets.BouncyImage
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun PreviewProfilePage() {
-    ProfilePanel(
-        personProfile = PersonProfile(
-            id = "公众号：字节数组",
-            faceUrl = "",
-            nickname = "业志陈",
-            remark = "",
-            signature = "希望对你有所帮助 \uD83E\uDD23\uD83E\uDD23\uD83E\uDD23",
-            isFriend = false
-        ),
-        content = {
-
-        }
-    )
-}
-
 @Composable
 fun ProfilePanel(
     personProfile: PersonProfile,
+    contentPadding: PaddingValues,
     content: @Composable () -> Unit = {}
 ) {
     ProfilePanel(
@@ -58,6 +38,7 @@ fun ProfilePanel(
         subtitle = personProfile.signature,
         introduction = "ID: ${personProfile.id}",
         avatarUrl = personProfile.faceUrl,
+        contentPadding = contentPadding,
         content = content
     )
 }
@@ -65,6 +46,7 @@ fun ProfilePanel(
 @Composable
 fun ProfilePanel(
     groupProfile: GroupProfile,
+    contentPadding: PaddingValues,
     content: @Composable () -> Unit = {}
 ) {
     ProfilePanel(
@@ -72,6 +54,7 @@ fun ProfilePanel(
         subtitle = groupProfile.introduction,
         introduction = "GroupID: ${groupProfile.id}\nCreateTime: ${groupProfile.createTimeFormat}\nMemberCount: ${groupProfile.memberCount}",
         avatarUrl = groupProfile.faceUrl,
+        contentPadding = contentPadding,
         content = content
     )
 }
@@ -82,10 +65,11 @@ fun ProfilePanel(
     subtitle: String,
     introduction: String,
     avatarUrl: String,
+    contentPadding: PaddingValues,
     content: @Composable () -> Unit
 ) {
     val navHostController = LocalNavHostController.current
-    ConstraintLayout {
+    ConstraintLayout(modifier = Modifier.padding(paddingValues = contentPadding)) {
         val (titleRefs, subtitleRefs, introductionRefs, backgroundRefs, avatarRefs, contentRefs) = createRefs()
         BezierImage(modifier = Modifier
             .constrainAs(ref = backgroundRefs) {
@@ -95,7 +79,7 @@ fun ProfilePanel(
             }
             .aspectRatio(ratio = 5f / 4f)
             .zIndex(zIndex = -100f)
-            .scrim(colors = listOf(Color(color = 0x51444B53), Color(color = 0x418D8282))),
+            .scrim(color = Color(0x51444B53)),
             data = avatarUrl)
         BouncyImage(
             modifier = Modifier

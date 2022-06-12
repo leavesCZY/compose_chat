@@ -15,3 +15,8 @@ fun Modifier.scrim(colors: List<Color>): Modifier = drawWithContent {
     drawContent()
     drawRect(Brush.verticalGradient(colors))
 }
+
+fun Modifier.scrim(color: Color): Modifier = drawWithContent {
+    drawContent()
+    drawRect(color = color)
+}

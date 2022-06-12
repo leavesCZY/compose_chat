@@ -1,16 +1,7 @@
 package github.leavesczy.compose_chat.ui.widgets
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Divider
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,18 +63,19 @@ fun CommonOutlinedTextField(
         },
         textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = ContentAlpha.high),
-            unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = ContentAlpha.disabled),
+            focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+            unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
             cursorColor = MaterialTheme.colorScheme.primary
         )
     )
 }
 
 @Composable
-fun EmptyView() {
+fun EmptyView(contentPadding: PaddingValues = PaddingValues(all = 0.dp)) {
     Text(
         text = "Empty",
         modifier = Modifier
+            .padding(paddingValues = contentPadding)
             .fillMaxSize()
             .wrapContentSize(align = Alignment.Center),
         style = MaterialTheme.typography.bodyMedium,

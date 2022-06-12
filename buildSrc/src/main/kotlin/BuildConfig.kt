@@ -12,10 +12,10 @@ object BuildConfig {
     val targetCompatibility = JavaVersion.VERSION_1_8
     const val jvmTarget = "1.8"
     const val applicationId = "github.leavesczy.compose_chat"
-    const val compileSdk = 31
-    const val buildTools = "31.0.0"
+    const val compileSdk = 32
+    const val buildTools = "32.0.0"
     const val minSdk = 21
-    const val targetSdk = 31
+    const val targetSdk = 32
     const val versionCode = 14
     const val versionName = "1.5.0"
     const val keyAlias = "leavesCZY"

@@ -3,21 +3,8 @@ plugins {
     kotlin("android")
 }
 
-android {
-    compileSdk = BuildConfig.compileSdk
-    buildToolsVersion = BuildConfig.buildTools
-    defaultConfig {
-        minSdk = BuildConfig.minSdk
-        targetSdk = BuildConfig.targetSdk
-        consumerProguardFiles.add(File("consumer-rules.pro"))
-    }
-    compileOptions {
-        sourceCompatibility = BuildConfig.sourceCompatibility
-        targetCompatibility = BuildConfig.targetCompatibility
-    }
-    kotlinOptions {
-        jvmTarget = BuildConfig.jvmTarget
-    }
+apply {
+    plugin<ManagerPlugin>()
 }
 
 dependencies {

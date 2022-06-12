@@ -1,13 +1,13 @@
 package github.leavesczy.compose_chat.ui.common
 
 import android.Manifest
-import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -40,7 +40,6 @@ import kotlinx.coroutines.launch
  * @Date: 2022/1/1 17:45
  * @Desc:
  */
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PreviewImagePage(imagePath: String) {
     val navHostController = LocalNavHostController.current
@@ -103,10 +102,11 @@ fun PreviewImagePage(imagePath: String) {
                     }
                 })
         }
-    ) {
+    ) { contentPadding ->
         Box(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(paddingValues = contentPadding),
             contentAlignment = Alignment.Center
         ) {
             CoilImage(

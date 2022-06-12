@@ -2,8 +2,6 @@ package github.leavesczy.compose_chat.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
@@ -68,18 +66,18 @@ fun HomePageTopBar(homePageTopBarState: HomePageTopBarState) {
                 menuExpanded = false
             }
         ) {
-            DropdownMenuItem(onClick = {
+            DropdownMenuItem(text = {
+                Text(text = "添加好友")
+            }, onClick = {
                 menuExpanded = false
                 homePageTopBarState.onAddFriend()
-            }) {
-                Text(text = "添加好友")
-            }
-            DropdownMenuItem(onClick = {
+            })
+            DropdownMenuItem(text = {
+                Text(text = "加入群聊")
+            }, onClick = {
                 menuExpanded = false
                 homePageTopBarState.onJoinGroup()
-            }) {
-                Text(text = "加入群聊")
-            }
+            })
         }
     }
 }

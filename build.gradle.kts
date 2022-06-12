@@ -1,7 +1,13 @@
-plugins {
-    id("com.android.application").version(BuildConfig.androidGradlePlugin).apply(false)
-    id("com.android.library").version(BuildConfig.androidGradlePlugin).apply(false)
-    kotlin("android").version(BuildConfig.kotlinAndroidGradlePlugin).apply(false)
+buildscript {
+    repositories {
+        mavenCentral()
+        google()
+        mavenLocal()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:${BuildConfig.androidGradlePlugin}")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${BuildConfig.kotlinAndroidGradlePlugin}")
+    }
 }
 
 tasks.register<Delete>("clean") {

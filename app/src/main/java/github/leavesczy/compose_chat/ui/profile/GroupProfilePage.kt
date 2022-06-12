@@ -1,12 +1,9 @@
 package github.leavesczy.compose_chat.ui.profile
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
@@ -15,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -37,7 +35,6 @@ import kotlinx.coroutines.launch
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun GroupProfilePage(groupId: String) {
     val groupProfileViewModel = viewModelInstance {
@@ -46,7 +43,7 @@ fun GroupProfilePage(groupId: String) {
     val groupProfilePageState by groupProfileViewModel.groupProfilePageState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val navHostController = LocalNavHostController.current
-    Scaffold {
+    Scaffold { contentPadding ->
         Box {
             val onClickMember: (GroupMemberProfile) -> Unit = remember {
                 object : (GroupMemberProfile) -> Unit {
@@ -60,10 +57,18 @@ fun GroupProfilePage(groupId: String) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 80.dp)
+                contentPadding = PaddingValues(
+                    start = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
+                    top = contentPadding.calculateTopPadding(),
+                    end = contentPadding.calculateEndPadding(LayoutDirection.Ltr),
+                    bottom = contentPadding.calculateBottomPadding() + 80.dp
+                ),
             ) {
                 item(key = true) {
-                    ProfilePanel(groupProfile = groupProfilePageState.groupProfile)
+                    ProfilePanel(
+                        groupProfile = groupProfilePageState.groupProfile,
+                        contentPadding = PaddingValues(all = 0.dp)
+                    )
                 }
                 val memberList = groupProfilePageState.memberList
                 memberList.forEach {
@@ -205,18 +210,18 @@ private fun GroupProfilePageTopBar(
                 menuExpanded = false
             }
         ) {
-            DropdownMenuItem(onClick = {
+            DropdownMenuItem(text = {
+                Text(text = "修改头像")
+            }, onClick = {
                 menuExpanded = false
                 randomAvatar()
-            }) {
-                Text(text = "修改头像", modifier = Modifier)
-            }
-            DropdownMenuItem(onClick = {
+            })
+            DropdownMenuItem(text = {
+                Text(text = "退出群聊")
+            }, onClick = {
                 menuExpanded = false
                 quitGroup()
-            }) {
-                Text(text = "退出群聊", modifier = Modifier)
-            }
+            })
         }
     }
 }

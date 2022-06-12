@@ -70,7 +70,7 @@ fun FriendProfilePage(
         }
     ) {
         var openDeleteFriendDialog by remember { mutableStateOf(false) }
-        Scaffold {
+        Scaffold { contentPadding ->
             ProfilePanel(
                 title = personProfile.nickname,
                 subtitle = personProfile.signature,
@@ -79,7 +79,8 @@ fun FriendProfilePage(
                 } else {
                     ""
                 },
-                avatarUrl = personProfile.faceUrl
+                avatarUrl = personProfile.faceUrl,
+                contentPadding = contentPadding,
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     if (friendProfilePageState.showAlterBtb) {

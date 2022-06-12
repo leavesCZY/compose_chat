@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
  * @Github：https://github.com/leavesCZY
  */
 
-private const val EMOJI_COLUMNS = 7
+private const val EMOJI_COLUMNS = 6
 
 @Composable
 fun EmojiTable(appendEmoji: (String) -> Unit) {
@@ -33,7 +33,7 @@ fun EmojiTable(appendEmoji: (String) -> Unit) {
                         })
                         .padding(top = 12.dp, bottom = 12.dp),
                     text = emoji,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 19.sp),
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                     textAlign = TextAlign.Center,
                 )
             }
