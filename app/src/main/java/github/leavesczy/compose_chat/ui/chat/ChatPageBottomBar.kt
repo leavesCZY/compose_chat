@@ -1,6 +1,5 @@
 package github.leavesczy.compose_chat.ui.chat
 
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,7 +19,8 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import github.leavesczy.compose_chat.common.SelectPictureContract
+import github.leavesczy.matisse.MatisseContract
+import github.leavesczy.matisse.MediaResources
 
 /**
  * @Author: leavesCZY
@@ -43,7 +43,7 @@ private val TextFieldValueSaver = run {
 @Composable
 fun ChatPageBottomBar(
     sendText: (TextFieldValue) -> Unit,
-    sendImage: (Uri) -> Unit
+    sendImage: (MediaResources) -> Unit
 ) {
     val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
@@ -107,10 +107,10 @@ fun ChatPageBottomBar(
     }
 
     val selectPictureLauncher = rememberLauncherForActivityResult(
-        contract = SelectPictureContract()
-    ) { imageUri ->
-        if (imageUri != null) {
-            sendImage(imageUri)
+        contract = MatisseContract()
+    ) { result ->
+        if (result.isNotEmpty()) {
+            sendImage(result[0])
         }
     }
 

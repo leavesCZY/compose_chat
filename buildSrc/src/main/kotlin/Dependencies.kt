@@ -51,6 +51,7 @@ object Dependencies {
 
     object Base {
         const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.2"
+        const val matisse = "com.github.leavesCZY:Matisse:0.0.1"
         const val imSdk = "com.tencent.imsdk:imsdk-plus:6.2.2363"
     }
 

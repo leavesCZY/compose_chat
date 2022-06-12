@@ -126,7 +126,7 @@ fun ChatPage(
                 sendText = {
                     chatViewModel.sendTextMessage(text = it.text)
                 }, sendImage = {
-                    chatViewModel.sendImageMessage(imageUri = it)
+                    chatViewModel.sendImageMessage(image = it)
                 })
         }
     ) { contentPadding ->

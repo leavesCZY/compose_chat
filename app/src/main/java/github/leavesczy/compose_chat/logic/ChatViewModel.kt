@@ -1,6 +1,6 @@
 package github.leavesczy.compose_chat.logic
 
-import android.net.Uri
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.common.model.*
@@ -9,12 +9,11 @@ import github.leavesczy.compose_chat.model.ChatPageState
 import github.leavesczy.compose_chat.utils.ContextHolder
 import github.leavesczy.compose_chat.utils.ImageUtils
 import github.leavesczy.compose_chat.utils.showToast
-import kotlinx.coroutines.Dispatchers
+import github.leavesczy.matisse.MediaResources
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * @Author: leavesCZY
@@ -123,14 +122,16 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
         }
     }
 
-    fun sendImageMessage(imageUri: Uri) {
+    fun sendImageMessage(image: MediaResources) {
         viewModelScope.launch {
-            val imagePath = withContext(Dispatchers.IO) {
+            val imagePath = if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
                 val imageFile = ImageUtils.saveImageToCacheDir(
                     context = ContextHolder.context,
-                    imageUri = imageUri
+                    imageUri = image.uri
                 )
                 imageFile?.absolutePath
+            } else {
+                image.path
             }
             if (imagePath.isNullOrBlank()) {
                 showToast("图片获取失败")

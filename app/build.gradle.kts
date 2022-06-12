@@ -27,6 +27,7 @@ dependencies {
     implementation(Dependencies.Coil.coil)
     implementation(Dependencies.Coil.coilGif)
     implementation(Dependencies.Base.coroutines)
+    implementation(Dependencies.Base.matisse)
     implementation(project(":common"))
     implementation(project(":proxy"))
 }

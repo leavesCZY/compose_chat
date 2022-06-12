@@ -11,12 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import github.leavesczy.compose_chat.common.SelectPictureContract
+import github.leavesczy.compose_chat.cache.AppThemeCache
 import github.leavesczy.compose_chat.logic.HomeViewModel
+import github.leavesczy.compose_chat.model.AppTheme
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.utils.randomFaceUrl
 import github.leavesczy.compose_chat.utils.showToast
+import github.leavesczy.matisse.*
 import kotlinx.coroutines.launch
 
 /**
@@ -46,16 +48,16 @@ fun UpdateProfilePage() {
     }
     val coroutineScope = rememberCoroutineScope()
     val selectPictureLauncher = rememberLauncherForActivityResult(
-        contract = SelectPictureContract()
-    ) { imageUri ->
-        if (imageUri != null) {
+        contract = MatisseContract()
+    ) { result ->
+        if (result.isNotEmpty()) {
             coroutineScope.launch {
-                val imageUrl = homeViewModel.uploadImage(imageUri)
+                val imageUrl = homeViewModel.uploadImage(image = result[0])
                 if (imageUrl.isBlank()) {
-                    showToast("头像上传失败")
+                    showToast("图片上传失败")
                 } else {
                     faceUrl = imageUrl
-                    showToast("头像已上传")
+                    showToast("图片已上传")
                 }
             }
         }
@@ -110,14 +112,23 @@ fun UpdateProfilePage() {
                         label = "signature"
                     )
                     CommonButton(
-                        text = "随机头像"
+                        text = "随机图片"
                     ) {
                         faceUrl = randomFaceUrl()
                     }
                     CommonButton(
-                        text = "选择头像"
+                        text = "本地图片"
                     ) {
-                        selectPictureLauncher.launch(Unit)
+                        val matisse = Matisse(
+                            theme = if (AppThemeCache.currentTheme == AppTheme.Dark) {
+                                DarkMatisseTheme
+                            } else {
+                                LightMatisseTheme
+                            },
+                            maxSelectable = 1,
+                            captureStrategy = MediaStoreCaptureStrategy()
+                        )
+                        selectPictureLauncher.launch(matisse)
                     }
                     CommonButton(
                         text = "确认修改"
