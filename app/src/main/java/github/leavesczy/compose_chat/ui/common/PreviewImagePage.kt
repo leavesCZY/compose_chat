@@ -30,7 +30,7 @@ import github.leavesczy.compose_chat.model.AppTheme
 import github.leavesczy.compose_chat.ui.theme.BackgroundColorDark
 import github.leavesczy.compose_chat.ui.widgets.CoilImage
 import github.leavesczy.compose_chat.ui.widgets.SystemBarColor
-import github.leavesczy.compose_chat.utils.ImageUtils
+import github.leavesczy.compose_chat.utils.AlbumUtils
 import github.leavesczy.compose_chat.utils.PermissionUtils
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.launch
@@ -61,7 +61,7 @@ fun PreviewImagePage(imagePath: String) {
     }
     fun insertImageToAlbum() {
         coroutineScope.launch {
-            val result = ImageUtils.insertImageToAlbum(context = context, imageUrl = imagePath)
+            val result = AlbumUtils.insertImageToAlbum(context = context, imageUrl = imagePath)
             if (result) {
                 showToast("图片已保存到相册")
             } else {

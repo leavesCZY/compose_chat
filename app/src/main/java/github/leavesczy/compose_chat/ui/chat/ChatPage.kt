@@ -21,10 +21,7 @@ import kotlinx.coroutines.flow.filter
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun ChatPage(
-    listState: LazyListState,
-    chat: Chat
-) {
+fun ChatPage(listState: LazyListState, chat: Chat) {
     val chatViewModel = viewModelInstance {
         ChatViewModel(chat = chat)
     }
@@ -126,7 +123,7 @@ fun ChatPage(
                 sendText = {
                     chatViewModel.sendTextMessage(text = it.text)
                 }, sendImage = {
-                    chatViewModel.sendImageMessage(image = it)
+                    chatViewModel.sendImageMessage(mediaResources = it)
                 })
         }
     ) { contentPadding ->

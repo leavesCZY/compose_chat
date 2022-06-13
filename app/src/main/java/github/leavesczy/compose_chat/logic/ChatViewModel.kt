@@ -1,13 +1,12 @@
 package github.leavesczy.compose_chat.logic
 
-import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.common.model.*
 import github.leavesczy.compose_chat.common.provider.IMessageProvider
 import github.leavesczy.compose_chat.model.ChatPageState
+import github.leavesczy.compose_chat.utils.CompressImageUtils
 import github.leavesczy.compose_chat.utils.ContextHolder
-import github.leavesczy.compose_chat.utils.ImageUtils
 import github.leavesczy.compose_chat.utils.showToast
 import github.leavesczy.matisse.MediaResources
 import kotlinx.coroutines.Job
@@ -122,17 +121,13 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
         }
     }
 
-    fun sendImageMessage(image: MediaResources) {
+    fun sendImageMessage(mediaResources: MediaResources) {
         viewModelScope.launch {
-            val imagePath = if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-                val imageFile = ImageUtils.saveImageToCacheDir(
-                    context = ContextHolder.context,
-                    imageUri = image.uri
-                )
-                imageFile?.absolutePath
-            } else {
-                image.path
-            }
+            val imageFile = CompressImageUtils.compressImage(
+                context = ContextHolder.context,
+                mediaResources = mediaResources
+            )
+            val imagePath = imageFile?.absolutePath
             if (imagePath.isNullOrBlank()) {
                 showToast("图片获取失败")
             } else {

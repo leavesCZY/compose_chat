@@ -1,12 +1,11 @@
 package github.leavesczy.compose_chat.logic
 
-import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.cache.AccountCache
 import github.leavesczy.compose_chat.common.model.*
+import github.leavesczy.compose_chat.utils.CompressImageUtils
 import github.leavesczy.compose_chat.utils.ContextHolder
-import github.leavesczy.compose_chat.utils.ImageUtils
 import github.leavesczy.compose_chat.utils.showToast
 import github.leavesczy.matisse.MediaResources
 import kotlinx.coroutines.Dispatchers
@@ -88,17 +87,13 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    suspend fun uploadImage(image: MediaResources): String {
+    suspend fun uploadImage(mediaResources: MediaResources): String {
         return withContext(Dispatchers.IO) {
-            val imagePath = if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-                val imageFile = ImageUtils.saveImageToCacheDir(
-                    context = ContextHolder.context,
-                    imageUri = image.uri
-                )
-                imageFile?.absolutePath
-            } else {
-                image.path
-            }
+            val imageFile = CompressImageUtils.compressImage(
+                context = ContextHolder.context,
+                mediaResources = mediaResources
+            )
+            val imagePath = imageFile?.absolutePath
             if (!imagePath.isNullOrBlank()) {
                 return@withContext ComposeChat.messageProvider.uploadImage(
                     chat = GroupChat(id = ComposeChat.groupIdToUploadAvatar),

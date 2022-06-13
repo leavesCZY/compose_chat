@@ -106,14 +106,6 @@ fun ChatPageBottomBar(
         )
     }
 
-    val selectPictureLauncher = rememberLauncherForActivityResult(
-        contract = MatisseContract()
-    ) { result ->
-        if (result.isNotEmpty()) {
-            sendImage(result[0])
-        }
-    }
-
     val onSelectorChange: (InputSelector) -> Unit = remember {
         {
             if (it != currentInputSelector) {
@@ -122,6 +114,15 @@ fun ChatPageBottomBar(
                     softwareKeyboardController?.hide()
                 }
             }
+        }
+    }
+
+    val selectPictureLauncher = rememberLauncherForActivityResult(
+        contract = MatisseContract()
+    ) { result ->
+        if (result.isNotEmpty()) {
+            onSelectorChange(InputSelector.NONE)
+            sendImage(result[0])
         }
     }
 

@@ -52,7 +52,7 @@ fun UpdateProfilePage() {
     ) { result ->
         if (result.isNotEmpty()) {
             coroutineScope.launch {
-                val imageUrl = homeViewModel.uploadImage(image = result[0])
+                val imageUrl = homeViewModel.uploadImage(mediaResources = result[0])
                 if (imageUrl.isBlank()) {
                     showToast("图片上传失败")
                 } else {
