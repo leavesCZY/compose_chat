@@ -28,6 +28,13 @@
 
 ## 历史版本
 
+### v1.5.1
+
+- 引入用 Jetpack Compose 实现的图片选择框架 [Matisse](https://github.com/leavesCZY/Matisse)
+- 进一步适配 Material Design 3
+- 优化图片的压缩策略
+- 通过 buildSrc 管理依赖，统一通过 Plugin 管理配置项
+
 ### v1.5.0
 
 - 支持 Gif 类型的图片消息和用户头像
