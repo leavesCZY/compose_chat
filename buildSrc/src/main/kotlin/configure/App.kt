@@ -23,11 +23,12 @@ internal fun BaseAppModuleExtension.app(project: Project) {
         vectorDrawables {
             useSupportLibrary = true
         }
-        applicationVariants.forEach { variant ->
-            variant.outputs.all {
+        applicationVariants.all {
+            val variant = this
+            outputs.all {
                 if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
-                    outputFileName =
-                        "chat_${variant.name}_versionCode_${variant.versionCode}_versionName_${variant.versionName}_${Function.getFormattedTime()}.apk"
+                    this.outputFileName =
+                        "compose_chat_${variant.name}_versionCode_${variant.versionCode}_versionName_${variant.versionName}_${Function.getFormattedTime()}.apk"
                 }
             }
         }
@@ -94,13 +95,6 @@ internal fun BaseAppModuleExtension.app(project: Project) {
                     "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi",
                     "-Xopt-in=androidx.compose.material.ExperimentalMaterialApi",
                     "-Xopt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-//                    "-Xjvm-default=all",
-//                    "-Xallow-jvm-ir-dependencies",
-//                    "-Xskip-prerelease-check",
-//                    "-Xopt-in=kotlin.RequiresOptIn",
-//                    "-Xopt-in=com.google.accompanist.insets.ExperimentalAnimatedInsets",
-//                    "-Xopt-in=com.google.accompanist.pager.ExperimentalPagerApi",
-//                    "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
                 )
             )
         }
