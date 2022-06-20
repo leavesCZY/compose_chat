@@ -8,9 +8,9 @@ import java.io.File
  * @Date: 2022/5/29 17:28
  * @Desc:
  */
-internal fun LibraryExtension.library() {
+internal fun LibraryExtension.libraryModule() {
     compileSdk = BuildConfig.compileSdk
-    buildToolsVersion = BuildConfig.buildTools
+    buildToolsVersion = BuildConfig.buildToolsVersion
     defaultConfig {
         minSdk = BuildConfig.minSdk
         targetSdk = BuildConfig.targetSdk

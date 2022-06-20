@@ -11,24 +11,29 @@ import org.gradle.api.Project
 class ManagerPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
+        if (project.isAppModule()) {
+            project.apply {
+                plugin("com.android.application")
+                plugin("org.jetbrains.kotlin.android")
+            }
+        } else {
+            project.apply {
+                plugin("com.android.library")
+                plugin("org.jetbrains.kotlin.android")
+            }
+        }
         when (val androidExtension = project.extensions.getByName("android")) {
             is BaseAppModuleExtension -> {
-                androidExtension.app(project)
-                println("ManagerPlugin->   BaseAppModuleExtension")
+                androidExtension.appModule(project)
             }
             is LibraryExtension -> {
-                androidExtension.library()
-                println("ManagerPlugin->   LibraryExtension")
+                androidExtension.libraryModule()
             }
         }
     }
 
-//    internal fun Project.configureDependencies() {
-//        DependencyHandlerScope.of(dependencies).apply {
-//            implementation(Dependencies.Base.coroutines)
-//        }
-//        dependencies.apply {
-//            add("implementation", Dependencies.Base.coroutines)
-//        }
-//    }
+    private fun Project.isAppModule(): Boolean {
+        return project.name == "app"
+    }
+
 }

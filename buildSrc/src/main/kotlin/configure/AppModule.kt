@@ -9,9 +9,9 @@ import java.io.File
  * @Date: 2022/5/29 17:20
  * @Desc:
  */
-internal fun BaseAppModuleExtension.app(project: Project) {
+internal fun BaseAppModuleExtension.appModule(project: Project) {
     compileSdk = BuildConfig.compileSdk
-    buildToolsVersion = BuildConfig.buildTools
+    buildToolsVersion = BuildConfig.buildToolsVersion
     defaultConfig {
         applicationId = BuildConfig.applicationId
         minSdk = BuildConfig.minSdk
@@ -28,7 +28,7 @@ internal fun BaseAppModuleExtension.app(project: Project) {
             outputs.all {
                 if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
                     this.outputFileName =
-                        "compose_chat_${variant.name}_versionCode_${variant.versionCode}_versionName_${variant.versionName}_${Function.getFormattedTime()}.apk"
+                        "compose_chat_${variant.name}_versionCode_${variant.versionCode}_versionName_${variant.versionName}_${BuildFunction.getFormattedTime()}.apk"
                 }
             }
         }
@@ -38,8 +38,8 @@ internal fun BaseAppModuleExtension.app(project: Project) {
         create("release") {
             storeFile = File(project.rootDir.absolutePath + File.separator + "key.jks")
             keyAlias = BuildConfig.keyAlias
-            storePassword = BuildConfig.keyPassword
-            keyPassword = BuildConfig.storePassword
+            storePassword = BuildConfig.storePassword
+            keyPassword = BuildConfig.keyPassword
             enableV1Signing = true
             enableV2Signing = true
         }
@@ -108,11 +108,12 @@ internal fun BaseAppModuleExtension.app(project: Project) {
                 listOf(
                     "META-INF/{AL2.0,LGPL2.1}",
                     "META-INF/CHANGES",
-                    "META-INF/*.properties",
-                    "META-INF/*.version",
-                    "META-INF/*.md",
                     "DebugProbesKt.bin",
-                    "kotlin-tooling-metadata.json"
+                    "kotlin-tooling-metadata.json",
+                    "**/*.md",
+                    "**/*.properties",
+                    "**/**/*.properties",
+                    "**/*.version"
                 )
             )
         }

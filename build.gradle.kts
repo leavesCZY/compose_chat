@@ -4,8 +4,14 @@ buildscript {
         google()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:${BuildConfig.androidGradlePlugin}")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${BuildConfig.kotlinAndroidGradlePlugin}")
+        classpath(Dependencies.Plugin.android)
+        classpath(Dependencies.Plugin.kotlin)
+    }
+}
+
+subprojects {
+    apply {
+        plugin<ManagerPlugin>()
     }
 }
 

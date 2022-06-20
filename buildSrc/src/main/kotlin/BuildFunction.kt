@@ -6,7 +6,7 @@ import java.util.*
  * @Date: 2022/5/27 14:24
  * @Desc:
  */
-object Function {
+object BuildFunction {
 
     fun getFormattedTime(): String {
         val date = Date()
