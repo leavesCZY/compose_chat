@@ -82,13 +82,13 @@ object AlbumUtils {
                 Environment.DIRECTORY_DCIM + File.separator + ALBUM_DIRECTORY
             )
         } else {
-            contentValues.put(
-                MediaStore.MediaColumns.DATA,
-                Environment.getExternalStorageDirectory().path
-                        + File.separator + Environment.DIRECTORY_DCIM
-                        + File.separator + ALBUM_DIRECTORY
-                        + File.separator + displayName
-            )
+//            contentValues.put(
+//                MediaStore.MediaColumns.DATA,
+//                Environment.getExternalStorageDirectory().path
+//                        + File.separator + Environment.DIRECTORY_DCIM
+//                        + File.separator + ALBUM_DIRECTORY
+//                        + File.separator + displayName
+//            )
         }
         val contentResolver = context.contentResolver
         val uri =

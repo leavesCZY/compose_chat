@@ -5,11 +5,11 @@
  */
 object Dependencies {
 
-    private const val appCompatVersion = "1.6.0-alpha04"
+    private const val appCompatVersion = "1.6.0-alpha05"
 
-    private const val lifecycleVersion = "2.5.0-rc01"
+    private const val lifecycleVersion = "2.5.0"
 
-    const val composeVersion = "1.2.0-beta03"
+    const val composeVersion = "1.2.0-rc02"
 
     object Plugin {
         const val android = "com.android.tools.build:gradle:7.2.1"
@@ -40,12 +40,12 @@ object Dependencies {
         const val uiTooling = "androidx.compose.ui:ui-tooling:$composeVersion"
         const val uiTestJunit4 = "androidx.compose.ui:ui-test-junit4:$composeVersion"
         const val constraintLayout =
-            "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha02"
-        const val material3 = "androidx.compose.material3:material3:1.0.0-alpha13"
+            "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha03"
+        const val material3 = "androidx.compose.material3:material3:1.0.0-alpha14"
     }
 
     object Accompanist {
-        private const val version = "0.24.10-beta"
+        private const val version = "0.24.13-rc"
         const val systemUiController =
             "com.google.accompanist:accompanist-systemuicontroller:$version"
         const val navigation =
@@ -59,9 +59,9 @@ object Dependencies {
     }
 
     object Components {
-        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.2"
-        const val matisse = "com.github.leavesCZY:Matisse:0.0.1"
-        const val imSdk = "com.tencent.imsdk:imsdk-plus:6.2.2363"
+        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+        const val matisse = "com.github.leavesCZY:Matisse:0.0.3"
+        const val imSdk = "com.tencent.imsdk:imsdk-plus:6.5.2803"
     }
 
 }

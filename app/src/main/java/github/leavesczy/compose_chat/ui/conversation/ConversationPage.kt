@@ -197,13 +197,16 @@ private fun ConversationItem(
                 }
             ) {
                 DropdownMenuItem(text = {
-                    Text(text = if (conversation.isPinned) "取消置顶" else "置顶会话")
+                    Text(
+                        text = if (conversation.isPinned) "取消置顶" else "置顶会话",
+                        style = MaterialTheme.typography.titleMedium
+                    )
                 }, onClick = {
                     menuExpanded = false
                     onPinnedConversation(conversation, !conversation.isPinned)
                 })
                 DropdownMenuItem(text = {
-                    Text(text = "删除会话")
+                    Text(text = "删除会话", style = MaterialTheme.typography.titleMedium)
                 }, onClick = {
                     menuExpanded = false
                     onDeleteConversation(conversation)

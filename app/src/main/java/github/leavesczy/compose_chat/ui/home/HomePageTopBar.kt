@@ -67,13 +67,13 @@ fun HomePageTopBar(homePageTopBarState: HomePageTopBarState) {
             }
         ) {
             DropdownMenuItem(text = {
-                Text(text = "添加好友")
+                Text(text = "添加好友", style = MaterialTheme.typography.titleMedium)
             }, onClick = {
                 menuExpanded = false
                 homePageTopBarState.onAddFriend()
             })
             DropdownMenuItem(text = {
-                Text(text = "加入群聊")
+                Text(text = "加入群聊", style = MaterialTheme.typography.titleMedium)
             }, onClick = {
                 menuExpanded = false
                 homePageTopBarState.onJoinGroup()

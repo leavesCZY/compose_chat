@@ -211,13 +211,13 @@ private fun GroupProfilePageTopBar(
             }
         ) {
             DropdownMenuItem(text = {
-                Text(text = "修改头像")
+                Text(text = "修改头像", style = MaterialTheme.typography.titleMedium)
             }, onClick = {
                 menuExpanded = false
                 randomAvatar()
             })
             DropdownMenuItem(text = {
-                Text(text = "退出群聊")
+                Text(text = "退出群聊", style = MaterialTheme.typography.titleMedium)
             }, onClick = {
                 menuExpanded = false
                 quitGroup()
