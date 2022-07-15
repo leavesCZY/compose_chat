@@ -28,6 +28,11 @@
 
 ## 历史版本
 
+### v1.5.2
+
+- 升级依赖库
+- 修复 bug
+
 ### v1.5.1
 
 - 引入用 Jetpack Compose 实现的图片选择框架 [Matisse](https://github.com/leavesCZY/Matisse)
