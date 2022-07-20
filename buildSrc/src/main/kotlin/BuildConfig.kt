@@ -14,8 +14,8 @@ object BuildConfig {
     const val buildToolsVersion = "32.0.0"
     const val minSdk = 21
     const val targetSdk = 32
-    const val versionCode = 16
-    const val versionName = "1.5.2"
+    const val versionCode = 17
+    const val versionName = "1.5.7"
     const val keyAlias = "leavesCZY"
     const val keyPassword = "123456"
     const val storePassword = "123456"
