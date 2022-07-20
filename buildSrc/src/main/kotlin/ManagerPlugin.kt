@@ -1,5 +1,7 @@
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import configure.appModule
+import configure.libraryModule
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 

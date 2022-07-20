@@ -2,7 +2,7 @@ package github.leavesczy.compose_chat.common.provider
 
 import github.leavesczy.compose_chat.common.model.ActionResult
 import github.leavesczy.compose_chat.common.model.PersonProfile
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharedFlow
 
 /**
  * @Author: leavesCZY
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
  */
 interface IFriendshipProvider {
 
-    val friendList: StateFlow<List<PersonProfile>>
+    val friendList: SharedFlow<List<PersonProfile>>
 
     fun getFriendList()
 

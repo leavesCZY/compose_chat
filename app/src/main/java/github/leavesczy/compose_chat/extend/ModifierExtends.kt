@@ -2,7 +2,6 @@ package github.leavesczy.compose_chat.extend
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 /**
@@ -11,11 +10,6 @@ import androidx.compose.ui.graphics.Color
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-fun Modifier.scrim(colors: List<Color>): Modifier = drawWithContent {
-    drawContent()
-    drawRect(Brush.verticalGradient(colors))
-}
-
 fun Modifier.scrim(color: Color): Modifier = drawWithContent {
     drawContent()
     drawRect(color = color)

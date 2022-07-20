@@ -1,18 +1,15 @@
 package github.leavesczy.compose_chat.model
 
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cabin
 import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.Sailing
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavBackStackEntry
 import github.leavesczy.compose_chat.common.model.*
-import github.leavesczy.compose_chat.extend.getIntArgument
-import github.leavesczy.compose_chat.extend.getStringArgument
-import github.leavesczy.compose_chat.utils.StringUtils
+import github.leavesczy.matisse.MediaResources
 
 /**
  * @Author: leavesCZY
@@ -20,123 +17,13 @@ import github.leavesczy.compose_chat.utils.StringUtils
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-sealed class Page(val route: String) {
-
-    private companion object {
-        private const val loginPage = "loginPage"
-        private const val homePage = "homePage"
-
-        private const val friendProfilePage = "friendProfilePage"
-        private const val keyFriendId = "keyFriendId"
-
-        private const val groupProfilePage = "groupProfilePage"
-        private const val keyGroupId = "keyGroupId"
-
-        private const val chatPage = "chatPage"
-        private const val keyChatPagePartyType = "keyChatPagePartyType"
-        private const val keyChatPagePartyId = "keyChatPagePartyId"
-
-        private const val previewImagePage = "previewImagePage"
-        private const val keyPreviewImagePageImagePath = "keyPreviewImagePageImagePath"
-
-        private const val updateProfilePage = "updateProfilePage"
-
-        private fun formatArgument(argument: String): String {
-            return try {
-                StringUtils.str2HexStr(argument)
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                argument
-            }
-        }
-
-        private fun decodeArgument(argument: String): String {
-            return try {
-                StringUtils.hexStr2Str(argument)
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                argument
-            }
-        }
-    }
-
-    object LoginPage : Page(route = loginPage)
-
-    object HomePage : Page(route = homePage)
-
-    object FriendProfilePage : Page(route = friendProfilePage + "/{${keyFriendId}}") {
-
-        fun generateRoute(friendId: String): String {
-            return friendProfilePage + "/${formatArgument(argument = friendId)}"
-        }
-
-        fun getArgument(entry: NavBackStackEntry): String {
-            return decodeArgument(entry.getStringArgument(key = keyFriendId))
-        }
-
-    }
-
-    object GroupProfilePage : Page(route = groupProfilePage + "/{${keyGroupId}}") {
-
-        fun generateRoute(groupId: String): String {
-            return groupProfilePage + "/${formatArgument(argument = groupId)}"
-        }
-
-        fun getArgument(entry: NavBackStackEntry): String {
-            return decodeArgument(entry.getStringArgument(key = keyGroupId))
-        }
-
-    }
-
-    object ChatPage :
-        Page(route = chatPage + "/{${keyChatPagePartyType}}" + "/{${keyChatPagePartyId}}") {
-
-        fun generateRoute(chat: Chat): String {
-            return chatPage + "/${chat.type}" + "/${formatArgument(argument = chat.id)}"
-        }
-
-        fun getArgument(entry: NavBackStackEntry): Chat {
-            val type = entry.getIntArgument(key = keyChatPagePartyType)
-            val id = decodeArgument(entry.getStringArgument(key = keyChatPagePartyId))
-            return Chat.find(type = type, id = id)
-        }
-
-    }
-
-    object PreviewImagePage :
-        Page(route = previewImagePage + "/{${keyPreviewImagePageImagePath}}") {
-
-        fun generateRoute(imagePath: String): String {
-            return previewImagePage + "/${formatArgument(argument = imagePath)}"
-        }
-
-        fun getArgument(entry: NavBackStackEntry): String {
-            return decodeArgument(entry.getStringArgument(key = keyPreviewImagePageImagePath))
-        }
-
-    }
-
-    object UpdateProfilePage : Page(route = updateProfilePage) {
-
-        fun generateRoute(): String {
-            return updateProfilePage
-        }
-
-    }
-
-}
-
-data class LoginPageState(
-    val showLogo: Boolean,
-    val showInput: Boolean,
-    val showLoading: Boolean,
-    val loginSuccess: Boolean,
+data class LoginPageViewState(
+    val showPanel: Boolean,
+    val showLoadingDialog: Boolean,
     val lastLoginUserId: String
 )
 
-enum class HomePageTab(
-    val icon: ImageVector
-) {
+enum class MainTab(val icon: ImageVector) {
     Conversation(
         icon = Icons.Filled.Cabin
     ),
@@ -148,68 +35,105 @@ enum class HomePageTab(
     );
 }
 
-data class HomePageDrawerState(
+data class MainPageDrawerViewState(
     val drawerState: DrawerState,
     val appTheme: AppTheme,
-    val userProfile: PersonProfile,
-    val switchToNextTheme: () -> Unit,
-    val logout: () -> Unit
+    val personProfile: PersonProfile
 )
 
-data class HomePageTopBarState(
-    val pageSelected: HomePageTab,
+data class MainPageTopBarViewState(
+    val tabSelected: MainTab,
     val openDrawer: () -> Unit,
     val onAddFriend: () -> Unit,
     val onJoinGroup: () -> Unit,
 )
 
-data class HomePageBottomBarState(
-    val tabList: List<HomePageTab>,
-    val tabSelected: HomePageTab,
-    val onTabSelected: (HomePageTab) -> Unit,
+data class MainPageBottomBarViewState(
+    val tabList: List<MainTab>,
+    val tabSelected: MainTab,
     val unreadMessageCount: Long
 )
 
-data class HomePageFriendshipPanelState(
-    val modalBottomSheetState: ModalBottomSheetState,
-    val addFriend: (userId: String) -> Unit,
-    val joinGroup: (groupId: String) -> Unit
-)
-
-data class ConversationPageState(
-    val listState: LazyListState,
-    val conversationList: List<Conversation>,
+data class MainPageAction(
     val onClickConversation: (Conversation) -> Unit,
     val onDeleteConversation: (Conversation) -> Unit,
-    val onPinnedConversation: (Conversation, Boolean) -> Unit
+    val onPinnedConversation: (Conversation, Boolean) -> Unit,
+    val onClickGroupItem: (GroupProfile) -> Unit,
+    val onClickFriendItem: (PersonProfile) -> Unit,
+    val joinGroup: (groupId: String) -> Unit,
+    val addFriend: (userId: String) -> Unit,
+    val onTabSelected: (MainTab) -> Unit,
+    val switchToNextTheme: () -> Unit,
+    val logout: () -> Unit,
+    val changDrawerState: (DrawerValue) -> Unit,
 )
 
-data class FriendshipPageState(
+data class ConversationPageViewState(
+    val listState: LazyListState,
+    val conversationList: List<Conversation>
+)
+
+data class FriendshipPageViewState(
     val listState: LazyListState,
     val joinedGroupList: List<GroupProfile>,
-    val friendList: List<PersonProfile>,
-    val onClickGroup: (GroupProfile) -> Unit,
-    val onClickFriend: (PersonProfile) -> Unit
+    val friendList: List<PersonProfile>
 )
 
-data class FriendProfilePageState(
+data class PersonProfilePageViewState(
+    val personProfile: PersonProfile
+)
+
+data class FriendProfilePageViewState(
     val personProfile: PersonProfile,
     val showAlterBtb: Boolean,
     val showAddBtn: Boolean
 )
 
-data class PersonProfilePageState(
-    val personProfile: PersonProfile
+data class FriendProfilePageAction(
+    val navToChat: () -> Unit,
+    val addFriend: () -> Unit,
+    val deleteFriend: () -> Unit,
+    val setRemark: (String) -> Unit
 )
 
-data class ChatPageState(
+data class ChatPageViewState(
+    val chat: Chat,
+    val listState: LazyListState,
+    val topBarTitle: String,
     val messageList: List<Message>,
-    val mushScrollToBottom: Boolean,
     val showLoadMore: Boolean,
     val loadFinish: Boolean
 )
 
-data class GroupProfilePageState(
+data class ChatPageAction(
+    val onClickBackMenu: () -> Unit,
+    val onClickMoreMenu: () -> Unit,
+    val sendTextMessage: (String) -> Unit,
+    val sendImageMessage: (MediaResources) -> Unit,
+    val loadMoreMessage: () -> Unit,
+    val onClickAvatar: (Message) -> Unit,
+    val onClickMessage: (Message) -> Unit,
+    val onLongClickMessage: (Message) -> Unit
+)
+
+data class GroupProfilePageViewState(
     val groupProfile: GroupProfile,
     val memberList: List<GroupMemberProfile>
+)
+
+data class GroupProfilePageAction(
+    val setAvatar: (String) -> Unit,
+    val quitGroup: () -> Unit,
+    val onClickMember: (GroupMemberProfile) -> Unit,
+)
+
+data class ProfileUpdatePageViewStata(val personProfile: PersonProfile)
+
+data class ProfileUpdatePageAction(
+    val uploadImage: suspend (media: MediaResources) -> String,
+    val updateProfile: (
+        faceUrl: String,
+        nickname: String,
+        signature: String
+    ) -> Unit
 )

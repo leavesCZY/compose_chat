@@ -23,6 +23,8 @@ object AlbumUtils {
 
     private const val ALBUM_DIRECTORY = "compose_chat"
 
+    private const val JPG = "jpg"
+
     private const val JPEG_MIME = "image/jpeg"
 
     suspend fun insertImageToAlbum(context: Context, imageUrl: String): Boolean {
@@ -82,13 +84,17 @@ object AlbumUtils {
                 Environment.DIRECTORY_DCIM + File.separator + ALBUM_DIRECTORY
             )
         } else {
-//            contentValues.put(
-//                MediaStore.MediaColumns.DATA,
-//                Environment.getExternalStorageDirectory().path
-//                        + File.separator + Environment.DIRECTORY_DCIM
-//                        + File.separator + ALBUM_DIRECTORY
-//                        + File.separator + displayName
-//            )
+            val directory = File(
+                Environment.getExternalStorageDirectory().path +
+                        File.separator + Environment.DIRECTORY_DCIM +
+                        File.separator + ALBUM_DIRECTORY
+            )
+            directory.mkdirs()
+            val imageFile = File.createTempFile(displayName, ".$JPG", directory)
+            contentValues.put(
+                MediaStore.MediaColumns.DATA,
+                imageFile.absolutePath
+            )
         }
         val contentResolver = context.contentResolver
         val uri =

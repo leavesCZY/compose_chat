@@ -8,7 +8,6 @@ import github.leavesczy.compose_chat.common.model.ServerState
 import github.leavesczy.compose_chat.common.provider.IAccountProvider
 import github.leavesczy.compose_chat.proxy.consts.AppConst
 import github.leavesczy.compose_chat.proxy.utils.GenerateUserSig
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -25,11 +24,7 @@ class AccountProvider : IAccountProvider, Converters {
 
     override val personProfile = MutableStateFlow(PersonProfile.Empty)
 
-    override val serverConnectState = MutableSharedFlow<ServerState>(
-        replay = 0,
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    override val serverConnectState = MutableSharedFlow<ServerState>()
 
     override fun init(application: Application) {
         val config = V2TIMSDKConfig()
@@ -114,7 +109,7 @@ class AccountProvider : IAccountProvider, Converters {
 
     override fun getPersonProfile() {
         coroutineScope.launch {
-            personProfile.value = getSelfProfile() ?: PersonProfile.Empty
+            personProfile.emit(value = getSelfProfile() ?: PersonProfile.Empty)
         }
     }
 
@@ -125,9 +120,9 @@ class AccountProvider : IAccountProvider, Converters {
     ): ActionResult {
         val originProfile = getSelfProfileOrigin() ?: return ActionResult.Failed("更新失败")
         return suspendCancellableCoroutine { continuation ->
-            originProfile.faceUrl = faceUrl
-            originProfile.setNickname(nickname)
-            originProfile.selfSignature = signature
+            originProfile.faceUrl = faceUrl.replace("\\s", "")
+            originProfile.setNickname(nickname.replace("\\s", ""))
+            originProfile.selfSignature = signature.replace("\\s", "")
             V2TIMManager.getInstance().setSelfInfo(originProfile, object : V2TIMCallback {
                 override fun onSuccess() {
                     continuation.resume(value = ActionResult.Success)

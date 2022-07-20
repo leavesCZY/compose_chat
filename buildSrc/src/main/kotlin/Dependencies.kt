@@ -7,13 +7,15 @@ object Dependencies {
 
     private const val appCompatVersion = "1.6.0-alpha05"
 
-    private const val lifecycleVersion = "2.5.0"
+    private const val lifecycleVersion = "2.6.0-alpha01"
 
-    const val composeVersion = "1.2.0-rc02"
+    const val composeVersion = "1.3.0-alpha01"
+
+    const val composeCompilerVersion = "1.2.0"
 
     object Plugin {
         const val android = "com.android.tools.build:gradle:7.2.1"
-        const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21"
+        const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0"
     }
 
     object Test {
@@ -27,7 +29,7 @@ object Dependencies {
     }
 
     object Material {
-        const val material = "com.google.android.material:material:1.7.0-alpha02"
+        const val material = "com.google.android.material:material:1.7.0-alpha03"
     }
 
     object Compose {
@@ -41,6 +43,7 @@ object Dependencies {
         const val uiTestJunit4 = "androidx.compose.ui:ui-test-junit4:$composeVersion"
         const val constraintLayout =
             "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha03"
+        const val paging = "androidx.paging:paging-compose:1.0.0-alpha15"
         const val material3 = "androidx.compose.material3:material3:1.0.0-alpha14"
     }
 
@@ -48,8 +51,6 @@ object Dependencies {
         private const val version = "0.24.13-rc"
         const val systemUiController =
             "com.google.accompanist:accompanist-systemuicontroller:$version"
-        const val navigation =
-            "com.google.accompanist:accompanist-navigation-animation:$version"
     }
 
     object Coil {

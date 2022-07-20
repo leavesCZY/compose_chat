@@ -18,7 +18,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
@@ -100,7 +99,7 @@ fun CoilImage(
     data: Any,
     contentScale: ContentScale = ContentScale.Crop,
     filterQuality: FilterQuality = FilterQuality.Low,
-    backgroundColor: Color = Color.Gray
+    backgroundColor: Color = Color.Gray.copy(alpha = 0.4f)
 ) {
     AsyncImage(
         modifier = modifier.background(color = backgroundColor),
@@ -112,22 +111,10 @@ fun CoilImage(
 }
 
 @Composable
-fun CircleImage(
-    modifier: Modifier,
-    data: Any,
-) {
-    CoilImage(
-        modifier = modifier
-            .clip(shape = CircleShape),
-        data = data
-    )
-}
-
-@Composable
 fun CircleBorderImage(
     modifier: Modifier,
     data: Any,
-    borderWidth: Dp = 4.dp,
+    borderWidth: Dp = 2.dp,
     borderColor: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
 ) {
     CoilImage(
@@ -198,7 +185,7 @@ fun BouncyImage(modifier: Modifier, data: Any) {
                         launchDragAnimate()
                     },
                     onDrag = { change, dragAmount ->
-                        change.consumeAllChanges()
+                        change.consume()
                         offsetX += dragAmount.x
                         offsetY += dragAmount.y
                     },

@@ -1,3 +1,8 @@
+package configure
+
+import BuildConfig
+import BuildFunction
+import Dependencies
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
@@ -83,7 +88,7 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Dependencies.composeVersion
+        kotlinCompilerExtensionVersion = Dependencies.composeCompilerVersion
     }
     ((this as ExtensionAware).extensions.getByName("kotlinOptions") as KotlinJvmOptions).apply {
         jvmTarget = BuildConfig.jvmTarget

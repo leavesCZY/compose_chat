@@ -6,7 +6,7 @@ import github.leavesczy.compose_chat.common.model.C2CConversation
 import github.leavesczy.compose_chat.common.model.Conversation
 import github.leavesczy.compose_chat.common.model.GroupConversation
 import github.leavesczy.compose_chat.common.provider.IConversationProvider
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -19,9 +19,9 @@ import kotlin.coroutines.resume
  */
 class ConversationProvider : IConversationProvider, Converters {
 
-    override val conversationList = MutableStateFlow<List<Conversation>>(emptyList())
+    override val conversationList = MutableSharedFlow<List<Conversation>>()
 
-    override val totalUnreadMessageCount = MutableStateFlow(0L)
+    override val totalUnreadMessageCount = MutableSharedFlow<Long>()
 
     init {
         V2TIMManager.getConversationManager()
@@ -35,7 +35,9 @@ class ConversationProvider : IConversationProvider, Converters {
                 }
 
                 override fun onTotalUnreadMessageCountChanged(totalUnreadCount: Long) {
-                    this@ConversationProvider.totalUnreadMessageCount.value = totalUnreadCount
+                    coroutineScope.launch {
+                        this@ConversationProvider.totalUnreadMessageCount.emit(value = totalUnreadCount)
+                    }
                 }
             })
     }
@@ -50,11 +52,15 @@ class ConversationProvider : IConversationProvider, Converters {
         V2TIMManager.getConversationManager()
             .getTotalUnreadMessageCount(object : V2TIMValueCallback<Long> {
                 override fun onSuccess(totalUnreadCount: Long) {
-                    totalUnreadMessageCount.value = totalUnreadCount
+                    coroutineScope.launch {
+                        totalUnreadMessageCount.emit(value = totalUnreadCount)
+                    }
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    totalUnreadMessageCount.value = 0
+                    coroutineScope.launch {
+                        totalUnreadMessageCount.emit(value = 0)
+                    }
                 }
             })
     }
@@ -88,7 +94,9 @@ class ConversationProvider : IConversationProvider, Converters {
     }
 
     private fun dispatchConversationList(conversationList: List<Conversation>) {
-        this.conversationList.value = conversationList
+        coroutineScope.launch {
+            this@ConversationProvider.conversationList.emit(value = conversationList)
+        }
     }
 
     private suspend fun getConversationListOrigin(): List<Conversation> {

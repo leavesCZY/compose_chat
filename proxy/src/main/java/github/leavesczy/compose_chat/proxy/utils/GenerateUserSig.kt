@@ -29,7 +29,7 @@ internal object GenerateUserSig {
         sdkAppId: Long,
         userId: String,
         expire: Long,
-        userbuf: ByteArray?,
+        userBuf: ByteArray?,
         priKeyContent: String
     ): String {
         val currTime = System.currentTimeMillis() / 1000
@@ -40,28 +40,28 @@ internal object GenerateUserSig {
         sigDoc.put("TLS.expire", expire)
         sigDoc.put("TLS.time", currTime)
         var base64UserBuf: String? = null
-        if (null != userbuf) {
-            base64UserBuf = Base64.encodeToString(userbuf, Base64.NO_WRAP)
+        if (userBuf != null) {
+            base64UserBuf = Base64.encodeToString(userBuf, Base64.NO_WRAP)
             sigDoc.put("TLS.userbuf", base64UserBuf)
         }
-        val sig = hmacsha256(sdkAppId, userId, currTime, expire, priKeyContent, base64UserBuf)
+        val sig = hmacSHA256(sdkAppId, userId, currTime, expire, priKeyContent, base64UserBuf)
         sigDoc.put("TLS.sig", sig)
         val compressor = Deflater()
         compressor.setInput(sigDoc.toString().toByteArray())
         compressor.finish()
         val compressedBytes = ByteArray(2048)
-        val compressedBytesLength: Int = compressor.deflate(compressedBytes)
+        val compressedBytesLength = compressor.deflate(compressedBytes)
         compressor.end()
         return String(base64EncodeUrl(compressedBytes.copyOfRange(0, compressedBytesLength)))
     }
 
-    private fun hmacsha256(
+    private fun hmacSHA256(
         sdkAppId: Long,
         userId: String,
         currTime: Long,
         expire: Long,
         priKeyContent: String,
-        base64Userbuf: String?
+        base64UserBuf: String?
     ): String {
         var contentToBeSigned = """
             TLS.identifier:$userId
@@ -70,19 +70,19 @@ internal object GenerateUserSig {
             TLS.expire:$expire
             
             """.trimIndent()
-        if (null != base64Userbuf) {
-            contentToBeSigned += "TLS.userbuf:$base64Userbuf\n"
+        if (base64UserBuf != null) {
+            contentToBeSigned += "TLS.userbuf:$base64UserBuf\n"
         }
         val byteKey = priKeyContent.toByteArray(charset("UTF-8"))
-        val hmac: Mac = Mac.getInstance("HmacSHA256")
+        val hmac = Mac.getInstance("HmacSHA256")
         val keySpec = SecretKeySpec(byteKey, "HmacSHA256")
         hmac.init(keySpec)
-        val byteSig: ByteArray = hmac.doFinal(contentToBeSigned.toByteArray(charset("UTF-8")))
+        val byteSig = hmac.doFinal(contentToBeSigned.toByteArray(charset("UTF-8")))
         return String(Base64.encode(byteSig, Base64.NO_WRAP))
     }
 
     private fun base64EncodeUrl(input: ByteArray): ByteArray {
-        val base64: ByteArray = String(Base64.encode(input, Base64.NO_WRAP)).toByteArray()
+        val base64 = String(Base64.encode(input, Base64.NO_WRAP)).toByteArray()
         for (i in base64.indices)
             when (base64[i].toInt().toChar()) {
                 '+' -> {

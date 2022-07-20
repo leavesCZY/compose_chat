@@ -1,3 +1,6 @@
+package configure
+
+import BuildConfig
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.plugins.ExtensionAware
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions

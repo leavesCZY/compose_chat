@@ -151,7 +151,8 @@ fun ChatPageBottomBar(
 
     Column(
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.onSecondaryContainer),
+            .background(color = MaterialTheme.colorScheme.onSecondaryContainer)
+            .navigationBarsPadding(),
     ) {
         BasicTextField(
             modifier = Modifier

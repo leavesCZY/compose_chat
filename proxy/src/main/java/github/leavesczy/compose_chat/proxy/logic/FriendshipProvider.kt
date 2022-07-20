@@ -4,7 +4,7 @@ import com.tencent.imsdk.v2.*
 import github.leavesczy.compose_chat.common.model.ActionResult
 import github.leavesczy.compose_chat.common.model.PersonProfile
 import github.leavesczy.compose_chat.common.provider.IFriendshipProvider
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -17,7 +17,7 @@ import kotlin.coroutines.resume
  */
 class FriendshipProvider : IFriendshipProvider, Converters {
 
-    override val friendList = MutableStateFlow<List<PersonProfile>>(emptyList())
+    override val friendList = MutableSharedFlow<List<PersonProfile>>()
 
     init {
         V2TIMManager.getFriendshipManager().addFriendListener(object : V2TIMFriendshipListener() {
@@ -42,9 +42,9 @@ class FriendshipProvider : IFriendshipProvider, Converters {
 
     override fun getFriendList() {
         coroutineScope.launch {
-            friendList.value =
-                getFriendListOrigin()?.sortedBy { it.showName.first().uppercaseChar() }
-                    ?: emptyList()
+            friendList.emit(value = getFriendListOrigin()?.sortedBy {
+                it.showName.first().uppercaseChar()
+            } ?: emptyList())
         }
     }
 
@@ -93,7 +93,7 @@ class FriendshipProvider : IFriendshipProvider, Converters {
         if (formatUserId.isBlank()) {
             return ActionResult.Failed(reason = "请输入 UserID")
         }
-        if (formatUserId == V2TIMManager.getInstance().loginUser ?: "") {
+        if (formatUserId == (V2TIMManager.getInstance().loginUser ?: "")) {
             return ActionResult.Failed(reason = "别玩啦~")
         }
         return suspendCancellableCoroutine { continuation ->
@@ -143,7 +143,7 @@ class FriendshipProvider : IFriendshipProvider, Converters {
     override suspend fun setFriendRemark(friendId: String, remark: String): ActionResult {
         val friendProfile =
             getFriendInfo(friendId)?.friendInfo ?: return ActionResult.Failed(reason = "设置失败")
-        friendProfile.friendRemark = remark
+        friendProfile.friendRemark = remark.replace("\\s", "")
         return suspendCancellableCoroutine { continuation ->
             V2TIMManager.getFriendshipManager()
                 .setFriendInfo(friendProfile, object : V2TIMCallback {
@@ -159,8 +159,7 @@ class FriendshipProvider : IFriendshipProvider, Converters {
                             )
                         )
                     }
-                }
-                )
+                })
         }
     }
 

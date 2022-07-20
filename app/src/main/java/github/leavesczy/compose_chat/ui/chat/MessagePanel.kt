@@ -6,7 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
@@ -26,8 +26,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atMost
 import github.leavesczy.compose_chat.common.model.*
-import github.leavesczy.compose_chat.model.ChatPageState
-import github.leavesczy.compose_chat.ui.widgets.CircleImage
+import github.leavesczy.compose_chat.model.ChatPageAction
+import github.leavesczy.compose_chat.model.ChatPageViewState
 import github.leavesczy.compose_chat.ui.widgets.CoilImage
 
 /**
@@ -38,35 +38,29 @@ import github.leavesczy.compose_chat.ui.widgets.CoilImage
  */
 @Composable
 fun MessagePanel(
-    listState: LazyListState,
-    chat: Chat,
     contentPadding: PaddingValues,
-    chatPageState: ChatPageState,
-    onClickAvatar: (Message) -> Unit,
-    onClickMessage: (Message) -> Unit,
-    onLongClickMessage: (Message) -> Unit
+    chatPageViewState: ChatPageViewState,
+    chatPageAction: ChatPageAction
 ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues = contentPadding),
-        state = listState,
+        state = chatPageViewState.listState,
         reverseLayout = true,
         contentPadding = PaddingValues(bottom = 80.dp),
         verticalArrangement = Arrangement.Top,
     ) {
-        for (message in chatPageState.messageList) {
+        for (message in chatPageViewState.messageList) {
             item(key = message.messageDetail.msgId) {
                 MessageItems(
                     message = message,
-                    showPartyName = chat is GroupChat,
-                    onClickAvatar = onClickAvatar,
-                    onClickMessage = onClickMessage,
-                    onLongClickMessage = onLongClickMessage
+                    showPartyName = chatPageViewState.chat is GroupChat,
+                    chatPageAction = chatPageAction
                 )
             }
         }
-        if (chatPageState.showLoadMore) {
+        if (chatPageViewState.showLoadMore) {
             item(key = "loadMore") {
                 MessageLoading()
             }
@@ -78,9 +72,7 @@ fun MessagePanel(
 private fun MessageItems(
     message: Message,
     showPartyName: Boolean,
-    onClickAvatar: (Message) -> Unit,
-    onClickMessage: (Message) -> Unit,
-    onLongClickMessage: (Message) -> Unit,
+    chatPageAction: ChatPageAction,
 ) {
     if (message is TimeMessage) {
         TimeMessage(message = message)
@@ -106,9 +98,7 @@ private fun MessageItems(
             messageContent = {
                 messageContent()
             },
-            onClickAvatar = onClickAvatar,
-            onClickMessage = onClickMessage,
-            onLongClickMessage = onLongClickMessage
+            chatPageAction = chatPageAction
         )
     } else {
         FriendMessageContainer(
@@ -117,14 +107,12 @@ private fun MessageItems(
             messageContent = {
                 messageContent()
             },
-            onClickAvatar = onClickAvatar,
-            onClickMessage = onClickMessage,
-            onLongClickMessage = onLongClickMessage
+            chatPageAction = chatPageAction
         )
     }
 }
 
-private val avatarSize = 44.dp
+private val avatarSize = 48.dp
 private val itemHorizontalPadding = 10.dp
 private val itemVerticalPadding = 10.dp
 private val textMessageWidthAtMost = 230.dp
@@ -137,9 +125,7 @@ private val timeMessageShape = RoundedCornerShape(size = 4.dp)
 private fun SelfMessageContainer(
     message: Message,
     messageContent: @Composable (Message) -> Unit,
-    onClickAvatar: (Message) -> Unit,
-    onClickMessage: (Message) -> Unit,
-    onLongClickMessage: (Message) -> Unit,
+    chatPageAction: ChatPageAction,
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -149,27 +135,28 @@ private fun SelfMessageContainer(
                 vertical = itemVerticalPadding
             )
     ) {
-        val (avatarRefs, showNameRefs, messageRefs, messageStateRefs) = createRefs()
-        CircleImage(
-            data = message.messageDetail.sender.faceUrl,
+        val (avatarRef, showNameRef, messageRef, messageStateRef) = createRefs()
+        CoilImage(
             modifier = Modifier
-                .constrainAs(ref = avatarRefs) {
+                .constrainAs(ref = avatarRef) {
                     top.linkTo(anchor = parent.top)
                     end.linkTo(anchor = parent.end)
                 }
                 .size(size = avatarSize)
+                .clip(shape = CircleShape)
                 .clickable(onClick = {
-                    onClickAvatar(message)
-                })
+                    chatPageAction.onClickAvatar(message)
+                }),
+            data = message.messageDetail.sender.faceUrl
         )
         Text(
             modifier = Modifier
-                .constrainAs(ref = showNameRefs) {
+                .constrainAs(ref = showNameRef) {
                     top.linkTo(
-                        anchor = avatarRefs.top
+                        anchor = avatarRef.top
                     )
                     end.linkTo(
-                        anchor = avatarRefs.start,
+                        anchor = avatarRef.start,
                         margin = textMessageHorizontalPadding
                     )
                 },
@@ -179,31 +166,31 @@ private fun SelfMessageContainer(
         )
         Box(
             modifier = Modifier
-                .constrainAs(ref = messageRefs) {
+                .constrainAs(ref = messageRef) {
                     top.linkTo(
-                        anchor = showNameRefs.bottom,
+                        anchor = showNameRef.bottom,
                         margin = textMessageSenderNameVerticalPadding
                     )
-                    end.linkTo(anchor = showNameRefs.end)
+                    end.linkTo(anchor = showNameRef.end)
                     width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
                 }
                 .clip(shape = messageShape)
                 .combinedClickable(
                     onClick = {
-                        onClickMessage(message)
+                        chatPageAction.onClickMessage(message)
                     },
                     onLongClick = {
-                        onLongClickMessage(message)
+                        chatPageAction.onLongClickMessage(message)
                     }
                 )
         ) {
             messageContent(message)
         }
         StateMessage(
-            modifier = Modifier.constrainAs(ref = messageStateRefs) {
-                top.linkTo(anchor = messageRefs.top)
-                bottom.linkTo(anchor = messageRefs.bottom)
-                end.linkTo(anchor = messageRefs.start, margin = textMessageHorizontalPadding)
+            modifier = Modifier.constrainAs(ref = messageStateRef) {
+                top.linkTo(anchor = messageRef.top)
+                bottom.linkTo(anchor = messageRef.bottom)
+                end.linkTo(anchor = messageRef.start, margin = textMessageHorizontalPadding)
             },
             messageState = message.messageDetail.state
         )
@@ -215,9 +202,7 @@ private fun FriendMessageContainer(
     message: Message,
     showPartyName: Boolean,
     messageContent: @Composable (Message) -> Unit,
-    onClickAvatar: (Message) -> Unit,
-    onClickMessage: (Message) -> Unit,
-    onLongClickMessage: (Message) -> Unit,
+    chatPageAction: ChatPageAction
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -227,27 +212,28 @@ private fun FriendMessageContainer(
                 vertical = itemVerticalPadding
             )
     ) {
-        val (avatarRefs, showNameRefs, messageRefs, messageStateRefs) = createRefs()
-        CircleImage(
-            data = message.messageDetail.sender.faceUrl,
+        val (avatarRef, showNameRef, messageRef, messageStateRef) = createRefs()
+        CoilImage(
             modifier = Modifier
-                .constrainAs(ref = avatarRefs) {
+                .constrainAs(ref = avatarRef) {
                     top.linkTo(anchor = parent.top)
                     start.linkTo(anchor = parent.start)
                 }
                 .size(size = avatarSize)
+                .clip(shape = CircleShape)
                 .clickable(onClick = {
-                    onClickAvatar(message)
-                })
+                    chatPageAction.onClickAvatar(message)
+                }),
+            data = message.messageDetail.sender.faceUrl
         )
         Text(
             modifier = Modifier
-                .constrainAs(ref = showNameRefs) {
+                .constrainAs(ref = showNameRef) {
                     top.linkTo(
-                        anchor = avatarRefs.top
+                        anchor = avatarRef.top
                     )
                     start.linkTo(
-                        anchor = avatarRefs.end,
+                        anchor = avatarRef.end,
                         margin = textMessageHorizontalPadding
                     )
                 },
@@ -261,31 +247,31 @@ private fun FriendMessageContainer(
         )
         Box(
             modifier = Modifier
-                .constrainAs(ref = messageRefs) {
+                .constrainAs(ref = messageRef) {
                     top.linkTo(
-                        anchor = showNameRefs.bottom,
+                        anchor = showNameRef.bottom,
                         margin = textMessageSenderNameVerticalPadding
                     )
-                    start.linkTo(anchor = showNameRefs.start)
+                    start.linkTo(anchor = showNameRef.start)
                     width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
                 }
                 .clip(shape = messageShape)
                 .combinedClickable(
                     onClick = {
-                        onClickMessage(message)
+                        chatPageAction.onClickMessage(message)
                     },
                     onLongClick = {
-                        onLongClickMessage(message)
+                        chatPageAction.onLongClickMessage(message)
                     }
                 )
         ) {
             messageContent(message)
         }
         StateMessage(
-            modifier = Modifier.constrainAs(ref = messageStateRefs) {
-                top.linkTo(anchor = messageRefs.top)
-                bottom.linkTo(anchor = messageRefs.bottom)
-                start.linkTo(anchor = messageRefs.end, margin = textMessageHorizontalPadding)
+            modifier = Modifier.constrainAs(ref = messageStateRef) {
+                top.linkTo(anchor = messageRef.top)
+                bottom.linkTo(anchor = messageRef.bottom)
+                start.linkTo(anchor = messageRef.end, margin = textMessageHorizontalPadding)
             },
             messageState = message.messageDetail.state,
         )
@@ -293,9 +279,7 @@ private fun FriendMessageContainer(
 }
 
 @Composable
-private fun TextMessage(
-    message: TextMessage,
-) {
+private fun TextMessage(message: TextMessage) {
     Text(
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.primary)

@@ -2,7 +2,7 @@ package github.leavesczy.compose_chat
 
 import android.app.Application
 import github.leavesczy.compose_chat.cache.AppThemeCache
-import github.leavesczy.compose_chat.logic.ComposeChat
+import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
 import github.leavesczy.compose_chat.ui.widgets.CoilImageLoader
 import github.leavesczy.compose_chat.utils.ContextHolder
 

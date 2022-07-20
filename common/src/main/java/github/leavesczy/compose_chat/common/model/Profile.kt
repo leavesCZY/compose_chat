@@ -32,9 +32,11 @@ data class PersonProfile(
 
     val showName: String
         get() {
-            return remark.takeIf { it.isNotBlank() }
-                ?: nickname.takeIf { it.isNotBlank() }
-                ?: id
+            return remark.ifBlank {
+                nickname.ifBlank {
+                    id
+                }
+            }
         }
 
 }

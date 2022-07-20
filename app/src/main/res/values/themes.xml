@@ -1,7 +1,20 @@
 <resources>
-    <!-- Base application theme. -->
-    <style name="Theme.ComposeChat" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+    <style name="Theme.ComposeChat.Base" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowAnimationStyle">@style/activityAnimationTransverse</item>
+    </style>
+
+    <style name="activityAnimationTransverse" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/activity_open_enter_transverse</item>
+        <item name="android:activityOpenExitAnimation">@anim/activity_open_exit_transverse</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_close_enter_transverse
+        </item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_close_exit_transverse</item>
+    </style>
+
+    <style name="Theme.ComposeChat" parent="Theme.ComposeChat.Base">
         <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:windowBackground">@android:color/white</item>
     </style>
+
 </resources>
