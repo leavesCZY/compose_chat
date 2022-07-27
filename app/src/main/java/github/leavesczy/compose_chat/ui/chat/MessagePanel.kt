@@ -78,6 +78,10 @@ private fun MessageItems(
         TimeMessage(message = message)
         return
     }
+    if (message is SystemMessage) {
+        SystemMessage(message = message)
+        return
+    }
     val messageContent = @Composable {
         when (message) {
             is TextMessage -> {
@@ -295,6 +299,20 @@ private fun TextMessage(message: TextMessage) {
 
 @Composable
 private fun TimeMessage(message: TimeMessage) {
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp, bottom = 20.dp)
+            .wrapContentWidth(align = Alignment.CenterHorizontally)
+            .background(color = Color.LightGray.copy(alpha = 0.4f), shape = timeMessageShape)
+            .padding(all = 3.dp),
+        text = message.formatMessage,
+        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp)
+    )
+}
+
+@Composable
+private fun SystemMessage(message: SystemMessage) {
     Text(
         modifier = Modifier
             .fillMaxWidth()

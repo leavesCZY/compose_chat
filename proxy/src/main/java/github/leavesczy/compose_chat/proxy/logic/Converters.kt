@@ -138,7 +138,7 @@ internal interface Converters {
             sender = senderProfile,
             isSelfMessage = timMessage.isSelf
         )
-        val message = when (val elemType = timMessage.elemType) {
+        val message = when (timMessage.elemType) {
             V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> {
                 TextMessage(
                     detail = messageDetail,
@@ -147,12 +147,7 @@ internal interface Converters {
             }
             V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE -> {
                 val imageList = timMessage.imageElem?.imageList
-                if (imageList.isNullOrEmpty()) {
-                    TextMessage(
-                        detail = messageDetail,
-                        text = "[不支持的消息类型] - $elemType"
-                    )
-                } else {
+                if (!imageList.isNullOrEmpty()) {
                     val origin = imageList[0].toImageElement()
                     val large = imageList.getOrNull(1).toImageElement()
                     val thumb = imageList.getOrNull(2).toImageElement()
@@ -162,17 +157,103 @@ internal interface Converters {
                         large = large,
                         thumb = thumb
                     )
+                } else {
+                    null
                 }
             }
-            else -> {
-                TextMessage(
-                    detail = messageDetail,
-                    text = "[不支持的消息类型] - $elemType"
-                )
+            V2TIMMessage.V2TIM_ELEM_TYPE_GROUP_TIPS -> {
+                convertGroupTipsMessage(timMessage = timMessage)
             }
-        }
+            else -> {
+                null
+            }
+        } ?: TextMessage(
+            detail = messageDetail,
+            text = "[不支持的消息类型] - ${timMessage.elemType}"
+        )
         message.tag = timMessage
         return message
+    }
+
+    private fun convertGroupTipsMessage(timMessage: V2TIMMessage): Message? {
+        val groupTipsElem = timMessage.groupTipsElem
+        if (groupTipsElem != null) {
+            fun V2TIMGroupMemberInfo.showName(): String {
+                val friendRemark = this.friendRemark
+                val nickname = this.nickName
+                val userId = this.userID
+                return if (friendRemark.isNullOrBlank()) {
+                    if (nickname.isNullOrBlank()) {
+                        userId ?: ""
+                    } else {
+                        nickname
+                    }
+                } else {
+                    friendRemark
+                }
+            }
+
+            val messageDetail = MessageDetail(
+                msgId = timMessage.msgID ?: "",
+                state = MessageState.Completed,
+                timestamp = timMessage.timestamp,
+                sender = PersonProfile(
+                    id = timMessage.sender,
+                    faceUrl = "",
+                    nickname = "",
+                    remark = "",
+                    signature = ""
+                ),
+                isSelfMessage = false
+            )
+            val memberList = groupTipsElem.memberList
+            val opMember = groupTipsElem.opMember
+            val memberNames = kotlin.run {
+                var append = ""
+                memberList?.forEachIndexed { index, info ->
+                    append += if (index == memberList.size - 1) {
+                        info.showName()
+                    } else {
+                        "${info.showName()}、"
+                    }
+                }
+                append
+            } + " "
+            val opMemberName = opMember.showName() + " "
+            val tips: String
+            when (groupTipsElem.type) {
+                V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_JOIN,
+                V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_INVITE -> {
+                    tips = memberNames + "加入了群聊"
+                }
+                V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_QUIT -> {
+                    tips = memberNames + "退出群聊"
+                }
+                V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_KICKED -> {
+                    tips = memberNames + "被踢出群聊"
+                }
+                V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_SET_ADMIN -> {
+                    tips = memberNames + "成为管理员"
+                }
+                V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_CANCEL_ADMIN -> {
+                    tips = memberNames + "被取消管理员身份"
+                }
+                V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_GROUP_INFO_CHANGE -> {
+                    tips = opMemberName + "修改了群资料"
+                }
+                V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_MEMBER_INFO_CHANGE -> {
+                    tips = opMemberName + "修改了群成员资料"
+                }
+                else -> {
+                    tips = "[不支持的系统消息] - ${groupTipsElem.type}"
+                }
+            }
+            return SystemMessage(
+                detail = messageDetail,
+                tips = tips
+            )
+        }
+        return null
     }
 
     private fun V2TIMImageElem.V2TIMImage?.toImageElement(): ImageElement? {

@@ -88,7 +88,7 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Dependencies.composeCompilerVersion
+        kotlinCompilerExtensionVersion = Dependencies.Compose.composeCompilerVersion
     }
     ((this as ExtensionAware).extensions.getByName("kotlinOptions") as KotlinJvmOptions).apply {
         jvmTarget = BuildConfig.jvmTarget

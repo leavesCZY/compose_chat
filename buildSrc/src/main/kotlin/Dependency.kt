@@ -29,7 +29,7 @@ fun DependencyHandlerScope.implementationTest() {
 }
 
 fun DependencyHandlerScope.implementationCompose() {
-    implementationExtend(Dependencies.Compose.activity)
+    implementationExtend(Dependencies.AndroidX.activity)
     implementationExtend(Dependencies.Compose.viewModel)
     implementationExtend(Dependencies.Compose.material)
     implementationExtend(Dependencies.Compose.materialIcons)
@@ -38,10 +38,9 @@ fun DependencyHandlerScope.implementationCompose() {
     debugImplementationExtend(Dependencies.Compose.uiTooling)
     debugImplementationExtend(Dependencies.Compose.uiTestJunit4)
     implementationExtend(Dependencies.Compose.constraintLayout)
-//    implementationExtend(Dependencies.Compose.paging)
 }
 
 fun DependencyHandlerScope.implementationCoil() {
-    implementationExtend(Dependencies.Coil.coil)
-    implementationExtend(Dependencies.Coil.coilGif)
+    implementationExtend(Dependencies.Components.coil)
+    implementationExtend(Dependencies.Components.coilGif)
 }

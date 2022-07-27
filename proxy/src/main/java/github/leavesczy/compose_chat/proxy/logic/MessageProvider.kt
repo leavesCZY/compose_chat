@@ -191,6 +191,9 @@ class MessageProvider : IMessageProvider, Converters {
             is TimeMessage -> {
                 throw IllegalArgumentException()
             }
+            is SystemMessage -> {
+                throw IllegalArgumentException()
+            }
         }
     }
 

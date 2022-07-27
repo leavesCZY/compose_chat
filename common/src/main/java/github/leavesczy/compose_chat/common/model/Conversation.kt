@@ -17,11 +17,12 @@ sealed class Conversation(
 
     val formatMsg by lazy {
         val messageDetail = lastMessage.messageDetail
-        val prefix = if (this is GroupConversation && !messageDetail.isSelfMessage) {
-            messageDetail.sender.showName + "："
-        } else {
-            ""
-        }
+        val prefix =
+            if (this is GroupConversation && lastMessage !is SystemMessage && !messageDetail.isSelfMessage) {
+                messageDetail.sender.showName + "："
+            } else {
+                ""
+            }
         prefix + when (messageDetail.state) {
             MessageState.Completed -> {
                 lastMessage.formatMessage

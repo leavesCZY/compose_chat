@@ -44,10 +44,17 @@ sealed class Message(val messageDetail: MessageDetail) {
 
 }
 
-data class TextMessage(private val detail: MessageDetail, val text: String) :
+data class TextMessage(private val detail: MessageDetail, private val text: String) :
     Message(messageDetail = detail) {
 
     override val formatMessage = text
+
+}
+
+data class SystemMessage(private val detail: MessageDetail, private val tips: String) :
+    Message(messageDetail = detail) {
+
+    override val formatMessage = tips
 
 }
 

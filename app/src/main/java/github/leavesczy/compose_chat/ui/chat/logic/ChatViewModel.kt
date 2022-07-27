@@ -175,7 +175,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                 is TextMessage -> {
                     targetMessage.copy(detail = messageDetail.copy(state = messageState))
                 }
-                is TimeMessage -> {
+                is SystemMessage, is TimeMessage -> {
                     throw IllegalArgumentException()
                 }
             }
