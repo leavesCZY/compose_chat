@@ -1,6 +1,5 @@
 package github.leavesczy.compose_chat.ui.chat
 
-import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -13,9 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import github.leavesczy.compose_chat.cache.AppThemeCache
-import github.leavesczy.compose_chat.model.AppTheme
-import github.leavesczy.matisse.*
 
 /**
  * @Author: leavesCZY
@@ -23,21 +19,12 @@ import github.leavesczy.matisse.*
  * @Desc:
  */
 @Composable
-fun ExtendTable(selectPictureLauncher: ManagedActivityResultLauncher<Matisse, List<MediaResources>>) {
+fun ExtendTable(selectPicture: () -> Unit) {
     Row(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .clickable {
-                    val matisse = Matisse(
-                        theme = if (AppThemeCache.currentTheme == AppTheme.Dark) {
-                            DarkMatisseTheme
-                        } else {
-                            LightMatisseTheme
-                        },
-                        maxSelectable = 1,
-                        captureStrategy = MediaStoreCaptureStrategy()
-                    )
-                    selectPictureLauncher.launch(matisse)
+                    selectPicture()
                 }
                 .padding(all = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally

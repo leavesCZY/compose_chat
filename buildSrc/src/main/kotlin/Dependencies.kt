@@ -7,7 +7,7 @@ object Dependencies {
 
     object Plugin {
         const val android = "com.android.tools.build:gradle:7.2.1"
-        const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0"
+        const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10"
     }
 
     object Test {
@@ -27,8 +27,8 @@ object Dependencies {
     }
 
     object Compose {
-        private const val composeVersion = "1.3.0-alpha01"
-        const val composeCompilerVersion = "1.2.0"
+        private const val composeVersion = "1.3.0-alpha02"
+        const val composeCompilerVersion = "1.3.0-rc01"
         const val material = "androidx.compose.material:material:$composeVersion"
         const val materialIcons =
             "androidx.compose.material:material-icons-extended:$composeVersion"
@@ -38,11 +38,11 @@ object Dependencies {
         const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0-alpha01"
         const val constraintLayout =
             "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha03"
-        const val material3 = "androidx.compose.material3:material3:1.0.0-alpha14"
+        const val material3 = "androidx.compose.material3:material3:1.0.0-alpha15"
     }
 
     object Accompanist {
-        private const val version = "0.24.13-rc"
+        private const val version = "0.26.0-alpha"
         const val systemUiController =
             "com.google.accompanist:accompanist-systemuicontroller:$version"
     }
@@ -52,7 +52,7 @@ object Dependencies {
         const val coil = "io.coil-kt:coil-compose:$version"
         const val coilGif = "io.coil-kt:coil-gif:$version"
         const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-        const val matisse = "com.github.leavesCZY:Matisse:0.0.3"
+        const val matisse = "com.github.leavesCZY:Matisse:0.0.4"
         const val imSdk = "com.tencent.imsdk:imsdk-plus:6.5.2803"
     }
 

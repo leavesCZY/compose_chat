@@ -1,5 +1,6 @@
 package github.leavesczy.compose_chat.ui.chat
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,8 +20,9 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import github.leavesczy.matisse.MatisseContract
-import github.leavesczy.matisse.MediaResources
+import github.leavesczy.compose_chat.cache.AppThemeCache
+import github.leavesczy.compose_chat.model.AppTheme
+import github.leavesczy.matisse.*
 
 /**
  * @Author: leavesCZY
@@ -126,6 +128,10 @@ fun ChatPageBottomBar(
         }
     }
 
+    BackHandler(enabled = currentInputSelector != InputSelector.NONE, onBack = {
+        softwareKeyboardController?.show()
+    })
+
     val ime = WindowInsets.ime
     val localDensity = LocalDensity.current
     val density = localDensity.density
@@ -217,7 +223,20 @@ fun ChatPageBottomBar(
                                     max = maxHeight
                                 )
                             ) {
-                                ExtendTable(selectPictureLauncher = selectPictureLauncher)
+                                ExtendTable(
+                                    selectPicture = {
+                                        onSelectorChange(InputSelector.NONE)
+                                        val matisse = Matisse(
+                                            theme = if (AppThemeCache.currentTheme == AppTheme.Dark) {
+                                                DarkMatisseTheme
+                                            } else {
+                                                LightMatisseTheme
+                                            },
+                                            maxSelectable = 1,
+                                            captureStrategy = MediaStoreCaptureStrategy()
+                                        )
+                                        selectPictureLauncher.launch(matisse)
+                                    })
                             }
                         }
                         else -> {
