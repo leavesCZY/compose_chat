@@ -4,22 +4,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.model.*
-import github.leavesczy.compose_chat.ui.theme.BottomSheetShape
-import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
@@ -33,66 +25,44 @@ fun MainPage(
     conversationPageViewState: ConversationPageViewState,
     friendshipPageViewState: FriendshipPageViewState,
     personProfilePageViewState: PersonProfilePageViewState,
-    mainPageBottomBarViewState: MainPageBottomBarViewState,
-    mainPageDrawerViewState: MainPageDrawerViewState
+    friendshipPanelViewState: FriendshipPanelViewState,
+    bottomBarViewState: MainPageBottomBarViewState,
+    drawerViewState: MainPageDrawerViewState
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    val tabSelected = mainPageBottomBarViewState.tabSelected
-    fun sheetContentAnimateToExpanded() {
-        coroutineScope.launch {
-            sheetState.animateTo(targetValue = ModalBottomSheetValue.Expanded)
-        }
-    }
-
-    val topBarViewState = remember(key1 = tabSelected) {
-        MainPageTopBarViewState(
-            tabSelected = tabSelected,
-            openDrawer = {
-                mainPageAction.changDrawerState(DrawerValue.Open)
-            },
-            onAddFriend = {
-                sheetContentAnimateToExpanded()
-            },
-            onJoinGroup = {
-                sheetContentAnimateToExpanded()
-            }
-        )
-    }
     ModalNavigationDrawer(
-        drawerState = mainPageDrawerViewState.drawerState,
-        drawerShape = RoundedCornerShape(size = 0.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding(),
+        drawerState = drawerViewState.drawerState,
         drawerContent = {
             MainPageDrawer(
-                mainPageDrawerViewState = mainPageDrawerViewState,
+                viewState = drawerViewState,
                 mainPageAction = mainPageAction
             )
         },
         content = {
-            ModalBottomSheetLayout(
-                sheetState = sheetState,
-                sheetShape = BottomSheetShape,
-                sheetContent = {
-                    MainPageFriendshipPanel(
-                        modalBottomSheetState = sheetState,
-                        mainPageAction = mainPageAction
-                    )
-                }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
                 Scaffold(
-                    modifier = Modifier.navigationBarsPadding(),
+                    modifier = Modifier.fillMaxSize(),
                     topBar = {
-                        MainPageTopBar(mainPageTopBarState = topBarViewState)
+                        MainPageTopBar(
+                            tabSelected = bottomBarViewState.tabSelected,
+                            mainPageAction = mainPageAction
+                        )
                     },
                     bottomBar = {
                         MainPageBottomBar(
-                            mainPageBottomBarViewState = mainPageBottomBarViewState,
+                            viewState = bottomBarViewState,
                             mainPageAction = mainPageAction
                         )
                     },
                     floatingActionButton = {
-                        if (tabSelected == MainTab.Friendship) {
+                        if (bottomBarViewState.tabSelected == MainTab.Friendship) {
                             FloatingActionButton(
+                                modifier = Modifier.padding(bottom = 20.dp),
                                 containerColor = MaterialTheme.colorScheme.primary,
                                 content = {
                                     Icon(
@@ -102,7 +72,7 @@ fun MainPage(
                                     )
                                 },
                                 onClick = {
-                                    sheetContentAnimateToExpanded()
+                                    mainPageAction.showFriendshipPanel()
                                 })
                         }
                     },
@@ -112,27 +82,26 @@ fun MainPage(
                             .fillMaxSize()
                             .padding(paddingValues = innerPadding)
                     ) {
-                        when (tabSelected) {
+                        when (bottomBarViewState.tabSelected) {
                             MainTab.Conversation -> {
                                 ConversationPage(
-                                    conversationPageViewState = conversationPageViewState,
+                                    viewState = conversationPageViewState,
                                     mainPageAction = mainPageAction
                                 )
                             }
                             MainTab.Friendship -> {
                                 FriendshipPage(
-                                    friendshipPageViewState = friendshipPageViewState,
+                                    viewState = friendshipPageViewState,
                                     mainPageAction = mainPageAction
                                 )
                             }
                             MainTab.Person -> {
-                                PersonProfilePage(
-                                    personProfilePageViewState = personProfilePageViewState
-                                )
+                                PersonProfilePage(viewState = personProfilePageViewState)
                             }
                         }
                     }
                 }
+                FriendshipPanel(viewState = friendshipPanelViewState)
             }
         }
     )

@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import github.leavesczy.compose_chat.model.MainPageTopBarViewState
+import github.leavesczy.compose_chat.model.MainPageAction
 import github.leavesczy.compose_chat.model.MainTab
 
 /**
@@ -21,8 +21,8 @@ import github.leavesczy.compose_chat.model.MainTab
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun MainPageTopBar(mainPageTopBarState: MainPageTopBarViewState) {
-    if (mainPageTopBarState.tabSelected == MainTab.Person) {
+fun MainPageTopBar(tabSelected: MainTab, mainPageAction: MainPageAction) {
+    if (tabSelected == MainTab.Person) {
         return
     }
     var menuExpanded by remember {
@@ -40,7 +40,9 @@ fun MainPageTopBar(mainPageTopBarState: MainPageTopBarViewState) {
                     imageVector = Icons.Filled.Menu,
                     contentDescription = null
                 )
-            }, onClick = mainPageTopBarState.openDrawer)
+            }, onClick = {
+                mainPageAction.changDrawerState(DrawerValue.Open)
+            })
         },
         actions = {
             IconButton(content = {
@@ -70,13 +72,13 @@ fun MainPageTopBar(mainPageTopBarState: MainPageTopBarViewState) {
                 Text(text = "添加好友", style = MaterialTheme.typography.bodyMedium)
             }, onClick = {
                 menuExpanded = false
-                mainPageTopBarState.onAddFriend()
+                mainPageAction.showFriendshipPanel()
             })
             DropdownMenuItem(text = {
                 Text(text = "加入群聊", style = MaterialTheme.typography.bodyMedium)
             }, onClick = {
                 menuExpanded = false
-                mainPageTopBarState.onJoinGroup()
+                mainPageAction.showFriendshipPanel()
             })
         }
     }

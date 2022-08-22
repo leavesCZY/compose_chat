@@ -1,10 +1,7 @@
 package github.leavesczy.compose_chat.ui.main
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
@@ -36,19 +33,19 @@ import github.leavesczy.compose_chat.ui.widgets.EmptyView
  */
 @Composable
 fun FriendshipPage(
-    friendshipPageViewState: FriendshipPageViewState,
+    viewState: FriendshipPageViewState,
     mainPageAction: MainPageAction
 ) {
-    Surface {
-        if (friendshipPageViewState.joinedGroupList.isEmpty() && friendshipPageViewState.friendList.isEmpty()) {
+    Surface(modifier = Modifier.fillMaxSize()) {
+        if (viewState.joinedGroupList.isEmpty() && viewState.friendList.isEmpty()) {
             EmptyView()
         } else {
             LazyColumn(
-                state = friendshipPageViewState.listState,
+                state = viewState.listState,
                 contentPadding = PaddingValues(bottom = 60.dp),
             ) {
-                val joinedGroupList = friendshipPageViewState.joinedGroupList
-                val friendList = friendshipPageViewState.friendList
+                val joinedGroupList = viewState.joinedGroupList
+                val friendList = viewState.friendList
                 items(items = joinedGroupList, key = {
                     it.id
                 }, contentType = {

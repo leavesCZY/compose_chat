@@ -16,13 +16,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import androidx.compose.ui.zIndex
 import coil.Coil
 import coil.ImageLoader
@@ -33,7 +31,6 @@ import coil.decode.ImageDecoderDecoder
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
-import github.leavesczy.compose_chat.ui.theme.BezierShape
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -142,6 +139,30 @@ fun BezierImage(modifier: Modifier, data: Any) {
             .then(other = modifier),
         data = data
     )
+}
+
+private class BezierShape(private val animateValue: Float) : Shape {
+
+    private val path = Path()
+
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
+        path.reset()
+        val width = size.width
+        val height = size.height
+        val progress = height / 7 * 5 + height / 7 * 2 * animateValue
+        path.lineTo(0f, progress / 7 * 5)
+        path.quadraticBezierTo(width / 2 + width / 4 * animateValue, height, width, progress)
+        path.lineTo(width, 0f)
+        path.lineTo(0f, 0f)
+        return Outline.Generic(path = path)
+    }
+
+    override fun toString(): String = "BezierShape"
+
 }
 
 @Composable

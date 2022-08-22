@@ -18,40 +18,40 @@ import kotlinx.coroutines.flow.filter
  */
 @Composable
 fun ChatPage(
-    chatPageViewState: ChatPageViewState,
-    chatPageAction: ChatPageAction,
+    viewState: ChatPageViewState,
+    action: ChatPageAction,
 ) {
     LaunchedEffect(key1 = "loadMore") {
         snapshotFlow {
-            chatPageViewState.listState.firstVisibleItemIndex
+            viewState.listState.firstVisibleItemIndex
         }.filter {
-            !chatPageViewState.loadFinish
+            !viewState.loadFinish
         }.collect {
-            chatPageAction.loadMoreMessage()
+            action.loadMoreMessage()
         }
     }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             ChatPageTopBar(
-                title = chatPageViewState.topBarTitle,
-                onClickBackMenu = chatPageAction.onClickBackMenu,
-                onClickMoreMenu = chatPageAction.onClickMoreMenu
+                title = viewState.topBarTitle,
+                onClickBackMenu = action.onClickBackMenu,
+                onClickMoreMenu = action.onClickMoreMenu
             )
         },
         bottomBar = {
             ChatPageBottomBar(
                 sendText = {
-                    chatPageAction.sendTextMessage(it.text)
+                    action.sendTextMessage(it.text)
                 }, sendImage = {
-                    chatPageAction.sendImageMessage(it)
+                    action.sendImageMessage(it)
                 })
         }
     ) { innerPadding ->
         MessagePanel(
             contentPadding = innerPadding,
-            chatPageViewState = chatPageViewState,
-            chatPageAction = chatPageAction
+            chatPageViewState = viewState,
+            chatPageAction = action
         )
     }
 }

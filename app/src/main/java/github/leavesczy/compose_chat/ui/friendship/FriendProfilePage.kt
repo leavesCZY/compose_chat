@@ -1,26 +1,27 @@
 package github.leavesczy.compose_chat.ui.friendship
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import github.leavesczy.compose_chat.common.model.PersonProfile
-import github.leavesczy.compose_chat.model.FriendProfilePageAction
+import github.leavesczy.compose_chat.extend.clickableNoRipple
 import github.leavesczy.compose_chat.model.FriendProfilePageViewState
-import github.leavesczy.compose_chat.ui.theme.BottomSheetShape
+import github.leavesczy.compose_chat.model.SetFriendRemarkPanelViewState
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
-import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
@@ -31,43 +32,20 @@ import kotlinx.coroutines.launch
 @Composable
 fun FriendProfilePage(
     friendProfilePageViewState: FriendProfilePageViewState,
-    friendProfilePageAction: FriendProfilePageAction
+    remarkPanelViewState: SetFriendRemarkPanelViewState
 ) {
     val personProfile = friendProfilePageViewState.personProfile
-    val coroutineScope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-
-    fun expandSheetContent() {
-        coroutineScope.launch {
-            sheetState.animateTo(targetValue = ModalBottomSheetValue.Expanded)
-        }
-    }
-
-    fun hiddenSheetContent() {
-        coroutineScope.launch {
-            sheetState.animateTo(targetValue = ModalBottomSheetValue.Hidden)
-        }
-    }
-
-    val focusManager = LocalFocusManager.current
-
-    ModalBottomSheetLayout(
-        sheetState = sheetState,
-        sheetShape = BottomSheetShape,
-        sheetContent = {
-            SetFriendRemarkPanel(
-                friendProfile = personProfile,
-                modalBottomSheetState = sheetState,
-                setRemark = {
-                    friendProfilePageAction.setRemark(it)
-                    hiddenSheetContent()
-                    focusManager.clearFocus(force = true)
-                }
-            )
-        }
-    ) {
-        var openDeleteFriendDialog by remember { mutableStateOf(false) }
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+    var openDeleteFriendDialog by remember { mutableStateOf(false) }
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding()
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues = innerPadding)
+        ) {
             ProfilePanel(
                 title = personProfile.nickname,
                 subtitle = personProfile.signature,
@@ -77,15 +55,14 @@ fun FriendProfilePage(
                     ""
                 },
                 avatarUrl = personProfile.faceUrl,
-                contentPadding = innerPadding,
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     if (friendProfilePageViewState.showAlterBtb) {
                         CommonButton(text = "去聊天吧") {
-                            friendProfilePageAction.navToChat()
+                            friendProfilePageViewState.navToChat()
                         }
                         CommonButton(text = "设置备注") {
-                            expandSheetContent()
+                            friendProfilePageViewState.showSetFriendRemarkPanel()
                         }
                         CommonButton(text = "删除好友") {
                             openDeleteFriendDialog = true
@@ -93,18 +70,19 @@ fun FriendProfilePage(
                     }
                     if (friendProfilePageViewState.showAddBtn) {
                         CommonButton(text = "加为好友") {
-                            friendProfilePageAction.addFriend()
+                            friendProfilePageViewState.addFriend()
                         }
                     }
                 }
             }
             if (openDeleteFriendDialog) {
                 DeleteFriendDialog(
-                    deleteFriend = friendProfilePageAction.deleteFriend,
+                    deleteFriend = friendProfilePageViewState.deleteFriend,
                     onDismissRequest = {
                         openDeleteFriendDialog = false
                     })
             }
+            SetFriendRemarkPanel(viewState = remarkPanelViewState)
         }
     }
 }
@@ -151,54 +129,62 @@ private fun DeleteFriendDialog(
 }
 
 @Composable
-private fun SetFriendRemarkPanel(
-    friendProfile: PersonProfile,
-    modalBottomSheetState: ModalBottomSheetState,
-    setRemark: (remark: String) -> Unit
-) {
-    val coroutineScope = rememberCoroutineScope()
-    fun expandSheetContent(targetValue: ModalBottomSheetValue) {
-        coroutineScope.launch {
-            modalBottomSheetState.animateTo(targetValue = targetValue)
-        }
-    }
-    BackHandler(enabled = modalBottomSheetState.isVisible, onBack = {
-        when (modalBottomSheetState.currentValue) {
-            ModalBottomSheetValue.Hidden -> {
-
-            }
-            ModalBottomSheetValue.Expanded, ModalBottomSheetValue.HalfExpanded -> {
-                expandSheetContent(targetValue = ModalBottomSheetValue.Hidden)
-            }
-        }
-    })
-    var remark by remember(key1 = friendProfile) {
-        mutableStateOf(
-            friendProfile.remark
-        )
-    }
-    Surface(
+private fun SetFriendRemarkPanel(viewState: SetFriendRemarkPanelViewState) {
+    BackHandler(enabled = viewState.visible, onBack = viewState.onDismissRequest)
+    AnimatedVisibility(
         modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(fraction = 0.75f)
+            .fillMaxSize()
+            .clickableNoRipple {
+
+            },
+        visible = viewState.visible,
+        enter = slideInVertically(initialOffsetY = { 2 * it }),
+        exit = slideOutVertically(targetOffsetY = { it }),
     ) {
-        Column(modifier = Modifier.padding(top = 20.dp)) {
-            CommonOutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(
-                        horizontal = 20.dp,
-                        vertical = 10.dp
-                    ),
-                value = remark,
-                onValueChange = {
-                    remark = it
-                },
-                label = "输入备注",
+        val background by transition.animateColor(label = "") { state ->
+            if (state == EnterExitState.Visible) {
+                Color(0x6D000000)
+            } else {
+                Color.Transparent
+            }
+        }
+        var remark by remember(key1 = viewState.personProfile.remark) {
+            mutableStateOf(
+                viewState.personProfile.remark
             )
-            CommonButton(text = "设置备注") {
-                setRemark(remark)
+        }
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(color = background)) {
+            Column(
+                modifier = Modifier
+                    .align(alignment = Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .fillMaxHeight(fraction = 0.75f)
+                    .clip(
+                        shape = RoundedCornerShape(
+                            topStart = 20.dp, topEnd = 20.dp
+                        )
+                    )
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .padding(top = 20.dp)
+            ) {
+                CommonOutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = 20.dp,
+                            vertical = 10.dp
+                        ),
+                    value = remark,
+                    onValueChange = {
+                        remark = it
+                    },
+                    label = "输入备注",
+                )
+                CommonButton(text = "设置备注") {
+                    viewState.setRemark(remark)
+                }
             }
         }
     }

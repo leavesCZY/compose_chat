@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Environment
-import github.leavesczy.matisse.MediaResources
+import github.leavesczy.matisse.MediaResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -27,20 +27,20 @@ object CompressImageUtils {
 
     private const val JPEG = "jpeg"
 
-    suspend fun compressImage(context: Context, mediaResources: MediaResources): File? {
+    suspend fun compressImage(context: Context, mediaResource: MediaResource): File? {
         return withContext(context = Dispatchers.IO) {
             try {
-                val imageUri = mediaResources.uri
-                val imagePath = mediaResources.path
+                val imageUri = mediaResource.uri
+                val imagePath = mediaResource.path
                 val extension = imagePath.substringAfterLast('.', "")
-                val isGif = mediaResources.mimeType == GIF_MIME
+                val isGif = mediaResource.mimeType == GIF_MIME
                 val inputStream = context.contentResolver.openInputStream(imageUri)
                 if (inputStream != null) {
                     val byteArray = inputStream.readBytes()
                     if (isGif || byteArray.size <= IMAGE_MAX_SIZE) {
                         if (isAndroidQ()) {
                             val imageTempFile =
-                                createImageTempFile(context = context, extension = extension)
+                                createTempFile(context = context, extension = extension)
                             val imageTempFileOutputStream = FileOutputStream(imageTempFile)
                             imageTempFileOutputStream.write(byteArray)
                             imageTempFileOutputStream.close()
@@ -49,7 +49,7 @@ object CompressImageUtils {
                         return@withContext File(imagePath)
                     }
                     val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-                    val imageTempFile = createImageTempFile(context = context, extension = JPEG)
+                    val imageTempFile = createTempFile(context = context, extension = JPEG)
                     compressImage(
                         bitmap = bitmap,
                         maxSize = IMAGE_MAX_SIZE,
@@ -82,13 +82,17 @@ object CompressImageUtils {
         }
     }
 
-    private fun createImageTempFile(context: Context, extension: String): File {
+    private fun createTempFile(context: Context, extension: String): File {
         val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            UUID.randomUUID().toString(),
-            extension,
-            storageDir
-        )
+        val file = File(storageDir, createImageName(extension = extension))
+        file.createNewFile()
+        return file
+    }
+
+    private fun createImageName(extension: String): String {
+        val uuid = UUID.randomUUID().toString()
+        val randomName = uuid.substring(0, 6)
+        return "compose_chat_$randomName.$extension"
     }
 
     private fun isAndroidQ(): Boolean {

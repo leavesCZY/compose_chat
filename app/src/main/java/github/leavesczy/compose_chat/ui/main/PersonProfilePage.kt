@@ -29,13 +29,16 @@ import github.leavesczy.compose_chat.ui.widgets.CoilImage
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun PersonProfilePage(personProfilePageViewState: PersonProfilePageViewState) {
-    val personProfile = personProfilePageViewState.personProfile
+fun PersonProfilePage(viewState: PersonProfilePageViewState) {
+    val personProfile = viewState.personProfile
     val faceUrl = personProfile.faceUrl
     val title = personProfile.showName
     val subtitle = personProfile.signature
     val introduction = "ID: ${personProfile.id}"
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         val context = LocalContext.current
         ConstraintLayout(modifier = Modifier) {
             val (backgroundRef, avatarRef, titleRef, subtitleRef, introductionRef) = createRefs()

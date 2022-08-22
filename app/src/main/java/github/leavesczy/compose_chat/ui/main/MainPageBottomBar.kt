@@ -26,12 +26,12 @@ import github.leavesczy.compose_chat.model.MainTab
  */
 @Composable
 fun MainPageBottomBar(
-    mainPageBottomBarViewState: MainPageBottomBarViewState,
+    viewState: MainPageBottomBarViewState,
     mainPageAction: MainPageAction
 ) {
-    val tabList = mainPageBottomBarViewState.tabList
-    val unreadMessageCount = mainPageBottomBarViewState.unreadMessageCount
-    val tabSelected = mainPageBottomBarViewState.tabSelected
+    val tabList = viewState.tabList
+    val unreadMessageCount = viewState.unreadMessageCount
+    val tabSelected = viewState.tabSelected
     NavigationBar(modifier = Modifier.height(height = 60.dp)) {
         tabList.forEach { tab ->
             NavigationBarItem(

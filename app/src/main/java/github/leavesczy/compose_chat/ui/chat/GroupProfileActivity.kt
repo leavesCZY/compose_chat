@@ -78,8 +78,8 @@ class GroupProfileActivity : BaseActivity() {
             }
             ComposeChatTheme {
                 GroupProfilePage(
-                    groupProfilePageViewState = groupProfilePageViewState,
-                    groupProfilePageAction = groupProfilePageAction
+                    viewState = groupProfilePageViewState,
+                    action = groupProfilePageAction
                 )
             }
         }

@@ -27,7 +27,7 @@ import github.leavesczy.compose_chat.utils.showToast
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun LoginPage(loginPageViewState: LoginPageViewState, login: (String) -> Unit) {
+fun LoginPage(viewState: LoginPageViewState, login: (String) -> Unit) {
     val textInputService = LocalTextInputService.current
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(
@@ -41,7 +41,7 @@ fun LoginPage(loginPageViewState: LoginPageViewState, login: (String) -> Unit) {
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (loginPageViewState.showPanel) {
+                if (viewState.showPanel) {
                     Text(
                         text = stringResource(id = R.string.app_name),
                         modifier = Modifier
@@ -52,7 +52,7 @@ fun LoginPage(loginPageViewState: LoginPageViewState, login: (String) -> Unit) {
                         fontFamily = FontFamily.Cursive,
                         textAlign = TextAlign.Center,
                     )
-                    var userId by remember { mutableStateOf(loginPageViewState.lastLoginUserId) }
+                    var userId by remember { mutableStateOf(viewState.lastLoginUserId) }
                     CommonOutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -83,7 +83,7 @@ fun LoginPage(loginPageViewState: LoginPageViewState, login: (String) -> Unit) {
                     }
                 }
             }
-            if (loginPageViewState.showLoadingDialog) {
+            if (viewState.showLoadingDialog) {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .fillMaxSize()

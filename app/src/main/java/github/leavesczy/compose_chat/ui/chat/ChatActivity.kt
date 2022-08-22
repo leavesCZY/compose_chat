@@ -1,5 +1,6 @@
 package github.leavesczy.compose_chat.ui.chat
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -38,7 +39,10 @@ class ChatActivity : BaseActivity() {
             val intent = Intent(context, ChatActivity::class.java)
             intent.putExtra(keyType, chat.type)
             intent.putExtra(keyId, chat.id)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            if (context !is Activity) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
             context.startActivity(intent)
         }
 
@@ -77,7 +81,7 @@ class ChatActivity : BaseActivity() {
                         chatViewModel.sendTextMessage(text = it)
                     },
                     sendImageMessage = {
-                        chatViewModel.sendImageMessage(mediaResources = it)
+                        chatViewModel.sendImageMessage(mediaResource = it)
                     },
                     loadMoreMessage = {
                         chatViewModel.loadMoreMessage()
@@ -131,8 +135,8 @@ class ChatActivity : BaseActivity() {
             })
             ComposeChatTheme {
                 ChatPage(
-                    chatPageViewState = chatPageState,
-                    chatPageAction = chatPageAction
+                    viewState = chatPageState,
+                    action = chatPageAction
                 )
             }
         }

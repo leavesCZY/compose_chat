@@ -10,7 +10,7 @@ import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
 import github.leavesczy.compose_chat.utils.CompressImageUtils
 import github.leavesczy.compose_chat.utils.ContextHolder
 import github.leavesczy.compose_chat.utils.showToast
-import github.leavesczy.matisse.MediaResources
+import github.leavesczy.matisse.MediaResource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -117,11 +117,11 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
         }
     }
 
-    fun sendImageMessage(mediaResources: MediaResources) {
+    fun sendImageMessage(mediaResource: MediaResource) {
         viewModelScope.launch {
             val imageFile = CompressImageUtils.compressImage(
                 context = ContextHolder.context,
-                mediaResources = mediaResources
+                mediaResource = mediaResource
             )
             val imagePath = imageFile?.absolutePath
             if (imagePath.isNullOrBlank()) {

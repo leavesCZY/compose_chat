@@ -9,7 +9,7 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import github.leavesczy.compose_chat.common.model.*
-import github.leavesczy.matisse.MediaResources
+import github.leavesczy.matisse.MediaResource
 
 /**
  * @Author: leavesCZY
@@ -60,12 +60,11 @@ data class MainPageAction(
     val onPinnedConversation: (Conversation, Boolean) -> Unit,
     val onClickGroupItem: (GroupProfile) -> Unit,
     val onClickFriendItem: (PersonProfile) -> Unit,
-    val joinGroup: (groupId: String) -> Unit,
-    val addFriend: (userId: String) -> Unit,
     val onTabSelected: (MainTab) -> Unit,
     val switchToNextTheme: () -> Unit,
     val logout: () -> Unit,
     val changDrawerState: (DrawerValue) -> Unit,
+    val showFriendshipPanel: () -> Unit,
 )
 
 data class ConversationPageViewState(
@@ -83,16 +82,27 @@ data class PersonProfilePageViewState(
     val personProfile: PersonProfile
 )
 
+data class FriendshipPanelViewState(
+    val visible: Boolean,
+    val onDismissRequest: () -> Unit,
+    val joinGroup: (groupId: String) -> Unit,
+    val addFriend: (userId: String) -> Unit,
+)
+
 data class FriendProfilePageViewState(
     val personProfile: PersonProfile,
     val showAlterBtb: Boolean,
-    val showAddBtn: Boolean
-)
-
-data class FriendProfilePageAction(
+    val showAddBtn: Boolean,
     val navToChat: () -> Unit,
     val addFriend: () -> Unit,
     val deleteFriend: () -> Unit,
+    val showSetFriendRemarkPanel: () -> Unit,
+)
+
+data class SetFriendRemarkPanelViewState(
+    val visible: Boolean,
+    val personProfile: PersonProfile,
+    val onDismissRequest: () -> Unit,
     val setRemark: (String) -> Unit
 )
 
@@ -109,7 +119,7 @@ data class ChatPageAction(
     val onClickBackMenu: () -> Unit,
     val onClickMoreMenu: () -> Unit,
     val sendTextMessage: (String) -> Unit,
-    val sendImageMessage: (MediaResources) -> Unit,
+    val sendImageMessage: (MediaResource) -> Unit,
     val loadMoreMessage: () -> Unit,
     val onClickAvatar: (Message) -> Unit,
     val onClickMessage: (Message) -> Unit,
@@ -130,10 +140,6 @@ data class GroupProfilePageAction(
 data class ProfileUpdatePageViewStata(val personProfile: PersonProfile)
 
 data class ProfileUpdatePageAction(
-    val uploadImage: suspend (media: MediaResources) -> String,
-    val updateProfile: (
-        faceUrl: String,
-        nickname: String,
-        signature: String
-    ) -> Unit
+    val uploadImage: suspend (media: MediaResource) -> String,
+    val updateProfile: (faceUrl: String, nickname: String, signature: String) -> Unit
 )

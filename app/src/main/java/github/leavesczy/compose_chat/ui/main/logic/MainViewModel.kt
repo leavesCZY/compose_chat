@@ -9,8 +9,11 @@ import github.leavesczy.compose_chat.cache.AccountCache
 import github.leavesczy.compose_chat.cache.AppThemeCache
 import github.leavesczy.compose_chat.common.model.*
 import github.leavesczy.compose_chat.model.*
+import github.leavesczy.compose_chat.ui.chat.ChatActivity
+import github.leavesczy.compose_chat.utils.ContextHolder
 import github.leavesczy.compose_chat.utils.showToast
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,9 +37,6 @@ class MainViewModel : ViewModel() {
         )
     )
 
-    val conversationPageViewState: StateFlow<ConversationPageViewState> =
-        _conversationPageViewState
-
     private val _friendshipPageViewState = MutableStateFlow(
         value = FriendshipPageViewState(
             listState = LazyListState(
@@ -48,13 +48,8 @@ class MainViewModel : ViewModel() {
         )
     )
 
-    val friendshipPageViewState: StateFlow<FriendshipPageViewState> = _friendshipPageViewState
-
     private val _personProfilePageViewState =
         MutableStateFlow(value = PersonProfilePageViewState(personProfile = PersonProfile.Empty))
-
-    val personProfilePageViewState: StateFlow<PersonProfilePageViewState> =
-        _personProfilePageViewState
 
     private val _mainPageBottomBarViewState = MutableStateFlow(
         value = MainPageBottomBarViewState(
@@ -64,26 +59,46 @@ class MainViewModel : ViewModel() {
         )
     )
 
-    val mainPageBottomBarViewState: StateFlow<MainPageBottomBarViewState> =
-        _mainPageBottomBarViewState
-
     private val _appTheme = MutableStateFlow(value = AppThemeCache.currentTheme)
 
-    val appTheme: StateFlow<AppTheme> = _appTheme
-
     private val _serverConnectState = MutableStateFlow(value = ServerState.ConnectSuccess)
-
-    val serverConnectState: SharedFlow<ServerState> = _serverConnectState
 
     private val _mainPageDrawerViewState = MutableStateFlow(
         value = MainPageDrawerViewState(
             drawerState = DrawerState(initialValue = DrawerValue.Closed),
-            appTheme = appTheme.value,
+            appTheme = _appTheme.value,
             personProfile = ComposeChat.accountProvider.personProfile.value
         )
     )
 
+    private val _friendshipPanelViewState = MutableStateFlow(
+        FriendshipPanelViewState(
+            visible = false,
+            onDismissRequest = ::onFriendshipPanelDismissRequest,
+            joinGroup = ::joinGroup,
+            addFriend = ::addFriend,
+        )
+    )
+
+    val serverConnectState: SharedFlow<ServerState> = _serverConnectState
+
     val mainPageDrawerViewState: StateFlow<MainPageDrawerViewState> = _mainPageDrawerViewState
+
+    val friendshipPanelViewState: StateFlow<FriendshipPanelViewState> =
+        _friendshipPanelViewState
+
+    val appTheme: StateFlow<AppTheme> = _appTheme
+
+    val mainPageBottomBarViewState: StateFlow<MainPageBottomBarViewState> =
+        _mainPageBottomBarViewState
+
+    val personProfilePageViewState: StateFlow<PersonProfilePageViewState> =
+        _personProfilePageViewState
+
+    val conversationPageViewState: StateFlow<ConversationPageViewState> =
+        _conversationPageViewState
+
+    val friendshipPageViewState: StateFlow<FriendshipPageViewState> = _friendshipPageViewState
 
     init {
         viewModelScope.launch(context = Dispatchers.Main.immediate) {
@@ -188,13 +203,52 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    suspend fun addFriend(userId: String): ActionResult {
-        val formatUserId = userId.lowercase()
-        return ComposeChat.friendshipProvider.addFriend(friendId = formatUserId)
+    fun showPageFriendshipPanel() {
+        viewModelScope.launch {
+            _friendshipPanelViewState.emit(value = _friendshipPanelViewState.value.copy(visible = true))
+        }
     }
 
-    suspend fun joinGroup(groupId: String): ActionResult {
-        return ComposeChat.groupProvider.joinGroup(groupId)
+    private fun onFriendshipPanelDismissRequest() {
+        viewModelScope.launch {
+            _friendshipPanelViewState.emit(value = _friendshipPanelViewState.value.copy(visible = false))
+        }
+    }
+
+    private fun addFriend(userId: String) {
+        viewModelScope.launch {
+            val formatUserId = userId.lowercase()
+            when (val result = ComposeChat.friendshipProvider.addFriend(friendId = formatUserId)) {
+                is ActionResult.Success -> {
+                    delay(timeMillis = 400)
+                    showToast("添加成功")
+                    ChatActivity.navTo(
+                        context = ContextHolder.context,
+                        chat = PrivateChat(id = formatUserId)
+                    )
+                    onFriendshipPanelDismissRequest()
+                }
+                is ActionResult.Failed -> {
+                    showToast(result.reason)
+                }
+            }
+        }
+    }
+
+    private fun joinGroup(groupId: String) {
+        viewModelScope.launch {
+            when (val result = ComposeChat.groupProvider.joinGroup(groupId)) {
+                is ActionResult.Success -> {
+                    delay(timeMillis = 400)
+                    showToast("加入成功")
+                    ComposeChat.groupProvider.getJoinedGroupList()
+                    onFriendshipPanelDismissRequest()
+                }
+                is ActionResult.Failed -> {
+                    showToast(result.reason)
+                }
+            }
+        }
     }
 
     fun logout() {

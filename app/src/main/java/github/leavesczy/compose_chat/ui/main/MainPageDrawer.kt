@@ -36,14 +36,14 @@ import github.leavesczy.compose_chat.ui.widgets.BouncyImage
  */
 @Composable
 fun MainPageDrawer(
-    mainPageDrawerViewState: MainPageDrawerViewState,
+    viewState: MainPageDrawerViewState,
     mainPageAction: MainPageAction
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        BackHandler(enabled = mainPageDrawerViewState.drawerState.isOpen, onBack = {
+    Surface(modifier = Modifier.requiredWidth(width = 350.dp)) {
+        BackHandler(enabled = viewState.drawerState.isOpen, onBack = {
             mainPageAction.changDrawerState(DrawerValue.Closed)
         })
-        val personProfile = mainPageDrawerViewState.personProfile
+        val personProfile = viewState.personProfile
         val faceUrl = personProfile.faceUrl
         val nickname = personProfile.nickname
         val signature = personProfile.signature

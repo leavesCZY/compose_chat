@@ -29,10 +29,10 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun ProfileUpdatePage(
-    profileUpdatePageViewStata: ProfileUpdatePageViewStata,
+    viewStata: ProfileUpdatePageViewStata,
     profileUpdatePageAction: ProfileUpdatePageAction
 ) {
-    val realtimePersonProfile = profileUpdatePageViewStata.personProfile
+    val realtimePersonProfile = viewStata.personProfile
     var faceUrl by remember(key1 = realtimePersonProfile) {
         mutableStateOf(realtimePersonProfile.faceUrl)
     }

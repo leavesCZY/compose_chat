@@ -9,7 +9,7 @@ import github.leavesczy.compose_chat.model.ProfileUpdatePageViewStata
 import github.leavesczy.compose_chat.utils.CompressImageUtils
 import github.leavesczy.compose_chat.utils.ContextHolder
 import github.leavesczy.compose_chat.utils.showToast
-import github.leavesczy.matisse.MediaResources
+import github.leavesczy.matisse.MediaResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -59,11 +59,11 @@ class ProfileUpdateViewModel : ViewModel() {
         }
     }
 
-    suspend fun uploadImage(mediaResources: MediaResources): String {
+    suspend fun uploadImage(mediaResource: MediaResource): String {
         return withContext(Dispatchers.IO) {
             val imageFile = CompressImageUtils.compressImage(
                 context = ContextHolder.context,
-                mediaResources = mediaResources
+                mediaResource = mediaResource
             )
             val imagePath = imageFile?.absolutePath
             if (!imagePath.isNullOrBlank()) {

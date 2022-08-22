@@ -6,14 +6,13 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import github.leavesczy.compose_chat.common.model.PrivateChat
+import androidx.lifecycle.lifecycleScope
 import github.leavesczy.compose_chat.extend.viewModelsInstance
-import github.leavesczy.compose_chat.model.FriendProfilePageAction
 import github.leavesczy.compose_chat.ui.base.BaseActivity
-import github.leavesczy.compose_chat.ui.chat.ChatActivity
 import github.leavesczy.compose_chat.ui.friendship.logic.FriendProfileViewModel
 import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 /**
  * @Author: CZY
@@ -46,26 +45,24 @@ class FriendProfileActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val friendProfilePageViewState by friendProfileViewModel.friendProfilePageState.collectAsState()
-            val friendProfilePageAction = remember {
-                FriendProfilePageAction(navToChat = {
-                    ChatActivity.navTo(context = this, chat = PrivateChat(id = friendId))
-                }, addFriend = {
-                    friendProfileViewModel.addFriend()
-                }, deleteFriend = {
-                    friendProfileViewModel.deleteFriend()
-                    finish()
-                }, setRemark = {
-                    friendProfileViewModel.setFriendRemark(remark = it)
-                })
-            }
+            val remarkPanelViewState by friendProfileViewModel.remarkPanelViewState.collectAsState()
             ComposeChatTheme {
                 FriendProfilePage(
                     friendProfilePageViewState = friendProfilePageViewState,
-                    friendProfilePageAction = friendProfilePageAction
+                    remarkPanelViewState = remarkPanelViewState
                 )
             }
         }
         friendProfileViewModel.getFriendProfile()
+        initEvent()
+    }
+
+    private fun initEvent() {
+        lifecycleScope.launch {
+            friendProfileViewModel.finishActivity.collectLatest {
+                finish()
+            }
+        }
     }
 
 }

@@ -29,9 +29,8 @@ fun DependencyHandlerScope.implementationTest() {
 }
 
 fun DependencyHandlerScope.implementationCompose() {
-    implementationExtend(Dependencies.AndroidX.activity)
+    implementationExtend(Dependencies.AppCompat.activity)
     implementationExtend(Dependencies.Compose.viewModel)
-    implementationExtend(Dependencies.Compose.material)
     implementationExtend(Dependencies.Compose.materialIcons)
     implementationExtend(Dependencies.Compose.material3)
     implementationExtend(Dependencies.Compose.ui)

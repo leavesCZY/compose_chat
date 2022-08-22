@@ -40,8 +40,8 @@ private val headerPicHeightDp = 500.dp
 
 @Composable
 fun GroupProfilePage(
-    groupProfilePageViewState: GroupProfilePageViewState,
-    groupProfilePageAction: GroupProfilePageAction
+    viewState: GroupProfilePageViewState,
+    action: GroupProfilePageAction
 ) {
     val density = LocalDensity.current.density
     val headerMaxOffsetPx by remember {
@@ -84,22 +84,22 @@ fun GroupProfilePage(
             ) {
                 item(key = "header") {
                     ProfilePanel(
-                        groupProfile = groupProfilePageViewState.groupProfile
+                        groupProfile = viewState.groupProfile
                     )
                 }
-                val memberList = groupProfilePageViewState.memberList
+                val memberList = viewState.memberList
                 items(items = memberList, key = {
                     it.detail.id
                 }, itemContent = {
                     GroupMemberItem(
                         groupMemberProfile = it,
-                        groupProfilePageAction = groupProfilePageAction
+                        groupProfilePageAction = action
                     )
                 })
             }
             GroupProfilePageTopBar(
                 alpha = topBarAlpha,
-                groupProfilePageAction = groupProfilePageAction
+                groupProfilePageAction = action
             )
         }
     }

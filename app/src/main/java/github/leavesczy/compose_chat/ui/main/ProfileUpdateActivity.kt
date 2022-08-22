@@ -25,7 +25,7 @@ class ProfileUpdateActivity : BaseActivity() {
             val profileUpdatePageViewStata by profileUpdateViewModel.profileUpdatePageViewStata.collectAsState()
             val profileUpdatePageAction = remember {
                 ProfileUpdatePageAction(uploadImage = { media ->
-                    profileUpdateViewModel.uploadImage(mediaResources = media)
+                    profileUpdateViewModel.uploadImage(mediaResource = media)
                 }, updateProfile = { faceUrl, nickname, signature ->
                     profileUpdateViewModel.updateProfile(
                         faceUrl = faceUrl,
@@ -36,7 +36,7 @@ class ProfileUpdateActivity : BaseActivity() {
             }
             ComposeChatTheme {
                 ProfileUpdatePage(
-                    profileUpdatePageViewStata = profileUpdatePageViewStata,
+                    viewStata = profileUpdatePageViewStata,
                     profileUpdatePageAction = profileUpdatePageAction
                 )
             }

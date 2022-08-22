@@ -45,7 +45,7 @@ private val TextFieldValueSaver = run {
 @Composable
 fun ChatPageBottomBar(
     sendText: (TextFieldValue) -> Unit,
-    sendImage: (MediaResources) -> Unit
+    sendImage: (MediaResource) -> Unit
 ) {
     val softwareKeyboardController = LocalSoftwareKeyboardController.current
 

@@ -26,7 +26,7 @@ class LoginActivity : BaseActivity() {
         setContent {
             ComposeChatTheme {
                 val loginPageState by loginViewModel.loginPageViewState.collectAsState()
-                LoginPage(loginPageViewState = loginPageState, login = {
+                LoginPage(viewState = loginPageState, login = {
                     loginViewModel.goToLogin(userId = it)
                 })
             }

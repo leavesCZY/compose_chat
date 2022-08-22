@@ -36,30 +36,30 @@ import github.leavesczy.compose_chat.ui.widgets.EmptyView
  */
 @Composable
 fun ConversationPage(
-    conversationPageViewState: ConversationPageViewState,
+    viewState: ConversationPageViewState,
     mainPageAction: MainPageAction
 ) {
-    Surface {
-        val conversationList = conversationPageViewState.conversationList
+    Surface(modifier = Modifier.fillMaxSize()) {
+        val conversationList = viewState.conversationList
         if (conversationList.isEmpty()) {
             EmptyView()
         } else {
             LazyColumn(
-                state = conversationPageViewState.listState,
+                state = viewState.listState,
                 contentPadding = PaddingValues(bottom = 60.dp),
             ) {
                 items(items = conversationList, key = {
                     it.id
                 }, contentType = {
                     "Conversation"
-                }, itemContent = {
+                }) {
                     ConversationItem(
                         conversation = it,
                         onClickConversation = mainPageAction.onClickConversation,
                         onDeleteConversation = mainPageAction.onDeleteConversation,
                         onPinnedConversation = mainPageAction.onPinnedConversation
                     )
-                })
+                }
             }
         }
     }
