@@ -17,6 +17,10 @@ import github.leavesczy.matisse.MediaResource
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
+enum class LoginPageAction {
+    LoginSuccess
+}
+
 data class LoginPageViewState(
     val showPanel: Boolean,
     val showLoadingDialog: Boolean,
@@ -39,13 +43,6 @@ data class MainPageDrawerViewState(
     val drawerState: DrawerState,
     val appTheme: AppTheme,
     val personProfile: PersonProfile
-)
-
-data class MainPageTopBarViewState(
-    val tabSelected: MainTab,
-    val openDrawer: () -> Unit,
-    val onAddFriend: () -> Unit,
-    val onJoinGroup: () -> Unit,
 )
 
 data class MainPageBottomBarViewState(
@@ -98,6 +95,12 @@ data class FriendProfilePageViewState(
     val deleteFriend: () -> Unit,
     val showSetFriendRemarkPanel: () -> Unit,
 )
+
+enum class FriendProfilePageAction {
+
+    FinishActivity
+
+}
 
 data class SetFriendRemarkPanelViewState(
     val visible: Boolean,

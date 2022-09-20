@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.cache.AccountCache
 import github.leavesczy.compose_chat.common.model.ActionResult
+import github.leavesczy.compose_chat.model.LoginPageAction
 import github.leavesczy.compose_chat.model.LoginPageViewState
 import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
 import github.leavesczy.compose_chat.utils.showToast
@@ -32,9 +33,9 @@ class LoginViewModel : ViewModel() {
 
     val loginPageViewState: StateFlow<LoginPageViewState> = _loginPageViewState
 
-    private val _loginSuccess = MutableSharedFlow<Boolean>()
+    private val _loginPageAction = MutableSharedFlow<LoginPageAction>()
 
-    val loginSuccess: SharedFlow<Boolean> = _loginSuccess
+    val loginPageAction: SharedFlow<LoginPageAction> = _loginPageAction
 
     fun autoLogin() {
         val lastLoginUserId = AccountCache.lastLoginUserId
@@ -86,7 +87,7 @@ class LoginViewModel : ViewModel() {
                 is ActionResult.Success -> {
                     delay(timeMillis = 400)
                     AccountCache.onUserLogin(userId = formatUserId)
-                    _loginSuccess.emit(value = true)
+                    _loginPageAction.emit(value = LoginPageAction.LoginSuccess)
                 }
             }
         }

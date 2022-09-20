@@ -3,7 +3,6 @@ package github.leavesczy.compose_chat.ui.main
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cabin
@@ -11,7 +10,6 @@ import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.Sailing
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -23,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import github.leavesczy.compose_chat.BuildConfig
+import github.leavesczy.compose_chat.extend.clickableNoRipple
 import github.leavesczy.compose_chat.model.MainPageAction
 import github.leavesczy.compose_chat.model.MainPageDrawerViewState
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
@@ -63,8 +62,7 @@ fun MainPageDrawer(
                         top.linkTo(anchor = parent.top, margin = padding / 2)
                     }
                     .size(size = 100.dp)
-                    .clickable(indication = null,
-                        interactionSource = remember { MutableInteractionSource() }) {
+                    .clickableNoRipple {
                         if (faceUrl.isNotBlank()) {
                             PreviewImageActivity.navTo(context = context, imagePath = faceUrl)
                         }

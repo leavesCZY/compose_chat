@@ -6,7 +6,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -89,7 +88,6 @@ fun PreviewImagePage(imagePath: String) {
             IconButton(
                 modifier = Modifier
                     .align(alignment = Alignment.BottomEnd)
-                    .navigationBarsPadding()
                     .padding(all = 20.dp),
                 content = {
                     Icon(

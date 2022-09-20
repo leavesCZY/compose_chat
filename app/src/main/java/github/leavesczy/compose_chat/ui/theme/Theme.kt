@@ -1,6 +1,7 @@
 package github.leavesczy.compose_chat.ui.theme
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.cache.AppThemeCache
 import github.leavesczy.compose_chat.model.AppTheme
 import github.leavesczy.compose_chat.ui.widgets.SystemBarColor
@@ -31,6 +33,13 @@ val DarkColorScheme = darkColorScheme(
     onSurface = OnSurfaceColorDark,
     background = BackgroundColorDark,
     onSecondaryContainer = onSecondaryContainerDark
+)
+
+val WindowInsetsEmpty = WindowInsets(
+    left = 0.dp,
+    top = 0.dp,
+    right = 0.dp,
+    bottom = 0.dp
 )
 
 @Composable

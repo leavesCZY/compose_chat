@@ -59,7 +59,8 @@ fun ProfileUpdatePage(
         }
     }
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
         Box(
             modifier = Modifier

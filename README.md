@@ -17,9 +17,7 @@
 
 ![9c962ec62fbd43df95201a3de8a77e19_tplv-k3u1fbpfcp-zoom-1](https://user-images.githubusercontent.com/30774063/164979443-c533353f-7e47-4024-a1bc-e63005ff8938.gif)
 
-## 下载体验
-
-下载 APK：[compose_chat](https://github.com/leavesCZY/compose_chat/releases)
+Apk 下载体验：[compose_chat](https://github.com/leavesCZY/compose_chat/releases)
 
 ## 文章介绍
 

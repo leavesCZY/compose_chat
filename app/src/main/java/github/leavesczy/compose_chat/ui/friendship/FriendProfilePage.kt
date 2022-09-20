@@ -2,6 +2,8 @@ package github.leavesczy.compose_chat.ui.friendship
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -38,8 +40,8 @@ fun FriendProfilePage(
     var openDeleteFriendDialog by remember { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
+            .fillMaxSize(),
+        contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -129,38 +131,46 @@ private fun DeleteFriendDialog(
 }
 
 @Composable
-private fun SetFriendRemarkPanel(viewState: SetFriendRemarkPanelViewState) {
-    BackHandler(enabled = viewState.visible, onBack = viewState.onDismissRequest)
+private fun BoxScope.SetFriendRemarkPanel(viewState: SetFriendRemarkPanelViewState) {
+    val visible = viewState.visible
+    BackHandler(enabled = visible, onBack = viewState.onDismissRequest)
+    AnimatedVisibility(
+        modifier = Modifier.fillMaxSize(),
+        visible = visible,
+        enter = fadeIn(animationSpec = tween(durationMillis = 400, easing = LinearEasing)),
+        exit = fadeOut(animationSpec = tween(durationMillis = 400, easing = LinearEasing))
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color(color = 0x99000000))
+                .clickableNoRipple {
+                    viewState.onDismissRequest()
+                }
+        )
+    }
     AnimatedVisibility(
         modifier = Modifier
-            .fillMaxSize()
+            .align(alignment = Alignment.BottomCenter)
+            .fillMaxWidth()
+            .fillMaxHeight(fraction = 0.70f)
             .clickableNoRipple {
 
             },
-        visible = viewState.visible,
+        visible = visible,
         enter = slideInVertically(initialOffsetY = { 2 * it }),
         exit = slideOutVertically(targetOffsetY = { it }),
     ) {
-        val background by transition.animateColor(label = "") { state ->
-            if (state == EnterExitState.Visible) {
-                Color(0x6D000000)
-            } else {
-                Color.Transparent
-            }
-        }
         var remark by remember(key1 = viewState.personProfile.remark) {
             mutableStateOf(
                 viewState.personProfile.remark
             )
         }
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(color = background)) {
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
+                    .fillMaxSize()
                     .align(alignment = Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .fillMaxHeight(fraction = 0.75f)
                     .clip(
                         shape = RoundedCornerShape(
                             topStart = 20.dp, topEnd = 20.dp

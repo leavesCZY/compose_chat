@@ -8,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
 import github.leavesczy.compose_chat.extend.viewModelsInstance
+import github.leavesczy.compose_chat.model.FriendProfilePageAction
 import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.friendship.logic.FriendProfileViewModel
 import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
@@ -59,8 +60,12 @@ class FriendProfileActivity : BaseActivity() {
 
     private fun initEvent() {
         lifecycleScope.launch {
-            friendProfileViewModel.finishActivity.collectLatest {
-                finish()
+            friendProfileViewModel.friendProfilePageAction.collectLatest {
+                when (it) {
+                    FriendProfilePageAction.FinishActivity -> {
+                        finish()
+                    }
+                }
             }
         }
     }

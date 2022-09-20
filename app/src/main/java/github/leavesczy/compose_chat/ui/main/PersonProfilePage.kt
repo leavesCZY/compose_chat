@@ -1,12 +1,9 @@
 package github.leavesczy.compose_chat.ui.main
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -16,11 +13,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import github.leavesczy.compose_chat.extend.clickableNoRipple
 import github.leavesczy.compose_chat.extend.scrim
 import github.leavesczy.compose_chat.model.PersonProfilePageViewState
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
+import github.leavesczy.compose_chat.ui.widgets.BezierImage
 import github.leavesczy.compose_chat.ui.widgets.BouncyImage
-import github.leavesczy.compose_chat.ui.widgets.CoilImage
 
 /**
  * @Author: leavesCZY
@@ -35,14 +33,11 @@ fun PersonProfilePage(viewState: PersonProfilePageViewState) {
     val title = personProfile.showName
     val subtitle = personProfile.signature
     val introduction = "ID: ${personProfile.id}"
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+    Surface(modifier = Modifier.fillMaxSize()) {
         val context = LocalContext.current
         ConstraintLayout(modifier = Modifier) {
             val (backgroundRef, avatarRef, titleRef, subtitleRef, introductionRef) = createRefs()
-            CoilImage(modifier = Modifier
+            BezierImage(modifier = Modifier
                 .constrainAs(ref = backgroundRef) {
                     linkTo(start = parent.start, end = parent.end)
                     top.linkTo(anchor = parent.top)
@@ -55,6 +50,7 @@ fun PersonProfilePage(viewState: PersonProfilePageViewState) {
             BouncyImage(
                 modifier = Modifier
                     .statusBarsPadding()
+                    .padding(top = 10.dp)
                     .constrainAs(ref = avatarRef) {
                         linkTo(
                             top = backgroundRef.top,
@@ -63,9 +59,8 @@ fun PersonProfilePage(viewState: PersonProfilePageViewState) {
                         )
                         linkTo(start = backgroundRef.start, end = backgroundRef.end)
                     }
-                    .size(size = 90.dp)
-                    .clickable(indication = null,
-                        interactionSource = remember { MutableInteractionSource() }) {
+                    .size(size = 100.dp)
+                    .clickableNoRipple {
                         if (faceUrl.isNotBlank()) {
                             PreviewImageActivity.navTo(context = context, imagePath = faceUrl)
                         }

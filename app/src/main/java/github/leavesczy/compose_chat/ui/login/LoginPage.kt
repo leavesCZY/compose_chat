@@ -33,8 +33,6 @@ fun LoginPage(viewState: LoginPageViewState, login: (String) -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
-                .navigationBarsPadding()
                 .padding(paddingValues = innerPadding),
         ) {
             Column(

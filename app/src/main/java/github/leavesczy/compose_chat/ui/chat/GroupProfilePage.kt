@@ -14,11 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -47,48 +46,48 @@ fun GroupProfilePage(
     val headerMaxOffsetPx by remember {
         mutableStateOf(density * (headerPicHeightDp.value))
     }
+    var topBarAlpha by remember {
+        mutableStateOf(0f)
+    }
+    val listState = rememberLazyListState()
+    LaunchedEffect(key1 = "") {
+        snapshotFlow {
+            listState.firstVisibleItemScrollOffset
+        }.collect {
+            topBarAlpha = if (listState.firstVisibleItemIndex == 0) {
+                minOf(it / headerMaxOffsetPx, 1f)
+            } else {
+                1f
+            }
+        }
+    }
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
+        modifier = Modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues = innerPadding)
         ) {
-            var topBarAlpha by remember {
-                mutableStateOf(0f)
-            }
-            val state = rememberLazyListState()
-            LaunchedEffect(key1 = "") {
-                snapshotFlow {
-                    state.firstVisibleItemScrollOffset
-                }.collect {
-                    topBarAlpha = if (state.firstVisibleItemIndex == 0) {
-                        minOf(it / headerMaxOffsetPx, 1f)
-                    } else {
-                        1f
-                    }
-                }
-            }
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize(),
-                state = state,
-                contentPadding = PaddingValues(
-                    start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
-                    top = innerPadding.calculateTopPadding(),
-                    end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
-                    bottom = innerPadding.calculateBottomPadding() + 80.dp
-                ),
+                modifier = Modifier.fillMaxSize(),
+                state = listState,
+                contentPadding = PaddingValues(bottom = 80.dp),
             ) {
                 item(key = "header") {
+                    val groupProfile = viewState.groupProfile
                     ProfilePanel(
-                        groupProfile = viewState.groupProfile
+                        title = groupProfile.name,
+                        subtitle = groupProfile.introduction,
+                        introduction = "GroupID: ${groupProfile.id}\nCreateTime: ${groupProfile.createTimeFormat}\nMemberCount: ${groupProfile.memberCount}",
+                        avatarUrl = groupProfile.faceUrl,
+                        content = {
+
+                        }
                     )
                 }
-                val memberList = viewState.memberList
-                items(items = memberList, key = {
+                items(items = viewState.memberList, key = {
                     it.detail.id
                 }, itemContent = {
                     GroupMemberItem(
@@ -98,6 +97,7 @@ fun GroupProfilePage(
                 })
             }
             GroupProfilePageTopBar(
+                title = viewState.groupProfile.name,
                 alpha = topBarAlpha,
                 groupProfilePageAction = action
             )
@@ -184,38 +184,42 @@ private fun GroupMemberItem(
 
 @Composable
 private fun GroupProfilePageTopBar(
+    title: String,
     alpha: Float,
     groupProfilePageAction: GroupProfilePageAction
 ) {
     var menuExpanded by remember {
         mutableStateOf(false)
     }
-    val color = MaterialTheme.colorScheme.background.copy(
-        alpha = alpha
-    )
-    SmallTopAppBar(
+    val background = MaterialTheme.colorScheme.background.copy(alpha = alpha)
+    val textColor = MaterialTheme.colorScheme.onBackground.copy(alpha = alpha)
+    Box(
         modifier = Modifier
+            .fillMaxWidth()
             .background(
-                color = color
+                color = background
             )
-            .statusBarsPadding(),
-        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent),
-        title = {
-
-        },
-        actions = {
-            Icon(
-                modifier = Modifier
-                    .padding(end = 12.dp)
-                    .size(size = 28.dp)
-                    .clickable {
-                        menuExpanded = true
-                    },
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = null
-            )
-        }
-    )
+            .statusBarsPadding()
+            .height(height = 44.dp)
+    ) {
+        Text(
+            modifier = Modifier.align(alignment = Alignment.Center),
+            text = title,
+            color = textColor,
+            fontSize = 22.sp,
+        )
+        Icon(
+            modifier = Modifier
+                .align(alignment = Alignment.CenterEnd)
+                .padding(end = 12.dp)
+                .size(size = 28.dp)
+                .clickable {
+                    menuExpanded = true
+                },
+            imageVector = Icons.Default.MoreVert,
+            contentDescription = null
+        )
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth()

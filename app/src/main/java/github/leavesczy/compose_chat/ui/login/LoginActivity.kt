@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
+import github.leavesczy.compose_chat.model.LoginPageAction
 import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.login.logic.LoginViewModel
 import github.leavesczy.compose_chat.ui.main.MainActivity
@@ -31,15 +32,21 @@ class LoginActivity : BaseActivity() {
                 })
             }
         }
+        initEvent()
+        loginViewModel.autoLogin()
+    }
+
+    private fun initEvent() {
         lifecycleScope.launch {
-            loginViewModel.loginSuccess.collect {
-                if (it) {
-                    startActivity<MainActivity>()
-                    finish()
+            loginViewModel.loginPageAction.collect {
+                when (it) {
+                    LoginPageAction.LoginSuccess -> {
+                        startActivity<MainActivity>()
+                        finish()
+                    }
                 }
             }
         }
-        loginViewModel.autoLogin()
     }
 
 }

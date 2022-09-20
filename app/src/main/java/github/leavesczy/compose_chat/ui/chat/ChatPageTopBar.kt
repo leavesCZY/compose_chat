@@ -1,6 +1,5 @@
 package github.leavesczy.compose_chat.ui.chat
 
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.MoreVert
@@ -22,7 +21,7 @@ fun ChatPageTopBar(
     onClickMoreMenu: () -> Unit,
 ) {
     CenterAlignedTopAppBar(
-        modifier = Modifier.statusBarsPadding(),
+        modifier = Modifier,
         title = {
             Text(
                 modifier = Modifier,

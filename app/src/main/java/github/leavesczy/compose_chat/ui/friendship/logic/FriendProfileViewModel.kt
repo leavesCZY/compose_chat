@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.common.model.ActionResult
 import github.leavesczy.compose_chat.common.model.PersonProfile
 import github.leavesczy.compose_chat.common.model.PrivateChat
+import github.leavesczy.compose_chat.model.FriendProfilePageAction
 import github.leavesczy.compose_chat.model.FriendProfilePageViewState
 import github.leavesczy.compose_chat.model.SetFriendRemarkPanelViewState
 import github.leavesczy.compose_chat.ui.chat.ChatActivity
@@ -55,13 +56,13 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
         )
     )
 
-    private val _finishActivity = MutableSharedFlow<Unit>()
+    private val _friendProfilePageAction = MutableSharedFlow<FriendProfilePageAction>()
 
     val friendProfilePageState: StateFlow<FriendProfilePageViewState> = _friendProfilePageState
 
     val remarkPanelViewState: StateFlow<SetFriendRemarkPanelViewState> = _remarkPanelViewState
 
-    val finishActivity: SharedFlow<Unit> = _finishActivity
+    val friendProfilePageAction: SharedFlow<FriendProfilePageAction> = _friendProfilePageAction
 
     fun getFriendProfile() {
         viewModelScope.launch {
@@ -152,7 +153,7 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
 
     private fun finishActivity() {
         viewModelScope.launch {
-            _finishActivity.emit(value = Unit)
+            _friendProfilePageAction.emit(value = FriendProfilePageAction.FinishActivity)
         }
     }
 

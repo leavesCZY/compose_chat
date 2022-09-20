@@ -32,7 +32,10 @@ fun MainPageBottomBar(
     val tabList = viewState.tabList
     val unreadMessageCount = viewState.unreadMessageCount
     val tabSelected = viewState.tabSelected
-    NavigationBar(modifier = Modifier.height(height = 60.dp)) {
+    NavigationBar(
+        modifier = Modifier
+            .height(height = 70.dp)
+    ) {
         tabList.forEach { tab ->
             NavigationBarItem(
                 icon = {

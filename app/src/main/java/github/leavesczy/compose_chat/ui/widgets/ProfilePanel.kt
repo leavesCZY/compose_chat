@@ -1,12 +1,12 @@
 package github.leavesczy.compose_chat.ui.widgets
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
-import github.leavesczy.compose_chat.common.model.GroupProfile
+import github.leavesczy.compose_chat.extend.clickableNoRipple
 import github.leavesczy.compose_chat.extend.scrim
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
 
@@ -28,29 +28,14 @@ import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
  */
 @Composable
 fun ProfilePanel(
-    groupProfile: GroupProfile,
-    content: @Composable () -> Unit = {}
-) {
-    ProfilePanel(
-        title = groupProfile.name,
-        subtitle = groupProfile.introduction,
-        introduction = "GroupID: ${groupProfile.id}\nCreateTime: ${groupProfile.createTimeFormat}\nMemberCount: ${groupProfile.memberCount}",
-        avatarUrl = groupProfile.faceUrl,
-        content = content
-    )
-}
-
-@Composable
-fun ProfilePanel(
     title: String,
     subtitle: String,
     introduction: String,
     avatarUrl: String,
-    contentPadding: PaddingValues = PaddingValues(all = 0.dp),
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
-    ConstraintLayout(modifier = Modifier.padding(paddingValues = contentPadding)) {
+    ConstraintLayout(modifier = Modifier) {
         val (titleRef, subtitleRef, introductionRef, backgroundRef, avatarRef, contentRef) = createRefs()
         BezierImage(modifier = Modifier
             .constrainAs(ref = backgroundRef) {
@@ -60,7 +45,8 @@ fun ProfilePanel(
             .aspectRatio(ratio = 5f / 4f)
             .zIndex(zIndex = -100f)
             .scrim(color = Color(0x51444B53)),
-            data = avatarUrl)
+            data = avatarUrl
+        )
         BouncyImage(
             modifier = Modifier
                 .constrainAs(ref = avatarRef) {
@@ -71,9 +57,8 @@ fun ProfilePanel(
                     )
                     linkTo(start = backgroundRef.start, end = backgroundRef.end)
                 }
-                .size(size = 90.dp)
-                .clickable(indication = null,
-                    interactionSource = remember { MutableInteractionSource() }) {
+                .size(size = 110.dp)
+                .clickableNoRipple {
                     if (avatarUrl.isNotBlank()) {
                         PreviewImageActivity.navTo(context = context, imagePath = avatarUrl)
                     }

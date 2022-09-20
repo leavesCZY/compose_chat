@@ -2,7 +2,6 @@ package github.leavesczy.compose_chat.ui.main
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -12,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.model.*
+import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 
 /**
  * @Author: leavesCZY
@@ -30,9 +30,7 @@ fun MainPage(
     drawerViewState: MainPageDrawerViewState
 ) {
     ModalNavigationDrawer(
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding(),
+        modifier = Modifier.fillMaxSize(),
         drawerState = drawerViewState.drawerState,
         drawerContent = {
             MainPageDrawer(
@@ -47,6 +45,7 @@ fun MainPage(
             ) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    contentWindowInsets = WindowInsetsEmpty,
                     topBar = {
                         MainPageTopBar(
                             tabSelected = bottomBarViewState.tabSelected,

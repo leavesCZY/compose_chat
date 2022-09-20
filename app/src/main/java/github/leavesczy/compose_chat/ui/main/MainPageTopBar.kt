@@ -1,7 +1,10 @@
 package github.leavesczy.compose_chat.ui.main
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
@@ -29,7 +32,7 @@ fun MainPageTopBar(tabSelected: MainTab, mainPageAction: MainPageAction) {
         mutableStateOf(false)
     }
     CenterAlignedTopAppBar(
-        modifier = Modifier.statusBarsPadding(),
+        modifier = Modifier,
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
         title = {
 
