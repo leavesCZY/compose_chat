@@ -48,7 +48,7 @@ fun ComposeChatTheme(
     content: @Composable () -> Unit
 ) {
     SystemBarColor(appTheme = appTheme)
-    val colors = when (appTheme) {
+    val colorScheme = when (appTheme) {
         AppTheme.Light -> {
             LightColorScheme
         }
@@ -60,7 +60,7 @@ fun ComposeChatTheme(
         }
     }
     MaterialTheme(
-        colorScheme = colors,
+        colorScheme = colorScheme,
         typography = AppTypography,
         content = {
             content()

@@ -1,10 +1,7 @@
 package github.leavesczy.compose_chat.ui.main
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -17,6 +14,7 @@ import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.model.MainPageAction
 import github.leavesczy.compose_chat.model.MainPageBottomBarViewState
 import github.leavesczy.compose_chat.model.MainTab
+import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 
 /**
  * @Author: leavesCZY
@@ -34,7 +32,9 @@ fun MainPageBottomBar(
     val tabSelected = viewState.tabSelected
     NavigationBar(
         modifier = Modifier
-            .height(height = 70.dp)
+            .navigationBarsPadding()
+            .height(height = 50.dp),
+        windowInsets = WindowInsetsEmpty,
     ) {
         tabList.forEach { tab ->
             NavigationBarItem(
