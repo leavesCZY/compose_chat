@@ -25,7 +25,7 @@ fun MainPage(
     conversationPageViewState: ConversationPageViewState,
     friendshipPageViewState: FriendshipPageViewState,
     personProfilePageViewState: PersonProfilePageViewState,
-    friendshipPanelViewState: FriendshipPanelViewState,
+    friendshipDialogViewState: FriendshipDialogViewState,
     bottomBarViewState: MainPageBottomBarViewState,
     drawerViewState: MainPageDrawerViewState
 ) {
@@ -100,7 +100,7 @@ fun MainPage(
                         }
                     }
                 }
-                FriendshipPanel(viewState = friendshipPanelViewState)
+                FriendshipDialog(viewState = friendshipDialogViewState)
             }
         }
     )

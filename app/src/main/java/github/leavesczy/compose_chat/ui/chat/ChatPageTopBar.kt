@@ -3,10 +3,14 @@ package github.leavesczy.compose_chat.ui.chat
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 
 /**
  * @Author: leavesCZY
@@ -26,9 +30,9 @@ fun ChatPageTopBar(
             Text(
                 modifier = Modifier,
                 text = title,
-                style = MaterialTheme.typography.bodyLarge,
-                maxLines = 1,
+                fontSize = 20.sp,
                 overflow = TextOverflow.Ellipsis,
+                maxLines = 1
             )
         },
         navigationIcon = {

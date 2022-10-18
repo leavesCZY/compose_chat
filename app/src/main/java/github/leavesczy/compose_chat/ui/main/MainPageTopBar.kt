@@ -72,13 +72,13 @@ fun MainPageTopBar(tabSelected: MainTab, mainPageAction: MainPageAction) {
             }
         ) {
             DropdownMenuItem(text = {
-                Text(text = "添加好友", style = MaterialTheme.typography.bodyMedium)
+                Text(text = "添加好友", style = MaterialTheme.typography.bodyLarge)
             }, onClick = {
                 menuExpanded = false
                 mainPageAction.showFriendshipPanel()
             })
             DropdownMenuItem(text = {
-                Text(text = "加入群聊", style = MaterialTheme.typography.bodyMedium)
+                Text(text = "加入群聊", style = MaterialTheme.typography.bodyLarge)
             }, onClick = {
                 menuExpanded = false
                 mainPageAction.showFriendshipPanel()

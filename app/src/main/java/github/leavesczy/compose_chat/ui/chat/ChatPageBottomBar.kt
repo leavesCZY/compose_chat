@@ -207,7 +207,9 @@ fun ChatPageBottomBar(
                 } else {
                     keyboardHeightDp
                 }
-                Box(modifier = Modifier.heightIn(min = keyboardHeightDp, max = maxHeight)) {
+                Box(
+                    modifier = Modifier.heightIn(min = keyboardHeightDp, max = maxHeight)
+                ) {
                     when (currentInputSelector) {
                         InputSelector.EMOJI -> {
                             EmojiTable(

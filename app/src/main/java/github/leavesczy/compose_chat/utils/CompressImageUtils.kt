@@ -27,6 +27,7 @@ object CompressImageUtils {
 
     private const val JPEG = "jpeg"
 
+    @Suppress("SameParameterValue")
     suspend fun compressImage(context: Context, mediaResource: MediaResource): File? {
         return withContext(context = Dispatchers.IO) {
             try {
@@ -37,6 +38,7 @@ object CompressImageUtils {
                 val inputStream = context.contentResolver.openInputStream(imageUri)
                 if (inputStream != null) {
                     val byteArray = inputStream.readBytes()
+                    inputStream.close()
                     if (isGif || byteArray.size <= IMAGE_MAX_SIZE) {
                         if (isAndroidQ()) {
                             val imageTempFile =
@@ -64,6 +66,7 @@ object CompressImageUtils {
         }
     }
 
+    @Suppress("SameParameterValue")
     private fun compressImage(bitmap: Bitmap, maxSize: Int, targetFile: File) {
         val byteArrayOutputStream = ByteArrayOutputStream()
         var quality = 100

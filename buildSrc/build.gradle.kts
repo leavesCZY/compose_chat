@@ -28,8 +28,8 @@ compileTestKotlin.kotlinOptions {
 }
 
 dependencies {
-    val androidGradlePluginVersion = "7.2.2"
-    val kotlinGradlePluginVersion = "1.7.10"
+    val androidGradlePluginVersion = "7.3.1"
+    val kotlinGradlePluginVersion = "1.7.20"
     implementation("com.android.tools.build:gradle-api:${androidGradlePluginVersion}")
     implementation("com.android.tools.build:gradle:${androidGradlePluginVersion}")
     implementation(kotlin("gradle-plugin", version = kotlinGradlePluginVersion))

@@ -1,6 +1,5 @@
 package github.leavesczy.compose_chat.ui.chat
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -11,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.extend.clickableNoRipple
 
 /**
  * @Author: leavesCZY
@@ -28,10 +28,10 @@ fun EmojiTable(appendEmoji: (String) -> Unit) {
             item(emoji) {
                 Text(
                     modifier = Modifier
-                        .clickable(onClick = {
+                        .clickableNoRipple {
                             appendEmoji(emoji)
-                        })
-                        .padding(top = 12.dp, bottom = 12.dp),
+                        }
+                        .padding(vertical = 12.dp),
                     text = emoji,
                     style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                     textAlign = TextAlign.Center,

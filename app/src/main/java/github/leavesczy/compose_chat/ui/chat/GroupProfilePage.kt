@@ -206,7 +206,7 @@ private fun GroupProfilePageTopBar(
             modifier = Modifier.align(alignment = Alignment.Center),
             text = title,
             color = textColor,
-            fontSize = 22.sp,
+            fontSize = 20.sp,
         )
         Icon(
             modifier = Modifier
@@ -234,13 +234,13 @@ private fun GroupProfilePageTopBar(
             }
         ) {
             DropdownMenuItem(text = {
-                Text(text = "修改头像", style = MaterialTheme.typography.bodyMedium)
+                Text(text = "修改头像", style = MaterialTheme.typography.bodyLarge)
             }, onClick = {
                 menuExpanded = false
                 groupProfilePageAction.setAvatar(randomFaceUrl())
             })
             DropdownMenuItem(text = {
-                Text(text = "退出群聊", style = MaterialTheme.typography.bodyMedium)
+                Text(text = "退出群聊", style = MaterialTheme.typography.bodyLarge)
             }, onClick = {
                 menuExpanded = false
                 groupProfilePageAction.quitGroup()

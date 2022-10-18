@@ -71,8 +71,8 @@ class MainViewModel : ViewModel() {
         )
     )
 
-    private val _friendshipPanelViewState = MutableStateFlow(
-        FriendshipPanelViewState(
+    private val _friendshipDialogViewState = MutableStateFlow(
+        FriendshipDialogViewState(
             visible = false,
             onDismissRequest = ::onFriendshipPanelDismissRequest,
             joinGroup = ::joinGroup,
@@ -84,8 +84,7 @@ class MainViewModel : ViewModel() {
 
     val mainPageDrawerViewState: StateFlow<MainPageDrawerViewState> = _mainPageDrawerViewState
 
-    val friendshipPanelViewState: StateFlow<FriendshipPanelViewState> =
-        _friendshipPanelViewState
+    val friendshipDialogViewState: StateFlow<FriendshipDialogViewState> = _friendshipDialogViewState
 
     val appTheme: StateFlow<AppTheme> = _appTheme
 
@@ -205,13 +204,13 @@ class MainViewModel : ViewModel() {
 
     fun showPageFriendshipPanel() {
         viewModelScope.launch {
-            _friendshipPanelViewState.emit(value = _friendshipPanelViewState.value.copy(visible = true))
+            _friendshipDialogViewState.emit(value = _friendshipDialogViewState.value.copy(visible = true))
         }
     }
 
     private fun onFriendshipPanelDismissRequest() {
         viewModelScope.launch {
-            _friendshipPanelViewState.emit(value = _friendshipPanelViewState.value.copy(visible = false))
+            _friendshipDialogViewState.emit(value = _friendshipDialogViewState.value.copy(visible = false))
         }
     }
 

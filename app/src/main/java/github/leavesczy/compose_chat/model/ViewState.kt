@@ -79,7 +79,7 @@ data class PersonProfilePageViewState(
     val personProfile: PersonProfile
 )
 
-data class FriendshipPanelViewState(
+data class FriendshipDialogViewState(
     val visible: Boolean,
     val onDismissRequest: () -> Unit,
     val joinGroup: (groupId: String) -> Unit,
@@ -102,10 +102,10 @@ enum class FriendProfilePageAction {
 
 }
 
-data class SetFriendRemarkPanelViewState(
+data class SetFriendRemarkDialogViewState(
     val visible: Boolean,
-    val personProfile: PersonProfile,
     val onDismissRequest: () -> Unit,
+    val personProfile: PersonProfile,
     val setRemark: (String) -> Unit
 )
 

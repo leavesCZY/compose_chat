@@ -46,11 +46,11 @@ class FriendProfileActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val friendProfilePageViewState by friendProfileViewModel.friendProfilePageState.collectAsState()
-            val remarkPanelViewState by friendProfileViewModel.remarkPanelViewState.collectAsState()
+            val setFriendRemarkDialogViewState by friendProfileViewModel.setFriendRemarkDialogViewState.collectAsState()
             ComposeChatTheme {
                 FriendProfilePage(
                     friendProfilePageViewState = friendProfilePageViewState,
-                    remarkPanelViewState = remarkPanelViewState
+                    setFriendRemarkDialogViewState = setFriendRemarkDialogViewState
                 )
             }
         }

@@ -26,7 +26,7 @@ class ManagerPlugin : Plugin<Project> {
         }
         when (val androidExtension = project.extensions.getByName("android")) {
             is BaseAppModuleExtension -> {
-                androidExtension.appModule(project)
+                androidExtension.appModule(project = project)
             }
             is LibraryExtension -> {
                 androidExtension.libraryModule()

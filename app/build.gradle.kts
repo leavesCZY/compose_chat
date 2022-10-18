@@ -1,3 +1,7 @@
+android {
+    namespace = "github.leavesczy.compose_chat"
+}
+
 dependencies {
     implementationTest()
     implementationCompose()

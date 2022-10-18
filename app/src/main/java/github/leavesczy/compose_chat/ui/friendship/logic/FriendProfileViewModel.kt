@@ -7,7 +7,7 @@ import github.leavesczy.compose_chat.common.model.PersonProfile
 import github.leavesczy.compose_chat.common.model.PrivateChat
 import github.leavesczy.compose_chat.model.FriendProfilePageAction
 import github.leavesczy.compose_chat.model.FriendProfilePageViewState
-import github.leavesczy.compose_chat.model.SetFriendRemarkPanelViewState
+import github.leavesczy.compose_chat.model.SetFriendRemarkDialogViewState
 import github.leavesczy.compose_chat.ui.chat.ChatActivity
 import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
 import github.leavesczy.compose_chat.utils.ContextHolder
@@ -27,11 +27,11 @@ import kotlinx.coroutines.launch
  */
 class FriendProfileViewModel(private val friendId: String) : ViewModel() {
 
-    private val _remarkPanelViewState = MutableStateFlow(
-        SetFriendRemarkPanelViewState(
+    private val _setFriendRemarkDialogViewState = MutableStateFlow(
+        SetFriendRemarkDialogViewState(
             visible = false,
             personProfile = PersonProfile.Empty,
-            onDismissRequest = ::dismissSetFriendRemarkPanel,
+            onDismissRequest = ::dismissSetFriendRemarkDialog,
             setRemark = ::setFriendRemark
         )
     )
@@ -60,7 +60,8 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
 
     val friendProfilePageState: StateFlow<FriendProfilePageViewState> = _friendProfilePageState
 
-    val remarkPanelViewState: StateFlow<SetFriendRemarkPanelViewState> = _remarkPanelViewState
+    val setFriendRemarkDialogViewState: StateFlow<SetFriendRemarkDialogViewState> =
+        _setFriendRemarkDialogViewState
 
     val friendProfilePageAction: SharedFlow<FriendProfilePageAction> = _friendProfilePageAction
 
@@ -125,7 +126,7 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
                     getFriendProfile()
                     ComposeChat.friendshipProvider.getFriendList()
                     ComposeChat.conversationProvider.getConversationList()
-                    dismissSetFriendRemarkPanel()
+                    dismissSetFriendRemarkDialog()
                 }
                 is ActionResult.Failed -> {
                     showToast(result.reason)
@@ -136,8 +137,8 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
 
     private fun showSetFriendRemarkPanel() {
         viewModelScope.launch {
-            _remarkPanelViewState.emit(
-                value = _remarkPanelViewState.value.copy(
+            _setFriendRemarkDialogViewState.emit(
+                value = _setFriendRemarkDialogViewState.value.copy(
                     visible = true,
                     personProfile = friendProfilePageState.value.personProfile
                 )
@@ -145,9 +146,13 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
         }
     }
 
-    private fun dismissSetFriendRemarkPanel() {
+    private fun dismissSetFriendRemarkDialog() {
         viewModelScope.launch {
-            _remarkPanelViewState.emit(value = _remarkPanelViewState.value.copy(visible = false))
+            _setFriendRemarkDialogViewState.emit(
+                value = _setFriendRemarkDialogViewState.value.copy(
+                    visible = false
+                )
+            )
         }
     }
 

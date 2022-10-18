@@ -40,7 +40,7 @@ class MainActivity : BaseActivity() {
             val personProfilePageViewState by mainViewModel.personProfilePageViewState.collectAsState()
             val mainPageBottomBarViewState by mainViewModel.mainPageBottomBarViewState.collectAsState()
             val mainPageDrawerViewState by mainViewModel.mainPageDrawerViewState.collectAsState()
-            val friendshipPanelViewState by mainViewModel.friendshipPanelViewState.collectAsState()
+            val friendshipPanelViewState by mainViewModel.friendshipDialogViewState.collectAsState()
             val appTheme by mainViewModel.appTheme.collectAsState()
             val coroutineScope = rememberCoroutineScope()
             val localLifecycleOwner = LocalLifecycleOwner.current
@@ -114,7 +114,7 @@ class MainActivity : BaseActivity() {
                     personProfilePageViewState = personProfilePageViewState,
                     bottomBarViewState = mainPageBottomBarViewState,
                     drawerViewState = mainPageDrawerViewState,
-                    friendshipPanelViewState = friendshipPanelViewState,
+                    friendshipDialogViewState = friendshipPanelViewState,
                 )
             }
         }
