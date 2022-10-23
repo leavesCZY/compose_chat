@@ -22,8 +22,8 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
         applicationId = BuildConfig.applicationId
         minSdk = BuildConfig.minSdk
         targetSdk = BuildConfig.targetSdk
-        versionCode = BuildConfig.versionCode
-        versionName = BuildConfig.versionName
+        versionCode = VersionConfig.versionCode
+        versionName = VersionConfig.versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations.add("zh")
         vectorDrawables {
