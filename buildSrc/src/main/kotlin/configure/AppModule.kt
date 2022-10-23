@@ -38,7 +38,7 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
                 }
             }
         }
-        buildConfigField("String", "VERSION_NAME", "\"${BuildConfig.versionName}\"")
+        buildConfigField("String", "VERSION_NAME", "\"${VersionConfig.versionName}\"")
     }
     signingConfigs {
         create("release") {
