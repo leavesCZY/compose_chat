@@ -3,6 +3,7 @@ package configure
 import BuildConfig
 import BuildFunction
 import Dependencies
+import VersionConfig
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
