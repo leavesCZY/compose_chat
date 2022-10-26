@@ -21,6 +21,7 @@ import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
  */
 @Composable
 fun MainPage(
+    appTheme: AppTheme,
     mainPageAction: MainPageAction,
     conversationPageViewState: ConversationPageViewState,
     friendshipPageViewState: FriendshipPageViewState,
@@ -54,6 +55,7 @@ fun MainPage(
                     },
                     bottomBar = {
                         MainPageBottomBar(
+                            appTheme = appTheme,
                             viewState = bottomBarViewState,
                             mainPageAction = mainPageAction
                         )

@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.model.AppTheme
 import github.leavesczy.compose_chat.model.MainPageAction
 import github.leavesczy.compose_chat.model.MainPageBottomBarViewState
 import github.leavesczy.compose_chat.model.MainTab
@@ -24,6 +25,7 @@ import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
  */
 @Composable
 fun MainPageBottomBar(
+    appTheme: AppTheme,
     viewState: MainPageBottomBarViewState,
     mainPageAction: MainPageAction
 ) {
