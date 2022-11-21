@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -327,19 +328,12 @@ private fun SystemMessage(message: SystemMessage) {
 
 @Composable
 private fun ImageMessage(message: ImageMessage) {
-    val preview = message.preview
-    val imageWidth = preview.width
-    val imageHeight = preview.height
-    val maxImageRatio = 1.9f
-    val widgetWidth = 190.dp
-    val widgetHeight = if (imageWidth <= 0 || imageHeight <= 0) {
-        widgetWidth
-    } else {
-        widgetWidth * (minOf(maxImageRatio, 1.0f * imageHeight / imageWidth))
-    }
     CoilImage(
-        modifier = Modifier.size(width = widgetWidth, height = widgetHeight),
-        data = preview.url
+        modifier = Modifier.size(
+            width = Dp(value = message.widgetWidthDp),
+            height = Dp(value = message.widgetHeightDp)
+        ),
+        data = message.preview.url
     )
 }
 

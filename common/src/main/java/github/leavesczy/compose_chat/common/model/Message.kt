@@ -71,6 +71,16 @@ data class ImageMessage(
 
     override val formatMessage = "[图片]"
 
+    private val maxImageRatio = 1.9f
+
+    val widgetWidthDp = 190f
+
+    val widgetHeightDp = if (preview.width <= 0f || preview.height <= 0f) {
+        widgetWidthDp
+    } else {
+        widgetWidthDp * (minOf(maxImageRatio, 1.0f * preview.height / preview.width))
+    }
+
 }
 
 class ImageElement(val width: Int, val height: Int, val url: String)

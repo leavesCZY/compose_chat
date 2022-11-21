@@ -28,7 +28,7 @@ fun SystemBarColor(appTheme: AppTheme) {
 }
 
 @Composable
-private fun SystemBarColor(
+fun SystemBarColor(
     statusBarColor: Color,
     statusBarDarkIcons: Boolean,
     navigationBarColor: Color,

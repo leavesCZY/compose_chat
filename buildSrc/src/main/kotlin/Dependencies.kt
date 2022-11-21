@@ -12,14 +12,14 @@ object Dependencies {
     }
 
     object AppCompat {
-        const val appcompat = "androidx.appcompat:appcompat:1.6.0-rc01"
-        const val activity = "androidx.activity:activity-compose:1.6.0"
+        const val appcompat = "androidx.appcompat:appcompat:1.7.0-alpha01"
+        const val activity = "androidx.activity:activity-compose:1.7.0-alpha02"
         const val material = "com.google.android.material:material:1.8.0-alpha02"
     }
 
     object Compose {
-        private const val composeVersion = "1.3.0"
-        const val composeCompilerVersion = "1.3.2"
+        private const val composeVersion = "1.4.0-alpha02"
+        const val composeCompilerVersion = "1.4.0-alpha02"
         const val materialIcons =
             "androidx.compose.material:material-icons-extended:$composeVersion"
         const val ui = "androidx.compose.ui:ui:$composeVersion"
@@ -28,11 +28,11 @@ object Dependencies {
         const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0-alpha03"
         const val constraintLayout =
             "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha04"
-        const val material3 = "androidx.compose.material3:material3:1.0.0"
+        const val material3 = "androidx.compose.material3:material3:1.1.0-alpha02"
     }
 
     object Accompanist {
-        private const val version = "0.27.0"
+        private const val version = "0.27.1"
         const val systemUiController =
             "com.google.accompanist:accompanist-systemuicontroller:$version"
     }
@@ -43,7 +43,7 @@ object Dependencies {
         const val coilGif = "io.coil-kt:coil-gif:$coilVersion"
         const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
         const val matisse = "com.github.leavesCZY:Matisse:0.0.7"
-        const val imSdk = "com.tencent.imsdk:imsdk-plus:6.7.3184"
+        const val imSdk = "com.tencent.imsdk:imsdk-plus:6.8.3374"
     }
 
 }

@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,11 +34,14 @@ fun MainPageBottomBar(
 ) {
     val tabList = viewState.tabList
     val unreadMessageCount = viewState.unreadMessageCount
-    val tabSelected = viewState.tabSelected
+    val tabSelected by remember(key1 = viewState, key2 = appTheme) {
+        mutableStateOf(value = viewState.tabSelected)
+    }
     NavigationBar(
         modifier = Modifier
             .navigationBarsPadding()
             .height(height = 50.dp),
+        contentColor = MaterialTheme.colorScheme.primary,
         windowInsets = WindowInsetsEmpty,
     ) {
         tabList.forEach { tab ->

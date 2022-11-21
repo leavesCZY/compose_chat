@@ -1,6 +1,7 @@
 package github.leavesczy.compose_chat.ui.main
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -47,12 +48,6 @@ fun MainPage(
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     contentWindowInsets = WindowInsetsEmpty,
-                    topBar = {
-                        MainPageTopBar(
-                            tabSelected = bottomBarViewState.tabSelected,
-                            mainPageAction = mainPageAction
-                        )
-                    },
                     bottomBar = {
                         MainPageBottomBar(
                             appTheme = appTheme,
@@ -78,19 +73,21 @@ fun MainPage(
                         }
                     },
                 ) { innerPadding ->
-                    Box(
+                    Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues = innerPadding)
                     ) {
                         when (bottomBarViewState.tabSelected) {
                             MainTab.Conversation -> {
+                                MainPageTopBar(mainPageAction = mainPageAction)
                                 ConversationPage(
                                     viewState = conversationPageViewState,
                                     mainPageAction = mainPageAction
                                 )
                             }
                             MainTab.Friendship -> {
+                                MainPageTopBar(mainPageAction = mainPageAction)
                                 FriendshipPage(
                                     viewState = friendshipPageViewState,
                                     mainPageAction = mainPageAction

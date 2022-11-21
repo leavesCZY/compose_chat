@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.model.MainPageAction
-import github.leavesczy.compose_chat.model.MainTab
 
 /**
  * @Author: leavesCZY
@@ -24,15 +23,11 @@ import github.leavesczy.compose_chat.model.MainTab
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun MainPageTopBar(tabSelected: MainTab, mainPageAction: MainPageAction) {
-    if (tabSelected == MainTab.Person) {
-        return
-    }
+fun MainPageTopBar(mainPageAction: MainPageAction) {
     var menuExpanded by remember {
         mutableStateOf(false)
     }
     CenterAlignedTopAppBar(
-        modifier = Modifier,
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
         title = {
 
