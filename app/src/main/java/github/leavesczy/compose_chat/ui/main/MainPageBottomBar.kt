@@ -5,20 +5,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import github.leavesczy.compose_chat.model.AppTheme
 import github.leavesczy.compose_chat.model.MainPageAction
 import github.leavesczy.compose_chat.model.MainPageBottomBarViewState
 import github.leavesczy.compose_chat.model.MainTab
-import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 
 /**
  * @Author: leavesCZY
@@ -28,56 +23,56 @@ import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
  */
 @Composable
 fun MainPageBottomBar(
-    appTheme: AppTheme,
     viewState: MainPageBottomBarViewState,
     mainPageAction: MainPageAction
 ) {
-    val tabList = viewState.tabList
-    val unreadMessageCount = viewState.unreadMessageCount
-    val tabSelected by remember(key1 = viewState, key2 = appTheme) {
-        mutableStateOf(value = viewState.tabSelected)
-    }
-    NavigationBar(
-        modifier = Modifier
-            .navigationBarsPadding()
-            .height(height = 50.dp),
-        contentColor = MaterialTheme.colorScheme.primary,
-        windowInsets = WindowInsetsEmpty,
+    Surface(
+        modifier = Modifier,
+        tonalElevation = 4.dp
     ) {
-        tabList.forEach { tab ->
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = tab.icon,
-                        contentDescription = null
-                    )
-                    if (tab == MainTab.Conversation) {
-                        if (unreadMessageCount > 0) {
-                            Text(
-                                text = if (unreadMessageCount > 99) "99+" else unreadMessageCount.toString(),
-                                color = Color.White,
-                                fontSize = 14.sp,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .offset(x = 18.dp, y = (-10).dp)
-                                    .size(size = 24.dp)
-                                    .background(
-                                        color = MaterialTheme.colorScheme.primary,
-                                        shape = CircleShape
-                                    )
-                                    .wrapContentSize(align = Alignment.Center)
-                            )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .height(height = 50.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            viewState.tabList.forEach { tab ->
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = tab.icon,
+                            contentDescription = null
+                        )
+                        if (tab == MainTab.Conversation) {
+                            val unreadMessageCount = viewState.unreadMessageCount
+                            if (unreadMessageCount > 0) {
+                                Text(
+                                    text = if (unreadMessageCount > 99) "99+" else unreadMessageCount.toString(),
+                                    color = Color.White,
+                                    fontSize = 14.sp,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .offset(x = 18.dp, y = (-10).dp)
+                                        .size(size = 24.dp)
+                                        .background(
+                                            color = MaterialTheme.colorScheme.primary,
+                                            shape = CircleShape
+                                        )
+                                        .wrapContentSize(align = Alignment.Center)
+                                )
+                            }
                         }
+                    },
+                    selected = viewState.tabSelected == tab,
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary
+                    ),
+                    onClick = {
+                        mainPageAction.onTabSelected(tab)
                     }
-                },
-                selected = tabSelected == tab,
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary
-                ),
-                onClick = {
-                    mainPageAction.onTabSelected(tab)
-                }
-            )
+                )
+            }
         }
     }
 }

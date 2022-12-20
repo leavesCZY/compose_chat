@@ -29,7 +29,7 @@ fun DependencyHandlerScope.implementationTest() {
 }
 
 fun DependencyHandlerScope.implementationCompose() {
-    implementationExtend(Dependencies.AppCompat.activity)
+    implementationExtend(Dependencies.Compose.activity)
     implementationExtend(Dependencies.Compose.viewModel)
     implementationExtend(Dependencies.Compose.materialIcons)
     implementationExtend(Dependencies.Compose.material3)

@@ -22,7 +22,6 @@ import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
  */
 @Composable
 fun MainPage(
-    appTheme: AppTheme,
     mainPageAction: MainPageAction,
     conversationPageViewState: ConversationPageViewState,
     friendshipPageViewState: FriendshipPageViewState,
@@ -50,7 +49,6 @@ fun MainPage(
                     contentWindowInsets = WindowInsetsEmpty,
                     bottomBar = {
                         MainPageBottomBar(
-                            appTheme = appTheme,
                             viewState = bottomBarViewState,
                             mainPageAction = mainPageAction
                         )
@@ -80,14 +78,20 @@ fun MainPage(
                     ) {
                         when (bottomBarViewState.tabSelected) {
                             MainTab.Conversation -> {
-                                MainPageTopBar(mainPageAction = mainPageAction)
+                                MainPageTopBar(
+                                    drawerState = drawerViewState.drawerState,
+                                    mainPageAction = mainPageAction
+                                )
                                 ConversationPage(
                                     viewState = conversationPageViewState,
                                     mainPageAction = mainPageAction
                                 )
                             }
                             MainTab.Friendship -> {
-                                MainPageTopBar(mainPageAction = mainPageAction)
+                                MainPageTopBar(
+                                    drawerState = drawerViewState.drawerState,
+                                    mainPageAction = mainPageAction
+                                )
                                 FriendshipPage(
                                     viewState = friendshipPageViewState,
                                     mainPageAction = mainPageAction

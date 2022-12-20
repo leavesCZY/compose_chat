@@ -1,5 +1,6 @@
 package github.leavesczy.compose_chat.ui.main
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.model.MainPageAction
@@ -23,24 +25,34 @@ import github.leavesczy.compose_chat.model.MainPageAction
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun MainPageTopBar(mainPageAction: MainPageAction) {
+fun MainPageTopBar(drawerState: DrawerState, mainPageAction: MainPageAction) {
     var menuExpanded by remember {
         mutableStateOf(false)
     }
+    val navigationIconDegrees by animateFloatAsState(
+        targetValue = if (drawerState.isOpen) {
+            -90f
+        } else {
+            0f
+        }
+    )
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
         title = {
 
         },
         navigationIcon = {
-            IconButton(content = {
-                Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = null
-                )
-            }, onClick = {
-                mainPageAction.changDrawerState(DrawerValue.Open)
-            })
+            IconButton(
+                modifier = Modifier.rotate(
+                    degrees = navigationIconDegrees
+                ), content = {
+                    Icon(
+                        imageVector = Icons.Filled.Menu,
+                        contentDescription = null
+                    )
+                }, onClick = {
+                    mainPageAction.changDrawerState(DrawerValue.Open)
+                })
         },
         actions = {
             IconButton(content = {
