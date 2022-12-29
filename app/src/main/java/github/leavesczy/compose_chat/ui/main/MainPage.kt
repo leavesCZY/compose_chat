@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -22,6 +23,7 @@ import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
  */
 @Composable
 fun MainPage(
+    appTheme: AppTheme,
     mainPageAction: MainPageAction,
     conversationPageViewState: ConversationPageViewState,
     friendshipPageViewState: FriendshipPageViewState,
@@ -48,10 +50,12 @@ fun MainPage(
                     modifier = Modifier.fillMaxSize(),
                     contentWindowInsets = WindowInsetsEmpty,
                     bottomBar = {
-                        MainPageBottomBar(
-                            viewState = bottomBarViewState,
-                            mainPageAction = mainPageAction
-                        )
+                        key(appTheme) {
+                            MainPageBottomBar(
+                                viewState = bottomBarViewState,
+                                mainPageAction = mainPageAction
+                            )
+                        }
                     },
                     floatingActionButton = {
                         if (bottomBarViewState.tabSelected == MainTab.Friendship) {

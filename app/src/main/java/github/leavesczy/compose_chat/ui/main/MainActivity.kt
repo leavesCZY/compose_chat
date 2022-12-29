@@ -108,6 +108,7 @@ class MainActivity : BaseActivity() {
             }
             ComposeChatTheme(appTheme = appTheme) {
                 MainPage(
+                    appTheme = appTheme,
                     mainPageAction = mainPageAction,
                     conversationPageViewState = conversationPageViewState,
                     friendshipPageViewState = friendshipPageViewState,

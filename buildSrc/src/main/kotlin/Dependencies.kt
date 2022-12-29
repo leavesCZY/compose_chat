@@ -42,7 +42,7 @@ object Dependencies {
         const val coil = "io.coil-kt:coil-compose:$coilVersion"
         const val coilGif = "io.coil-kt:coil-gif:$coilVersion"
         const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-        const val matisse = "com.github.leavesCZY:Matisse:0.0.7"
+        const val matisse = "com.github.leavesCZY:Matisse:0.0.8"
         const val imSdk = "com.tencent.imsdk:imsdk-plus:6.9.3557"
     }
 
