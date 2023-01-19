@@ -1,24 +1,23 @@
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 
-
 /**
  * @Author: leavesCZY
  * @Date: 2022/6/17 22:38
  * @Desc:
  */
-private fun DependencyHandlerScope.implementationExtend(library: String) {
+private fun DependencyHandlerScope.implementationExtend(library: Any) {
     this.add("implementation", library)
 }
 
-private fun DependencyHandlerScope.debugImplementationExtend(library: String) {
+private fun DependencyHandlerScope.debugImplementationExtend(library: Any) {
     this.add("debugImplementation", library)
 }
 
-private fun DependencyHandlerScope.androidTestImplementationExtend(library: String) {
+private fun DependencyHandlerScope.androidTestImplementationExtend(library: Any) {
     this.add("androidTestImplementation", library)
 }
 
-private fun DependencyHandlerScope.testImplementationExtend(library: String) {
+private fun DependencyHandlerScope.testImplementationExtend(library: Any) {
     this.add("testImplementation", library)
 }
 
@@ -29,6 +28,8 @@ fun DependencyHandlerScope.implementationTest() {
 }
 
 fun DependencyHandlerScope.implementationCompose() {
+    implementationExtend(platform(Dependencies.Compose.composeBom))
+    androidTestImplementationExtend(platform(Dependencies.Compose.composeBom))
     implementationExtend(Dependencies.Compose.activity)
     implementationExtend(Dependencies.Compose.viewModel)
     implementationExtend(Dependencies.Compose.materialIcons)

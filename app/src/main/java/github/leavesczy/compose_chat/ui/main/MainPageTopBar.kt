@@ -3,9 +3,7 @@ package github.leavesczy.compose_chat.ui.main
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
@@ -36,60 +34,54 @@ fun MainPageTopBar(drawerState: DrawerState, mainPageAction: MainPageAction) {
             0f
         }
     )
-    CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
+    CenterAlignedTopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
         title = {
 
         },
         navigationIcon = {
-            IconButton(
-                modifier = Modifier.rotate(
-                    degrees = navigationIconDegrees
-                ), content = {
-                    Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = null
-                    )
-                }, onClick = {
-                    mainPageAction.changDrawerState(DrawerValue.Open)
-                })
-        },
-        actions = {
-            IconButton(content = {
+            IconButton(modifier = Modifier.rotate(
+                degrees = navigationIconDegrees
+            ), content = {
                 Icon(
-                    imageVector = Icons.Filled.MoreVert,
-                    contentDescription = null
+                    imageVector = Icons.Filled.Menu, contentDescription = null
                 )
             }, onClick = {
-                menuExpanded = true
+                mainPageAction.changDrawerState(DrawerValue.Open)
             })
-        }
-    )
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentSize(align = Alignment.TopEnd)
-            .padding(end = 20.dp)
-    ) {
-        DropdownMenu(
-            modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
-            expanded = menuExpanded,
-            onDismissRequest = {
-                menuExpanded = false
+        },
+        actions = {
+            Box(modifier = Modifier) {
+                IconButton(content = {
+                    Icon(
+                        imageVector = Icons.Filled.MoreVert, contentDescription = null
+                    )
+                }, onClick = {
+                    menuExpanded = true
+                })
+                Box(
+                    modifier = Modifier
+                        .align(alignment = Alignment.TopEnd)
+                        .padding(end = 10.dp)
+                ) {
+                    DropdownMenu(modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+                        expanded = menuExpanded,
+                        onDismissRequest = {
+                            menuExpanded = false
+                        }) {
+                        DropdownMenuItem(text = {
+                            Text(text = "添加好友", style = MaterialTheme.typography.bodyLarge)
+                        }, onClick = {
+                            menuExpanded = false
+                            mainPageAction.showFriendshipPanel()
+                        })
+                        DropdownMenuItem(text = {
+                            Text(text = "加入群聊", style = MaterialTheme.typography.bodyLarge)
+                        }, onClick = {
+                            menuExpanded = false
+                            mainPageAction.showFriendshipPanel()
+                        })
+                    }
+                }
             }
-        ) {
-            DropdownMenuItem(text = {
-                Text(text = "添加好友", style = MaterialTheme.typography.bodyLarge)
-            }, onClick = {
-                menuExpanded = false
-                mainPageAction.showFriendshipPanel()
-            })
-            DropdownMenuItem(text = {
-                Text(text = "加入群聊", style = MaterialTheme.typography.bodyLarge)
-            }, onClick = {
-                menuExpanded = false
-                mainPageAction.showFriendshipPanel()
-            })
-        }
-    }
+        })
 }
