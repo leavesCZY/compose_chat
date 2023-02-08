@@ -9,8 +9,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import github.leavesczy.compose_chat.cache.AppThemeCache
-import github.leavesczy.compose_chat.model.AppTheme
 import github.leavesczy.compose_chat.model.ProfileUpdatePageAction
 import github.leavesczy.compose_chat.model.ProfileUpdatePageViewStata
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
@@ -18,7 +16,9 @@ import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
 import github.leavesczy.compose_chat.utils.randomFaceUrl
 import github.leavesczy.compose_chat.utils.showToast
-import github.leavesczy.matisse.*
+import github.leavesczy.matisse.Matisse
+import github.leavesczy.matisse.MatisseContract
+import github.leavesczy.matisse.MediaStoreCaptureStrategy
 import kotlinx.coroutines.launch
 
 /**
@@ -115,11 +115,6 @@ fun ProfileUpdatePage(
                     }
                     CommonButton(text = "本地图片") {
                         val matisse = Matisse(
-                            theme = if (AppThemeCache.currentTheme == AppTheme.Dark) {
-                                DarkMatisseTheme
-                            } else {
-                                LightMatisseTheme
-                            },
                             maxSelectable = 1,
                             captureStrategy = MediaStoreCaptureStrategy()
                         )

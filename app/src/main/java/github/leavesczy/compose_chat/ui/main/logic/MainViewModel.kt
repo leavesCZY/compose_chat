@@ -266,7 +266,7 @@ class MainViewModel : ViewModel() {
     fun switchToNextTheme() {
         viewModelScope.launch {
             val nextTheme = appTheme.value.nextTheme()
-            AppThemeCache.onAppThemeChanged(nextTheme)
+            AppThemeCache.onAppThemeChanged(appTheme = nextTheme)
             _appTheme.emit(value = nextTheme)
             _mainPageDrawerViewState.emit(
                 value = _mainPageDrawerViewState.value.copy(appTheme = nextTheme)

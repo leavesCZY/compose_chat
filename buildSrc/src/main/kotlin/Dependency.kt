@@ -30,14 +30,14 @@ fun DependencyHandlerScope.implementationTest() {
 fun DependencyHandlerScope.implementationCompose() {
     implementationExtend(platform(Dependencies.Compose.composeBom))
     androidTestImplementationExtend(platform(Dependencies.Compose.composeBom))
-    implementationExtend(Dependencies.Compose.activity)
-    implementationExtend(Dependencies.Compose.viewModel)
     implementationExtend(Dependencies.Compose.materialIcons)
     implementationExtend(Dependencies.Compose.material3)
     implementationExtend(Dependencies.Compose.ui)
     debugImplementationExtend(Dependencies.Compose.uiTooling)
     debugImplementationExtend(Dependencies.Compose.uiTestJunit4)
     implementationExtend(Dependencies.Compose.constraintLayout)
+    implementationExtend(Dependencies.Compose.activity)
+    implementationExtend(Dependencies.Compose.viewModel)
 }
 
 fun DependencyHandlerScope.implementationCoil() {

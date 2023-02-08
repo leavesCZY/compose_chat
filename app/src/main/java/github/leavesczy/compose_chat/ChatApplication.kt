@@ -17,9 +17,9 @@ class ChatApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         ContextHolder.init(application = this)
+        AppThemeCache.init(application = this)
         CoilImageLoader.init(application = this)
         ComposeChat.accountProvider.init(application = this)
-        AppThemeCache.init()
     }
 
 }

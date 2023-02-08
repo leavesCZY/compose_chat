@@ -23,7 +23,7 @@
         tools:replace="android:supportsRtl">
         <activity
             android:name=".ui.login.LoginActivity"
-            android:configChanges="uiMode"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
             android:exported="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
@@ -36,7 +36,7 @@
         </activity>
         <activity
             android:name=".ui.main.MainActivity"
-            android:configChanges="uiMode"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -44,35 +44,35 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ui.chat.ChatActivity"
-            android:configChanges="uiMode"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ui.preview.PreviewImageActivity"
-            android:configChanges="uiMode"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ui.main.ProfileUpdateActivity"
-            android:configChanges="uiMode"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ui.chat.GroupProfileActivity"
-            android:configChanges="uiMode"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ui.friendship.FriendProfileActivity"
-            android:configChanges="uiMode"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"

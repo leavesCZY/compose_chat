@@ -20,9 +20,10 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import github.leavesczy.compose_chat.cache.AppThemeCache
-import github.leavesczy.compose_chat.model.AppTheme
-import github.leavesczy.matisse.*
+import github.leavesczy.matisse.Matisse
+import github.leavesczy.matisse.MatisseContract
+import github.leavesczy.matisse.MediaResource
+import github.leavesczy.matisse.MediaStoreCaptureStrategy
 
 /**
  * @Author: leavesCZY
@@ -229,11 +230,6 @@ fun ChatPageBottomBar(
                                     selectPicture = {
                                         onSelectorChange(InputSelector.NONE)
                                         val matisse = Matisse(
-                                            theme = if (AppThemeCache.currentTheme == AppTheme.Dark) {
-                                                DarkMatisseTheme
-                                            } else {
-                                                LightMatisseTheme
-                                            },
                                             maxSelectable = 1,
                                             captureStrategy = MediaStoreCaptureStrategy()
                                         )

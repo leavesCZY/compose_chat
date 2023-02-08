@@ -11,7 +11,6 @@ fun randomFaceUrl(): String {
 }
 
 private val faceUrlList = listOf(
-    "https://p3-passport.byteimg.com/img/user-avatar/6019f80db5be42d33c31c98adaf3fa8c~380x380.awebp",
     "https://p3-passport.byteimg.com/img/user-avatar/de432cd6200bc3d3f7d633a3ccd528d8~380x380.awebp",
     "https://p3-passport.byteimg.com/img/user-avatar/0de6e7c19aacf1d70c9fc6bc41710c4d~380x380.awebp",
     "https://p3-passport.byteimg.com/img/user-avatar/3e4b0f05d831335c795df44678a97afd~380x380.awebp",

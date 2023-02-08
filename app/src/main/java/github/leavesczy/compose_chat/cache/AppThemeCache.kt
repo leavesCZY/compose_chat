@@ -1,8 +1,10 @@
 package github.leavesczy.compose_chat.cache
 
+import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatDelegate
 import github.leavesczy.compose_chat.model.AppTheme
-import github.leavesczy.compose_chat.utils.ContextHolder
 
 /**
  * @Author: leavesCZY
@@ -16,15 +18,15 @@ object AppThemeCache {
 
     private const val KEY_APP_THEME = "keyAppTheme"
 
-    private val preferences by lazy {
-        ContextHolder.context.getSharedPreferences(KEY_GROUP, Context.MODE_PRIVATE)
-    }
+    private lateinit var preferences: SharedPreferences
 
     var currentTheme = AppTheme.DefaultAppTheme
         private set
 
-    fun init() {
+    fun init(application: Application) {
+        preferences = application.getSharedPreferences(KEY_GROUP, Context.MODE_PRIVATE)
         currentTheme = getAppTheme()
+        initThemeDelegate(appTheme = currentTheme)
     }
 
     private fun getAppTheme(): AppTheme {
@@ -35,6 +37,18 @@ object AppThemeCache {
     fun onAppThemeChanged(appTheme: AppTheme) {
         preferences.edit().putInt(KEY_APP_THEME, appTheme.ordinal).apply()
         currentTheme = appTheme
+        initThemeDelegate(appTheme = appTheme)
+    }
+
+    private fun initThemeDelegate(appTheme: AppTheme) {
+        when (appTheme) {
+            AppTheme.Light, AppTheme.Gray -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            AppTheme.Dark -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
+        }
     }
 
 }
