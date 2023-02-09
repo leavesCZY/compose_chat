@@ -29,7 +29,7 @@ compileTestKotlin.kotlinOptions {
 
 dependencies {
     val agpVersion = "7.4.0"
-    val kotlinVersion = "1.8.0"
+    val kotlinVersion = "1.8.10"
     implementation("com.android.tools.build:gradle-api:${agpVersion}")
     implementation("com.android.tools.build:gradle:${agpVersion}")
     implementation(kotlin("gradle-plugin", version = kotlinVersion))

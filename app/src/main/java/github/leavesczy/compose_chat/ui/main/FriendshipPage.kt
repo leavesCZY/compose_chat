@@ -42,7 +42,7 @@ fun FriendshipPage(
         } else {
             LazyColumn(
                 state = viewState.listState,
-                contentPadding = PaddingValues(bottom = 60.dp),
+                contentPadding = PaddingValues(bottom = 120.dp),
             ) {
                 val joinedGroupList = viewState.joinedGroupList
                 val friendList = viewState.friendList
