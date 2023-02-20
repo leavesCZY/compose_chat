@@ -12,7 +12,7 @@ object Dependencies {
     }
 
     object AppCompat {
-        const val appcompat = "androidx.appcompat:appcompat:1.6.0"
+        const val appcompat = "androidx.appcompat:appcompat:1.6.1"
         const val material = "com.google.android.material:material:1.8.0"
     }
 
@@ -40,8 +40,8 @@ object Dependencies {
         const val coil = "io.coil-kt:coil-compose:$coilVersion"
         const val coilGif = "io.coil-kt:coil-gif:$coilVersion"
         const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-        const val matisse = "com.github.leavesCZY:Matisse:0.0.9"
-        const val imSdk = "com.tencent.imsdk:imsdk-plus:6.9.3557"
+        const val matisse = "com.github.leavesCZY:Matisse:0.0.10"
+        const val imSdk = "com.tencent.imsdk:imsdk-plus:7.0.3768"
     }
 
 }
