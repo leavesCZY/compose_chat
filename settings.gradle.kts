@@ -6,6 +6,7 @@ pluginManagement {
     }
 }
 
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -19,4 +20,4 @@ dependencyResolutionManagement {
 
 include(":app")
 include(":proxy")
-include(":common")
+include(":base")

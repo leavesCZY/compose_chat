@@ -2,8 +2,8 @@ import org.gradle.kotlin.dsl.DependencyHandlerScope
 
 /**
  * @Author: leavesCZY
- * @Date: 2022/6/17 22:38
  * @Desc:
+ * @Github：https://github.com/leavesCZY
  */
 private fun DependencyHandlerScope.implementationExtend(library: Any) {
     this.add("implementation", library)
@@ -30,11 +30,14 @@ fun DependencyHandlerScope.implementationTest() {
 fun DependencyHandlerScope.implementationCompose() {
     implementationExtend(platform(Dependencies.Compose.composeBom))
     androidTestImplementationExtend(platform(Dependencies.Compose.composeBom))
-    implementationExtend(Dependencies.Compose.materialIcons)
-    implementationExtend(Dependencies.Compose.material3)
     implementationExtend(Dependencies.Compose.ui)
+    implementationExtend(Dependencies.Compose.uiToolingPreview)
     debugImplementationExtend(Dependencies.Compose.uiTooling)
-    debugImplementationExtend(Dependencies.Compose.uiTestJunit4)
+    debugImplementationExtend(Dependencies.Compose.uiTestManifes)
+    androidTestImplementationExtend(Dependencies.Compose.uiTestJunit4)
+    implementationExtend(Dependencies.Compose.material)
+    implementationExtend(Dependencies.Compose.material3)
+    implementationExtend(Dependencies.Compose.materialIcons)
     implementationExtend(Dependencies.Compose.constraintLayout)
     implementationExtend(Dependencies.Compose.activity)
     implementationExtend(Dependencies.Compose.viewModel)

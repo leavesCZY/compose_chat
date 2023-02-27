@@ -20,33 +20,28 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atMost
-import github.leavesczy.compose_chat.common.model.*
-import github.leavesczy.compose_chat.model.ChatPageAction
-import github.leavesczy.compose_chat.model.ChatPageViewState
+import github.leavesczy.compose_chat.base.model.*
+import github.leavesczy.compose_chat.ui.chat.logic.ChatPageAction
+import github.leavesczy.compose_chat.ui.chat.logic.ChatPageViewState
 import github.leavesczy.compose_chat.ui.widgets.CoilImage
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/10/26 11:00
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun MessagePanel(
-    contentPadding: PaddingValues,
     chatPageViewState: ChatPageViewState,
     chatPageAction: ChatPageAction
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues = contentPadding),
+        modifier = Modifier.fillMaxSize(),
         state = chatPageViewState.listState,
         reverseLayout = true,
         contentPadding = PaddingValues(bottom = 80.dp),
@@ -56,14 +51,9 @@ fun MessagePanel(
             item(key = message.messageDetail.msgId) {
                 MessageItems(
                     message = message,
-                    showPartyName = chatPageViewState.chat is GroupChat,
+                    showPartyName = chatPageViewState.chat is Chat.GroupChat,
                     chatPageAction = chatPageAction
                 )
-            }
-        }
-        if (chatPageViewState.showLoadMore) {
-            item(key = "loadMore") {
-                MessageLoading()
             }
         }
     }
@@ -73,7 +63,7 @@ fun MessagePanel(
 private fun MessageItems(
     message: Message,
     showPartyName: Boolean,
-    chatPageAction: ChatPageAction,
+    chatPageAction: ChatPageAction
 ) {
     if (message is TimeMessage) {
         TimeMessage(message = message)
@@ -96,29 +86,24 @@ private fun MessageItems(
             }
         }
     }
-    val isSelfMessage = message.messageDetail.isSelfMessage
-    if (isSelfMessage) {
+    if (message.messageDetail.isSelfMessage) {
         SelfMessageContainer(
             message = message,
-            messageContent = {
-                messageContent()
-            },
-            chatPageAction = chatPageAction
+            chatPageAction = chatPageAction,
+            messageContent = messageContent
         )
     } else {
         FriendMessageContainer(
             message = message,
             showPartyName = showPartyName,
-            messageContent = {
-                messageContent()
-            },
-            chatPageAction = chatPageAction
+            chatPageAction = chatPageAction,
+            messageContent = messageContent
         )
     }
 }
 
-private val avatarSize = 48.dp
-private val itemHorizontalPadding = 10.dp
+private val avatarSize = 46.dp
+private val itemHorizontalPadding = 14.dp
 private val itemVerticalPadding = 10.dp
 private val textMessageWidthAtMost = 230.dp
 private val textMessageSenderNameVerticalPadding = 3.dp
@@ -129,8 +114,8 @@ private val timeMessageShape = RoundedCornerShape(size = 4.dp)
 @Composable
 private fun SelfMessageContainer(
     message: Message,
-    messageContent: @Composable (Message) -> Unit,
     chatPageAction: ChatPageAction,
+    messageContent: @Composable () -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -166,7 +151,7 @@ private fun SelfMessageContainer(
                     )
                 },
             text = "",
-            style = MaterialTheme.typography.bodySmall,
+            fontSize = 16.sp,
             textAlign = TextAlign.End
         )
         Box(
@@ -189,7 +174,7 @@ private fun SelfMessageContainer(
                     }
                 )
         ) {
-            messageContent(message)
+            messageContent()
         }
         StateMessage(
             modifier = Modifier.constrainAs(ref = messageStateRef) {
@@ -206,8 +191,8 @@ private fun SelfMessageContainer(
 private fun FriendMessageContainer(
     message: Message,
     showPartyName: Boolean,
-    messageContent: @Composable (Message) -> Unit,
-    chatPageAction: ChatPageAction
+    chatPageAction: ChatPageAction,
+    messageContent: @Composable () -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -247,8 +232,8 @@ private fun FriendMessageContainer(
             } else {
                 ""
             },
-            style = MaterialTheme.typography.bodySmall,
-            textAlign = TextAlign.Start,
+            fontSize = 12.sp,
+            textAlign = TextAlign.Start
         )
         Box(
             modifier = Modifier
@@ -270,15 +255,16 @@ private fun FriendMessageContainer(
                     }
                 )
         ) {
-            messageContent(message)
+            messageContent()
         }
         StateMessage(
-            modifier = Modifier.constrainAs(ref = messageStateRef) {
-                top.linkTo(anchor = messageRef.top)
-                bottom.linkTo(anchor = messageRef.bottom)
-                start.linkTo(anchor = messageRef.end, margin = textMessageHorizontalPadding)
-            },
-            messageState = message.messageDetail.state,
+            modifier = Modifier
+                .constrainAs(ref = messageStateRef) {
+                    top.linkTo(anchor = messageRef.top)
+                    bottom.linkTo(anchor = messageRef.bottom)
+                    start.linkTo(anchor = messageRef.end, margin = textMessageHorizontalPadding)
+                },
+            messageState = message.messageDetail.state
         )
     }
 }
@@ -293,7 +279,8 @@ private fun TextMessage(message: TextMessage) {
                 vertical = 6.dp
             ),
         text = message.formatMessage,
-        style = MaterialTheme.typography.bodyMedium.copy(color = Color.White),
+        fontSize = 16.sp,
+        color = Color.White,
         textAlign = TextAlign.Start
     )
 }
@@ -308,7 +295,7 @@ private fun TimeMessage(message: TimeMessage) {
             .background(color = Color.LightGray.copy(alpha = 0.4f), shape = timeMessageShape)
             .padding(all = 3.dp),
         text = message.formatMessage,
-        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp)
+        fontSize = 11.sp
     )
 }
 
@@ -322,7 +309,7 @@ private fun SystemMessage(message: SystemMessage) {
             .background(color = Color.LightGray.copy(alpha = 0.4f), shape = timeMessageShape)
             .padding(all = 3.dp),
         text = message.formatMessage,
-        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp)
+        fontSize = 12.sp
     )
 }
 
@@ -330,8 +317,8 @@ private fun SystemMessage(message: SystemMessage) {
 private fun ImageMessage(message: ImageMessage) {
     CoilImage(
         modifier = Modifier.size(
-            width = Dp(value = message.widgetWidthDp),
-            height = Dp(value = message.widgetHeightDp)
+            width = message.widgetWidthDp.dp,
+            height = message.widgetHeightDp.dp
         ),
         data = message.preview.url
     )
@@ -358,12 +345,5 @@ private fun StateMessage(modifier: Modifier, messageState: MessageState) {
         MessageState.Completed -> {
 
         }
-    }
-}
-
-@Composable
-private fun MessageLoading() {
-    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
-        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
     }
 }

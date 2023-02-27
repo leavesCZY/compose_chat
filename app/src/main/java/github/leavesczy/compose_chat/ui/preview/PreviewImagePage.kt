@@ -34,8 +34,8 @@ import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
- * @Date: 2022/1/1 17:45
  * @Desc:
+ * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun PreviewImagePage(imagePath: String) {
@@ -45,9 +45,9 @@ fun PreviewImagePage(imagePath: String) {
         coroutineScope.launch {
             val result = AlbumUtils.insertImageToAlbum(context = context, imageUrl = imagePath)
             if (result) {
-                showToast("图片已保存到相册")
+                showToast(msg = "图片已保存到相册")
             } else {
-                showToast("图片保存失败")
+                showToast(msg = "图片保存失败")
             }
         }
     }
@@ -58,7 +58,7 @@ fun PreviewImagePage(imagePath: String) {
         if (it) {
             insertImageToAlbum()
         } else {
-            showToast("请先授予存储权限再保存图片")
+            showToast(msg = "请先授予存储权限再保存图片")
         }
     }
     Scaffold(
@@ -77,7 +77,8 @@ fun PreviewImagePage(imagePath: String) {
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(state = rememberScrollState()),
-                data = ImageRequest.Builder(context = LocalContext.current)
+                data = ImageRequest
+                    .Builder(context = LocalContext.current)
                     .data(data = imagePath)
                     .size(size = Size.ORIGINAL)
                     .scale(scale = Scale.FILL)

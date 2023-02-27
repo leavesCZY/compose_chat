@@ -2,8 +2,10 @@ package github.leavesczy.compose_chat.proxy.logic
 
 import android.graphics.BitmapFactory
 import com.tencent.imsdk.v2.*
-import github.leavesczy.compose_chat.common.model.*
-import github.leavesczy.compose_chat.common.provider.IMessageProvider
+import github.leavesczy.compose_chat.base.model.*
+import github.leavesczy.compose_chat.base.provider.IMessageProvider
+import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
+import github.leavesczy.compose_chat.proxy.utils.Converters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -15,11 +17,10 @@ import kotlin.random.Random
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/10/27 14:38
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-class MessageProvider : IMessageProvider, Converters {
+class MessageProvider : IMessageProvider {
 
     private val messageListenerMap =
         mutableMapOf<String, SoftReference<IMessageProvider.MessageListener>>()
@@ -31,7 +32,7 @@ class MessageProvider : IMessageProvider, Converters {
                 val partId = msg.groupID ?: msg.userID ?: ""
                 val messageListener = messageListenerMap[partId]?.get()
                 if (messageListener != null) {
-                    val message = convertMessage(msg)
+                    val message = Converters.convertMessage(msg)
                     messageListener.onReceiveMessage(
                         message = message
                     )
@@ -45,10 +46,10 @@ class MessageProvider : IMessageProvider, Converters {
     override fun markMessageAsRead(chat: Chat) {
         val id = chat.id
         when (chat) {
-            is PrivateChat -> {
+            is Chat.PrivateChat -> {
                 V2TIMManager.getMessageManager().markC2CMessageAsRead(id, null)
             }
-            is GroupChat -> {
+            is Chat.GroupChat -> {
                 V2TIMManager.getMessageManager().markGroupMessageAsRead(id, null)
             }
         }
@@ -62,7 +63,7 @@ class MessageProvider : IMessageProvider, Converters {
                 override fun onSuccess(t: List<V2TIMMessage>) {
                     continuation.resume(
                         value = LoadMessageResult.Success(
-                            messageList = convertMessage(t),
+                            messageList = Converters.convertMessage(t),
                             loadFinish = t.size < count
                         )
                     )
@@ -73,7 +74,7 @@ class MessageProvider : IMessageProvider, Converters {
                 }
             }
             when (chat) {
-                is PrivateChat -> {
+                is Chat.PrivateChat -> {
                     V2TIMManager.getMessageManager().getC2CHistoryMessageList(
                         chatId,
                         count,
@@ -81,7 +82,7 @@ class MessageProvider : IMessageProvider, Converters {
                         callback
                     )
                 }
-                is GroupChat -> {
+                is Chat.GroupChat -> {
                     V2TIMManager.getMessageManager().getGroupHistoryMessageList(
                         chatId,
                         count,
@@ -138,11 +139,11 @@ class MessageProvider : IMessageProvider, Converters {
         val c2cId: String
         val groupId: String
         when (chat) {
-            is PrivateChat -> {
+            is Chat.PrivateChat -> {
                 c2cId = chat.id
                 groupId = ""
             }
-            is GroupChat -> {
+            is Chat.GroupChat -> {
                 c2cId = ""
                 groupId = chat.id
             }
@@ -157,15 +158,15 @@ class MessageProvider : IMessageProvider, Converters {
             null,
             object : V2TIMSendCallback<V2TIMMessage> {
                 override fun onSuccess(messsage: V2TIMMessage) {
-                    coroutineScope.launch {
-                        val convertMessage = convertMessage(messsage)
+                    ChatCoroutineScope.launch {
+                        val convertMessage = Converters.convertMessage(messsage)
                         messageChannel.send(element = convertMessage)
                         messageChannel.close()
                     }
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    coroutineScope.launch {
+                    ChatCoroutineScope.launch {
                         messageChannel.send(element = localTempMessage.resetToFailed(failReason = "code: $code desc: $desc"))
                         messageChannel.close()
                     }
@@ -209,7 +210,7 @@ class MessageProvider : IMessageProvider, Converters {
                 null,
                 object : V2TIMSendCallback<V2TIMMessage> {
                     override fun onSuccess(message: V2TIMMessage) {
-                        val res = convertMessage(message)
+                        val res = Converters.convertMessage(message)
                         continuation.resume((res as? ImageMessage)?.previewUrl ?: "")
                     }
 
@@ -258,7 +259,7 @@ class MessageProvider : IMessageProvider, Converters {
             msgId = generateMessageId(),
             timestamp = generateMessageTimestamp(),
             state = MessageState.Sending,
-            sender = getSelfProfile() ?: PersonProfile.Empty,
+            sender = Converters.getSelfProfile() ?: PersonProfile.Empty,
             isSelfMessage = true
         )
     }

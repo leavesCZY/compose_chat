@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/10/26 10:50
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
@@ -20,8 +19,9 @@ fun Modifier.scrim(color: Color): Modifier = drawWithContent {
 }
 
 fun Modifier.clickableNoRipple(onClick: () -> Unit): Modifier = composed {
-    clickable(indication = null,
-        interactionSource = remember { MutableInteractionSource() }) {
-        onClick()
-    }
+    clickable(
+        indication = null,
+        interactionSource = remember { MutableInteractionSource() },
+        onClick = onClick
+    )
 }

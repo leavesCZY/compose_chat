@@ -11,6 +11,6 @@ dependencies {
     implementation(Dependencies.Accompanist.systemUiController)
     implementation(Dependencies.Components.coroutines)
     implementation(Dependencies.Components.matisse)
-    implementation(project(":common"))
+    implementation(project(":base"))
     implementation(project(":proxy"))
 }

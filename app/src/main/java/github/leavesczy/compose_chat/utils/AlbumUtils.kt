@@ -15,9 +15,9 @@ import java.io.OutputStream
 import java.util.*
 
 /**
- * @Author: CZY
- * @Date: 2022/6/13 11:59
+ * @Author: leavesCZY
  * @Desc:
+ * @Github：https://github.com/leavesCZY
  */
 object AlbumUtils {
 

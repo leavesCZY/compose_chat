@@ -21,17 +21,15 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import github.leavesczy.compose_chat.common.model.GroupMemberProfile
-import github.leavesczy.compose_chat.model.GroupProfilePageAction
-import github.leavesczy.compose_chat.model.GroupProfilePageViewState
+import github.leavesczy.compose_chat.base.model.GroupMemberProfile
+import github.leavesczy.compose_chat.ui.chat.logic.GroupProfilePageAction
+import github.leavesczy.compose_chat.ui.chat.logic.GroupProfileViewModel
 import github.leavesczy.compose_chat.ui.widgets.CoilImage
-import github.leavesczy.compose_chat.ui.widgets.CommonDivider
 import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
 import github.leavesczy.compose_chat.utils.randomFaceUrl
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/10/27 18:04
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
@@ -39,15 +37,16 @@ private val headerPicHeightDp = 500.dp
 
 @Composable
 fun GroupProfilePage(
-    viewState: GroupProfilePageViewState,
+    groupProfileViewModel: GroupProfileViewModel,
     action: GroupProfilePageAction
 ) {
+    val viewState = groupProfileViewModel.groupProfilePageViewState
     val density = LocalDensity.current.density
     val headerMaxOffsetPx by remember {
-        mutableStateOf(density * (headerPicHeightDp.value))
+        mutableStateOf(value = density * (headerPicHeightDp.value))
     }
     var topBarAlpha by remember {
-        mutableStateOf(0f)
+        mutableStateOf(value = 0f)
     }
     val listState = rememberLazyListState()
     LaunchedEffect(key1 = "") {
@@ -87,14 +86,16 @@ fun GroupProfilePage(
                         }
                     )
                 }
-                items(items = viewState.memberList, key = {
-                    it.detail.id
-                }, itemContent = {
-                    GroupMemberItem(
-                        groupMemberProfile = it,
-                        groupProfilePageAction = action
-                    )
-                })
+                items(
+                    items = viewState.memberList,
+                    key = {
+                        it.detail.id
+                    }, itemContent = {
+                        GroupMemberItem(
+                            groupMemberProfile = it,
+                            groupProfilePageAction = action
+                        )
+                    })
             }
             GroupProfilePageTopBar(
                 title = viewState.groupProfile.name,
@@ -110,8 +111,6 @@ private fun GroupMemberItem(
     groupMemberProfile: GroupMemberProfile,
     groupProfilePageAction: GroupProfilePageAction
 ) {
-    val avatarSize = 55.dp
-    val padding = 8.dp
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -128,13 +127,13 @@ private fun GroupMemberItem(
         }
         CoilImage(
             modifier = Modifier
-                .padding(horizontal = padding * 1.5f, vertical = padding)
-                .size(size = avatarSize)
-                .clip(shape = CircleShape)
                 .constrainAs(ref = avatarRef) {
                     start.linkTo(anchor = parent.start)
                     linkTo(top = parent.top, bottom = parent.bottom)
-                },
+                }
+                .padding(start = 12.dp, top = 8.dp, bottom = 8.dp)
+                .size(size = 50.dp)
+                .clip(shape = CircleShape),
             data = groupMemberProfile.detail.faceUrl
         )
         Text(
@@ -143,7 +142,8 @@ private fun GroupMemberItem(
                     linkTo(
                         start = avatarRef.end,
                         end = parent.end,
-                        endMargin = padding
+                        startMargin = 12.dp,
+                        endMargin = 12.dp
                     )
                     width = Dimension.fillToConstraints
                 }
@@ -155,29 +155,34 @@ private fun GroupMemberItem(
                     ""
                 }
             }）",
-            style = MaterialTheme.typography.bodyMedium,
+            fontSize = 17.sp,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1
         )
         Text(
-            text = "joinTime: ${groupMemberProfile.joinTimeFormat}",
-            style = MaterialTheme.typography.bodySmall,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
             modifier = Modifier
                 .constrainAs(ref = roleRef) {
-                    linkTo(start = avatarRef.end, end = parent.end, endMargin = padding)
+                    linkTo(
+                        start = showNameRef.start,
+                        end = parent.end,
+                        endMargin = 12.dp
+                    )
                     width = Dimension.fillToConstraints
                 }
-                .padding(top = 2.dp)
+                .padding(top = 2.dp),
+            text = "joinTime: ${groupMemberProfile.joinTimeFormat}",
+            fontSize = 14.sp,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1
         )
-        CommonDivider(
+        Divider(
             modifier = Modifier
                 .constrainAs(ref = dividerRef) {
                     linkTo(start = avatarRef.end, end = parent.end)
                     bottom.linkTo(anchor = parent.bottom)
                     width = Dimension.fillToConstraints
-                }
+                },
+            thickness = 0.2.dp
         )
     }
 }
@@ -206,7 +211,7 @@ private fun GroupProfilePageTopBar(
             modifier = Modifier.align(alignment = Alignment.Center),
             text = title,
             color = textColor,
-            fontSize = 20.sp,
+            fontSize = 19.sp,
         )
         Icon(
             modifier = Modifier
@@ -234,13 +239,19 @@ private fun GroupProfilePageTopBar(
             }
         ) {
             DropdownMenuItem(text = {
-                Text(text = "修改头像", style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = "修改头像",
+                    fontSize = 17.sp
+                )
             }, onClick = {
                 menuExpanded = false
                 groupProfilePageAction.setAvatar(randomFaceUrl())
             })
             DropdownMenuItem(text = {
-                Text(text = "退出群聊", style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = "退出群聊",
+                    fontSize = 17.sp
+                )
             }, onClick = {
                 menuExpanded = false
                 groupProfilePageAction.quitGroup()

@@ -27,7 +27,6 @@ import github.leavesczy.matisse.MediaStoreCaptureStrategy
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/7/5 23:33
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
@@ -35,22 +34,20 @@ private const val TEXT_MSG_MAX_LENGTH = 200
 
 private val DEFAULT_KEYBOARD_HEIGHT = 305.dp
 
-private val TextFieldValueSaver = run {
-    val textKey = "text"
-    mapSaver(
-        save = { mapOf(textKey to it.text) },
-        restore = { TextFieldValue(text = it[textKey] as String) }
-    )
-}
-
 @Composable
 fun ChatPageBottomBar(
-    sendText: (TextFieldValue) -> Unit,
-    sendImage: (MediaResource) -> Unit
+    sendTextMessage: (TextFieldValue) -> Unit,
+    sendImageMessage: (MediaResource) -> Unit
 ) {
     val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
-    var messageInputted by rememberSaveable(stateSaver = TextFieldValueSaver) {
+    var messageInputted by rememberSaveable(stateSaver = run {
+        val textKey = "text"
+        mapSaver(
+            save = { mapOf(textKey to it.text) },
+            restore = { TextFieldValue(text = it[textKey] as String) }
+        )
+    }) {
         mutableStateOf(TextFieldValue(""))
     }
 
@@ -68,7 +65,7 @@ fun ChatPageBottomBar(
     fun onMessageSent() {
         val text = messageInputted.text
         if (text.isNotBlank()) {
-            sendText(messageInputted)
+            sendTextMessage(messageInputted)
             onInputChange(TextFieldValue())
         }
     }
@@ -125,7 +122,7 @@ fun ChatPageBottomBar(
     ) { result ->
         if (result.isNotEmpty()) {
             onSelectorChange(InputSelector.NONE)
-            sendImage(result[0])
+            sendImageMessage(result[0])
         }
     }
 
@@ -165,13 +162,13 @@ fun ChatPageBottomBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    start = 12.dp, end = 12.dp, top = 12.dp
+                    start = 10.dp, end = 10.dp, top = 12.dp
                 )
                 .background(
                     color = MaterialTheme.colorScheme.background,
-                    shape = RoundedCornerShape(size = 6.dp)
+                    shape = RoundedCornerShape(size = 10.dp)
                 )
-                .padding(all = 8.dp),
+                .padding(horizontal = 8.dp, vertical = 12.dp),
             value = messageInputted,
             onValueChange = {
                 onUserInputChanged(it)

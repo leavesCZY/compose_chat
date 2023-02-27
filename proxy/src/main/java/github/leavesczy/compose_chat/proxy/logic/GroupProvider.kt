@@ -1,10 +1,12 @@
 package github.leavesczy.compose_chat.proxy.logic
 
 import com.tencent.imsdk.v2.*
-import github.leavesczy.compose_chat.common.model.ActionResult
-import github.leavesczy.compose_chat.common.model.GroupMemberProfile
-import github.leavesczy.compose_chat.common.model.GroupProfile
-import github.leavesczy.compose_chat.common.provider.IGroupProvider
+import github.leavesczy.compose_chat.base.model.ActionResult
+import github.leavesczy.compose_chat.base.model.GroupMemberProfile
+import github.leavesczy.compose_chat.base.model.GroupProfile
+import github.leavesczy.compose_chat.base.provider.IGroupProvider
+import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
+import github.leavesczy.compose_chat.proxy.utils.Converters
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -12,11 +14,10 @@ import kotlin.coroutines.resume
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/7/12 0:10
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-class GroupProvider : IGroupProvider, Converters {
+class GroupProvider : IGroupProvider {
 
     override val joinedGroupList = MutableSharedFlow<List<GroupProfile>>()
 
@@ -26,17 +27,17 @@ class GroupProvider : IGroupProvider, Converters {
                 groupId: String,
                 memberList: MutableList<V2TIMGroupMemberInfo>
             ) {
-                getJoinedGroupList()
+                refreshJoinedGroupList()
             }
 
             override fun onGroupCreated(groupId: String?) {
-                getJoinedGroupList()
+                refreshJoinedGroupList()
             }
 
             override fun onQuitFromGroup(groupId: String) {
-                getJoinedGroupList()
-                coroutineScope.launch {
-                    deleteGroupConversation(groupId = groupId)
+                refreshJoinedGroupList()
+                ChatCoroutineScope.launch {
+                    Converters.deleteGroupConversation(groupId = groupId)
                 }
             }
 
@@ -44,7 +45,7 @@ class GroupProvider : IGroupProvider, Converters {
                 groupID: String?,
                 changeInfos: MutableList<V2TIMGroupChangeInfo>?
             ) {
-                getJoinedGroupList()
+                refreshJoinedGroupList()
             }
         })
     }
@@ -144,8 +145,8 @@ class GroupProvider : IGroupProvider, Converters {
         }
     }
 
-    override fun getJoinedGroupList() {
-        coroutineScope.launch {
+    override fun refreshJoinedGroupList() {
+        ChatCoroutineScope.launch {
             joinedGroupList.emit(value = getJoinedGroupListOrigin().sortedBy { it.name })
         }
     }
@@ -154,8 +155,10 @@ class GroupProvider : IGroupProvider, Converters {
         return suspendCancellableCoroutine { continuation ->
             V2TIMManager.getGroupManager()
                 .getJoinedGroupList(object : V2TIMValueCallback<List<V2TIMGroupInfo>> {
-                    override fun onSuccess(t: List<V2TIMGroupInfo>) {
-                        continuation.resume(value = convertGroup(t))
+                    override fun onSuccess(infoList: List<V2TIMGroupInfo>) {
+                        continuation.resume(value = convertGroup(groupProfileList = infoList.filter {
+                            !it.groupID.isNullOrBlank()
+                        }))
                     }
 
                     override fun onError(code: Int, desc: String?) {
@@ -213,7 +216,7 @@ class GroupProvider : IGroupProvider, Converters {
                     override fun onSuccess(t: V2TIMGroupMemberInfoResult) {
                         continuation.resume(
                             value = Pair(
-                                convertGroupMember(t.memberInfoList),
+                                convertGroupMember(t.memberInfoList.filter { it.userID.isNotBlank() }),
                                 t.nextSeq
                             )
                         )
@@ -227,8 +230,9 @@ class GroupProvider : IGroupProvider, Converters {
     }
 
     private fun convertGroupMember(groupMemberList: List<V2TIMGroupMemberFullInfo>?): List<GroupMemberProfile> {
-        return groupMemberList?.map { convertGroupMember(memberFullInfo = it) }
-            ?: emptyList()
+        return groupMemberList?.map {
+            Converters.convertGroupMember(memberFullInfo = it)
+        } ?: emptyList()
     }
 
 }

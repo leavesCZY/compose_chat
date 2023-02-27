@@ -1,11 +1,10 @@
 package github.leavesczy.compose_chat.ui.main.logic
 
-import github.leavesczy.compose_chat.common.provider.*
+import github.leavesczy.compose_chat.base.provider.*
 import github.leavesczy.compose_chat.proxy.logic.*
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/6/22 11:35
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */

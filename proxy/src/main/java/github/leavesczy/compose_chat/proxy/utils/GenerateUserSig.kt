@@ -1,7 +1,7 @@
 package github.leavesczy.compose_chat.proxy.utils
 
 import android.util.Base64
-import github.leavesczy.compose_chat.proxy.consts.AppConst
+import github.leavesczy.compose_chat.proxy.consts.AppConsts
 import org.json.JSONObject
 import java.util.zip.Deflater
 import javax.crypto.Mac
@@ -9,22 +9,22 @@ import javax.crypto.spec.SecretKeySpec
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/6/18 23:44
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
 internal object GenerateUserSig {
 
-    private const val SDK_APP_ID = AppConst.APP_ID.toLong()
-
-    private const val SECRET_KEY = AppConst.APP_SECRET_KEY
-
-    private const val EXPIRE_TIME = 30 * 24 * 60 * 60L
-
     fun genUserSig(userId: String): String {
-        return genTLSSignature(SDK_APP_ID, userId, EXPIRE_TIME, null, SECRET_KEY)
+        return genTLSSignature(
+            sdkAppId = AppConsts.APP_ID.toLong(),
+            userId = userId,
+            expire = 365 * 24 * 60 * 60L,
+            userBuf = null,
+            priKeyContent = AppConsts.APP_SECRET_KEY
+        )
     }
 
+    @Suppress("SameParameterValue")
     private fun genTLSSignature(
         sdkAppId: Long,
         userId: String,

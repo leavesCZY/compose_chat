@@ -1,9 +1,10 @@
 package github.leavesczy.compose_chat.ui.chat
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,7 +15,6 @@ import github.leavesczy.compose_chat.extend.clickableNoRipple
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/10/24 16:58
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
@@ -23,20 +23,21 @@ private const val EMOJI_COLUMNS = 6
 
 @Composable
 fun EmojiTable(appendEmoji: (String) -> Unit) {
-    LazyVerticalGrid(columns = GridCells.Fixed(count = EMOJI_COLUMNS)) {
-        emojis.forEach { emoji ->
-            item(emoji) {
-                Text(
-                    modifier = Modifier
-                        .clickableNoRipple {
-                            appendEmoji(emoji)
-                        }
-                        .padding(vertical = 12.dp),
-                    text = emoji,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
-                    textAlign = TextAlign.Center,
-                )
-            }
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(count = EMOJI_COLUMNS),
+        contentPadding = PaddingValues(start = 6.dp, end = 6.dp, bottom = 6.dp)
+    ) {
+        items(items = emojis) {
+            Text(
+                modifier = Modifier
+                    .clickableNoRipple {
+                        appendEmoji(it)
+                    }
+                    .padding(vertical = 12.dp),
+                text = it,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

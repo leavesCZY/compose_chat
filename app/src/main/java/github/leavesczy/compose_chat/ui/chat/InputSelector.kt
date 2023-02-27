@@ -1,21 +1,29 @@
 package github.leavesczy.compose_chat.ui.chat
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Mood
 import androidx.compose.material.icons.outlined.Topic
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.extend.clickableNoRipple
 
 /**
  * @Author: leavesCZY
- * @Date: 2022/1/2 15:02
  * @Desc:
+ * @Github：https://github.com/leavesCZY
  */
 enum class InputSelector {
     NONE,
@@ -25,15 +33,16 @@ enum class InputSelector {
 
 @Composable
 fun InputSelector(
-    modifier: Modifier = Modifier,
     currentInputSelector: InputSelector,
     onInputSelectorChange: (InputSelector) -> Unit,
     sendMessageEnabled: Boolean,
-    onMessageSent: () -> Unit,
+    onMessageSent: () -> Unit
 ) {
     Row(
-        modifier = modifier
-            .wrapContentHeight(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(start = 20.dp, top = 8.dp, end = 14.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         InputSelectorButton(
@@ -44,50 +53,50 @@ fun InputSelector(
             }
         )
         InputSelectorButton(
+            modifier = Modifier.padding(start = 16.dp),
             icon = Icons.Outlined.Topic,
             selected = currentInputSelector == InputSelector.Picture,
             onClick = {
                 onInputSelectorChange(InputSelector.Picture)
             }
         )
-        Spacer(modifier = Modifier.weight(1f))
-        val buttonColors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.46f)
+        Spacer(modifier = Modifier.weight(weight = 1f))
+        Text(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(size = 20.dp))
+                .then(
+                    other = if (sendMessageEnabled) {
+                        Modifier.background(color = MaterialTheme.colorScheme.primary)
+                    } else {
+                        Modifier.background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.46f))
+                    }
+                )
+                .clickable(onClick = onMessageSent)
+                .padding(horizontal = 18.dp, vertical = 6.dp),
+            text = "Send",
+            fontSize = 15.sp,
+            color = Color.White
         )
-        Button(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-            enabled = sendMessageEnabled,
-            onClick = onMessageSent,
-            colors = buttonColors
-        ) {
-            Text(
-                modifier = Modifier,
-                text = "Send",
-                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
-            )
-        }
     }
 }
 
 @Composable
 private fun InputSelectorButton(
+    modifier: Modifier = Modifier,
     icon: ImageVector,
     selected: Boolean,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
-    IconButton(onClick = onClick) {
-        Icon(
-            modifier = Modifier
-                .padding(all = 8.dp)
-                .size(size = 26.dp),
-            imageVector = icon,
-            tint = if (selected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.46f)
-            },
-            contentDescription = null
-        )
-    }
+    Icon(
+        modifier = modifier
+            .size(size = 24.dp)
+            .clickableNoRipple(onClick = onClick),
+        imageVector = icon,
+        tint = if (selected) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.46f)
+        },
+        contentDescription = null
+    )
 }

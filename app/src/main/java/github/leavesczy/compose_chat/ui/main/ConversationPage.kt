@@ -13,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -21,44 +23,98 @@ import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atLeast
-import github.leavesczy.compose_chat.common.model.Conversation
-import github.leavesczy.compose_chat.model.ConversationPageViewState
-import github.leavesczy.compose_chat.model.MainPageAction
+import github.leavesczy.compose_chat.base.model.C2CConversation
+import github.leavesczy.compose_chat.base.model.Chat
+import github.leavesczy.compose_chat.base.model.Conversation
+import github.leavesczy.compose_chat.base.model.GroupConversation
+import github.leavesczy.compose_chat.extend.scrim
+import github.leavesczy.compose_chat.ui.chat.ChatActivity
+import github.leavesczy.compose_chat.ui.main.logic.ConversationViewModel
+import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 import github.leavesczy.compose_chat.ui.widgets.CoilImage
-import github.leavesczy.compose_chat.ui.widgets.CommonDivider
-import github.leavesczy.compose_chat.ui.widgets.EmptyView
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/6/23 21:55
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun ConversationPage(
-    viewState: ConversationPageViewState,
-    mainPageAction: MainPageAction
-) {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        val conversationList = viewState.conversationList
-        if (conversationList.isEmpty()) {
-            EmptyView()
-        } else {
-            LazyColumn(
-                state = viewState.listState,
-                contentPadding = PaddingValues(bottom = 60.dp),
-            ) {
-                items(items = conversationList, key = {
-                    it.id
-                }, contentType = {
-                    "Conversation"
-                }) {
-                    ConversationItem(
-                        conversation = it,
-                        onClickConversation = mainPageAction.onClickConversation,
-                        onDeleteConversation = mainPageAction.onDeleteConversation,
-                        onPinnedConversation = mainPageAction.onPinnedConversation
-                    )
+fun ConversationPage(conversationViewModel: ConversationViewModel) {
+    val context = LocalContext.current
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsetsEmpty
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues = paddingValues)
+        ) {
+            val conversationPageViewState = conversationViewModel.conversationPageViewState
+            val conversationList = conversationPageViewState.conversationList
+            if (conversationList.isEmpty()) {
+                Text(
+                    text = "Empty",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(fraction = 0.4f)
+                        .wrapContentSize(align = Alignment.BottomCenter),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 70.sp
+                )
+            } else {
+                val onClickConversation: (Conversation) -> Unit = remember {
+                    { conversation ->
+                        when (conversation) {
+                            is C2CConversation -> {
+                                ChatActivity.navTo(
+                                    context = context,
+                                    chat = Chat.PrivateChat(id = conversation.id)
+                                )
+                            }
+                            is GroupConversation -> {
+                                ChatActivity.navTo(
+                                    context = context,
+                                    chat = Chat.GroupChat(id = conversation.id)
+                                )
+                            }
+                        }
+                    }
+                }
+                val onDeleteConversation: (Conversation) -> Unit = remember {
+                    { conversation ->
+                        conversationViewModel.deleteConversation(conversation = conversation)
+                    }
+                }
+                val onPinnedConversation: (Conversation, Boolean) -> Unit = remember {
+                    { conversation, pin ->
+                        conversationViewModel.pinConversation(
+                            conversation = conversation,
+                            pin = pin
+                        )
+                    }
+                }
+                LazyColumn(
+                    state = conversationPageViewState.listState,
+                    contentPadding = PaddingValues(bottom = 60.dp),
+                ) {
+                    items(
+                        items = conversationList,
+                        key = {
+                            it.id
+                        },
+                        contentType = {
+                            "Conversation"
+                        }
+                    ) {
+                        ConversationItem(
+                            conversation = it,
+                            onClickConversation = onClickConversation,
+                            onDeleteConversation = onDeleteConversation,
+                            onPinnedConversation = onPinnedConversation
+                        )
+                    }
                 }
             }
         }
@@ -72,19 +128,20 @@ private fun LazyItemScope.ConversationItem(
     onDeleteConversation: (Conversation) -> Unit,
     onPinnedConversation: (Conversation, Boolean) -> Unit
 ) {
-    val avatarSize = 55.dp
-    val padding = 8.dp
     var menuExpanded by remember {
         mutableStateOf(false)
-    }
-    val bgColor = if (conversation.isPinned) {
-        Color.LightGray.copy(alpha = 0.15f)
-    } else {
-        Color.Transparent
     }
     ConstraintLayout(
         modifier = Modifier
             .animateItemPlacement()
+            .background(color = MaterialTheme.colorScheme.background)
+            .then(
+                other = if (conversation.isPinned) {
+                    Modifier.scrim(color = Color(0x26CCCCCC))
+                } else {
+                    Modifier
+                }
+            )
             .fillMaxWidth()
             .combinedClickable(
                 onClick = {
@@ -93,8 +150,7 @@ private fun LazyItemScope.ConversationItem(
                 onLongClick = {
                     menuExpanded = true
                 }
-            )
-            .background(color = bgColor),
+            ),
     ) {
         val (avatarRef, unreadMessageCountRef, nicknameRef, lastMsgRef, timeRef, dividerRef, dropdownMenuRef) = createRefs()
         val verticalChain =
@@ -105,13 +161,13 @@ private fun LazyItemScope.ConversationItem(
         }
         CoilImage(
             modifier = Modifier
-                .padding(horizontal = padding * 1.5f, vertical = padding)
-                .size(size = avatarSize)
-                .clip(shape = CircleShape)
                 .constrainAs(ref = avatarRef) {
                     start.linkTo(anchor = parent.start)
                     linkTo(top = parent.top, bottom = parent.bottom)
-                },
+                }
+                .padding(start = 12.dp, top = 8.dp, bottom = 8.dp)
+                .size(size = 50.dp)
+                .clip(shape = CircleShape),
             data = conversation.faceUrl
         )
         if (conversation.unreadMessageCount > 0) {
@@ -120,16 +176,17 @@ private fun LazyItemScope.ConversationItem(
             Text(
                 modifier = Modifier
                     .constrainAs(ref = unreadMessageCountRef) {
-                        top.linkTo(anchor = avatarRef.top, margin = padding / 2)
-                        end.linkTo(anchor = avatarRef.end, margin = padding)
-                        width = Dimension.preferredWrapContent.atLeast(dp = 22.dp)
-                        height = Dimension.preferredWrapContent.atLeast(dp = 22.dp)
+                        start.linkTo(anchor = avatarRef.end)
+                        top.linkTo(anchor = avatarRef.top, margin = 2.dp)
+                        end.linkTo(anchor = avatarRef.end)
+                        width = Dimension.preferredWrapContent.atLeast(dp = 20.dp)
+                        height = Dimension.preferredWrapContent.atLeast(dp = 20.dp)
                     }
                     .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
                     .wrapContentSize(align = Alignment.Center),
                 text = count,
                 color = Color.White,
-                fontSize = 14.sp,
+                fontSize = 12.sp,
                 textAlign = TextAlign.Center
             )
         }
@@ -139,25 +196,30 @@ private fun LazyItemScope.ConversationItem(
                     linkTo(
                         start = avatarRef.end,
                         end = timeRef.start,
-                        endMargin = padding
+                        startMargin = 12.dp,
+                        endMargin = 12.dp
                     )
                     width = Dimension.fillToConstraints
                 }
                 .padding(bottom = 2.dp),
             text = conversation.name,
-            style = MaterialTheme.typography.bodyLarge,
+            fontSize = 17.sp,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1
         )
         Text(
             modifier = Modifier
                 .constrainAs(ref = lastMsgRef) {
-                    linkTo(start = avatarRef.end, end = parent.end, endMargin = padding)
+                    linkTo(
+                        start = nicknameRef.start,
+                        end = parent.end,
+                        endMargin = 12.dp
+                    )
                     width = Dimension.fillToConstraints
                 }
                 .padding(top = 2.dp),
             text = conversation.formatMsg,
-            style = MaterialTheme.typography.bodyMedium,
+            fontSize = 14.sp,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1
         )
@@ -165,52 +227,83 @@ private fun LazyItemScope.ConversationItem(
             modifier = Modifier
                 .constrainAs(ref = timeRef) {
                     centerVerticallyTo(other = nicknameRef)
-                    end.linkTo(anchor = parent.end, margin = padding)
+                    end.linkTo(anchor = parent.end, margin = 12.dp)
                     height = Dimension.wrapContent
                 },
             text = conversation.lastMessage.messageDetail.conversationTime,
-            style = MaterialTheme.typography.bodySmall,
+            fontSize = 12.sp,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1
         )
-        CommonDivider(
+        Divider(
             modifier = Modifier
                 .constrainAs(ref = dividerRef) {
                     linkTo(start = avatarRef.end, end = parent.end)
                     bottom.linkTo(anchor = parent.bottom)
                     width = Dimension.fillToConstraints
                 },
+            thickness = 0.2.dp
         )
-        Box(
+        MoreActionDropdownMenu(
             modifier = Modifier
                 .constrainAs(ref = dropdownMenuRef) {
                     linkTo(start = parent.start, end = parent.end, bias = 0.3f)
                     linkTo(top = parent.top, bottom = parent.bottom)
-                }
+                },
+            expanded = menuExpanded,
+            onDismissRequest = {
+                menuExpanded = false
+            },
+            conversation = conversation,
+            onDeleteConversation = onDeleteConversation,
+            onPinnedConversation = onPinnedConversation
+        )
+    }
+}
+
+@Composable
+private fun MoreActionDropdownMenu(
+    modifier: Modifier,
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    conversation: Conversation,
+    onDeleteConversation: (Conversation) -> Unit,
+    onPinnedConversation: (Conversation, Boolean) -> Unit
+) {
+    Box(
+        modifier = modifier
+    ) {
+        DropdownMenu(
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+            expanded = expanded,
+            onDismissRequest = onDismissRequest
         ) {
-            DropdownMenu(
-                modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
-                expanded = menuExpanded,
-                onDismissRequest = {
-                    menuExpanded = false
-                }
-            ) {
-                DropdownMenuItem(text = {
+            DropdownMenuItem(
+                text = {
                     Text(
-                        text = if (conversation.isPinned) "取消置顶" else "置顶会话",
-                        style = MaterialTheme.typography.bodyMedium
+                        text = if (conversation.isPinned) {
+                            "取消置顶"
+                        } else {
+                            "置顶会话"
+                        },
+                        fontSize = 17.sp
                     )
                 }, onClick = {
-                    menuExpanded = false
+                    onDismissRequest()
                     onPinnedConversation(conversation, !conversation.isPinned)
-                })
-                DropdownMenuItem(text = {
-                    Text(text = "删除会话", style = MaterialTheme.typography.bodyMedium)
+                }
+            )
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = "删除会话",
+                        fontSize = 17.sp
+                    )
                 }, onClick = {
-                    menuExpanded = false
+                    onDismissRequest()
                     onDeleteConversation(conversation)
-                })
-            }
+                }
+            )
         }
     }
 }

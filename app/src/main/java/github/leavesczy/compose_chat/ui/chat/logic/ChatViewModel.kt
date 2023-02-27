@@ -1,32 +1,28 @@
 package github.leavesczy.compose_chat.ui.chat.logic
 
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import github.leavesczy.compose_chat.common.model.*
-import github.leavesczy.compose_chat.common.provider.IMessageProvider
-import github.leavesczy.compose_chat.model.ChatPageViewState
+import github.leavesczy.compose_chat.base.model.*
+import github.leavesczy.compose_chat.base.provider.IMessageProvider
 import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
 import github.leavesczy.compose_chat.utils.CompressImageUtils
 import github.leavesczy.compose_chat.utils.ContextHolder
 import github.leavesczy.compose_chat.utils.showToast
 import github.leavesczy.matisse.MediaResource
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/10/27 14:39
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
 class ChatViewModel(private val chat: Chat) : ViewModel() {
-
-    private var loadMessageJob: Job? = null
 
     private val allMessage = mutableListOf<Message>()
 
@@ -42,71 +38,61 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
         }
     }
 
-    private val _chatPageViewState = MutableStateFlow(
-        ChatPageViewState(
+    var chatPageViewState by mutableStateOf(
+        value = ChatPageViewState(
             chat = chat,
-            listState = LazyListState(firstVisibleItemIndex = 0, firstVisibleItemScrollOffset = 0),
             topBarTitle = "",
-            messageList = emptyList(),
-            showLoadMore = false,
-            loadFinish = false,
+            listState = LazyListState(firstVisibleItemIndex = 0, firstVisibleItemScrollOffset = 0),
+            messageList = emptyList()
         )
     )
+        private set
 
-    val chatPageViewState: StateFlow<ChatPageViewState> = _chatPageViewState
-
-    private val _mushScrollToBottom = MutableStateFlow(false)
-
-    val mushScrollToBottom: StateFlow<Boolean> = _mushScrollToBottom
+    var loadMessageViewState by mutableStateOf(
+        value = LoadMessageViewState(
+            refreshing = false,
+            loadFinish = false
+        )
+    )
+        private set
 
     init {
         ComposeChat.messageProvider.startReceive(chat = chat, messageListener = messageListener)
-        ComposeChat.accountProvider.getPersonProfile()
+        ComposeChat.accountProvider.refreshPersonProfile()
         viewModelScope.launch {
             val name = when (chat) {
-                is PrivateChat -> {
+                is Chat.PrivateChat -> {
                     ComposeChat.friendshipProvider.getFriendProfile(friendId = chat.id)?.showName
                 }
-                is GroupChat -> {
+                is Chat.GroupChat -> {
                     ComposeChat.groupProvider.getGroupInfo(groupId = chat.id)?.name
                 }
             } ?: ""
-            refreshViewState(topBarTitle = name)
+            chatPageViewState = chatPageViewState.copy(topBarTitle = name)
         }
+        loadMoreMessage()
     }
 
     fun loadMoreMessage() {
-        if (loadMessageJob != null || chatPageViewState.value.loadFinish) {
-            return
-        }
-        refreshViewState(
-            showLoadMore = true,
-            loadFinish = false,
-        )
-        getHistoryMessageList()
-    }
-
-    private fun getHistoryMessageList() {
-        loadMessageJob = viewModelScope.launch {
+        viewModelScope.launch {
+            loadMessageViewState = loadMessageViewState.copy(refreshing = true)
             val loadResult = ComposeChat.messageProvider.getHistoryMessage(
                 chat = chat,
                 lastMessage = lastMessage
             )
-            when (loadResult) {
+            val loadFinish = when (loadResult) {
                 is LoadMessageResult.Success -> {
-                    addMessageToFooter(
-                        newMessageList = loadResult.messageList,
-                        loadFinish = loadResult.loadFinish
-                    )
+                    addMessageToFooter(newMessageList = loadResult.messageList)
+                    loadResult.loadFinish
                 }
                 is LoadMessageResult.Failed -> {
-                    refreshViewState(showLoadMore = false, loadFinish = false)
+                    false
                 }
             }
-        }.apply {
-            invokeOnCompletion {
-                loadMessageJob = null
-            }
+            loadMessageViewState = LoadMessageViewState(
+                refreshing = false,
+                loadFinish = loadFinish
+            )
         }
     }
 
@@ -125,7 +111,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
             )
             val imagePath = imageFile?.absolutePath
             if (imagePath.isNullOrBlank()) {
-                showToast("图片获取失败")
+                showToast(msg = "图片获取失败")
             } else {
                 val messageChannel =
                     ComposeChat.messageProvider.sendImage(chat = chat, imagePath = imagePath)
@@ -155,7 +141,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                     )
                     val failReason = state.reason
                     if (failReason.isNotBlank()) {
-                        showToast(failReason)
+                        showToast(msg = failReason)
                     }
                 }
             }
@@ -180,7 +166,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                 }
             }
             allMessage[index] = newMessage
-            refreshViewState()
+            chatPageViewState = chatPageViewState.copy(messageList = allMessage.toList())
         }
     }
 
@@ -190,17 +176,14 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
             allMessage.add(0, TimeMessage(targetMessage = newMessage))
         }
         allMessage.add(0, newMessage)
-        refreshViewState()
+        chatPageViewState = chatPageViewState.copy(messageList = allMessage.toList())
         viewModelScope.launch {
-            delay(timeMillis = 50)
-            _mushScrollToBottom.emit(value = !_mushScrollToBottom.value)
+            delay(timeMillis = 20)
+            chatPageViewState.listState.scrollToItem(index = 0)
         }
     }
 
-    private fun addMessageToFooter(
-        newMessageList: List<Message>,
-        loadFinish: Boolean
-    ) {
+    private fun addMessageToFooter(newMessageList: List<Message>) {
         if (newMessageList.isNotEmpty()) {
             if (allMessage.isNotEmpty()) {
                 if (allMessage[allMessage.size - 1].messageDetail.timestamp - newMessageList[0].messageDetail.timestamp > 60) {
@@ -212,34 +195,14 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                 val currentMsg = newMessageList[index]
                 val preMsg = newMessageList.getOrNull(index + 1)
                 allMessage.add(currentMsg)
-                if (preMsg == null || currentMsg.messageDetail.timestamp - preMsg.messageDetail.timestamp > 60) {
-                    allMessage.add(TimeMessage(targetMessage = currentMsg))
-                    filteredMsg = 1
-                } else if (filteredMsg >= 10) {
+                if (preMsg == null || currentMsg.messageDetail.timestamp - preMsg.messageDetail.timestamp > 60 || filteredMsg >= 10) {
                     allMessage.add(TimeMessage(targetMessage = currentMsg))
                     filteredMsg = 1
                 } else {
                     filteredMsg++
                 }
             }
-        }
-        refreshViewState(showLoadMore = false, loadFinish = loadFinish)
-    }
-
-    private fun refreshViewState(
-        topBarTitle: String = chatPageViewState.value.topBarTitle,
-        showLoadMore: Boolean = chatPageViewState.value.showLoadMore,
-        loadFinish: Boolean = chatPageViewState.value.loadFinish
-    ) {
-        viewModelScope.launch {
-            _chatPageViewState.emit(
-                value = _chatPageViewState.value.copy(
-                    topBarTitle = topBarTitle,
-                    messageList = allMessage.toList(),
-                    showLoadMore = showLoadMore,
-                    loadFinish = loadFinish
-                )
-            )
+            chatPageViewState = chatPageViewState.copy(messageList = allMessage.toList())
         }
     }
 

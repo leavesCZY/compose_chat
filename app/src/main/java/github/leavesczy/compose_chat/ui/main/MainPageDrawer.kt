@@ -2,6 +2,7 @@ package github.leavesczy.compose_chat.ui.main
 
 import android.content.Intent
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -10,11 +11,12 @@ import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.Sailing
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,35 +24,41 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import github.leavesczy.compose_chat.BuildConfig
 import github.leavesczy.compose_chat.extend.clickableNoRipple
-import github.leavesczy.compose_chat.model.MainPageAction
-import github.leavesczy.compose_chat.model.MainPageDrawerViewState
+import github.leavesczy.compose_chat.ui.main.logic.MainViewModel
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
 import github.leavesczy.compose_chat.ui.widgets.BouncyImage
+import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/6/28 23:31
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun MainPageDrawer(
-    viewState: MainPageDrawerViewState,
-    mainPageAction: MainPageAction
-) {
-    Surface(modifier = Modifier.requiredWidth(width = 350.dp)) {
-        BackHandler(enabled = viewState.drawerState.isOpen, onBack = {
-            mainPageAction.changDrawerState(DrawerValue.Closed)
-        })
-        val personProfile = viewState.personProfile
+fun MainPageDrawer(mainViewModel: MainViewModel) {
+    val drawerViewState = mainViewModel.drawerViewState
+    val coroutineScope = rememberCoroutineScope()
+    BackHandler(enabled = drawerViewState.drawerState.isOpen, onBack = {
+        coroutineScope.launch {
+            mainViewModel.drawerViewState.drawerState.close()
+        }
+    })
+    Surface(
+        modifier = Modifier,
+        color = Color.Transparent,
+        contentColor = contentColorFor(MaterialTheme.colorScheme.surface)
+    ) {
+        val personProfile = drawerViewState.personProfile
         val faceUrl = personProfile.faceUrl
         val nickname = personProfile.nickname
         val signature = personProfile.signature
-        val padding = 20.dp
+        val padding = 18.dp
         val context = LocalContext.current
         ConstraintLayout(
             modifier = Modifier
-                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.surface)
+                .fillMaxWidth(fraction = 0.90f)
+                .fillMaxHeight()
                 .statusBarsPadding()
                 .navigationBarsPadding()
         ) {
@@ -61,7 +69,7 @@ fun MainPageDrawer(
                         start.linkTo(anchor = parent.start, margin = padding)
                         top.linkTo(anchor = parent.top, margin = padding / 2)
                     }
-                    .size(size = 100.dp)
+                    .size(size = 90.dp)
                     .clickableNoRipple {
                         if (faceUrl.isNotBlank()) {
                             PreviewImageActivity.navTo(context = context, imagePath = faceUrl)
@@ -77,8 +85,7 @@ fun MainPageDrawer(
                         width = Dimension.fillToConstraints
                     },
                 text = nickname,
-                fontFamily = FontFamily.Serif,
-                style = MaterialTheme.typography.titleMedium
+                fontSize = 18.sp
             )
             Text(
                 modifier = Modifier
@@ -88,35 +95,35 @@ fun MainPageDrawer(
                         width = Dimension.fillToConstraints
                     },
                 text = signature,
-                fontFamily = FontFamily.Serif,
-                style = MaterialTheme.typography.titleSmall
+                fontSize = 15.sp
             )
-            Column(modifier = Modifier
-                .constrainAs(ref = contentRef) {
-                    linkTo(start = parent.start, end = parent.end)
-                    linkTo(
-                        top = signatureRef.bottom,
-                        bottom = parent.bottom,
-                        topMargin = padding
-                    )
-                    height = Dimension.fillToConstraints
-                }
+            Column(
+                modifier = Modifier
+                    .constrainAs(ref = contentRef) {
+                        linkTo(start = parent.start, end = parent.end)
+                        linkTo(
+                            top = signatureRef.bottom,
+                            bottom = parent.bottom,
+                            topMargin = padding
+                        )
+                        height = Dimension.fillToConstraints
+                    }
             ) {
                 SelectableItem(text = "个人资料", icon = Icons.Filled.Cabin, onClick = {
                     context.startActivity(Intent(context, ProfileUpdateActivity::class.java))
                 })
                 SelectableItem(text = "切换主题", icon = Icons.Filled.Sailing, onClick = {
-                    mainPageAction.switchToNextTheme()
+                    mainViewModel.switchToNextTheme()
                 })
                 SelectableItem(text = "切换账号", icon = Icons.Filled.ColorLens, onClick = {
-                    mainPageAction.logout()
+                    mainViewModel.logout()
                 })
             }
             Text(
                 modifier = Modifier
                     .constrainAs(ref = aboutAuthorRef) {
                         linkTo(start = parent.start, end = parent.end)
-                        bottom.linkTo(anchor = parent.bottom, margin = padding)
+                        bottom.linkTo(anchor = parent.bottom, margin = padding * 2)
                     }
                     .fillMaxWidth()
                     .wrapContentWidth(align = Alignment.CenterHorizontally),
@@ -124,9 +131,7 @@ fun MainPageDrawer(
                         "VersionCode: " + BuildConfig.VERSION_CODE + "\n" +
                         "VersionName: " + BuildConfig.VERSION_NAME,
                 textAlign = TextAlign.Center,
-                fontFamily = FontFamily.Serif,
-                fontSize = 16.sp,
-                letterSpacing = 2.sp,
+                fontSize = 15.sp
             )
         }
     }
@@ -137,14 +142,12 @@ private fun SelectableItem(text: String, icon: ImageVector, onClick: () -> Unit)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                onClick()
-            }
+            .clickable(onClick = onClick)
             .height(height = 60.dp)
             .padding(start = 20.dp), verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier.size(size = 24.dp),
+            modifier = Modifier.size(size = 22.dp),
             imageVector = icon,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface
@@ -152,8 +155,7 @@ private fun SelectableItem(text: String, icon: ImageVector, onClick: () -> Unit)
         Text(
             modifier = Modifier.padding(start = 10.dp),
             text = text,
-            fontFamily = FontFamily.Serif,
-            style = MaterialTheme.typography.bodyLarge
+            fontSize = 16.sp
         )
     }
 }

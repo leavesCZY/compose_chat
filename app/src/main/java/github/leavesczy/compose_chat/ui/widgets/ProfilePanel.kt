@@ -4,13 +4,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,7 +20,6 @@ import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/6/23 21:56
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
@@ -37,14 +34,17 @@ fun ProfilePanel(
     val context = LocalContext.current
     ConstraintLayout(modifier = Modifier) {
         val (titleRef, subtitleRef, introductionRef, backgroundRef, avatarRef, contentRef) = createRefs()
-        BezierImage(modifier = Modifier
-            .constrainAs(ref = backgroundRef) {
-                linkTo(start = parent.start, end = parent.end)
-                top.linkTo(anchor = parent.top)
-            }
-            .aspectRatio(ratio = 5f / 4f)
-            .zIndex(zIndex = -100f)
-            .scrim(color = Color(0x51444B53)),
+        BezierImage(
+            modifier = Modifier
+                .constrainAs(ref = backgroundRef) {
+                    linkTo(start = parent.start, end = parent.end)
+                    top.linkTo(anchor = parent.top)
+                }
+                .aspectRatio(ratio = 5f / 4f)
+                .zIndex(zIndex = -100f)
+                .scrim(
+                    color = Color(0x33000000)
+                ),
             data = avatarUrl
         )
         BouncyImage(
@@ -57,7 +57,7 @@ fun ProfilePanel(
                     )
                     linkTo(start = backgroundRef.start, end = backgroundRef.end)
                 }
-                .size(size = 110.dp)
+                .size(size = 90.dp)
                 .clickableNoRipple {
                     if (avatarUrl.isNotBlank()) {
                         PreviewImageActivity.navTo(context = context, imagePath = avatarUrl)
@@ -73,8 +73,7 @@ fun ProfilePanel(
                 }
                 .padding(horizontal = 10.dp),
             text = title,
-            fontSize = 22.sp,
-            fontFamily = FontFamily.Serif,
+            fontSize = 18.sp,
             textAlign = TextAlign.Center,
             color = Color.White
         )
@@ -86,8 +85,7 @@ fun ProfilePanel(
                 }
                 .padding(horizontal = 10.dp),
             text = subtitle,
-            fontSize = 16.sp,
-            fontFamily = FontFamily.Serif,
+            fontSize = 15.sp,
             textAlign = TextAlign.Center,
             color = Color.White
         )
@@ -99,8 +97,7 @@ fun ProfilePanel(
                 }
                 .padding(horizontal = 10.dp),
             text = introduction,
-            style = MaterialTheme.typography.bodyMedium,
-            fontFamily = FontFamily.Serif,
+            fontSize = 15.sp,
             textAlign = TextAlign.Center,
             color = Color.White
         )

@@ -39,7 +39,6 @@ import kotlin.math.roundToInt
 
 /**
  * @Author: leavesCZY
- * @Date: 2022/5/13 11:25
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
@@ -125,17 +124,17 @@ fun CircleBorderImage(
 @Composable
 fun BezierImage(modifier: Modifier, data: Any) {
     val animateValue by rememberInfiniteTransition().animateFloat(
-        initialValue = 0f, targetValue = 1f,
+        initialValue = 0f, targetValue = 1.04f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
+            animation = tween(durationMillis = 900, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse,
         ),
     )
     CoilImage(
         modifier = Modifier
-            .scale(scale = (animateValue + 1f) * 1.3f)
+            .scale(scale = (animateValue + 1f) * 1.2f)
             .clip(shape = BezierShape(animateValue = animateValue))
-            .rotate(degrees = animateValue * 14f)
+            .rotate(degrees = animateValue * 13f)
             .then(other = modifier),
         data = data
     )

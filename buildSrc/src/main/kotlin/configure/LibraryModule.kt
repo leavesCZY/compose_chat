@@ -8,9 +8,9 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import java.io.File
 
 /**
- * @Author: CZY
- * @Date: 2022/5/29 17:28
+ * @Author: leavesCZY
  * @Desc:
+ * @Github：https://github.com/leavesCZY
  */
 internal fun LibraryExtension.libraryModule() {
     compileSdk = BuildConfig.compileSdk

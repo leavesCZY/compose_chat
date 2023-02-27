@@ -1,12 +1,12 @@
 /**
- * @Author: CZY
- * @Date: 2022/10/23 15:10
+ * @Author: leavesCZY
  * @Desc:
+ * @Github：https://github.com/leavesCZY
  */
 object VersionConfig {
 
-    const val versionCode = 12
+    const val versionCode = 13
 
-    const val versionName = "0.0.12"
+    const val versionName = "0.0.13"
 
 }

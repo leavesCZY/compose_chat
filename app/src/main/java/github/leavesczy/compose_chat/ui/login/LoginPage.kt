@@ -1,34 +1,43 @@
 package github.leavesczy.compose_chat.ui.login
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalTextInputService
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.R
-import github.leavesczy.compose_chat.model.LoginPageViewState
-import github.leavesczy.compose_chat.ui.widgets.CommonButton
-import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
+import github.leavesczy.compose_chat.ui.login.logic.LoginViewModel
+import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
 import github.leavesczy.compose_chat.utils.showToast
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/7/4 1:07
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun LoginPage(viewState: LoginPageViewState, login: (String) -> Unit) {
-    val textInputService = LocalTextInputService.current
+fun LoginPage(loginViewModel: LoginViewModel) {
+    val viewState = loginViewModel.loginPageViewState
+    val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
+    BackHandler(enabled = viewState.loading) {
+
+    }
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(
             modifier = Modifier
@@ -44,53 +53,70 @@ fun LoginPage(viewState: LoginPageViewState, login: (String) -> Unit) {
                         text = stringResource(id = R.string.app_name),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxHeight(fraction = 0.20f)
+                            .fillMaxHeight(fraction = 0.18f)
                             .wrapContentSize(align = Alignment.BottomCenter),
-                        fontSize = 50.sp,
+                        fontSize = 60.sp,
                         fontFamily = FontFamily.Cursive,
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Center
                     )
-                    var userId by remember { mutableStateOf(viewState.lastLoginUserId) }
-                    CommonOutlinedTextField(
+                    var userId by remember {
+                        val lastLoginUserId = viewState.lastLoginUserId
+                        mutableStateOf(
+                            value = TextFieldValue(
+                                text = lastLoginUserId,
+                                selection = TextRange(index = lastLoginUserId.length)
+                            )
+                        )
+                    }
+                    OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 60.dp, start = 40.dp, end = 40.dp),
+                        maxLines = 1,
+                        singleLine = true,
                         value = userId,
-                        onValueChange = { value ->
-                            val realValue = value.trimStart().trimEnd()
-                            if (realValue.length <= 12 && realValue.all { it.isLowerCase() || it.isUpperCase() }) {
-                                userId = realValue
+                        label = {
+                            Text(text = "UserId", fontSize = 14.sp)
+                        },
+                        onValueChange = { textField ->
+                            val trimText = textField.text.trimStart().trimEnd()
+                            if (trimText.length <= 12 && trimText.all {
+                                    it.isLowerCase() || it.isUpperCase()
+                                }
+                            ) {
+                                userId = textField
                             }
                         },
-                        label = "UserId",
-                        maxLines = 1,
-                        singleLine = true
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
+                        keyboardActions = KeyboardActions(onGo = {
+                            loginViewModel.goToLogin(userId = userId.text)
+                        })
                     )
-                    CommonButton(
+                    Button(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 30.dp),
-                        text = "Login"
-                    ) {
-                        if (userId.isBlank()) {
-                            showToast("请输入 UserID")
-                        } else {
-                            textInputService?.hideSoftwareKeyboard()
-                            login(userId)
+                            .padding(start = 30.dp, end = 30.dp, top = 40.dp),
+                        content = {
+                            Text(
+                                modifier = Modifier.padding(vertical = 2.dp),
+                                text = "Login",
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
+                        },
+                        onClick = {
+                            val text = userId.text.trim()
+                            if (text.isBlank()) {
+                                showToast(msg = "请输入 UserID")
+                            } else {
+                                localSoftwareKeyboardController?.hide()
+                                loginViewModel.goToLogin(userId = text)
+                            }
                         }
-                    }
+                    )
                 }
             }
-            if (viewState.showLoadingDialog) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .size(size = 60.dp)
-                        .wrapContentSize(align = Alignment.Center),
-                    strokeWidth = 4.dp,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
+            LoadingDialog(visible = viewState.loading)
         }
     }
 }

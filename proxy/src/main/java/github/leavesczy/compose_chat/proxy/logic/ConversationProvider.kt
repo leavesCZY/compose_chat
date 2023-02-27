@@ -1,11 +1,15 @@
 package github.leavesczy.compose_chat.proxy.logic
 
 import com.tencent.imsdk.v2.*
-import github.leavesczy.compose_chat.common.model.ActionResult
-import github.leavesczy.compose_chat.common.model.C2CConversation
-import github.leavesczy.compose_chat.common.model.Conversation
-import github.leavesczy.compose_chat.common.model.GroupConversation
-import github.leavesczy.compose_chat.common.provider.IConversationProvider
+import github.leavesczy.compose_chat.base.model.ActionResult
+import github.leavesczy.compose_chat.base.model.C2CConversation
+import github.leavesczy.compose_chat.base.model.Conversation
+import github.leavesczy.compose_chat.base.model.GroupConversation
+import github.leavesczy.compose_chat.base.provider.IConversationProvider
+import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
+import github.leavesczy.compose_chat.proxy.utils.Converters
+import github.leavesczy.compose_chat.proxy.utils.Converters.convertMessage
+import github.leavesczy.compose_chat.proxy.utils.Converters.getConversationKey
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -13,11 +17,10 @@ import kotlin.coroutines.resume
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/6/21 21:19
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-class ConversationProvider : IConversationProvider, Converters {
+class ConversationProvider : IConversationProvider {
 
     override val conversationList = MutableSharedFlow<List<Conversation>>()
 
@@ -27,38 +30,38 @@ class ConversationProvider : IConversationProvider, Converters {
         V2TIMManager.getConversationManager()
             .addConversationListener(object : V2TIMConversationListener() {
                 override fun onConversationChanged(conversationList: MutableList<V2TIMConversation>) {
-                    getConversationList()
+                    refreshConversationList()
                 }
 
                 override fun onNewConversation(conversationList: MutableList<V2TIMConversation>?) {
-                    getConversationList()
+                    refreshConversationList()
                 }
 
                 override fun onTotalUnreadMessageCountChanged(totalUnreadCount: Long) {
-                    coroutineScope.launch {
+                    ChatCoroutineScope.launch {
                         this@ConversationProvider.totalUnreadMessageCount.emit(value = totalUnreadCount)
                     }
                 }
             })
     }
 
-    override fun getConversationList() {
-        coroutineScope.launch {
+    override fun refreshConversationList() {
+        ChatCoroutineScope.launch {
             dispatchConversationList(conversationList = getConversationListOrigin())
         }
     }
 
-    override fun getTotalUnreadMessageCount() {
+    override fun refreshTotalUnreadMessageCount() {
         V2TIMManager.getConversationManager()
             .getTotalUnreadMessageCount(object : V2TIMValueCallback<Long> {
                 override fun onSuccess(totalUnreadCount: Long) {
-                    coroutineScope.launch {
+                    ChatCoroutineScope.launch {
                         totalUnreadMessageCount.emit(value = totalUnreadCount)
                     }
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    coroutineScope.launch {
+                    ChatCoroutineScope.launch {
                         totalUnreadMessageCount.emit(value = 0)
                     }
                 }
@@ -86,15 +89,15 @@ class ConversationProvider : IConversationProvider, Converters {
     }
 
     override suspend fun deleteC2CConversation(userId: String): ActionResult {
-        return super.deleteC2CConversation(userId)
+        return Converters.deleteC2CConversation(userId)
     }
 
     override suspend fun deleteGroupConversation(groupId: String): ActionResult {
-        return super.deleteGroupConversation(groupId)
+        return Converters.deleteGroupConversation(groupId)
     }
 
     private fun dispatchConversationList(conversationList: List<Conversation>) {
-        coroutineScope.launch {
+        ChatCoroutineScope.launch {
             this@ConversationProvider.conversationList.emit(value = conversationList)
         }
     }
@@ -120,9 +123,12 @@ class ConversationProvider : IConversationProvider, Converters {
                     override fun onSuccess(result: V2TIMConversationResult) {
                         continuation.resume(
                             value = Pair(
-                                convertConversation(result.conversationList),
+                                convertConversation(result.conversationList.filter {
+                                    !it.userID.isNullOrBlank()
+                                            || !it.groupID.isNullOrBlank()
+                                }),
                                 if (result.isFinished) {
-                                    -111
+                                    0
                                 } else {
                                     result.nextSeq
                                 }
@@ -131,7 +137,7 @@ class ConversationProvider : IConversationProvider, Converters {
                     }
 
                     override fun onError(code: Int, desc: String?) {
-                        continuation.resume(value = Pair(emptyList(), -111))
+                        continuation.resume(value = Pair(emptyList(), 0))
                     }
                 })
         }

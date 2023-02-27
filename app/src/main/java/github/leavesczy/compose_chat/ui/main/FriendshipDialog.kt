@@ -11,8 +11,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import github.leavesczy.compose_chat.model.FriendshipDialogViewState
 import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
+import github.leavesczy.compose_chat.ui.main.logic.FriendshipDialogViewState
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.ui.widgets.ComposeBottomSheetDialog
@@ -20,7 +20,6 @@ import github.leavesczy.compose_chat.utils.showToast
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/7/10 15:51
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
@@ -57,7 +56,7 @@ fun FriendshipDialog(viewState: FriendshipDialogViewState) {
             )
             CommonButton(text = "添加好友") {
                 if (userId.isBlank()) {
-                    showToast("请输入 UserID")
+                    showToast(msg = "请输入 UserID")
                 } else {
                     viewState.addFriend(userId)
                 }

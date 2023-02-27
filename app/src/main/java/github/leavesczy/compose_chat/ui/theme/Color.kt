@@ -2,6 +2,12 @@ package github.leavesczy.compose_chat.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+/**
+ * @Author: leavesCZY
+ * @Desc:
+ * @Github：https://github.com/leavesCZY
+ */
+
 val PrimaryColorLight = Color(0xFF42A5F5)
 val OnPrimaryColorLight = Color(0xFF22202A)
 val PrimaryContainerColorLight = Color(0xFFFFFFFF)

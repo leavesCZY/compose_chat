@@ -7,13 +7,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
-import github.leavesczy.compose_chat.cache.AppThemeCache
-import github.leavesczy.compose_chat.model.AppTheme
-import github.leavesczy.compose_chat.ui.widgets.SystemBarColor
+import github.leavesczy.compose_chat.provider.AppThemeProvider
+import github.leavesczy.compose_chat.ui.main.logic.AppTheme
+
+/**
+ * @Author: leavesCZY
+ * @Desc:
+ * @Github：https://github.com/leavesCZY
+ */
 
 val LightColorScheme = lightColorScheme(
     primary = PrimaryColorLight,
@@ -42,36 +52,43 @@ val WindowInsetsEmpty = WindowInsets(
     bottom = 0.dp
 )
 
+private const val DESIGN_WIDTH = 380f
+
 @Composable
-fun ComposeChatTheme(
-    appTheme: AppTheme = AppThemeCache.currentTheme,
-    content: @Composable () -> Unit
-) {
-    SystemBarColor(appTheme = appTheme)
+fun ComposeChatTheme(content: @Composable () -> Unit) {
+    val appTheme = AppThemeProvider.appTheme
     val colorScheme = when (appTheme) {
-        AppTheme.Light -> {
+        AppTheme.Light, AppTheme.Gray -> {
             LightColorScheme
         }
         AppTheme.Dark -> {
             DarkColorScheme
         }
-        AppTheme.Gray -> {
-            LightColorScheme
-        }
     }
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = AppTypography,
-        content = {
-            content()
-            if (appTheme == AppTheme.Gray) {
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    drawRect(
-                        color = Color.LightGray,
-                        blendMode = BlendMode.Saturation
-                    )
+    val context = LocalContext.current
+    val rememberedDensity = remember {
+        Density(
+            density = context.resources.displayMetrics.widthPixels / DESIGN_WIDTH,
+            fontScale = 1f
+        )
+    }
+    CompositionLocalProvider(
+        LocalDensity provides rememberedDensity
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = AppTypography,
+            content = {
+                content()
+                if (appTheme == AppTheme.Gray) {
+                    Canvas(modifier = Modifier.fillMaxSize()) {
+                        drawRect(
+                            color = Color.LightGray,
+                            blendMode = BlendMode.Saturation
+                        )
+                    }
                 }
             }
-        }
-    )
+        )
+    }
 }

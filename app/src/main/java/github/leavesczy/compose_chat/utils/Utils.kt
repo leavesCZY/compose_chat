@@ -2,12 +2,10 @@ package github.leavesczy.compose_chat.utils
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/6/20 21:52
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
@@ -30,11 +28,5 @@ fun showToast(msg: Any?) {
 }
 
 private fun showToast(message: String) {
-    Toast.makeText(
-        ContextHolder.context, message, Toast.LENGTH_SHORT
-    ).show()
-}
-
-fun log(tag: String = "TAG", log: () -> Any?) {
-    Log.e(tag, log()?.toString() ?: "empty")
+    Toast.makeText(ContextHolder.context, message, Toast.LENGTH_SHORT).show()
 }

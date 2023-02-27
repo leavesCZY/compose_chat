@@ -5,39 +5,38 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.InsertPhoto
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 /**
  * @Author: leavesCZY
- * @Date: 2022/1/1 12:10
  * @Desc:
+ * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun ExtendTable(selectPicture: () -> Unit) {
     Row(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
-                .clickable {
-                    selectPicture()
-                }
+                .clickable(onClick = selectPicture)
                 .padding(all = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                modifier = Modifier.size(size = 45.dp),
+                modifier = Modifier.size(size = 42.dp),
                 imageVector = Icons.Filled.InsertPhoto,
                 contentDescription = null
             )
             Text(
+                modifier = Modifier.padding(top = 4.dp),
                 text = "发送图片",
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodySmall
+                fontSize = 14.sp
             )
         }
     }

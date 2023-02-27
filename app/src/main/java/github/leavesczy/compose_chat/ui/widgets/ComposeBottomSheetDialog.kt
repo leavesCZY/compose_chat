@@ -24,9 +24,9 @@ import github.leavesczy.compose_chat.extend.clickableNoRipple
 import kotlin.math.roundToInt
 
 /**
- * @Author: CZY
- * @Date: 2022/10/17 19:03
+ * @Author: leavesCZY
  * @Desc:
+ * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun ComposeBottomSheetDialog(

@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -15,19 +14,19 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import github.leavesczy.compose_chat.extend.clickableNoRipple
 import github.leavesczy.compose_chat.extend.scrim
-import github.leavesczy.compose_chat.model.PersonProfilePageViewState
+import github.leavesczy.compose_chat.ui.main.logic.PersonProfileViewModel
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
 import github.leavesczy.compose_chat.ui.widgets.BezierImage
 import github.leavesczy.compose_chat.ui.widgets.BouncyImage
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/6/23 21:56
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun PersonProfilePage(viewState: PersonProfilePageViewState) {
+fun PersonProfilePage(personProfileViewModel: PersonProfileViewModel) {
+    val viewState = personProfileViewModel.personProfilePageViewState
     val personProfile = viewState.personProfile
     val faceUrl = personProfile.faceUrl
     val title = personProfile.showName
@@ -37,20 +36,19 @@ fun PersonProfilePage(viewState: PersonProfilePageViewState) {
         val context = LocalContext.current
         ConstraintLayout(modifier = Modifier) {
             val (backgroundRef, avatarRef, titleRef, subtitleRef, introductionRef) = createRefs()
-            BezierImage(modifier = Modifier
-                .constrainAs(ref = backgroundRef) {
-                    linkTo(start = parent.start, end = parent.end)
-                    top.linkTo(anchor = parent.top)
-                    width = Dimension.fillToConstraints
-                }
-                .aspectRatio(ratio = 1f)
-                .scrim(color = Color(0x51444B53)),
+            BezierImage(
+                modifier = Modifier
+                    .constrainAs(ref = backgroundRef) {
+                        linkTo(start = parent.start, end = parent.end)
+                        top.linkTo(anchor = parent.top)
+                        width = Dimension.fillToConstraints
+                    }
+                    .aspectRatio(ratio = 1f)
+                    .scrim(color = Color(0x33000000)),
                 data = faceUrl
             )
             BouncyImage(
                 modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(top = 10.dp)
                     .constrainAs(ref = avatarRef) {
                         linkTo(
                             top = backgroundRef.top,
@@ -59,7 +57,8 @@ fun PersonProfilePage(viewState: PersonProfilePageViewState) {
                         )
                         linkTo(start = backgroundRef.start, end = backgroundRef.end)
                     }
-                    .size(size = 100.dp)
+                    .statusBarsPadding()
+                    .size(size = 90.dp)
                     .clickableNoRipple {
                         if (faceUrl.isNotBlank()) {
                             PreviewImageActivity.navTo(context = context, imagePath = faceUrl)
@@ -75,8 +74,7 @@ fun PersonProfilePage(viewState: PersonProfilePageViewState) {
                     }
                     .padding(horizontal = 10.dp),
                 text = title,
-                fontSize = 22.sp,
-                fontFamily = FontFamily.Serif,
+                fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 color = Color.White
             )
@@ -88,8 +86,7 @@ fun PersonProfilePage(viewState: PersonProfilePageViewState) {
                     }
                     .padding(horizontal = 10.dp),
                 text = subtitle,
-                fontSize = 16.sp,
-                fontFamily = FontFamily.Serif,
+                fontSize = 15.sp,
                 textAlign = TextAlign.Center,
                 color = Color.White
             )
@@ -101,8 +98,7 @@ fun PersonProfilePage(viewState: PersonProfilePageViewState) {
                     }
                     .padding(horizontal = 10.dp),
                 text = introduction,
-                fontSize = 16.sp,
-                fontFamily = FontFamily.Serif,
+                fontSize = 15.sp,
                 textAlign = TextAlign.Center,
                 color = Color.White
             )

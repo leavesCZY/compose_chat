@@ -1,9 +1,11 @@
 package github.leavesczy.compose_chat.proxy.logic
 
 import com.tencent.imsdk.v2.*
-import github.leavesczy.compose_chat.common.model.ActionResult
-import github.leavesczy.compose_chat.common.model.PersonProfile
-import github.leavesczy.compose_chat.common.provider.IFriendshipProvider
+import github.leavesczy.compose_chat.base.model.ActionResult
+import github.leavesczy.compose_chat.base.model.PersonProfile
+import github.leavesczy.compose_chat.base.provider.IFriendshipProvider
+import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
+import github.leavesczy.compose_chat.proxy.utils.Converters
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -11,37 +13,36 @@ import kotlin.coroutines.resume
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/6/27 15:12
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-class FriendshipProvider : IFriendshipProvider, Converters {
+class FriendshipProvider : IFriendshipProvider {
 
     override val friendList = MutableSharedFlow<List<PersonProfile>>()
 
     init {
         V2TIMManager.getFriendshipManager().addFriendListener(object : V2TIMFriendshipListener() {
             override fun onFriendInfoChanged(infoList: MutableList<V2TIMFriendInfo>) {
-                getFriendList()
+                refreshFriendList()
             }
 
             override fun onFriendListAdded(users: MutableList<V2TIMFriendInfo>) {
-                getFriendList()
+                refreshFriendList()
             }
 
             override fun onFriendListDeleted(userList: MutableList<String>) {
-                getFriendList()
-                coroutineScope.launch {
+                refreshFriendList()
+                ChatCoroutineScope.launch {
                     userList.forEach {
-                        deleteC2CConversation(it)
+                        Converters.deleteC2CConversation(it)
                     }
                 }
             }
         })
     }
 
-    override fun getFriendList() {
-        coroutineScope.launch {
+    override fun refreshFriendList() {
+        ChatCoroutineScope.launch {
             friendList.emit(value = getFriendListOrigin()?.sortedBy {
                 it.showName.first().uppercaseChar()
             } ?: emptyList())
@@ -50,7 +51,7 @@ class FriendshipProvider : IFriendshipProvider, Converters {
 
     override suspend fun getFriendProfile(friendId: String): PersonProfile? {
         return getFriendInfo(friendId = friendId)?.let {
-            convertFriendProfile(it)
+            Converters.convertFriendProfile(it)
         }
     }
 
@@ -59,7 +60,9 @@ class FriendshipProvider : IFriendshipProvider, Converters {
             V2TIMManager.getFriendshipManager().getFriendList(object :
                 V2TIMValueCallback<List<V2TIMFriendInfo>> {
                 override fun onSuccess(result: List<V2TIMFriendInfo>) {
-                    continuation.resume(value = convertFriend(result))
+                    continuation.resume(value = convertFriend(friendInfoList = result.filter {
+                        !it.userID.isNullOrBlank()
+                    }))
                 }
 
                 override fun onError(code: Int, desc: String?) {
@@ -70,7 +73,9 @@ class FriendshipProvider : IFriendshipProvider, Converters {
     }
 
     private fun convertFriend(friendInfoList: List<V2TIMFriendInfo>): List<PersonProfile> {
-        return friendInfoList.map { convertFriendProfile(friendInfo = it) }
+        return friendInfoList.map {
+            Converters.convertFriendProfile(friendInfo = it)
+        }
     }
 
     private suspend fun getFriendInfo(friendId: String): V2TIMFriendInfoResult? {

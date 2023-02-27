@@ -12,9 +12,9 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import java.io.File
 
 /**
- * @Author: CZY
- * @Date: 2022/5/29 17:20
+ * @Author: leavesCZY
  * @Desc:
+ * @Github：https://github.com/leavesCZY
  */
 internal fun BaseAppModuleExtension.appModule(project: Project) {
     compileSdk = BuildConfig.compileSdk
@@ -100,6 +100,7 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
                     "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi",
                     "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi",
                     "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+                    "-Xopt-in=androidx.compose.material.ExperimentalMaterialApi",
                     "-Xopt-in=androidx.compose.material3.ExperimentalMaterial3Api",
                 )
             )
@@ -112,14 +113,14 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
         resources {
             excludes.addAll(
                 listOf(
+                    "**/*.md",
+                    "**/*.properties",
+                    "**/*.version",
+                    "**/**/*.properties",
                     "META-INF/{AL2.0,LGPL2.1}",
                     "META-INF/CHANGES",
                     "DebugProbesKt.bin",
                     "kotlin-tooling-metadata.json",
-                    "**/*.md",
-                    "**/*.properties",
-                    "**/**/*.properties",
-                    "**/*.version"
                 )
             )
         }

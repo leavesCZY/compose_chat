@@ -1,113 +1,74 @@
 package github.leavesczy.compose_chat.ui.main
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import github.leavesczy.compose_chat.model.*
-import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
+import github.leavesczy.compose_chat.provider.AppThemeProvider
+import github.leavesczy.compose_chat.ui.main.logic.*
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/7/4 1:04
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun MainPage(
-    appTheme: AppTheme,
-    mainPageAction: MainPageAction,
-    conversationPageViewState: ConversationPageViewState,
-    friendshipPageViewState: FriendshipPageViewState,
-    personProfilePageViewState: PersonProfilePageViewState,
-    friendshipDialogViewState: FriendshipDialogViewState,
-    bottomBarViewState: MainPageBottomBarViewState,
-    drawerViewState: MainPageDrawerViewState
+    mainViewModel: MainViewModel,
+    conversationViewModel: ConversationViewModel,
+    friendshipViewModel: FriendshipViewModel,
+    personProfileViewModel: PersonProfileViewModel
 ) {
     ModalNavigationDrawer(
         modifier = Modifier.fillMaxSize(),
-        drawerState = drawerViewState.drawerState,
+        drawerState = mainViewModel.drawerViewState.drawerState,
         drawerContent = {
-            MainPageDrawer(
-                viewState = drawerViewState,
-                mainPageAction = mainPageAction
-            )
+            MainPageDrawer(mainViewModel = mainViewModel)
         },
         content = {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.background)
             ) {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    contentWindowInsets = WindowInsetsEmpty,
-                    bottomBar = {
-                        key(appTheme) {
-                            MainPageBottomBar(
-                                viewState = bottomBarViewState,
-                                mainPageAction = mainPageAction
-                            )
-                        }
-                    },
-                    floatingActionButton = {
-                        if (bottomBarViewState.tabSelected == MainTab.Friendship) {
-                            FloatingActionButton(
-                                modifier = Modifier.padding(bottom = 20.dp),
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                content = {
-                                    Icon(
-                                        imageVector = Icons.Filled.Favorite,
-                                        tint = Color.White,
-                                        contentDescription = null,
-                                    )
-                                },
-                                onClick = {
-                                    mainPageAction.showFriendshipPanel()
-                                })
-                        }
-                    },
-                ) { innerPadding ->
+                val bottomBarViewState = mainViewModel.bottomBarViewState
+                Column(modifier = Modifier.fillMaxSize()) {
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues = innerPadding)
+                            .fillMaxWidth()
+                            .weight(weight = 1f)
                     ) {
-                        when (bottomBarViewState.tabSelected) {
+                        when (bottomBarViewState.selectedTab) {
                             MainTab.Conversation -> {
-                                MainPageTopBar(
-                                    drawerState = drawerViewState.drawerState,
-                                    mainPageAction = mainPageAction
-                                )
-                                ConversationPage(
-                                    viewState = conversationPageViewState,
-                                    mainPageAction = mainPageAction
-                                )
+                                MainPageTopBar(mainViewModel = mainViewModel)
+                                ConversationPage(conversationViewModel = conversationViewModel)
                             }
                             MainTab.Friendship -> {
-                                MainPageTopBar(
-                                    drawerState = drawerViewState.drawerState,
-                                    mainPageAction = mainPageAction
-                                )
+                                MainPageTopBar(mainViewModel = mainViewModel)
                                 FriendshipPage(
-                                    viewState = friendshipPageViewState,
-                                    mainPageAction = mainPageAction
+                                    mainViewModel = mainViewModel,
+                                    friendshipViewModel = friendshipViewModel
                                 )
                             }
                             MainTab.Person -> {
-                                PersonProfilePage(viewState = personProfilePageViewState)
+                                PersonProfilePage(personProfileViewModel = personProfileViewModel)
                             }
                         }
                     }
+                    key(AppThemeProvider.appTheme) {
+                        MainPageBottomBar(
+                            mainViewModel = mainViewModel,
+                            viewState = bottomBarViewState
+                        )
+                    }
                 }
-                FriendshipDialog(viewState = friendshipDialogViewState)
+                FriendshipDialog(viewState = mainViewModel.friendshipDialogViewState)
             }
         }
     )

@@ -1,5 +1,5 @@
 subprojects {
     apply {
-        plugin<ManagerPlugin>()
+        plugin<ComposeChatPlugin>()
     }
 }

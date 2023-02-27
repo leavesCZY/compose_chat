@@ -22,10 +22,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import github.leavesczy.compose_chat.cache.AppThemeCache
 import github.leavesczy.compose_chat.extend.clickableNoRipple
-import github.leavesczy.compose_chat.model.AppTheme
 
+/**
+ * @Author: leavesCZY
+ * @Desc:
+ * @Github：https://github.com/leavesCZY
+ */
 @Composable
 fun MessageDialog(
     visible: Boolean,
@@ -43,16 +46,12 @@ fun MessageDialog(
 
         }
     )
-    val appTheme = AppThemeCache.currentTheme
-    SystemBarColor(
-        statusBarColor = Color.Transparent,
+    SystemBarTheme(
         navigationBarColor = if (visible) {
             Color.Transparent
         } else {
             MaterialTheme.colorScheme.background
-        },
-        statusBarDarkIcons = appTheme == AppTheme.Light || appTheme == AppTheme.Gray,
-        navigationDarkIcons = appTheme != AppTheme.Dark
+        }
     )
     AnimatedVisibility(
         visible = visible,
@@ -82,14 +81,13 @@ fun MessageDialog(
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
                     text = title,
-                    fontSize = 16.sp,
+                    fontSize = 17.sp,
                     lineHeight = 24.sp,
                     textAlign = TextAlign.Center,
                 )
                 Divider(
                     modifier = Modifier.fillMaxWidth(),
-                    thickness = 0.6.dp,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    thickness = 0.4.dp
                 )
                 Row(
                     modifier = Modifier
@@ -103,15 +101,14 @@ fun MessageDialog(
                             .clickable(onClick = onClickLeft)
                             .wrapContentSize(align = Alignment.Center),
                         text = leftButtonText,
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
+                        fontSize = 15.sp,
                         textAlign = TextAlign.Center
                     )
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .width(width = 1.dp)
-                            .background(color = MaterialTheme.colorScheme.onSecondaryContainer)
+                            .width(width = 0.4.dp)
+                            .background(color = MaterialTheme.colorScheme.outlineVariant)
                     )
                     Text(
                         modifier = Modifier
@@ -120,8 +117,7 @@ fun MessageDialog(
                             .clickable(onClick = onClickRight)
                             .wrapContentSize(align = Alignment.Center),
                         text = rightButtonText,
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
+                        fontSize = 15.sp,
                         textAlign = TextAlign.Center
                     )
                 }

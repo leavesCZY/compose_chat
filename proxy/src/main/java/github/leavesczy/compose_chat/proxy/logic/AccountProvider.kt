@@ -2,11 +2,14 @@ package github.leavesczy.compose_chat.proxy.logic
 
 import android.app.Application
 import com.tencent.imsdk.v2.*
-import github.leavesczy.compose_chat.common.model.ActionResult
-import github.leavesczy.compose_chat.common.model.PersonProfile
-import github.leavesczy.compose_chat.common.model.ServerState
-import github.leavesczy.compose_chat.common.provider.IAccountProvider
-import github.leavesczy.compose_chat.proxy.consts.AppConst
+import github.leavesczy.compose_chat.base.model.ActionResult
+import github.leavesczy.compose_chat.base.model.PersonProfile
+import github.leavesczy.compose_chat.base.model.ServerState
+import github.leavesczy.compose_chat.base.provider.IAccountProvider
+import github.leavesczy.compose_chat.proxy.consts.AppConsts
+import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
+import github.leavesczy.compose_chat.proxy.utils.Converters.getSelfProfile
+import github.leavesczy.compose_chat.proxy.utils.Converters.getSelfProfileOrigin
 import github.leavesczy.compose_chat.proxy.utils.GenerateUserSig
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,11 +19,10 @@ import kotlin.coroutines.resume
 
 /**
  * @Author: leavesCZY
- * @Date: 2021/7/9 22:33
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-class AccountProvider : IAccountProvider, Converters {
+class AccountProvider : IAccountProvider {
 
     override val personProfile = MutableStateFlow(PersonProfile.Empty)
 
@@ -52,14 +54,14 @@ class AccountProvider : IAccountProvider, Converters {
             }
 
             override fun onSelfInfoUpdated(info: V2TIMUserFullInfo) {
-                getPersonProfile()
+                refreshPersonProfile()
             }
         })
-        V2TIMManager.getInstance().initSDK(application, AppConst.APP_ID, config)
+        V2TIMManager.getInstance().initSDK(application, AppConsts.APP_ID, config)
     }
 
     private fun dispatchServerState(serverState: ServerState) {
-        coroutineScope.launch {
+        ChatCoroutineScope.launch {
             serverConnectState.emit(value = serverState)
         }
     }
@@ -67,23 +69,24 @@ class AccountProvider : IAccountProvider, Converters {
     override suspend fun login(userId: String): ActionResult {
         val formatUserId = userId.lowercase()
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getInstance()
-                .login(formatUserId, GenerateUserSig.genUserSig(formatUserId),
-                    object : V2TIMCallback {
-                        override fun onSuccess() {
-                            continuation.resume(value = ActionResult.Success)
-                        }
-
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(
-                                value = ActionResult.Failed(
-                                    code = code,
-                                    reason = desc ?: ""
-                                )
-                            )
-                        }
+            V2TIMManager.getInstance().login(
+                formatUserId,
+                GenerateUserSig.genUserSig(userId = formatUserId),
+                object : V2TIMCallback {
+                    override fun onSuccess() {
+                        continuation.resume(value = ActionResult.Success)
                     }
-                )
+
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(
+                            value = ActionResult.Failed(
+                                code = code,
+                                reason = desc ?: ""
+                            )
+                        )
+                    }
+                }
+            )
         }
     }
 
@@ -107,8 +110,12 @@ class AccountProvider : IAccountProvider, Converters {
         }
     }
 
-    override fun getPersonProfile() {
-        coroutineScope.launch {
+    override suspend fun getPersonProfile(): PersonProfile? {
+        return getSelfProfile()
+    }
+
+    override fun refreshPersonProfile() {
+        ChatCoroutineScope.launch {
             personProfile.emit(value = getSelfProfile() ?: PersonProfile.Empty)
         }
     }
