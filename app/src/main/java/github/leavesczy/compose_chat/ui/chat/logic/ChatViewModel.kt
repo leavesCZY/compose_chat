@@ -16,6 +16,7 @@ import github.leavesczy.matisse.MediaResource
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.system.measureTimeMillis
 
 /**
  * @Author: leavesCZY
@@ -76,10 +77,17 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     fun loadMoreMessage() {
         viewModelScope.launch {
             loadMessageViewState = loadMessageViewState.copy(refreshing = true)
-            val loadResult = ComposeChat.messageProvider.getHistoryMessage(
-                chat = chat,
-                lastMessage = lastMessage
-            )
+            val loadResult: LoadMessageResult
+            val loadDuration = measureTimeMillis {
+                loadResult = ComposeChat.messageProvider.getHistoryMessage(
+                    chat = chat,
+                    lastMessage = lastMessage
+                )
+            }
+            val delay = 500L - loadDuration
+            if (delay > 0) {
+                delay(timeMillis = delay)
+            }
             val loadFinish = when (loadResult) {
                 is LoadMessageResult.Success -> {
                     addMessageToFooter(newMessageList = loadResult.messageList)

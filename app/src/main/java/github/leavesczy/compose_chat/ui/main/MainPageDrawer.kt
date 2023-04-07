@@ -49,6 +49,7 @@ fun MainPageDrawer(mainViewModel: MainViewModel) {
         contentColor = contentColorFor(MaterialTheme.colorScheme.surface)
     ) {
         val personProfile = drawerViewState.personProfile
+        val id = personProfile.id
         val faceUrl = personProfile.faceUrl
         val nickname = personProfile.nickname
         val signature = personProfile.signature
@@ -62,7 +63,7 @@ fun MainPageDrawer(mainViewModel: MainViewModel) {
                 .statusBarsPadding()
                 .navigationBarsPadding()
         ) {
-            val (avatarRef, nicknameRef, signatureRef, contentRef, aboutAuthorRef) = createRefs()
+            val (avatarRef, userIdRef, nicknameRef, signatureRef, contentRef, aboutAuthorRef) = createRefs()
             BouncyImage(
                 modifier = Modifier
                     .constrainAs(ref = avatarRef) {
@@ -79,9 +80,19 @@ fun MainPageDrawer(mainViewModel: MainViewModel) {
             )
             Text(
                 modifier = Modifier
-                    .constrainAs(ref = nicknameRef) {
+                    .constrainAs(ref = userIdRef) {
                         linkTo(start = avatarRef.start, end = parent.end, endMargin = padding)
                         top.linkTo(anchor = avatarRef.bottom, margin = padding)
+                        width = Dimension.fillToConstraints
+                    },
+                text = id,
+                fontSize = 15.sp
+            )
+            Text(
+                modifier = Modifier
+                    .constrainAs(ref = nicknameRef) {
+                        linkTo(start = avatarRef.start, end = parent.end, endMargin = padding)
+                        top.linkTo(anchor = userIdRef.bottom, margin = padding / 4)
                         width = Dimension.fillToConstraints
                     },
                 text = nickname,
@@ -95,7 +106,7 @@ fun MainPageDrawer(mainViewModel: MainViewModel) {
                         width = Dimension.fillToConstraints
                     },
                 text = signature,
-                fontSize = 15.sp
+                fontSize = 18.sp
             )
             Column(
                 modifier = Modifier

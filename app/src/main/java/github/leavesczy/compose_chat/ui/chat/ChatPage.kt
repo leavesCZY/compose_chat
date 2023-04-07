@@ -60,6 +60,7 @@ fun ChatPage(chatViewModel: ChatViewModel, chatPageAction: ChatPageAction) {
                 modifier = Modifier.align(alignment = Alignment.TopCenter),
                 refreshing = loadMessageViewState.refreshing,
                 state = pullRefreshState,
+                backgroundColor = MaterialTheme.colorScheme.onSecondaryContainer,
                 contentColor = MaterialTheme.colorScheme.primary
             )
         }

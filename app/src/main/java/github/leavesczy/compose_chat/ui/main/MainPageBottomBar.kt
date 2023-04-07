@@ -33,7 +33,7 @@ fun MainPageBottomBar(
 ) {
     Row(
         modifier = Modifier
-            .shadow(elevation = 12.dp)
+            .shadow(elevation = 18.dp)
             .background(color = MaterialTheme.colorScheme.background)
             .fillMaxWidth()
             .navigationBarsPadding()

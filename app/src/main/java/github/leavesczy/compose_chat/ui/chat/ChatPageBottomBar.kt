@@ -48,14 +48,14 @@ fun ChatPageBottomBar(
             restore = { TextFieldValue(text = it[textKey] as String) }
         )
     }) {
-        mutableStateOf(TextFieldValue(""))
+        mutableStateOf(TextFieldValue(text = ""))
     }
 
     var currentInputSelector by rememberSaveable {
-        mutableStateOf(InputSelector.NONE)
+        mutableStateOf(value = InputSelector.NONE)
     }
     var sendMessageEnabled by rememberSaveable {
-        mutableStateOf(false)
+        mutableStateOf(value = false)
     }
 
     fun onInputChange(newMessage: TextFieldValue) {
@@ -134,12 +134,12 @@ fun ChatPageBottomBar(
     val localDensity = LocalDensity.current
     val density = localDensity.density
     var keyboardHeightDp by remember {
-        mutableStateOf(0.dp)
+        mutableStateOf(value = 0.dp)
     }
 
     LaunchedEffect(key1 = density) {
         snapshotFlow {
-            ime.getBottom(localDensity)
+            ime.getBottom(density = localDensity)
         }.collect {
             val currentKeyboardHeightDp = (it / density).dp
             keyboardHeightDp = maxOf(currentKeyboardHeightDp, keyboardHeightDp)
@@ -178,7 +178,7 @@ fun ChatPageBottomBar(
             keyboardActions = KeyboardActions(onSend = {
                 onMessageSent()
             }),
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            cursorBrush = SolidColor(value = MaterialTheme.colorScheme.primary),
             maxLines = 6
         )
 

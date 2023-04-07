@@ -40,7 +40,8 @@ fun MainPageTopBar(mainViewModel: MainViewModel) {
                         imageVector = Icons.Filled.Menu,
                         contentDescription = null
                     )
-                }, onClick = {
+                },
+                onClick = {
                     coroutineScope.launch {
                         mainViewModel.drawerViewState.drawerState.open()
                     }
@@ -87,5 +88,6 @@ fun MainPageTopBar(mainViewModel: MainViewModel) {
                     }
                 }
             }
-        })
+        }
+    )
 }

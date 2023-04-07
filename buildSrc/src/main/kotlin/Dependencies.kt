@@ -7,8 +7,8 @@ object Dependencies {
 
     object Test {
         const val junit = "junit:junit:4.13.2"
-        const val testExt = "androidx.test.ext:junit:1.1.3"
-        const val espresso = "androidx.test.espresso:espresso-core:3.4.0"
+        const val testExt = "androidx.test.ext:junit:1.1.5"
+        const val espresso = "androidx.test.espresso:espresso-core:3.5.1"
     }
 
     object AppCompat {
@@ -17,8 +17,8 @@ object Dependencies {
     }
 
     object Compose {
-        const val composeCompilerVersion = "1.4.3"
-        const val composeBom = "androidx.compose:compose-bom:2023.01.00"
+        const val composeCompilerVersion = "1.4.4"
+        const val composeBom = "androidx.compose:compose-bom:2023.04.00"
         const val ui = "androidx.compose.ui:ui"
         const val uiTooling = "androidx.compose.ui:ui-tooling"
         const val uiToolingPreview = "androidx.compose.ui:ui-tooling-preview"
@@ -28,22 +28,22 @@ object Dependencies {
         const val material3 = "androidx.compose.material3:material3"
         const val materialIcons = "androidx.compose.material:material-icons-extended"
         const val constraintLayout = "androidx.constraintlayout:constraintlayout-compose:1.0.1"
-        const val activity = "androidx.activity:activity-compose:1.6.1"
-        const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
+        const val activity = "androidx.activity:activity-compose:1.7.0"
+        const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
     }
 
     object Accompanist {
-        private const val version = "0.28.0"
+        private const val version = "0.30.0"
         const val systemUiController =
             "com.google.accompanist:accompanist-systemuicontroller:$version"
     }
 
     object Components {
-        private const val coilVersion = "2.2.2"
-        const val coil = "io.coil-kt:coil-compose:$coilVersion"
+        private const val coilVersion = "2.3.0"
         const val coilGif = "io.coil-kt:coil-gif:$coilVersion"
+        const val coilCompose = "io.coil-kt:coil-compose:$coilVersion"
         const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-        const val matisse = "com.github.leavesCZY:Matisse:0.0.11"
+        const val matisse = "com.github.leavesCZY:Matisse:0.0.12"
         const val imSdk = "com.tencent.imsdk:imsdk-plus:7.0.3768"
     }
 
