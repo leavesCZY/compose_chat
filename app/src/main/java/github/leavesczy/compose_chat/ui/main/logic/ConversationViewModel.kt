@@ -23,10 +23,8 @@ class ConversationViewModel : ViewModel() {
     var conversationPageViewState by mutableStateOf(
         value = ConversationPageViewState(
             listState = LazyListState(
-                firstVisibleItemIndex = 0,
-                firstVisibleItemScrollOffset = 0
-            ),
-            conversationList = emptyList()
+                firstVisibleItemIndex = 0, firstVisibleItemScrollOffset = 0
+            ), conversationList = emptyList()
         )
     )
         private set
@@ -46,7 +44,9 @@ class ConversationViewModel : ViewModel() {
                     ComposeChat.conversationProvider.deleteC2CConversation(userId = conversation.id)
                 }
                 is GroupConversation -> {
-                    ComposeChat.conversationProvider.deleteGroupConversation(groupId = conversation.id)
+                    ComposeChat.conversationProvider.deleteGroupConversation(
+                        groupId = conversation.id
+                    )
                 }
             }
             when (result) {
@@ -60,9 +60,13 @@ class ConversationViewModel : ViewModel() {
         }
     }
 
-    fun pinConversation(conversation: Conversation, pin: Boolean) {
+    fun pinConversation(
+        conversation: Conversation, pin: Boolean
+    ) {
         viewModelScope.launch {
-            ComposeChat.conversationProvider.pinConversation(conversation = conversation, pin = pin)
+            ComposeChat.conversationProvider.pinConversation(
+                conversation = conversation, pin = pin
+            )
         }
     }
 

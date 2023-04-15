@@ -19,12 +19,7 @@ data class PersonProfile(
     companion object {
 
         val Empty = PersonProfile(
-            id = "",
-            faceUrl = "",
-            nickname = "",
-            remark = "",
-            signature = "",
-            isFriend = false
+            id = "", faceUrl = "", nickname = "", remark = "", signature = "", isFriend = false
         )
 
     }
@@ -41,14 +36,12 @@ data class PersonProfile(
 }
 
 class GroupMemberProfile(
-    val detail: PersonProfile,
-    val role: String,
-    val isOwner: Boolean,
-    val joinTime: Long
+    val detail: PersonProfile, val role: String, val isOwner: Boolean, val joinTime: Long
 ) {
 
-    val joinTimeFormat =
-        TimeUtil.formatTime(time = joinTime * 1000, format = TimeUtil.YYYY_MM_DD_HH_MM_SS)
+    val joinTimeFormat = TimeUtil.formatTime(
+        time = joinTime * 1000, format = TimeUtil.YYYY_MM_DD_HH_MM_SS
+    )
 
 }
 
@@ -64,17 +57,13 @@ class GroupProfile(
     companion object {
 
         val Empty = GroupProfile(
-            id = "",
-            faceUrl = "",
-            name = "",
-            introduction = "",
-            createTime = 0L,
-            memberCount = 0
+            id = "", faceUrl = "", name = "", introduction = "", createTime = 0L, memberCount = 0
         )
 
     }
 
-    val createTimeFormat =
-        TimeUtil.formatTime(time = createTime * 1000, format = TimeUtil.YYYY_MM_DD_HH_MM_SS)
+    val createTimeFormat = TimeUtil.formatTime(
+        time = createTime * 1000, format = TimeUtil.YYYY_MM_DD_HH_MM_SS
+    )
 
 }

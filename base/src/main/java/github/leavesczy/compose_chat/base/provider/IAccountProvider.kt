@@ -29,9 +29,7 @@ interface IAccountProvider {
     fun refreshPersonProfile()
 
     suspend fun updatePersonProfile(
-        faceUrl: String,
-        nickname: String,
-        signature: String
+        faceUrl: String, nickname: String, signature: String
     ): ActionResult
 
 }

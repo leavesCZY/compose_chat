@@ -51,46 +51,45 @@ class ChatActivity : BaseActivity() {
         ChatViewModel(chat = chat)
     }
 
-    private val chatPageAction = ChatPageAction(
-        onClickAvatar = {
-            val messageSenderId = it.messageDetail.sender.id
-            if (messageSenderId.isNotBlank()) {
-                FriendProfileActivity.navTo(context = this, friendId = messageSenderId)
-            }
-        },
-        onClickMessage = {
-            when (it) {
-                is ImageMessage -> {
-                    val imagePath = it.previewUrl
-                    if (imagePath.isBlank()) {
-                        showToast(msg = "图片路径为空")
-                    } else {
-                        PreviewImageActivity.navTo(
-                            context = this,
-                            imagePath = imagePath
-                        )
-                    }
-                }
-                else -> {
-
+    private val chatPageAction = ChatPageAction(onClickAvatar = {
+        val messageSenderId = it.messageDetail.sender.id
+        if (messageSenderId.isNotBlank()) {
+            FriendProfileActivity.navTo(
+                context = this, friendId = messageSenderId
+            )
+        }
+    }, onClickMessage = {
+        when (it) {
+            is ImageMessage -> {
+                val imagePath = it.previewUrl
+                if (imagePath.isBlank()) {
+                    showToast(msg = "图片路径为空")
+                } else {
+                    PreviewImageActivity.navTo(
+                        context = this, imagePath = imagePath
+                    )
                 }
             }
-        },
-        onLongClickMessage = {
-            when (it) {
-                is TextMessage -> {
-                    val msg = it.formatMessage
-                    if (msg.isNotEmpty()) {
-                        copyText(context = this, text = msg)
-                        showToast(msg = "已复制")
-                    }
-                }
-                else -> {
+            else -> {
 
-                }
             }
         }
-    )
+    }, onLongClickMessage = {
+        when (it) {
+            is TextMessage -> {
+                val msg = it.formatMessage
+                if (msg.isNotEmpty()) {
+                    copyText(
+                        context = this, text = msg
+                    )
+                    showToast(msg = "已复制")
+                }
+            }
+            else -> {
+
+            }
+        }
+    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,17 +97,20 @@ class ChatActivity : BaseActivity() {
             SystemBarTheme(navigationBarColor = MaterialTheme.colorScheme.onSecondaryContainer)
         }) {
             ChatPage(
-                chatViewModel = chatViewModel,
-                chatPageAction = chatPageAction
+                chatViewModel = chatViewModel, chatPageAction = chatPageAction
             )
         }
     }
 
-    private fun copyText(context: Context, text: String) {
+    private fun copyText(
+        context: Context, text: String
+    ) {
         val clipboardManager =
             context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
         if (clipboardManager != null) {
-            val clipData = ClipData.newPlainText(context.getString(R.string.app_name), text)
+            val clipData = ClipData.newPlainText(
+                context.getString(R.string.app_name), text
+            )
             clipboardManager.setPrimaryClip(clipData)
         }
     }

@@ -23,9 +23,7 @@ class LoginViewModel : ViewModel() {
 
     var loginPageViewState by mutableStateOf(
         value = LoginPageViewState(
-            showPanel = false,
-            loading = false,
-            lastLoginUserId = ""
+            showPanel = false, loading = false, lastLoginUserId = ""
         )
     )
         private set
@@ -38,15 +36,11 @@ class LoginViewModel : ViewModel() {
         val lastLoginUserId = AccountProvider.lastLoginUserId
         if (lastLoginUserId.isBlank() || !AccountProvider.canAutoLogin) {
             loginPageViewState = LoginPageViewState(
-                showPanel = true,
-                loading = false,
-                lastLoginUserId = lastLoginUserId
+                showPanel = true, loading = false, lastLoginUserId = lastLoginUserId
             )
         } else {
             loginPageViewState = LoginPageViewState(
-                showPanel = false,
-                loading = true,
-                lastLoginUserId = lastLoginUserId
+                showPanel = false, loading = true, lastLoginUserId = lastLoginUserId
             )
             login(userId = lastLoginUserId)
         }
@@ -54,9 +48,7 @@ class LoginViewModel : ViewModel() {
 
     fun goToLogin(userId: String) {
         loginPageViewState = LoginPageViewState(
-            showPanel = true,
-            loading = true,
-            lastLoginUserId = userId
+            showPanel = true, loading = true, lastLoginUserId = userId
         )
         login(userId = userId)
     }
@@ -73,9 +65,7 @@ class LoginViewModel : ViewModel() {
                 is ActionResult.Failed -> {
                     showToast(msg = loginResult.reason)
                     loginPageViewState = LoginPageViewState(
-                        showPanel = true,
-                        loading = false,
-                        lastLoginUserId = formatUserId
+                        showPanel = true, loading = false, lastLoginUserId = formatUserId
                     )
                 }
             }

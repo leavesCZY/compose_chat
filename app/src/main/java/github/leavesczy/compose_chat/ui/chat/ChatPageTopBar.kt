@@ -22,51 +22,44 @@ import github.leavesczy.compose_chat.ui.friendship.FriendProfileActivity
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun ChatPageTopBar(title: String, chat: Chat) {
+fun ChatPageTopBar(
+    title: String, chat: Chat
+) {
     val context = LocalContext.current
-    CenterAlignedTopAppBar(
-        modifier = Modifier,
-        title = {
-            Text(
-                modifier = Modifier,
-                text = title,
-                fontSize = 18.sp,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1
+    CenterAlignedTopAppBar(modifier = Modifier, title = {
+        Text(
+            modifier = Modifier,
+            text = title,
+            fontSize = 19.sp,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1
+        )
+    }, navigationIcon = {
+        IconButton(content = {
+            Icon(
+                imageVector = Icons.Default.ArrowBackIosNew, contentDescription = null
             )
-        },
-        navigationIcon = {
-            IconButton(
-                content = {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBackIosNew,
-                        contentDescription = null
+        }, onClick = {
+            (context as Activity).finish()
+        })
+    }, actions = {
+        IconButton(content = {
+            Icon(
+                imageVector = Icons.Filled.MoreVert, contentDescription = null
+            )
+        }, onClick = {
+            when (chat) {
+                is Chat.PrivateChat -> {
+                    FriendProfileActivity.navTo(
+                        context = context, friendId = chat.id
                     )
-                },
-                onClick = {
-                    (context as Activity).finish()
                 }
-            )
-        },
-        actions = {
-            IconButton(
-                content = {
-                    Icon(
-                        imageVector = Icons.Filled.MoreVert,
-                        contentDescription = null
+                is Chat.GroupChat -> {
+                    GroupProfileActivity.navTo(
+                        context = context, groupId = chat.id
                     )
-                },
-                onClick = {
-                    when (chat) {
-                        is Chat.PrivateChat -> {
-                            FriendProfileActivity.navTo(context = context, friendId = chat.id)
-                        }
-                        is Chat.GroupChat -> {
-                            GroupProfileActivity.navTo(context = context, groupId = chat.id)
-                        }
-                    }
                 }
-            )
-        }
-    )
+            }
+        })
+    })
 }

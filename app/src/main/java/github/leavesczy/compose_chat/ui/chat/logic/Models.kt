@@ -19,8 +19,7 @@ data class ChatPageViewState(
 )
 
 data class LoadMessageViewState(
-    val refreshing: Boolean,
-    val loadFinish: Boolean
+    val refreshing: Boolean, val loadFinish: Boolean
 )
 
 data class ChatPageAction(
@@ -30,8 +29,7 @@ data class ChatPageAction(
 )
 
 data class GroupProfilePageViewState(
-    val groupProfile: GroupProfile,
-    val memberList: List<GroupMemberProfile>
+    val groupProfile: GroupProfile, val memberList: List<GroupMemberProfile>
 )
 
 data class GroupProfilePageAction(

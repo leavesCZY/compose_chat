@@ -40,12 +40,9 @@ fun MessageDialog(
 ) {
     val onClickLeft by rememberUpdatedState(onClickLeftButton)
     val onClickRight by rememberUpdatedState(onClickRightButton)
-    BackHandler(
-        enabled = visible,
-        onBack = {
+    BackHandler(enabled = visible, onBack = {
 
-        }
-    )
+    })
     SystemBarTheme(
         navigationBarColor = if (visible) {
             Color.Transparent
@@ -54,9 +51,15 @@ fun MessageDialog(
         }
     )
     AnimatedVisibility(
-        visible = visible,
-        enter = fadeIn(animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing)),
-        exit = fadeOut(animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
+        visible = visible, enter = fadeIn(
+            animationSpec = tween(
+                durationMillis = 300, easing = LinearOutSlowInEasing
+            )
+        ), exit = fadeOut(
+            animationSpec = tween(
+                durationMillis = 300, easing = LinearOutSlowInEasing
+            )
+        )
     ) {
         Box(
             modifier = Modifier
@@ -71,23 +74,25 @@ fun MessageDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .align(alignment = Alignment.Center)
+                    .align(
+                        alignment = Alignment.Center
+                    )
                     .background(
                         color = MaterialTheme.colorScheme.background,
                         shape = RoundedCornerShape(size = 12.dp)
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    ), horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
+                    modifier = Modifier.padding(
+                        horizontal = 16.dp, vertical = 24.dp
+                    ),
                     text = title,
                     fontSize = 17.sp,
                     lineHeight = 24.sp,
                     textAlign = TextAlign.Center,
                 )
                 Divider(
-                    modifier = Modifier.fillMaxWidth(),
-                    thickness = 0.4.dp
+                    modifier = Modifier.fillMaxWidth(), thickness = 0.4.dp
                 )
                 Row(
                     modifier = Modifier
@@ -98,7 +103,9 @@ fun MessageDialog(
                         modifier = Modifier
                             .weight(weight = 1f)
                             .fillMaxHeight()
-                            .clickable(onClick = onClickLeft)
+                            .clickable(
+                                onClick = onClickLeft
+                            )
                             .wrapContentSize(align = Alignment.Center),
                         text = leftButtonText,
                         fontSize = 15.sp,
@@ -108,13 +115,17 @@ fun MessageDialog(
                         modifier = Modifier
                             .fillMaxHeight()
                             .width(width = 0.4.dp)
-                            .background(color = MaterialTheme.colorScheme.outlineVariant)
+                            .background(
+                                color = MaterialTheme.colorScheme.outlineVariant
+                            )
                     )
                     Text(
                         modifier = Modifier
                             .weight(weight = 1f)
                             .fillMaxHeight()
-                            .clickable(onClick = onClickRight)
+                            .clickable(
+                                onClick = onClickRight
+                            )
                             .wrapContentSize(align = Alignment.Center),
                         text = rightButtonText,
                         fontSize = 15.sp,

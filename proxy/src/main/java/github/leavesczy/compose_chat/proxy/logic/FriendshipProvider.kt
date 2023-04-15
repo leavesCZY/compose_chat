@@ -57,18 +57,20 @@ class FriendshipProvider : IFriendshipProvider {
 
     private suspend fun getFriendListOrigin(): List<PersonProfile>? {
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getFriendshipManager().getFriendList(object :
-                V2TIMValueCallback<List<V2TIMFriendInfo>> {
-                override fun onSuccess(result: List<V2TIMFriendInfo>) {
-                    continuation.resume(value = convertFriend(friendInfoList = result.filter {
-                        !it.userID.isNullOrBlank()
-                    }))
-                }
+            V2TIMManager.getFriendshipManager()
+                .getFriendList(object : V2TIMValueCallback<List<V2TIMFriendInfo>> {
+                    override fun onSuccess(result: List<V2TIMFriendInfo>) {
+                        continuation.resume(value = convertFriend(friendInfoList = result.filter {
+                            !it.userID.isNullOrBlank()
+                        }))
+                    }
 
-                override fun onError(code: Int, desc: String?) {
-                    continuation.resume(value = null)
-                }
-            })
+                    override fun onError(
+                        code: Int, desc: String?
+                    ) {
+                        continuation.resume(value = null)
+                    }
+                })
         }
     }
 
@@ -80,16 +82,18 @@ class FriendshipProvider : IFriendshipProvider {
 
     private suspend fun getFriendInfo(friendId: String): V2TIMFriendInfoResult? {
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getFriendshipManager().getFriendsInfo(listOf(friendId), object :
-                V2TIMValueCallback<List<V2TIMFriendInfoResult>> {
-                override fun onSuccess(t: List<V2TIMFriendInfoResult>?) {
-                    continuation.resume(value = t?.getOrNull(0))
-                }
+            V2TIMManager.getFriendshipManager().getFriendsInfo(listOf(friendId),
+                object : V2TIMValueCallback<List<V2TIMFriendInfoResult>> {
+                    override fun onSuccess(t: List<V2TIMFriendInfoResult>?) {
+                        continuation.resume(value = t?.getOrNull(0))
+                    }
 
-                override fun onError(code: Int, desc: String?) {
-                    continuation.resume(value = null)
-                }
-            })
+                    override fun onError(
+                        code: Int, desc: String?
+                    ) {
+                        continuation.resume(value = null)
+                    }
+                })
         }
     }
 
@@ -104,63 +108,70 @@ class FriendshipProvider : IFriendshipProvider {
         return suspendCancellableCoroutine { continuation ->
             val requiresOpt = V2TIMFriendAddApplication(formatUserId)
             requiresOpt.setAddType(V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH)
-            V2TIMManager.getFriendshipManager().addFriend(requiresOpt,
+            V2TIMManager.getFriendshipManager().addFriend(
+                requiresOpt,
                 object : V2TIMValueCallback<V2TIMFriendOperationResult> {
                     override fun onSuccess(t: V2TIMFriendOperationResult) {
                         continuation.resume(value = ActionResult.Success)
                     }
 
-                    override fun onError(code: Int, desc: String?) {
+                    override fun onError(
+                        code: Int, desc: String?
+                    ) {
                         continuation.resume(
                             value = ActionResult.Failed(
-                                code = code,
-                                reason = desc ?: ""
+                                code = code, reason = desc ?: ""
                             )
                         )
                     }
-                }
-            )
+                })
         }
     }
 
     override suspend fun deleteFriend(friendId: String): ActionResult {
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getFriendshipManager().deleteFromFriendList(
-                listOf(friendId), V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH,
+            V2TIMManager.getFriendshipManager().deleteFromFriendList(listOf(friendId),
+                V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH,
                 object : V2TIMValueCallback<List<V2TIMFriendOperationResult>> {
                     override fun onSuccess(t: List<V2TIMFriendOperationResult>) {
                         continuation.resume(value = ActionResult.Success)
                     }
 
-                    override fun onError(code: Int, desc: String?) {
+                    override fun onError(
+                        code: Int, desc: String?
+                    ) {
                         continuation.resume(
                             value = ActionResult.Failed(
-                                code = code,
-                                reason = desc ?: ""
+                                code = code, reason = desc ?: ""
                             )
                         )
                     }
-                }
-            )
+                })
         }
     }
 
-    override suspend fun setFriendRemark(friendId: String, remark: String): ActionResult {
-        val friendProfile =
-            getFriendInfo(friendId)?.friendInfo ?: return ActionResult.Failed(reason = "设置失败")
-        friendProfile.friendRemark = remark.replace("\\s", "")
+    override suspend fun setFriendRemark(
+        friendId: String, remark: String
+    ): ActionResult {
+        val friendProfile = getFriendInfo(friendId)?.friendInfo
+            ?: return ActionResult.Failed(reason = "设置失败")
+        friendProfile.friendRemark = remark.replace(
+            "\\s", ""
+        )
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getFriendshipManager()
-                .setFriendInfo(friendProfile, object : V2TIMCallback {
+            V2TIMManager.getFriendshipManager().setFriendInfo(
+                friendProfile,
+                object : V2TIMCallback {
                     override fun onSuccess() {
                         continuation.resume(value = ActionResult.Success)
                     }
 
-                    override fun onError(code: Int, desc: String?) {
+                    override fun onError(
+                        code: Int, desc: String?
+                    ) {
                         continuation.resume(
                             value = ActionResult.Failed(
-                                code = code,
-                                reason = desc ?: ""
+                                code = code, reason = desc ?: ""
                             )
                         )
                     }

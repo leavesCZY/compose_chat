@@ -20,41 +20,33 @@ import github.leavesczy.compose_chat.ui.chat.logic.ChatViewModel
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun ChatPage(chatViewModel: ChatViewModel, chatPageAction: ChatPageAction) {
+fun ChatPage(
+    chatViewModel: ChatViewModel, chatPageAction: ChatPageAction
+) {
     val chatPageViewState = chatViewModel.chatPageViewState
     val loadMessageViewState = chatViewModel.loadMessageViewState
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            ChatPageTopBar(
-                title = chatPageViewState.topBarTitle,
-                chat = chatPageViewState.chat
-            )
-        },
-        bottomBar = {
-            ChatPageBottomBar(
-                sendTextMessage = {
-                    chatViewModel.sendTextMessage(text = it.text)
-                },
-                sendImageMessage = {
-                    chatViewModel.sendImageMessage(mediaResource = it)
-                }
-            )
-        }
-    ) { innerPadding ->
-        val pullRefreshState =
-            rememberPullRefreshState(refreshing = loadMessageViewState.refreshing, onRefresh = {
+    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+        ChatPageTopBar(
+            title = chatPageViewState.topBarTitle, chat = chatPageViewState.chat
+        )
+    }, bottomBar = {
+        ChatPageBottomBar(chatViewModel = chatViewModel)
+    }) { innerPadding ->
+        val pullRefreshState = rememberPullRefreshState(
+            refreshing = loadMessageViewState.refreshing,
+            onRefresh = {
                 chatViewModel.loadMoreMessage()
             })
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues = innerPadding)
-                .pullRefresh(state = pullRefreshState, enabled = !loadMessageViewState.loadFinish)
+                .pullRefresh(
+                    state = pullRefreshState, enabled = !loadMessageViewState.loadFinish
+                )
         ) {
             MessagePanel(
-                chatPageViewState = chatPageViewState,
-                chatPageAction = chatPageAction
+                chatPageViewState = chatPageViewState, chatPageAction = chatPageAction
             )
             PullRefreshIndicator(
                 modifier = Modifier.align(alignment = Alignment.TopCenter),

@@ -24,9 +24,15 @@ class GroupProfileActivity : BaseActivity() {
 
         private const val keyGroupId = "keyGroupId"
 
-        fun navTo(context: Context, groupId: String) {
-            val intent = Intent(context, GroupProfileActivity::class.java)
-            intent.putExtra(keyGroupId, groupId)
+        fun navTo(
+            context: Context, groupId: String
+        ) {
+            val intent = Intent(
+                context, GroupProfileActivity::class.java
+            )
+            intent.putExtra(
+                keyGroupId, groupId
+            )
             context.startActivity(intent)
         }
 
@@ -40,38 +46,35 @@ class GroupProfileActivity : BaseActivity() {
         GroupProfileViewModel(groupId = groupId)
     }
 
-    private val groupProfilePageAction = GroupProfilePageAction(
-        setAvatar = {
-            groupProfileViewModel.setAvatar(avatarUrl = it)
-        },
-        quitGroup = {
-            lifecycleScope.launch {
-                when (val result = groupProfileViewModel.quitGroup()) {
-                    ActionResult.Success -> {
-                        showToast(msg = "已退出群聊")
-                        startActivity(
-                            Intent(
-                                this@GroupProfileActivity,
-                                MainActivity::class.java
-                            )
+    private val groupProfilePageAction = GroupProfilePageAction(setAvatar = {
+        groupProfileViewModel.setAvatar(avatarUrl = it)
+    }, quitGroup = {
+        lifecycleScope.launch {
+            when (val result = groupProfileViewModel.quitGroup()) {
+                ActionResult.Success -> {
+                    showToast(msg = "已退出群聊")
+                    startActivity(
+                        Intent(
+                            this@GroupProfileActivity, MainActivity::class.java
                         )
-                    }
-                    is ActionResult.Failed -> {
-                        showToast(msg = result.reason)
-                    }
+                    )
+                }
+                is ActionResult.Failed -> {
+                    showToast(msg = result.reason)
                 }
             }
-        },
-        onClickMember = {
-            FriendProfileActivity.navTo(context = this, friendId = it.detail.id)
-        })
+        }
+    }, onClickMember = {
+        FriendProfileActivity.navTo(
+            context = this, friendId = it.detail.id
+        )
+    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             GroupProfilePage(
-                groupProfileViewModel = groupProfileViewModel,
-                action = groupProfilePageAction
+                groupProfileViewModel = groupProfileViewModel, action = groupProfilePageAction
             )
         }
     }

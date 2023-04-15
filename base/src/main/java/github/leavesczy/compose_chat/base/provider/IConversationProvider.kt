@@ -1,6 +1,7 @@
 package github.leavesczy.compose_chat.base.provider
 
 import github.leavesczy.compose_chat.base.model.ActionResult
+import github.leavesczy.compose_chat.base.model.Chat
 import github.leavesczy.compose_chat.base.model.Conversation
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -19,7 +20,11 @@ interface IConversationProvider {
 
     fun refreshTotalUnreadMessageCount()
 
-    suspend fun pinConversation(conversation: Conversation, pin: Boolean): ActionResult
+    fun cleanConversationUnreadMessageCount(chat: Chat)
+
+    suspend fun pinConversation(
+        conversation: Conversation, pin: Boolean
+    ): ActionResult
 
     suspend fun deleteC2CConversation(userId: String): ActionResult
 

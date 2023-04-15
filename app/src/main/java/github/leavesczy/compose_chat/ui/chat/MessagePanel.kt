@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
@@ -37,8 +36,7 @@ import github.leavesczy.compose_chat.ui.widgets.CoilImage
  */
 @Composable
 fun MessagePanel(
-    chatPageViewState: ChatPageViewState,
-    chatPageAction: ChatPageAction
+    chatPageViewState: ChatPageViewState, chatPageAction: ChatPageAction
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -61,9 +59,7 @@ fun MessagePanel(
 
 @Composable
 private fun MessageItems(
-    message: Message,
-    showPartyName: Boolean,
-    chatPageAction: ChatPageAction
+    message: Message, showPartyName: Boolean, chatPageAction: ChatPageAction
 ) {
     if (message is TimeMessage) {
         TimeMessage(message = message)
@@ -88,9 +84,7 @@ private fun MessageItems(
     }
     if (message.messageDetail.isSelfMessage) {
         SelfMessageContainer(
-            message = message,
-            chatPageAction = chatPageAction,
-            messageContent = messageContent
+            message = message, chatPageAction = chatPageAction, messageContent = messageContent
         )
     } else {
         FriendMessageContainer(
@@ -113,66 +107,51 @@ private val timeMessageShape = RoundedCornerShape(size = 4.dp)
 
 @Composable
 private fun SelfMessageContainer(
-    message: Message,
-    chatPageAction: ChatPageAction,
-    messageContent: @Composable () -> Unit
+    message: Message, chatPageAction: ChatPageAction, messageContent: @Composable () -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = itemHorizontalPadding,
-                vertical = itemVerticalPadding
+                horizontal = itemHorizontalPadding, vertical = itemVerticalPadding
             )
     ) {
         val (avatarRef, showNameRef, messageRef, messageStateRef) = createRefs()
-        CoilImage(
-            modifier = Modifier
-                .constrainAs(ref = avatarRef) {
-                    top.linkTo(anchor = parent.top)
-                    end.linkTo(anchor = parent.end)
-                }
-                .size(size = avatarSize)
-                .clip(shape = CircleShape)
-                .clickable(onClick = {
-                    chatPageAction.onClickAvatar(message)
-                }),
-            data = message.messageDetail.sender.faceUrl
+        CoilImage(modifier = Modifier
+            .constrainAs(ref = avatarRef) {
+                top.linkTo(anchor = parent.top)
+                end.linkTo(anchor = parent.end)
+            }
+            .size(size = avatarSize)
+            .clip(shape = RoundedCornerShape(size = 6.dp))
+            .clickable(onClick = {
+                chatPageAction.onClickAvatar(message)
+            }), data = message.messageDetail.sender.faceUrl
         )
         Text(
-            modifier = Modifier
-                .constrainAs(ref = showNameRef) {
-                    top.linkTo(
-                        anchor = avatarRef.top
-                    )
-                    end.linkTo(
-                        anchor = avatarRef.start,
-                        margin = textMessageHorizontalPadding
-                    )
-                },
-            text = "",
-            fontSize = 16.sp,
-            textAlign = TextAlign.End
-        )
-        Box(
-            modifier = Modifier
-                .constrainAs(ref = messageRef) {
-                    top.linkTo(
-                        anchor = showNameRef.bottom,
-                        margin = textMessageSenderNameVerticalPadding
-                    )
-                    end.linkTo(anchor = showNameRef.end)
-                    width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
-                }
-                .clip(shape = messageShape)
-                .combinedClickable(
-                    onClick = {
-                        chatPageAction.onClickMessage(message)
-                    },
-                    onLongClick = {
-                        chatPageAction.onLongClickMessage(message)
-                    }
+            modifier = Modifier.constrainAs(ref = showNameRef) {
+                top.linkTo(
+                    anchor = avatarRef.top
                 )
+                end.linkTo(
+                    anchor = avatarRef.start, margin = textMessageHorizontalPadding
+                )
+            }, text = "", fontSize = 16.sp, textAlign = TextAlign.End
+        )
+        Box(modifier = Modifier
+            .constrainAs(ref = messageRef) {
+                top.linkTo(
+                    anchor = showNameRef.bottom, margin = textMessageSenderNameVerticalPadding
+                )
+                end.linkTo(anchor = showNameRef.end)
+                width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
+            }
+            .clip(shape = messageShape)
+            .combinedClickable(onClick = {
+                chatPageAction.onClickMessage(message)
+            }, onLongClick = {
+                chatPageAction.onLongClickMessage(message)
+            })
         ) {
             messageContent()
         }
@@ -180,9 +159,10 @@ private fun SelfMessageContainer(
             modifier = Modifier.constrainAs(ref = messageStateRef) {
                 top.linkTo(anchor = messageRef.top)
                 bottom.linkTo(anchor = messageRef.bottom)
-                end.linkTo(anchor = messageRef.start, margin = textMessageHorizontalPadding)
-            },
-            messageState = message.messageDetail.state
+                end.linkTo(
+                    anchor = messageRef.start, margin = textMessageHorizontalPadding
+                )
+            }, messageState = message.messageDetail.state
         )
     }
 }
@@ -198,73 +178,60 @@ private fun FriendMessageContainer(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = itemHorizontalPadding,
-                vertical = itemVerticalPadding
+                horizontal = itemHorizontalPadding, vertical = itemVerticalPadding
             )
     ) {
         val (avatarRef, showNameRef, messageRef, messageStateRef) = createRefs()
-        CoilImage(
-            modifier = Modifier
-                .constrainAs(ref = avatarRef) {
-                    top.linkTo(anchor = parent.top)
-                    start.linkTo(anchor = parent.start)
-                }
-                .size(size = avatarSize)
-                .clip(shape = CircleShape)
-                .clickable(onClick = {
-                    chatPageAction.onClickAvatar(message)
-                }),
-            data = message.messageDetail.sender.faceUrl
+        CoilImage(modifier = Modifier
+            .constrainAs(ref = avatarRef) {
+                top.linkTo(anchor = parent.top)
+                start.linkTo(anchor = parent.start)
+            }
+            .size(size = avatarSize)
+            .clip(shape = RoundedCornerShape(size = 6.dp))
+            .clickable(onClick = {
+                chatPageAction.onClickAvatar(message)
+            }), data = message.messageDetail.sender.faceUrl
         )
         Text(
-            modifier = Modifier
-                .constrainAs(ref = showNameRef) {
-                    top.linkTo(
-                        anchor = avatarRef.top
-                    )
-                    start.linkTo(
-                        anchor = avatarRef.end,
-                        margin = textMessageHorizontalPadding
-                    )
-                },
-            text = if (showPartyName) {
+            modifier = Modifier.constrainAs(ref = showNameRef) {
+                top.linkTo(
+                    anchor = avatarRef.top
+                )
+                start.linkTo(
+                    anchor = avatarRef.end, margin = textMessageHorizontalPadding
+                )
+            }, text = if (showPartyName) {
                 message.messageDetail.sender.showName
             } else {
                 ""
-            },
-            fontSize = 12.sp,
-            textAlign = TextAlign.Start
+            }, fontSize = 12.sp, textAlign = TextAlign.Start
         )
-        Box(
-            modifier = Modifier
-                .constrainAs(ref = messageRef) {
-                    top.linkTo(
-                        anchor = showNameRef.bottom,
-                        margin = textMessageSenderNameVerticalPadding
-                    )
-                    start.linkTo(anchor = showNameRef.start)
-                    width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
-                }
-                .clip(shape = messageShape)
-                .combinedClickable(
-                    onClick = {
-                        chatPageAction.onClickMessage(message)
-                    },
-                    onLongClick = {
-                        chatPageAction.onLongClickMessage(message)
-                    }
+        Box(modifier = Modifier
+            .constrainAs(ref = messageRef) {
+                top.linkTo(
+                    anchor = showNameRef.bottom, margin = textMessageSenderNameVerticalPadding
                 )
+                start.linkTo(anchor = showNameRef.start)
+                width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
+            }
+            .clip(shape = messageShape)
+            .combinedClickable(onClick = {
+                chatPageAction.onClickMessage(message)
+            }, onLongClick = {
+                chatPageAction.onLongClickMessage(message)
+            })
         ) {
             messageContent()
         }
         StateMessage(
-            modifier = Modifier
-                .constrainAs(ref = messageStateRef) {
-                    top.linkTo(anchor = messageRef.top)
-                    bottom.linkTo(anchor = messageRef.bottom)
-                    start.linkTo(anchor = messageRef.end, margin = textMessageHorizontalPadding)
-                },
-            messageState = message.messageDetail.state
+            modifier = Modifier.constrainAs(ref = messageStateRef) {
+                top.linkTo(anchor = messageRef.top)
+                bottom.linkTo(anchor = messageRef.bottom)
+                start.linkTo(
+                    anchor = messageRef.end, margin = textMessageHorizontalPadding
+                )
+            }, messageState = message.messageDetail.state
         )
     }
 }
@@ -275,8 +242,7 @@ private fun TextMessage(message: TextMessage) {
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.primary)
             .padding(
-                horizontal = 6.dp,
-                vertical = 6.dp
+                horizontal = 6.dp, vertical = 6.dp
             ),
         text = message.formatMessage,
         fontSize = 16.sp,
@@ -290,12 +256,16 @@ private fun TimeMessage(message: TimeMessage) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 20.dp, bottom = 20.dp)
-            .wrapContentWidth(align = Alignment.CenterHorizontally)
-            .background(color = Color.LightGray.copy(alpha = 0.4f), shape = timeMessageShape)
-            .padding(all = 3.dp),
-        text = message.formatMessage,
-        fontSize = 11.sp
+            .padding(
+                top = 20.dp, bottom = 20.dp
+            )
+            .wrapContentWidth(
+                align = Alignment.CenterHorizontally
+            )
+            .background(
+                color = Color.LightGray.copy(alpha = 0.4f), shape = timeMessageShape
+            )
+            .padding(all = 3.dp), text = message.formatMessage, fontSize = 11.sp
     )
 }
 
@@ -304,12 +274,16 @@ private fun SystemMessage(message: SystemMessage) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 20.dp, bottom = 20.dp)
-            .wrapContentWidth(align = Alignment.CenterHorizontally)
-            .background(color = Color.LightGray.copy(alpha = 0.4f), shape = timeMessageShape)
-            .padding(all = 3.dp),
-        text = message.formatMessage,
-        fontSize = 12.sp
+            .padding(
+                top = 20.dp, bottom = 20.dp
+            )
+            .wrapContentWidth(
+                align = Alignment.CenterHorizontally
+            )
+            .background(
+                color = Color.LightGray.copy(alpha = 0.4f), shape = timeMessageShape
+            )
+            .padding(all = 3.dp), text = message.formatMessage, fontSize = 12.sp
     )
 }
 
@@ -317,15 +291,15 @@ private fun SystemMessage(message: SystemMessage) {
 private fun ImageMessage(message: ImageMessage) {
     CoilImage(
         modifier = Modifier.size(
-            width = message.widgetWidthDp.dp,
-            height = message.widgetHeightDp.dp
-        ),
-        data = message.preview.url
+            width = message.widgetWidthDp.dp, height = message.widgetHeightDp.dp
+        ), data = message.preview.url
     )
 }
 
 @Composable
-private fun StateMessage(modifier: Modifier, messageState: MessageState) {
+private fun StateMessage(
+    modifier: Modifier, messageState: MessageState
+) {
     when (messageState) {
         MessageState.Sending -> {
             CircularProgressIndicator(

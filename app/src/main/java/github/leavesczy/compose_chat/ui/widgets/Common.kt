@@ -30,9 +30,13 @@ fun CommonOutlinedTextField(
         singleLine = singleLine,
         maxLines = maxLines,
         label = {
-            Text(text = label, fontSize = 14.sp)
+            Text(
+                text = label, fontSize = 14.sp
+            )
         },
-        textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
+        textStyle = MaterialTheme.typography.bodyMedium.copy(
+            color = MaterialTheme.colorScheme.onSurface
+        ),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
             unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
@@ -42,18 +46,18 @@ fun CommonOutlinedTextField(
 }
 
 @Composable
-fun CommonButton(text: String, onClick: () -> Unit) {
+fun CommonButton(
+    text: String, onClick: () -> Unit
+) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 8.dp),
-        content = {
+            .padding(
+                horizontal = 20.dp, vertical = 8.dp
+            ), content = {
             Text(
-                text = text,
-                fontSize = 14.sp,
-                color = Color.White
+                text = text, fontSize = 14.sp, color = Color.White
             )
-        },
-        onClick = onClick
+        }, onClick = onClick
     )
 }

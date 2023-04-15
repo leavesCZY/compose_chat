@@ -26,8 +26,7 @@ import github.leavesczy.compose_chat.utils.showToast
 @Composable
 fun FriendshipDialog(viewState: FriendshipDialogViewState) {
     ComposeBottomSheetDialog(
-        visible = viewState.visible,
-        onDismissRequest = viewState.onDismissRequest
+        visible = viewState.visible, onDismissRequest = viewState.onDismissRequest
     ) {
         var userId by remember {
             mutableStateOf("")
@@ -35,14 +34,20 @@ fun FriendshipDialog(viewState: FriendshipDialogViewState) {
         Column(
             modifier = Modifier
                 .fillMaxHeight(fraction = 0.8f)
-                .clip(shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                .clip(
+                    shape = RoundedCornerShape(
+                        topStart = 20.dp, topEnd = 20.dp
+                    )
+                )
                 .background(color = MaterialTheme.colorScheme.background)
                 .padding(top = 20.dp)
         ) {
             CommonOutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 20.dp),
+                    .padding(
+                        horizontal = 20.dp, vertical = 20.dp
+                    ),
                 value = userId,
                 onValueChange = { id ->
                     val realValue = id.trimStart().trimEnd()

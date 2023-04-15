@@ -28,5 +28,7 @@ fun showToast(msg: Any?) {
 }
 
 private fun showToast(message: String) {
-    Toast.makeText(ContextHolder.context, message, Toast.LENGTH_SHORT).show()
+    Toast.makeText(
+        ContextHolder.context, message, Toast.LENGTH_SHORT
+    ).show()
 }

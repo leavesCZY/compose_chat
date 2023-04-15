@@ -21,8 +21,7 @@ class GroupProfileViewModel(private val groupId: String) : ViewModel() {
 
     var groupProfilePageViewState by mutableStateOf(
         value = GroupProfilePageViewState(
-            groupProfile = GroupProfile.Empty,
-            memberList = emptyList()
+            groupProfile = GroupProfile.Empty, memberList = emptyList()
         )
     )
         private set
@@ -36,8 +35,7 @@ class GroupProfileViewModel(private val groupId: String) : ViewModel() {
                 ComposeChat.groupProvider.getGroupMemberList(groupId = groupId)
             }
             groupProfilePageViewState = groupProfilePageViewState.copy(
-                groupProfile = groupProfileAsync.await(),
-                memberList = memberListAsync.await()
+                groupProfile = groupProfileAsync.await(), memberList = memberListAsync.await()
             )
         }
     }
@@ -58,8 +56,9 @@ class GroupProfileViewModel(private val groupId: String) : ViewModel() {
 
     fun setAvatar(avatarUrl: String) {
         viewModelScope.launch {
-            when (val result =
-                ComposeChat.groupProvider.setAvatar(groupId = groupId, avatarUrl = avatarUrl)) {
+            when (val result = ComposeChat.groupProvider.setAvatar(
+                groupId = groupId, avatarUrl = avatarUrl
+            )) {
                 ActionResult.Success -> {
                     getGroupProfile()
                     showToast(msg = "修改成功")

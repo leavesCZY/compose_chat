@@ -10,7 +10,5 @@ enum class LoginPageAction {
 }
 
 data class LoginPageViewState(
-    val lastLoginUserId: String,
-    val showPanel: Boolean,
-    val loading: Boolean
+    val lastLoginUserId: String, val showPanel: Boolean, val loading: Boolean
 )

@@ -25,9 +25,7 @@ fun FriendProfilePage(friendProfileViewModel: FriendProfileViewModel) {
         val personProfile = friendProfilePageViewState.personProfile
         var openDeleteFriendDialog by remember { mutableStateOf(false) }
         Scaffold(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentWindowInsets = WindowInsets.navigationBars
+            modifier = Modifier.fillMaxSize(), contentWindowInsets = WindowInsets.navigationBars
         ) { innerPadding ->
             Box {
                 Box(
@@ -65,15 +63,11 @@ fun FriendProfilePage(friendProfileViewModel: FriendProfileViewModel) {
                     }
                     SetFriendRemarkDialog(friendProfileViewModel = friendProfileViewModel)
                 }
-                DeleteFriendDialog(
-                    visible = openDeleteFriendDialog,
-                    deleteFriend = {
-                        friendProfileViewModel.deleteFriend()
-                    },
-                    onDismissRequest = {
-                        openDeleteFriendDialog = false
-                    }
-                )
+                DeleteFriendDialog(visible = openDeleteFriendDialog, deleteFriend = {
+                    friendProfileViewModel.deleteFriend()
+                }, onDismissRequest = {
+                    openDeleteFriendDialog = false
+                })
             }
         }
     }
@@ -81,9 +75,7 @@ fun FriendProfilePage(friendProfileViewModel: FriendProfileViewModel) {
 
 @Composable
 private fun DeleteFriendDialog(
-    visible: Boolean,
-    deleteFriend: () -> Unit,
-    onDismissRequest: () -> Unit
+    visible: Boolean, deleteFriend: () -> Unit, onDismissRequest: () -> Unit
 ) {
     MessageDialog(
         visible = visible,
@@ -112,7 +104,11 @@ private fun SetFriendRemarkDialog(friendProfileViewModel: FriendProfileViewModel
             Column(
                 modifier = Modifier
                     .fillMaxHeight(fraction = 0.8f)
-                    .clip(shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                    .clip(
+                        shape = RoundedCornerShape(
+                            topStart = 20.dp, topEnd = 20.dp
+                        )
+                    )
                     .background(color = MaterialTheme.colorScheme.background)
                     .padding(top = 20.dp)
             ) {
@@ -120,8 +116,7 @@ private fun SetFriendRemarkDialog(friendProfileViewModel: FriendProfileViewModel
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
-                            horizontal = 20.dp,
-                            vertical = 10.dp
+                            horizontal = 20.dp, vertical = 10.dp
                         ),
                     value = remark,
                     onValueChange = {

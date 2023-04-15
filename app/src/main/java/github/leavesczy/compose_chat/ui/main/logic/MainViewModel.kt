@@ -32,8 +32,7 @@ class MainViewModel : ViewModel() {
 
     var bottomBarViewState by mutableStateOf(
         value = MainPageBottomBarViewState(
-            selectedTab = MainTab.Conversation,
-            unreadMessageCount = 0
+            selectedTab = MainTab.Conversation, unreadMessageCount = 0
         )
     )
         private set
@@ -64,8 +63,7 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             launch {
                 ComposeChat.conversationProvider.totalUnreadMessageCount.collect {
-                    bottomBarViewState =
-                        bottomBarViewState.copy(unreadMessageCount = it)
+                    bottomBarViewState = bottomBarViewState.copy(unreadMessageCount = it)
                 }
             }
             launch {
@@ -115,8 +113,7 @@ class MainViewModel : ViewModel() {
                     delay(timeMillis = 400)
                     showToast(msg = "添加成功")
                     ChatActivity.navTo(
-                        context = ContextHolder.context,
-                        chat = Chat.PrivateChat(id = formatUserId)
+                        context = ContextHolder.context, chat = Chat.PrivateChat(id = formatUserId)
                     )
                     onFriendshipDialogDismissRequest()
                 }

@@ -36,30 +36,27 @@ fun InputSelector(
     currentInputSelector: InputSelector,
     onInputSelectorChange: (InputSelector) -> Unit,
     sendMessageEnabled: Boolean,
-    onMessageSent: () -> Unit
+    onClickSend: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(start = 20.dp, top = 8.dp, end = 14.dp, bottom = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(
+                start = 20.dp, top = 12.dp, end = 14.dp, bottom = 12.dp
+            ), verticalAlignment = Alignment.CenterVertically
     ) {
-        InputSelectorButton(
-            icon = Icons.Outlined.Mood,
+        InputSelectorButton(icon = Icons.Outlined.Mood,
             selected = currentInputSelector == InputSelector.EMOJI,
             onClick = {
                 onInputSelectorChange(InputSelector.EMOJI)
-            }
-        )
-        InputSelectorButton(
-            modifier = Modifier.padding(start = 16.dp),
+            })
+        InputSelectorButton(modifier = Modifier.padding(start = 16.dp),
             icon = Icons.Outlined.Topic,
             selected = currentInputSelector == InputSelector.Picture,
             onClick = {
                 onInputSelectorChange(InputSelector.Picture)
-            }
-        )
+            })
         Spacer(modifier = Modifier.weight(weight = 1f))
         Text(
             modifier = Modifier
@@ -68,24 +65,22 @@ fun InputSelector(
                     other = if (sendMessageEnabled) {
                         Modifier.background(color = MaterialTheme.colorScheme.primary)
                     } else {
-                        Modifier.background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.46f))
+                        Modifier.background(
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.46f)
+                        )
                     }
                 )
-                .clickable(onClick = onMessageSent)
-                .padding(horizontal = 18.dp, vertical = 6.dp),
-            text = "Send",
-            fontSize = 15.sp,
-            color = Color.White
+                .clickable(onClick = onClickSend)
+                .padding(
+                    horizontal = 18.dp, vertical = 6.dp
+                ), text = "Send", fontSize = 15.sp, color = Color.White
         )
     }
 }
 
 @Composable
 private fun InputSelectorButton(
-    modifier: Modifier = Modifier,
-    icon: ImageVector,
-    selected: Boolean,
-    onClick: () -> Unit
+    modifier: Modifier = Modifier, icon: ImageVector, selected: Boolean, onClick: () -> Unit
 ) {
     Icon(
         modifier = modifier

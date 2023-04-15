@@ -24,8 +24,12 @@ interface IGroupProvider {
 
     suspend fun getGroupMemberList(groupId: String): List<GroupMemberProfile>
 
-    suspend fun setAvatar(groupId: String, avatarUrl: String): ActionResult
+    suspend fun setAvatar(
+        groupId: String, avatarUrl: String
+    ): ActionResult
 
-    suspend fun transferGroupOwner(groupId: String, newOwnerUserID: String): ActionResult
+    suspend fun transferGroupOwner(
+        groupId: String, newOwnerUserID: String
+    ): ActionResult
 
 }

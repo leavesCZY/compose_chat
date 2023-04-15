@@ -22,8 +22,7 @@ fun SystemBarTheme(
 ) {
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
-        color = statusBarColor,
-        darkIcons = statusBarDarkIcons
+        color = statusBarColor, darkIcons = statusBarDarkIcons
     )
     systemUiController.setNavigationBarColor(
         color = navigationBarColor,
@@ -47,8 +46,7 @@ private fun SystemBarTheme(
 ) {
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
-        color = statusBarColor,
-        darkIcons = statusBarDarkIcons
+        color = statusBarColor, darkIcons = statusBarDarkIcons
     )
     systemUiController.setNavigationBarColor(
         color = navigationBarColor,

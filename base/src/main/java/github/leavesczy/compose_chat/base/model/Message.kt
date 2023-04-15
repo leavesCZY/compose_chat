@@ -43,15 +43,21 @@ sealed class Message(val messageDetail: MessageDetail) {
 
 }
 
-data class TextMessage(private val detail: MessageDetail, private val text: String) :
-    Message(messageDetail = detail) {
+data class TextMessage(
+    private val detail: MessageDetail, private val text: String
+) : Message(
+    messageDetail = detail
+) {
 
     override val formatMessage = text
 
 }
 
-data class SystemMessage(private val detail: MessageDetail, private val tips: String) :
-    Message(messageDetail = detail) {
+data class SystemMessage(
+    private val detail: MessageDetail, private val tips: String
+) : Message(
+    messageDetail = detail
+) {
 
     override val formatMessage = tips
 
@@ -77,12 +83,16 @@ data class ImageMessage(
     val widgetHeightDp = if (preview.width <= 0f || preview.height <= 0f) {
         widgetWidthDp
     } else {
-        widgetWidthDp * (minOf(maxImageRatio, 1.0f * preview.height / preview.width))
+        widgetWidthDp * (minOf(
+            maxImageRatio, 1.0f * preview.height / preview.width
+        ))
     }
 
 }
 
-class ImageElement(val width: Int, val height: Int, val url: String)
+class ImageElement(
+    val width: Int, val height: Int, val url: String
+)
 
 class TimeMessage(
     targetMessage: Message
@@ -102,8 +112,9 @@ class TimeMessage(
 
 sealed class LoadMessageResult {
 
-    data class Success(val messageList: List<Message>, val loadFinish: Boolean) :
-        LoadMessageResult()
+    data class Success(
+        val messageList: List<Message>, val loadFinish: Boolean
+    ) : LoadMessageResult()
 
     data class Failed(val reason: String) : LoadMessageResult()
 

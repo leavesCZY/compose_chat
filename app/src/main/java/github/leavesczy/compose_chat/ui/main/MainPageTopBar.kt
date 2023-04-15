@@ -27,26 +27,20 @@ fun MainPageTopBar(mainViewModel: MainViewModel) {
         mutableStateOf(false)
     }
     val coroutineScope = rememberCoroutineScope()
-    CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
+    CenterAlignedTopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
         title = {
 
         },
         navigationIcon = {
-            IconButton(
-                modifier = Modifier,
-                content = {
-                    Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = null
-                    )
-                },
-                onClick = {
-                    coroutineScope.launch {
-                        mainViewModel.drawerViewState.drawerState.open()
-                    }
+            IconButton(modifier = Modifier, content = {
+                Icon(
+                    imageVector = Icons.Filled.Menu, contentDescription = null
+                )
+            }, onClick = {
+                coroutineScope.launch {
+                    mainViewModel.drawerViewState.drawerState.open()
                 }
-            )
+            })
         },
         actions = {
             Box(modifier = Modifier) {
@@ -62,15 +56,14 @@ fun MainPageTopBar(mainViewModel: MainViewModel) {
                         .align(alignment = Alignment.TopEnd)
                         .padding(end = 10.dp)
                 ) {
-                    DropdownMenu(modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
-                        expanded = menuExpanded,
-                        onDismissRequest = {
-                            menuExpanded = false
-                        }) {
+                    DropdownMenu(modifier = Modifier.background(
+                        color = MaterialTheme.colorScheme.background
+                    ), expanded = menuExpanded, onDismissRequest = {
+                        menuExpanded = false
+                    }) {
                         DropdownMenuItem(text = {
                             Text(
-                                text = "添加好友",
-                                fontSize = 17.sp
+                                text = "添加好友", fontSize = 18.sp
                             )
                         }, onClick = {
                             menuExpanded = false
@@ -78,8 +71,7 @@ fun MainPageTopBar(mainViewModel: MainViewModel) {
                         })
                         DropdownMenuItem(text = {
                             Text(
-                                text = "加入群聊",
-                                fontSize = 17.sp
+                                text = "加入群聊", fontSize = 18.sp
                             )
                         }, onClick = {
                             menuExpanded = false
@@ -88,6 +80,5 @@ fun MainPageTopBar(mainViewModel: MainViewModel) {
                     }
                 }
             }
-        }
-    )
+        })
 }

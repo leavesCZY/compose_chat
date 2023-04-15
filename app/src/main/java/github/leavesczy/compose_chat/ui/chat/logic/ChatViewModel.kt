@@ -4,10 +4,13 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.model.*
 import github.leavesczy.compose_chat.base.provider.IMessageProvider
+import github.leavesczy.compose_chat.ui.chat.InputSelector
 import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
 import github.leavesczy.compose_chat.utils.CompressImageUtils
 import github.leavesczy.compose_chat.utils.ContextHolder
@@ -25,6 +28,12 @@ import kotlin.system.measureTimeMillis
  */
 class ChatViewModel(private val chat: Chat) : ViewModel() {
 
+    companion object {
+
+        private const val TEXT_MSG_MAX_LENGTH = 200
+
+    }
+
     private val allMessage = mutableListOf<Message>()
 
     private val lastMessage: Message?
@@ -41,24 +50,30 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
 
     var chatPageViewState by mutableStateOf(
         value = ChatPageViewState(
-            chat = chat,
-            topBarTitle = "",
-            listState = LazyListState(firstVisibleItemIndex = 0, firstVisibleItemScrollOffset = 0),
-            messageList = emptyList()
+            chat = chat, topBarTitle = "", listState = LazyListState(
+                firstVisibleItemIndex = 0, firstVisibleItemScrollOffset = 0
+            ), messageList = emptyList()
         )
     )
         private set
 
     var loadMessageViewState by mutableStateOf(
         value = LoadMessageViewState(
-            refreshing = false,
-            loadFinish = false
+            refreshing = false, loadFinish = false
         )
     )
         private set
 
+    var textMessageInputted by mutableStateOf(value = TextFieldValue(text = ""))
+        private set
+
+    var currentInputSelector by mutableStateOf(value = InputSelector.NONE)
+        private set
+
     init {
-        ComposeChat.messageProvider.startReceive(chat = chat, messageListener = messageListener)
+        ComposeChat.messageProvider.startReceive(
+            chat = chat, messageListener = messageListener
+        )
         ComposeChat.accountProvider.refreshPersonProfile()
         viewModelScope.launch {
             val name = when (chat) {
@@ -80,8 +95,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
             val loadResult: LoadMessageResult
             val loadDuration = measureTimeMillis {
                 loadResult = ComposeChat.messageProvider.getHistoryMessage(
-                    chat = chat,
-                    lastMessage = lastMessage
+                    chat = chat, lastMessage = lastMessage
                 )
             }
             val delay = 500L - loadDuration
@@ -98,15 +112,63 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                 }
             }
             loadMessageViewState = LoadMessageViewState(
-                refreshing = false,
-                loadFinish = loadFinish
+                refreshing = false, loadFinish = loadFinish
             )
         }
     }
 
-    fun sendTextMessage(text: String) {
+    fun onUserInputChanged(input: TextFieldValue) {
+        val newMessage = if (textMessageInputted.text.length >= TEXT_MSG_MAX_LENGTH) {
+            if (input.text.length > TEXT_MSG_MAX_LENGTH) {
+                return
+            }
+            input
+        } else {
+            if (input.text.length > TEXT_MSG_MAX_LENGTH) {
+                textMessageInputted.copy(
+                    text = input.text.substring(
+                        0, TEXT_MSG_MAX_LENGTH
+                    )
+                )
+            } else {
+                input
+            }
+        }
+        textMessageInputted = newMessage
+    }
+
+    fun appendEmoji(emoji: String) {
+        if (textMessageInputted.text.length + emoji.length > TEXT_MSG_MAX_LENGTH) {
+            return
+        }
+        val currentText = textMessageInputted.text
+        val currentSelection = textMessageInputted.selection.end
+        val currentSelectedText = currentText.substring(
+            0, currentSelection
+        )
+        val messageAppend = currentSelectedText + emoji
+        val selectedAppend = messageAppend.length
+        textMessageInputted = TextFieldValue(
+            text = messageAppend + currentText.substring(
+                currentSelection, currentText.length
+            ), selection = TextRange(index = selectedAppend)
+        )
+    }
+
+    fun onInputSelectorChanged(newSelector: InputSelector) {
+        currentInputSelector = newSelector
+    }
+
+    fun sendTextMessage() {
         viewModelScope.launch {
-            val messageChannel = ComposeChat.messageProvider.sendText(chat = chat, text = text)
+            val text = textMessageInputted.text
+            if (text.isEmpty()) {
+                return@launch
+            }
+            textMessageInputted = TextFieldValue(text = "")
+            val messageChannel = ComposeChat.messageProvider.sendText(
+                chat = chat, text = text
+            )
             handleMessageChannel(messageChannel = messageChannel)
         }
     }
@@ -114,15 +176,15 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     fun sendImageMessage(mediaResource: MediaResource) {
         viewModelScope.launch {
             val imageFile = CompressImageUtils.compressImage(
-                context = ContextHolder.context,
-                mediaResource = mediaResource
+                context = ContextHolder.context, mediaResource = mediaResource
             )
             val imagePath = imageFile?.absolutePath
             if (imagePath.isNullOrBlank()) {
                 showToast(msg = "图片获取失败")
             } else {
-                val messageChannel =
-                    ComposeChat.messageProvider.sendImage(chat = chat, imagePath = imagePath)
+                val messageChannel = ComposeChat.messageProvider.sendImage(
+                    chat = chat, imagePath = imagePath
+                )
                 handleMessageChannel(messageChannel = messageChannel)
             }
         }
@@ -138,14 +200,12 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                 }
                 MessageState.Completed -> {
                     resetMessageState(
-                        msgId = sendingMessage.messageDetail.msgId,
-                        messageState = state
+                        msgId = sendingMessage.messageDetail.msgId, messageState = state
                     )
                 }
                 is MessageState.SendFailed -> {
                     resetMessageState(
-                        msgId = sendingMessage.messageDetail.msgId,
-                        messageState = state
+                        msgId = sendingMessage.messageDetail.msgId, messageState = state
                     )
                     val failReason = state.reason
                     if (failReason.isNotBlank()) {
@@ -156,9 +216,10 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
         }
     }
 
-    private fun resetMessageState(msgId: String, messageState: MessageState) {
-        val index =
-            allMessage.indexOfFirst { it.messageDetail.msgId == msgId }
+    private fun resetMessageState(
+        msgId: String, messageState: MessageState
+    ) {
+        val index = allMessage.indexOfFirst { it.messageDetail.msgId == msgId }
         if (index >= 0) {
             val targetMessage = allMessage[index]
             val messageDetail = targetMessage.messageDetail
@@ -181,12 +242,16 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     private fun attachNewMessage(newMessage: Message) {
         val firstMessage = allMessage.getOrNull(0)
         if (firstMessage == null || newMessage.messageDetail.timestamp - firstMessage.messageDetail.timestamp > 60) {
-            allMessage.add(0, TimeMessage(targetMessage = newMessage))
+            allMessage.add(
+                0, TimeMessage(targetMessage = newMessage)
+            )
         }
-        allMessage.add(0, newMessage)
+        allMessage.add(
+            0, newMessage
+        )
         chatPageViewState = chatPageViewState.copy(messageList = allMessage.toList())
         viewModelScope.launch {
-            delay(timeMillis = 20)
+            delay(timeMillis = 80)
             chatPageViewState.listState.scrollToItem(index = 0)
         }
     }
@@ -215,7 +280,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     }
 
     private fun markMessageAsRead() {
-        ComposeChat.messageProvider.markMessageAsRead(chat = chat)
+        ComposeChat.conversationProvider.cleanConversationUnreadMessageCount(chat = chat)
     }
 
     override fun onCleared() {

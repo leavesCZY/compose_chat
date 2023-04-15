@@ -21,13 +21,11 @@ fun LoadingDialog(visible: Boolean) {
 
     })
     if (visible) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clickableNoRipple {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .clickableNoRipple {
 
-                }
-        ) {
+            }) {
             CircularProgressIndicator(
                 modifier = Modifier.align(alignment = Alignment.Center),
                 color = MaterialTheme.colorScheme.primary

@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
@@ -37,8 +37,7 @@ private val headerPicHeightDp = 500.dp
 
 @Composable
 fun GroupProfilePage(
-    groupProfileViewModel: GroupProfileViewModel,
-    action: GroupProfilePageAction
+    groupProfileViewModel: GroupProfileViewModel, action: GroupProfilePageAction
 ) {
     val viewState = groupProfileViewModel.groupProfilePageViewState
     val density = LocalDensity.current.density
@@ -54,15 +53,16 @@ fun GroupProfilePage(
             listState.firstVisibleItemScrollOffset
         }.collect {
             topBarAlpha = if (listState.firstVisibleItemIndex == 0) {
-                minOf(it / headerMaxOffsetPx, 1f)
+                minOf(
+                    it / headerMaxOffsetPx, 1f
+                )
             } else {
                 1f
             }
         }
     }
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        contentWindowInsets = WindowInsets.navigationBars
+        modifier = Modifier.fillMaxSize(), contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -76,26 +76,21 @@ fun GroupProfilePage(
             ) {
                 item(key = "header") {
                     val groupProfile = viewState.groupProfile
-                    ProfilePanel(
-                        title = groupProfile.name,
+                    ProfilePanel(title = groupProfile.name,
                         subtitle = groupProfile.introduction,
                         introduction = "GroupID: ${groupProfile.id}\nCreateTime: ${groupProfile.createTimeFormat}\nMemberCount: ${groupProfile.memberCount}",
                         avatarUrl = groupProfile.faceUrl,
                         content = {
 
-                        }
-                    )
+                        })
                 }
-                items(
-                    items = viewState.memberList,
-                    key = {
-                        it.detail.id
-                    }, itemContent = {
-                        GroupMemberItem(
-                            groupMemberProfile = it,
-                            groupProfilePageAction = action
-                        )
-                    })
+                items(items = viewState.memberList, key = {
+                    it.detail.id
+                }, itemContent = {
+                    GroupMemberItem(
+                        groupMemberProfile = it, groupProfilePageAction = action
+                    )
+                })
             }
             GroupProfilePageTopBar(
                 title = viewState.groupProfile.name,
@@ -108,8 +103,7 @@ fun GroupProfilePage(
 
 @Composable
 private fun GroupMemberItem(
-    groupMemberProfile: GroupMemberProfile,
-    groupProfilePageAction: GroupProfilePageAction
+    groupMemberProfile: GroupMemberProfile, groupProfilePageAction: GroupProfilePageAction
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -119,79 +113,71 @@ private fun GroupMemberItem(
             },
     ) {
         val (avatarRef, showNameRef, roleRef, dividerRef) = createRefs()
-        val verticalChain =
-            createVerticalChain(showNameRef, roleRef, chainStyle = ChainStyle.Packed)
+        val verticalChain = createVerticalChain(
+            showNameRef, roleRef, chainStyle = ChainStyle.Packed
+        )
         constrain(ref = verticalChain) {
             top.linkTo(anchor = parent.top)
             bottom.linkTo(anchor = parent.bottom)
         }
-        CoilImage(
-            modifier = Modifier
-                .constrainAs(ref = avatarRef) {
-                    start.linkTo(anchor = parent.start)
-                    linkTo(top = parent.top, bottom = parent.bottom)
-                }
-                .padding(start = 12.dp, top = 8.dp, bottom = 8.dp)
-                .size(size = 50.dp)
-                .clip(shape = CircleShape),
-            data = groupMemberProfile.detail.faceUrl
-        )
-        Text(
-            modifier = Modifier
-                .constrainAs(ref = showNameRef) {
-                    linkTo(
-                        start = avatarRef.end,
-                        end = parent.end,
-                        startMargin = 12.dp,
-                        endMargin = 12.dp
-                    )
-                    width = Dimension.fillToConstraints
-                }
-                .padding(bottom = 2.dp),
-            text = groupMemberProfile.detail.showName + "（${
-                groupMemberProfile.detail.id + if (groupMemberProfile.isOwner) {
-                    " - 群主"
-                } else {
-                    ""
-                }
-            }）",
-            fontSize = 17.sp,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
-        Text(
-            modifier = Modifier
-                .constrainAs(ref = roleRef) {
-                    linkTo(
-                        start = showNameRef.start,
-                        end = parent.end,
-                        endMargin = 12.dp
-                    )
-                    width = Dimension.fillToConstraints
-                }
-                .padding(top = 2.dp),
+        CoilImage(modifier = Modifier
+            .constrainAs(ref = avatarRef) {
+                start.linkTo(anchor = parent.start)
+                linkTo(
+                    top = parent.top, bottom = parent.bottom
+                )
+            }
+            .padding(
+                start = 14.dp, top = 8.dp, bottom = 8.dp
+            )
+            .size(size = 48.dp)
+            .clip(
+                shape = RoundedCornerShape(size = 6.dp)
+            ), data = groupMemberProfile.detail.faceUrl)
+        Text(modifier = Modifier
+            .constrainAs(ref = showNameRef) {
+                linkTo(
+                    start = avatarRef.end,
+                    end = parent.end,
+                    startMargin = 12.dp,
+                    endMargin = 12.dp
+                )
+                width = Dimension.fillToConstraints
+            }
+            .padding(bottom = 1.dp), text = groupMemberProfile.detail.showName + "（${
+            groupMemberProfile.detail.id + if (groupMemberProfile.isOwner) {
+                " - 群主"
+            } else {
+                ""
+            }
+        }）", fontSize = 17.sp, overflow = TextOverflow.Ellipsis, maxLines = 1)
+        Text(modifier = Modifier
+            .constrainAs(ref = roleRef) {
+                linkTo(
+                    start = showNameRef.start, end = parent.end, endMargin = 12.dp
+                )
+                width = Dimension.fillToConstraints
+            }
+            .padding(top = 1.dp),
             text = "joinTime: ${groupMemberProfile.joinTimeFormat}",
             fontSize = 14.sp,
             overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
+            maxLines = 1)
         Divider(
-            modifier = Modifier
-                .constrainAs(ref = dividerRef) {
-                    linkTo(start = avatarRef.end, end = parent.end)
-                    bottom.linkTo(anchor = parent.bottom)
-                    width = Dimension.fillToConstraints
-                },
-            thickness = 0.2.dp
+            modifier = Modifier.constrainAs(ref = dividerRef) {
+                linkTo(
+                    start = avatarRef.end, end = parent.end
+                )
+                bottom.linkTo(anchor = parent.bottom)
+                width = Dimension.fillToConstraints
+            }, thickness = 0.2.dp
         )
     }
 }
 
 @Composable
 private fun GroupProfilePageTopBar(
-    title: String,
-    alpha: Float,
-    groupProfilePageAction: GroupProfilePageAction
+    title: String, alpha: Float, groupProfilePageAction: GroupProfilePageAction
 ) {
     var menuExpanded by remember {
         mutableStateOf(false)
@@ -217,31 +203,30 @@ private fun GroupProfilePageTopBar(
             modifier = Modifier
                 .align(alignment = Alignment.CenterEnd)
                 .padding(end = 12.dp)
-                .size(size = 28.dp)
+                .size(
+                    size = 28.dp
+                )
                 .clickable {
                     menuExpanded = true
-                },
-            imageVector = Icons.Default.MoreVert,
-            contentDescription = null
+                }, imageVector = Icons.Default.MoreVert, contentDescription = null
         )
     }
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentSize(align = Alignment.TopEnd)
-            .padding(end = 20.dp)
+            .padding(
+                end = 20.dp
+            )
     ) {
-        DropdownMenu(
-            modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+        DropdownMenu(modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
             expanded = menuExpanded,
             onDismissRequest = {
                 menuExpanded = false
-            }
-        ) {
+            }) {
             DropdownMenuItem(text = {
                 Text(
-                    text = "修改头像",
-                    fontSize = 17.sp
+                    text = "修改头像", fontSize = 18.sp
                 )
             }, onClick = {
                 menuExpanded = false
@@ -249,8 +234,7 @@ private fun GroupProfilePageTopBar(
             })
             DropdownMenuItem(text = {
                 Text(
-                    text = "退出群聊",
-                    fontSize = 17.sp
+                    text = "退出群聊", fontSize = 18.sp
                 )
             }, onClick = {
                 menuExpanded = false

@@ -25,8 +25,7 @@ fun MainPage(
     friendshipViewModel: FriendshipViewModel,
     personProfileViewModel: PersonProfileViewModel
 ) {
-    ModalNavigationDrawer(
-        modifier = Modifier.fillMaxSize(),
+    ModalNavigationDrawer(modifier = Modifier.fillMaxSize(),
         drawerState = mainViewModel.drawerViewState.drawerState,
         drawerContent = {
             MainPageDrawer(mainViewModel = mainViewModel)
@@ -35,7 +34,9 @@ fun MainPage(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = MaterialTheme.colorScheme.background)
+                    .background(
+                        color = MaterialTheme.colorScheme.background
+                    )
             ) {
                 val bottomBarViewState = mainViewModel.bottomBarViewState
                 Column(modifier = Modifier.fillMaxSize()) {
@@ -63,13 +64,11 @@ fun MainPage(
                     }
                     key(AppThemeProvider.appTheme) {
                         MainPageBottomBar(
-                            mainViewModel = mainViewModel,
-                            viewState = bottomBarViewState
+                            mainViewModel = mainViewModel, viewState = bottomBarViewState
                         )
                     }
                 }
                 FriendshipDialog(viewState = mainViewModel.friendshipDialogViewState)
             }
-        }
-    )
+        })
 }

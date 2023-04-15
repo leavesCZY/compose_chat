@@ -39,44 +39,40 @@ class ProfileUpdateViewModel : ViewModel() {
     fun onNicknameChanged(nickname: String) {
         val mProfileUpdatePageViewStata = profileUpdatePageViewStata
         if (mProfileUpdatePageViewStata != null) {
-            profileUpdatePageViewStata =
-                mProfileUpdatePageViewStata.copy(
-                    personProfile = mProfileUpdatePageViewStata.personProfile.copy(
-                        nickname = nickname
-                    )
+            profileUpdatePageViewStata = mProfileUpdatePageViewStata.copy(
+                personProfile = mProfileUpdatePageViewStata.personProfile.copy(
+                    nickname = nickname
                 )
+            )
         }
     }
 
     fun onSignatureChanged(signature: String) {
         val mProfileUpdatePageViewStata = profileUpdatePageViewStata
         if (mProfileUpdatePageViewStata != null) {
-            profileUpdatePageViewStata =
-                mProfileUpdatePageViewStata.copy(
-                    personProfile = mProfileUpdatePageViewStata.personProfile.copy(
-                        signature = signature
-                    )
+            profileUpdatePageViewStata = mProfileUpdatePageViewStata.copy(
+                personProfile = mProfileUpdatePageViewStata.personProfile.copy(
+                    signature = signature
                 )
+            )
         }
     }
 
     fun onFaceUrlChanged(imageUrl: String) {
         val mProfileUpdatePageViewStata = profileUpdatePageViewStata
         if (mProfileUpdatePageViewStata != null) {
-            profileUpdatePageViewStata =
-                mProfileUpdatePageViewStata.copy(
-                    personProfile = mProfileUpdatePageViewStata.personProfile.copy(
-                        faceUrl = imageUrl
-                    )
+            profileUpdatePageViewStata = mProfileUpdatePageViewStata.copy(
+                personProfile = mProfileUpdatePageViewStata.personProfile.copy(
+                    faceUrl = imageUrl
                 )
+            )
         }
     }
 
     fun onFaceUrlChanged(mediaResource: MediaResource) {
         viewModelScope.launch {
             val imageFile = CompressImageUtils.compressImage(
-                context = ContextHolder.context,
-                mediaResource = mediaResource
+                context = ContextHolder.context, mediaResource = mediaResource
             )
             val imagePath = imageFile?.absolutePath
             if (!imagePath.isNullOrBlank()) {
@@ -90,12 +86,11 @@ class ProfileUpdateViewModel : ViewModel() {
                     showToast(msg = "图片已上传")
                     val mProfileUpdatePageViewStata = profileUpdatePageViewStata
                     if (mProfileUpdatePageViewStata != null) {
-                        profileUpdatePageViewStata =
-                            mProfileUpdatePageViewStata.copy(
-                                personProfile = mProfileUpdatePageViewStata.personProfile.copy(
-                                    faceUrl = result
-                                )
+                        profileUpdatePageViewStata = mProfileUpdatePageViewStata.copy(
+                            personProfile = mProfileUpdatePageViewStata.personProfile.copy(
+                                faceUrl = result
                             )
+                        )
                     }
                 }
             }

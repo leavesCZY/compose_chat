@@ -34,81 +34,88 @@ fun ProfilePanel(
     val context = LocalContext.current
     ConstraintLayout(modifier = Modifier) {
         val (titleRef, subtitleRef, introductionRef, backgroundRef, avatarRef, contentRef) = createRefs()
-        BezierImage(
-            modifier = Modifier
-                .constrainAs(ref = backgroundRef) {
-                    linkTo(start = parent.start, end = parent.end)
-                    top.linkTo(anchor = parent.top)
-                }
-                .aspectRatio(ratio = 5f / 4f)
-                .zIndex(zIndex = -100f)
-                .scrim(
-                    color = Color(0x33000000)
-                ),
-            data = avatarUrl
-        )
-        BouncyImage(
-            modifier = Modifier
-                .constrainAs(ref = avatarRef) {
-                    linkTo(
-                        top = backgroundRef.top,
-                        bottom = backgroundRef.bottom,
-                        bias = 0.3f
+        BezierImage(modifier = Modifier
+            .constrainAs(ref = backgroundRef) {
+                linkTo(
+                    start = parent.start, end = parent.end
+                )
+                top.linkTo(anchor = parent.top)
+            }
+            .aspectRatio(ratio = 5f / 4f)
+            .zIndex(zIndex = -100f)
+            .scrim(
+                color = Color(0x33000000)
+            ), data = avatarUrl)
+        BouncyImage(modifier = Modifier
+            .constrainAs(ref = avatarRef) {
+                linkTo(
+                    top = backgroundRef.top, bottom = backgroundRef.bottom, bias = 0.3f
+                )
+                linkTo(
+                    start = backgroundRef.start, end = backgroundRef.end
+                )
+            }
+            .size(size = 90.dp)
+            .clickableNoRipple {
+                if (avatarUrl.isNotBlank()) {
+                    PreviewImageActivity.navTo(
+                        context = context, imagePath = avatarUrl
                     )
-                    linkTo(start = backgroundRef.start, end = backgroundRef.end)
                 }
-                .size(size = 90.dp)
-                .clickableNoRipple {
-                    if (avatarUrl.isNotBlank()) {
-                        PreviewImageActivity.navTo(context = context, imagePath = avatarUrl)
-                    }
-                },
-            data = avatarUrl
+            }, data = avatarUrl
         )
-        Text(
-            modifier = Modifier
-                .constrainAs(ref = titleRef) {
-                    linkTo(start = backgroundRef.start, end = backgroundRef.end)
-                    top.linkTo(anchor = avatarRef.bottom, margin = 10.dp)
-                }
-                .padding(horizontal = 10.dp),
+        Text(modifier = Modifier
+            .constrainAs(ref = titleRef) {
+                linkTo(
+                    start = backgroundRef.start, end = backgroundRef.end
+                )
+                top.linkTo(
+                    anchor = avatarRef.bottom, margin = 10.dp
+                )
+            }
+            .padding(horizontal = 10.dp),
             text = title,
             fontSize = 18.sp,
             textAlign = TextAlign.Center,
-            color = Color.White
-        )
-        Text(
-            modifier = Modifier
-                .constrainAs(ref = subtitleRef) {
-                    linkTo(start = backgroundRef.start, end = backgroundRef.end)
-                    top.linkTo(anchor = titleRef.bottom, margin = 10.dp)
-                }
-                .padding(horizontal = 10.dp),
+            color = Color.White)
+        Text(modifier = Modifier
+            .constrainAs(ref = subtitleRef) {
+                linkTo(
+                    start = backgroundRef.start, end = backgroundRef.end
+                )
+                top.linkTo(
+                    anchor = titleRef.bottom, margin = 10.dp
+                )
+            }
+            .padding(horizontal = 10.dp),
             text = subtitle,
             fontSize = 15.sp,
             textAlign = TextAlign.Center,
-            color = Color.White
-        )
-        Text(
-            modifier = Modifier
-                .constrainAs(ref = introductionRef) {
-                    linkTo(start = backgroundRef.start, end = backgroundRef.end)
-                    top.linkTo(anchor = subtitleRef.bottom, margin = 10.dp)
-                }
-                .padding(horizontal = 10.dp),
+            color = Color.White)
+        Text(modifier = Modifier
+            .constrainAs(ref = introductionRef) {
+                linkTo(
+                    start = backgroundRef.start, end = backgroundRef.end
+                )
+                top.linkTo(
+                    anchor = subtitleRef.bottom, margin = 10.dp
+                )
+            }
+            .padding(horizontal = 10.dp),
             text = introduction,
             fontSize = 15.sp,
             textAlign = TextAlign.Center,
-            color = Color.White
-        )
-        Box(
-            modifier = Modifier
-                .constrainAs(ref = contentRef) {
-                    linkTo(start = backgroundRef.start, end = backgroundRef.end)
-                    top.linkTo(anchor = introductionRef.bottom, margin = 60.dp)
-                }
-                .zIndex(zIndex = 1f)
-        ) {
+            color = Color.White)
+        Box(modifier = Modifier
+            .constrainAs(ref = contentRef) {
+                linkTo(
+                    start = backgroundRef.start, end = backgroundRef.end
+                )
+                top.linkTo(
+                    anchor = introductionRef.bottom, margin = 60.dp
+                )
+            }
+            .zIndex(zIndex = 1f)) {
             content()
         }
     }

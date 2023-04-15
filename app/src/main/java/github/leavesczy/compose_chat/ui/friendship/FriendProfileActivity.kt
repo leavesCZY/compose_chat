@@ -22,9 +22,15 @@ class FriendProfileActivity : BaseActivity() {
 
         private const val keyFriendId = "keyFriendId"
 
-        fun navTo(context: Context, friendId: String) {
-            val intent = Intent(context, FriendProfileActivity::class.java)
-            intent.putExtra(keyFriendId, friendId)
+        fun navTo(
+            context: Context, friendId: String
+        ) {
+            val intent = Intent(
+                context, FriendProfileActivity::class.java
+            )
+            intent.putExtra(
+                keyFriendId, friendId
+            )
             context.startActivity(intent)
         }
 

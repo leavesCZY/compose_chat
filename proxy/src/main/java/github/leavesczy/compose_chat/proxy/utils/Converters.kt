@@ -14,14 +14,15 @@ internal object Converters {
 
     suspend fun getSelfProfileOrigin(): V2TIMUserFullInfo? {
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getInstance()
-                .getUsersInfo(listOf(V2TIMManager.getInstance().loginUser), object :
-                    V2TIMValueCallback<List<V2TIMUserFullInfo>> {
+            V2TIMManager.getInstance().getUsersInfo(listOf(V2TIMManager.getInstance().loginUser),
+                object : V2TIMValueCallback<List<V2TIMUserFullInfo>> {
                     override fun onSuccess(t: List<V2TIMUserFullInfo>) {
                         continuation.resume(value = t[0])
                     }
 
-                    override fun onError(code: Int, desc: String?) {
+                    override fun onError(
+                        code: Int, desc: String?
+                    ) {
                         continuation.resume(value = null)
                     }
                 })
@@ -61,8 +62,7 @@ internal object Converters {
             remark = friendInfo.friendInfo.friendRemark ?: "",
             faceUrl = friendInfo.friendInfo.userProfile.faceUrl ?: "",
             signature = friendInfo.friendInfo.userProfile.selfSignature ?: "",
-            isFriend = friendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_BOTH_WAY ||
-                    friendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_IN_MY_FRIEND_LIST
+            isFriend = friendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_BOTH_WAY || friendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_IN_MY_FRIEND_LIST
         )
     }
 
@@ -123,8 +123,7 @@ internal object Converters {
         val message = when (timMessage.elemType) {
             V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> {
                 TextMessage(
-                    detail = messageDetail,
-                    text = timMessage.textElem?.text ?: ""
+                    detail = messageDetail, text = timMessage.textElem?.text ?: ""
                 )
             }
             V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE -> {
@@ -134,10 +133,7 @@ internal object Converters {
                     val large = imageList.getOrNull(1).toImageElement()
                     val thumb = imageList.getOrNull(2).toImageElement()
                     ImageMessage(
-                        detail = messageDetail,
-                        original = origin!!,
-                        large = large,
-                        thumb = thumb
+                        detail = messageDetail, original = origin!!, large = large, thumb = thumb
                     )
                 } else {
                     null
@@ -150,8 +146,7 @@ internal object Converters {
                 null
             }
         } ?: TextMessage(
-            detail = messageDetail,
-            text = "[不支持的消息类型] - ${timMessage.elemType}"
+            detail = messageDetail, text = "[不支持的消息类型] - ${timMessage.elemType}"
         )
         message.tag = timMessage
         return message
@@ -180,11 +175,7 @@ internal object Converters {
                 state = MessageState.Completed,
                 timestamp = timMessage.timestamp,
                 sender = PersonProfile(
-                    id = timMessage.sender,
-                    faceUrl = "",
-                    nickname = "",
-                    remark = "",
-                    signature = ""
+                    id = timMessage.sender, faceUrl = "", nickname = "", remark = "", signature = ""
                 ),
                 isSelfMessage = false
             )
@@ -204,8 +195,7 @@ internal object Converters {
             val opMemberName = opMember.showName() + " "
             val tips: String
             when (groupTipsElem.type) {
-                V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_JOIN,
-                V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_INVITE -> {
+                V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_JOIN, V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_INVITE -> {
                     tips = memberNames + "加入了群聊"
                 }
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_QUIT -> {
@@ -231,8 +221,7 @@ internal object Converters {
                 }
             }
             return SystemMessage(
-                detail = messageDetail,
-                tips = tips
+                detail = messageDetail, tips = tips
             )
         }
         return null
@@ -242,7 +231,9 @@ internal object Converters {
         if (this == null) {
             return null
         }
-        return ImageElement(width = width, height = height, url = url)
+        return ImageElement(
+            width = width, height = height, url = url
+        )
     }
 
     private fun convertMessageState(state: Int): MessageState {
@@ -264,16 +255,17 @@ internal object Converters {
 
     private suspend fun deleteConversation(key: String): ActionResult {
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getConversationManager().deleteConversation(
-                key, object : V2TIMCallback {
-                    override fun onSuccess() {
-                        continuation.resume(ActionResult.Success)
-                    }
+            V2TIMManager.getConversationManager().deleteConversation(key, object : V2TIMCallback {
+                override fun onSuccess() {
+                    continuation.resume(ActionResult.Success)
+                }
 
-                    override fun onError(code: Int, desc: String?) {
-                        continuation.resume(ActionResult.Failed(desc ?: ""))
-                    }
-                })
+                override fun onError(
+                    code: Int, desc: String?
+                ) {
+                    continuation.resume(ActionResult.Failed(desc ?: ""))
+                }
+            })
         }
     }
 
@@ -296,12 +288,27 @@ internal object Converters {
         }
     }
 
+    fun getConversationKey(chat: Chat): String {
+        return when (chat) {
+            is Chat.GroupChat -> {
+                getGroupConversationKey(groupId = chat.id)
+            }
+            is Chat.PrivateChat -> {
+                getC2CConversationKey(userId = chat.id)
+            }
+        }
+    }
+
     private fun getC2CConversationKey(userId: String): String {
-        return String.format("c2c_%s", userId)
+        return String.format(
+            "c2c_%s", userId
+        )
     }
 
     private fun getGroupConversationKey(groupId: String): String {
-        return String.format("group_%s", groupId)
+        return String.format(
+            "group_%s", groupId
+        )
     }
 
 }

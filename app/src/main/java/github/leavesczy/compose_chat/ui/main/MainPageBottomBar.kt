@@ -28,45 +28,40 @@ import github.leavesczy.compose_chat.ui.main.logic.MainViewModel
  */
 @Composable
 fun MainPageBottomBar(
-    mainViewModel: MainViewModel,
-    viewState: MainPageBottomBarViewState
+    mainViewModel: MainViewModel, viewState: MainPageBottomBarViewState
 ) {
     Row(
         modifier = Modifier
             .shadow(elevation = 18.dp)
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(
+                color = MaterialTheme.colorScheme.background
+            )
             .fillMaxWidth()
             .navigationBarsPadding()
             .height(height = 54.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        NavigationBarItem(
-            tab = MainTab.Conversation,
+        NavigationBarItem(tab = MainTab.Conversation,
             icon = Icons.Filled.Cabin,
             selectedTab = viewState.selectedTab,
             unreadMessageCount = viewState.unreadMessageCount,
             onClick = {
                 mainViewModel.onTabSelected(tab = MainTab.Conversation)
-            }
-        )
-        NavigationBarItem(
-            tab = MainTab.Friendship,
+            })
+        NavigationBarItem(tab = MainTab.Friendship,
             icon = Icons.Filled.Sailing,
             selectedTab = viewState.selectedTab,
             unreadMessageCount = viewState.unreadMessageCount,
             onClick = {
                 mainViewModel.onTabSelected(tab = MainTab.Friendship)
-            }
-        )
-        NavigationBarItem(
-            tab = MainTab.Person,
+            })
+        NavigationBarItem(tab = MainTab.Person,
             icon = Icons.Filled.ColorLens,
             selectedTab = viewState.selectedTab,
             unreadMessageCount = viewState.unreadMessageCount,
             onClick = {
                 mainViewModel.onTabSelected(tab = MainTab.Person)
-            }
-        )
+            })
     }
 }
 
@@ -88,24 +83,28 @@ private fun RowScope.NavigationBarItem(
             if (tab == MainTab.Conversation && unreadMessageCount > 0) {
                 Text(
                     modifier = Modifier
-                        .offset(x = 18.dp, y = (-10).dp)
-                        .size(size = 22.dp)
+                        .offset(
+                            x = 18.dp, y = (-10).dp
+                        )
+                        .size(
+                            size = 22.dp
+                        )
                         .background(
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = CircleShape
+                            color = MaterialTheme.colorScheme.primary, shape = CircleShape
                         )
                         .wrapContentSize(align = Alignment.Center),
-                    text = if (unreadMessageCount > 99) "99+" else unreadMessageCount.toString(),
+                    text = if (unreadMessageCount > 99) {
+                        "99+"
+                    } else {
+                        unreadMessageCount.toString()
+                    },
                     color = Color.White,
                     fontSize = 12.sp,
                     textAlign = TextAlign.Center
                 )
             }
-        },
-        selected = selectedTab == tab,
-        colors = NavigationBarItemDefaults.colors(
+        }, selected = selectedTab == tab, colors = NavigationBarItemDefaults.colors(
             selectedIconColor = MaterialTheme.colorScheme.primary
-        ),
-        onClick = onClick
+        ), onClick = onClick
     )
 }

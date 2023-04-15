@@ -33,7 +33,7 @@ fun DependencyHandlerScope.implementationCompose() {
     implementationExtend(Dependencies.Compose.ui)
     implementationExtend(Dependencies.Compose.uiToolingPreview)
     debugImplementationExtend(Dependencies.Compose.uiTooling)
-    debugImplementationExtend(Dependencies.Compose.uiTestManifes)
+    debugImplementationExtend(Dependencies.Compose.uiTestManifest)
     androidTestImplementationExtend(Dependencies.Compose.uiTestJunit4)
     implementationExtend(Dependencies.Compose.material)
     implementationExtend(Dependencies.Compose.material3)

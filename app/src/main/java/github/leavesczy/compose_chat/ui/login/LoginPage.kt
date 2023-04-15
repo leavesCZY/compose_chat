@@ -53,7 +53,9 @@ fun LoginPage(loginViewModel: LoginViewModel) {
                         text = stringResource(id = R.string.app_name),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxHeight(fraction = 0.18f)
+                            .fillMaxHeight(
+                                fraction = 0.18f
+                            )
                             .wrapContentSize(align = Alignment.BottomCenter),
                         fontSize = 60.sp,
                         fontFamily = FontFamily.Cursive,
@@ -71,7 +73,9 @@ fun LoginPage(loginViewModel: LoginViewModel) {
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 60.dp, start = 40.dp, end = 40.dp),
+                            .padding(
+                                top = 60.dp, start = 40.dp, end = 40.dp
+                            ),
                         maxLines = 1,
                         singleLine = true,
                         value = userId,
@@ -82,8 +86,7 @@ fun LoginPage(loginViewModel: LoginViewModel) {
                             val trimText = textField.text.trimStart().trimEnd()
                             if (trimText.length <= 12 && trimText.all {
                                     it.isLowerCase() || it.isUpperCase()
-                                }
-                            ) {
+                                }) {
                                 userId = textField
                             }
                         },
@@ -95,7 +98,9 @@ fun LoginPage(loginViewModel: LoginViewModel) {
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 30.dp, end = 30.dp, top = 40.dp),
+                            .padding(
+                                start = 30.dp, end = 30.dp, top = 40.dp
+                            ),
                         content = {
                             Text(
                                 modifier = Modifier.padding(vertical = 2.dp),

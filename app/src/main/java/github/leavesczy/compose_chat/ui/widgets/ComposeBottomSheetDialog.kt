@@ -45,30 +45,26 @@ fun ComposeBottomSheetDialog(
     val animationDuration = 320
     Box(modifier = modifier) {
         AnimatedVisibility(
-            visible = visible,
-            enter = fadeIn(
+            visible = visible, enter = fadeIn(
                 animationSpec = tween(
-                    durationMillis = animationDuration,
-                    easing = LinearEasing
+                    durationMillis = animationDuration, easing = LinearEasing
                 )
-            ),
-            exit = fadeOut(
+            ), exit = fadeOut(
                 animationSpec = tween(
-                    durationMillis = animationDuration,
-                    easing = LinearEasing
+                    durationMillis = animationDuration, easing = LinearEasing
                 )
             )
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Color(0x99000000))
-                    .clickableNoRipple {
-                        if (canceledOnTouchOutside) {
-                            onDismissRequest()
-                        }
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    color = Color(0x99000000)
+                )
+                .clickableNoRipple {
+                    if (canceledOnTouchOutside) {
+                        onDismissRequest()
                     }
-            )
+                })
         }
         InnerDialog(
             visible = visible,
@@ -103,41 +99,28 @@ private fun BoxScope.InnerDialog(
                 bottomSheetHeight = it.size.height.toFloat()
             }
             .offset(offset = {
-                IntOffset(0, offsetYAnimate.roundToInt())
+                IntOffset(
+                    0, offsetYAnimate.roundToInt()
+                )
             })
-            .draggable(
-                state = rememberDraggableState(
-                    onDelta = {
-                        offsetY = (offsetY + it.toInt()).coerceAtLeast(0f)
-                    }
-                ),
-                orientation = Orientation.Vertical,
-                onDragStarted = {
+            .draggable(state = rememberDraggableState(onDelta = {
+                offsetY = (offsetY + it.toInt()).coerceAtLeast(0f)
+            }), orientation = Orientation.Vertical, onDragStarted = {
 
-                },
-                onDragStopped = {
-                    if (cancelable && offsetY > bottomSheetHeight / 2) {
-                        onDismissRequest()
-                    } else {
-                        offsetY = 0f
-                    }
+            }, onDragStopped = {
+                if (cancelable && offsetY > bottomSheetHeight / 2) {
+                    onDismissRequest()
+                } else {
+                    offsetY = 0f
                 }
-            ),
+            }),
         visible = visible,
-        enter = slideInVertically(
-            animationSpec = tween(
-                durationMillis = animationDuration,
-                easing = LinearOutSlowInEasing
-            ),
-            initialOffsetY = { 2 * it }
-        ),
-        exit = slideOutVertically(
-            animationSpec = tween(
-                durationMillis = animationDuration,
-                easing = LinearOutSlowInEasing
-            ),
-            targetOffsetY = { it }
-        ),
+        enter = slideInVertically(animationSpec = tween(
+            durationMillis = animationDuration, easing = LinearOutSlowInEasing
+        ), initialOffsetY = { 2 * it }),
+        exit = slideOutVertically(animationSpec = tween(
+            durationMillis = animationDuration, easing = LinearOutSlowInEasing
+        ), targetOffsetY = { it }),
     ) {
         DisposableEffect(key1 = null) {
             onDispose {

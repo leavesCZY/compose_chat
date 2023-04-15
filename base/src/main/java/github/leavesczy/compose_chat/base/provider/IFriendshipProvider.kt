@@ -17,7 +17,9 @@ interface IFriendshipProvider {
 
     suspend fun getFriendProfile(friendId: String): PersonProfile?
 
-    suspend fun setFriendRemark(friendId: String, remark: String): ActionResult
+    suspend fun setFriendRemark(
+        friendId: String, remark: String
+    ): ActionResult
 
     suspend fun addFriend(friendId: String): ActionResult
 

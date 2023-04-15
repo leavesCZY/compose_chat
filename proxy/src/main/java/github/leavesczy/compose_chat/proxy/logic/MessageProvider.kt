@@ -26,36 +26,26 @@ class MessageProvider : IMessageProvider {
         mutableMapOf<String, SoftReference<IMessageProvider.MessageListener>>()
 
     init {
-        V2TIMManager.getMessageManager().addAdvancedMsgListener(object :
-            V2TIMAdvancedMsgListener() {
-            override fun onRecvNewMessage(msg: V2TIMMessage) {
-                val partId = msg.groupID ?: msg.userID ?: ""
-                val messageListener = messageListenerMap[partId]?.get()
-                if (messageListener != null) {
-                    val message = Converters.convertMessage(msg)
-                    messageListener.onReceiveMessage(
-                        message = message
-                    )
-                } else {
-                    messageListenerMap.remove(partId)
+        V2TIMManager.getMessageManager()
+            .addAdvancedMsgListener(object : V2TIMAdvancedMsgListener() {
+                override fun onRecvNewMessage(msg: V2TIMMessage) {
+                    val partId = msg.groupID ?: msg.userID ?: ""
+                    val messageListener = messageListenerMap[partId]?.get()
+                    if (messageListener != null) {
+                        val message = Converters.convertMessage(msg)
+                        messageListener.onReceiveMessage(
+                            message = message
+                        )
+                    } else {
+                        messageListenerMap.remove(partId)
+                    }
                 }
-            }
-        })
+            })
     }
 
-    override fun markMessageAsRead(chat: Chat) {
-        val id = chat.id
-        when (chat) {
-            is Chat.PrivateChat -> {
-                V2TIMManager.getMessageManager().markC2CMessageAsRead(id, null)
-            }
-            is Chat.GroupChat -> {
-                V2TIMManager.getMessageManager().markGroupMessageAsRead(id, null)
-            }
-        }
-    }
-
-    override suspend fun getHistoryMessage(chat: Chat, lastMessage: Message?): LoadMessageResult {
+    override suspend fun getHistoryMessage(
+        chat: Chat, lastMessage: Message?
+    ): LoadMessageResult {
         val chatId = chat.id
         val count = 60
         return suspendCancellableCoroutine { continuation ->
@@ -63,77 +53,69 @@ class MessageProvider : IMessageProvider {
                 override fun onSuccess(t: List<V2TIMMessage>) {
                     continuation.resume(
                         value = LoadMessageResult.Success(
-                            messageList = Converters.convertMessage(t),
-                            loadFinish = t.size < count
+                            messageList = Converters.convertMessage(t), loadFinish = t.size < count
                         )
                     )
                 }
 
-                override fun onError(code: Int, desc: String?) {
-                    continuation.resume(value = LoadMessageResult.Failed(reason = "code: $code desc: $desc"))
+                override fun onError(
+                    code: Int, desc: String?
+                ) {
+                    continuation.resume(
+                        value = LoadMessageResult.Failed(reason = "code: $code desc: $desc")
+                    )
                 }
             }
             when (chat) {
                 is Chat.PrivateChat -> {
                     V2TIMManager.getMessageManager().getC2CHistoryMessageList(
-                        chatId,
-                        count,
-                        lastMessage?.tag as? V2TIMMessage,
-                        callback
+                        chatId, count, lastMessage?.tag as? V2TIMMessage, callback
                     )
                 }
                 is Chat.GroupChat -> {
                     V2TIMManager.getMessageManager().getGroupHistoryMessageList(
-                        chatId,
-                        count,
-                        lastMessage?.tag as? V2TIMMessage,
-                        callback
+                        chatId, count, lastMessage?.tag as? V2TIMMessage, callback
                     )
                 }
             }
         }
     }
 
-    override suspend fun sendText(chat: Chat, text: String): Channel<Message> {
+    override suspend fun sendText(
+        chat: Chat, text: String
+    ): Channel<Message> {
         val localTempMessage = TextMessage(
-            detail = generatePreSendMessageDetail(),
-            text = text
+            detail = generatePreSendMessageDetail(), text = text
         )
         val createdMessage = V2TIMManager.getMessageManager().createTextMessage(text)
         return sendMessage(
-            chat = chat,
-            timMessage = createdMessage,
-            localTempMessage = localTempMessage
+            chat = chat, timMessage = createdMessage, localTempMessage = localTempMessage
         )
     }
 
     override suspend fun sendImage(
-        chat: Chat,
-        imagePath: String
+        chat: Chat, imagePath: String
     ): Channel<Message> {
         return withContext(context = Dispatchers.IO) {
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
-            BitmapFactory.decodeFile(imagePath, options)
+            BitmapFactory.decodeFile(
+                imagePath, options
+            )
             val localTempMessage = ImageMessage(
-                detail = generatePreSendMessageDetail(),
-                original = ImageElement(options.outWidth, options.outHeight, imagePath),
-                large = null,
-                thumb = null
+                detail = generatePreSendMessageDetail(), original = ImageElement(
+                    options.outWidth, options.outHeight, imagePath
+                ), large = null, thumb = null
             )
             val createdMessage = V2TIMManager.getMessageManager().createImageMessage(imagePath)
             return@withContext sendMessage(
-                chat = chat,
-                timMessage = createdMessage,
-                localTempMessage = localTempMessage
+                chat = chat, timMessage = createdMessage, localTempMessage = localTempMessage
             )
         }
     }
 
     private suspend fun sendMessage(
-        chat: Chat,
-        timMessage: V2TIMMessage,
-        localTempMessage: Message
+        chat: Chat, timMessage: V2TIMMessage, localTempMessage: Message
     ): Channel<Message> {
         val messageChannel = Channel<Message>(capacity = 2)
         val c2cId: String
@@ -149,8 +131,7 @@ class MessageProvider : IMessageProvider {
             }
         }
         messageChannel.send(localTempMessage)
-        V2TIMManager.getMessageManager().sendMessage(
-            timMessage,
+        V2TIMManager.getMessageManager().sendMessage(timMessage,
             c2cId,
             groupId,
             V2TIMMessage.V2TIM_PRIORITY_HIGH,
@@ -165,9 +146,15 @@ class MessageProvider : IMessageProvider {
                     }
                 }
 
-                override fun onError(code: Int, desc: String?) {
+                override fun onError(
+                    code: Int, desc: String?
+                ) {
                     ChatCoroutineScope.launch {
-                        messageChannel.send(element = localTempMessage.resetToFailed(failReason = "code: $code desc: $desc"))
+                        messageChannel.send(
+                            element = localTempMessage.resetToFailed(
+                                failReason = "code: $code desc: $desc"
+                            )
+                        )
                         messageChannel.close()
                     }
                 }
@@ -175,8 +162,7 @@ class MessageProvider : IMessageProvider {
                 override fun onProgress(progress: Int) {
 
                 }
-            }
-        )
+            })
         return messageChannel
     }
 
@@ -198,11 +184,12 @@ class MessageProvider : IMessageProvider {
         }
     }
 
-    override suspend fun uploadImage(chat: Chat, imagePath: String): String {
+    override suspend fun uploadImage(
+        chat: Chat, imagePath: String
+    ): String {
         return suspendCancellableCoroutine { continuation ->
             val imageMessage = V2TIMManager.getMessageManager().createImageMessage(imagePath)
-            V2TIMManager.getMessageManager().sendMessage(
-                imageMessage,
+            V2TIMManager.getMessageManager().sendMessage(imageMessage,
                 "",
                 chat.id,
                 V2TIMMessage.V2TIM_PRIORITY_HIGH,
@@ -214,21 +201,21 @@ class MessageProvider : IMessageProvider {
                         continuation.resume((res as? ImageMessage)?.previewUrl ?: "")
                     }
 
-                    override fun onError(code: Int, desc: String?) {
+                    override fun onError(
+                        code: Int, desc: String?
+                    ) {
                         continuation.resume("")
                     }
 
                     override fun onProgress(progress: Int) {
 
                     }
-                }
-            )
+                })
         }
     }
 
     override fun startReceive(
-        chat: Chat,
-        messageListener: IMessageProvider.MessageListener
+        chat: Chat, messageListener: IMessageProvider.MessageListener
     ) {
         val id = chat.id
         messageListenerMap.remove(id)
@@ -237,11 +224,15 @@ class MessageProvider : IMessageProvider {
     }
 
     override fun stopReceive(messageListener: IMessageProvider.MessageListener) {
-        removeReduceListener(listener = messageListener, listenerMap = messageListenerMap)
+        removeReduceListener(
+            listener = messageListener, listenerMap = messageListenerMap
+        )
     }
 
     private fun checkListener() {
-        removeReduceListener(listener = null, listenerMap = messageListenerMap)
+        removeReduceListener(
+            listener = null, listenerMap = messageListenerMap
+        )
     }
 
     private fun removeReduceListener(
@@ -265,7 +256,9 @@ class MessageProvider : IMessageProvider {
     }
 
     private fun generateMessageId(): String {
-        return (System.currentTimeMillis() + Random.nextInt(1024, 2048)).toString()
+        return (System.currentTimeMillis() + Random.nextInt(
+            1024, 2048
+        )).toString()
     }
 
     private fun generateMessageTimestamp(): Long {

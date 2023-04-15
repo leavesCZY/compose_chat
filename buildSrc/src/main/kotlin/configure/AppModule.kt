@@ -35,11 +35,13 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
             outputs.all {
                 if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
                     this.outputFileName =
-                        "compose_chat_${variant.name}_versionCode_${variant.versionCode}_versionName_${variant.versionName}_${BuildFunction.getFormattedTime()}.apk"
+                        "compose_chat_${variant.name}_${variant.versionCode}_v${variant.versionName}_${BuildFunction.getFormattedTime()}.apk"
                 }
             }
         }
-        buildConfigField("String", "VERSION_NAME", "\"${VersionConfig.versionName}\"")
+        buildConfigField(
+            "String", "VERSION_NAME", "\"${VersionConfig.versionName}\""
+        )
     }
     signingConfigs {
         create("release") {
@@ -58,15 +60,8 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
             isShrinkResources = false
             isDebuggable = true
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
-            ndk {
-                abiFilters.apply {
-                    add("arm64-v8a")
-                    add("x86")
-                }
-            }
         }
         release {
             signingConfig = signingConfigs.getByName("release")
@@ -74,8 +69,7 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
             isShrinkResources = true
             isDebuggable = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
             ndk {
                 abiFilters.add("arm64-v8a")
@@ -100,6 +94,7 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
                     "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi",
                     "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi",
                     "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+                    "-Xopt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi",
                     "-Xopt-in=androidx.compose.material.ExperimentalMaterialApi",
                     "-Xopt-in=androidx.compose.material3.ExperimentalMaterial3Api",
                 )

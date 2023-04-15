@@ -58,70 +58,80 @@ fun MainPageDrawer(mainViewModel: MainViewModel) {
         ConstraintLayout(
             modifier = Modifier
                 .background(color = MaterialTheme.colorScheme.surface)
-                .fillMaxWidth(fraction = 0.90f)
+                .fillMaxWidth(
+                    fraction = 0.90f
+                )
                 .fillMaxHeight()
                 .statusBarsPadding()
                 .navigationBarsPadding()
         ) {
             val (avatarRef, userIdRef, nicknameRef, signatureRef, contentRef, aboutAuthorRef) = createRefs()
-            BouncyImage(
-                modifier = Modifier
-                    .constrainAs(ref = avatarRef) {
-                        start.linkTo(anchor = parent.start, margin = padding)
-                        top.linkTo(anchor = parent.top, margin = padding / 2)
-                    }
-                    .size(size = 90.dp)
-                    .clickableNoRipple {
-                        if (faceUrl.isNotBlank()) {
-                            PreviewImageActivity.navTo(context = context, imagePath = faceUrl)
-                        }
-                    },
-                data = faceUrl
-            )
-            Text(
-                modifier = Modifier
-                    .constrainAs(ref = userIdRef) {
-                        linkTo(start = avatarRef.start, end = parent.end, endMargin = padding)
-                        top.linkTo(anchor = avatarRef.bottom, margin = padding)
-                        width = Dimension.fillToConstraints
-                    },
-                text = id,
-                fontSize = 15.sp
-            )
-            Text(
-                modifier = Modifier
-                    .constrainAs(ref = nicknameRef) {
-                        linkTo(start = avatarRef.start, end = parent.end, endMargin = padding)
-                        top.linkTo(anchor = userIdRef.bottom, margin = padding / 4)
-                        width = Dimension.fillToConstraints
-                    },
-                text = nickname,
-                fontSize = 18.sp
-            )
-            Text(
-                modifier = Modifier
-                    .constrainAs(ref = signatureRef) {
-                        linkTo(start = avatarRef.start, end = parent.end, endMargin = padding)
-                        top.linkTo(anchor = nicknameRef.bottom, margin = padding / 4)
-                        width = Dimension.fillToConstraints
-                    },
-                text = signature,
-                fontSize = 18.sp
-            )
-            Column(
-                modifier = Modifier
-                    .constrainAs(ref = contentRef) {
-                        linkTo(start = parent.start, end = parent.end)
-                        linkTo(
-                            top = signatureRef.bottom,
-                            bottom = parent.bottom,
-                            topMargin = padding
+            BouncyImage(modifier = Modifier
+                .constrainAs(ref = avatarRef) {
+                    start.linkTo(
+                        anchor = parent.start, margin = padding
+                    )
+                    top.linkTo(
+                        anchor = parent.top, margin = padding / 2
+                    )
+                }
+                .size(size = 90.dp)
+                .clickableNoRipple {
+                    if (faceUrl.isNotBlank()) {
+                        PreviewImageActivity.navTo(
+                            context = context, imagePath = faceUrl
                         )
-                        height = Dimension.fillToConstraints
                     }
-            ) {
+                }, data = faceUrl
+            )
+            Text(
+                modifier = Modifier.constrainAs(ref = userIdRef) {
+                    linkTo(
+                        start = avatarRef.start, end = parent.end, endMargin = padding
+                    )
+                    top.linkTo(
+                        anchor = avatarRef.bottom, margin = padding
+                    )
+                    width = Dimension.fillToConstraints
+                }, text = id, fontSize = 18.sp
+            )
+            Text(
+                modifier = Modifier.constrainAs(ref = nicknameRef) {
+                    linkTo(
+                        start = avatarRef.start, end = parent.end, endMargin = padding
+                    )
+                    top.linkTo(
+                        anchor = userIdRef.bottom, margin = padding / 4
+                    )
+                    width = Dimension.fillToConstraints
+                }, text = nickname, fontSize = 14.sp
+            )
+            Text(
+                modifier = Modifier.constrainAs(ref = signatureRef) {
+                    linkTo(
+                        start = avatarRef.start, end = parent.end, endMargin = padding
+                    )
+                    top.linkTo(
+                        anchor = nicknameRef.bottom, margin = padding / 4
+                    )
+                    width = Dimension.fillToConstraints
+                }, text = signature, fontSize = 14.sp
+            )
+            Column(modifier = Modifier.constrainAs(ref = contentRef) {
+                linkTo(
+                    start = parent.start, end = parent.end
+                )
+                linkTo(
+                    top = signatureRef.bottom, bottom = parent.bottom, topMargin = padding
+                )
+                height = Dimension.fillToConstraints
+            }) {
                 SelectableItem(text = "个人资料", icon = Icons.Filled.Cabin, onClick = {
-                    context.startActivity(Intent(context, ProfileUpdateActivity::class.java))
+                    context.startActivity(
+                        Intent(
+                            context, ProfileUpdateActivity::class.java
+                        )
+                    )
                 })
                 SelectableItem(text = "切换主题", icon = Icons.Filled.Sailing, onClick = {
                     mainViewModel.switchToNextTheme()
@@ -130,31 +140,35 @@ fun MainPageDrawer(mainViewModel: MainViewModel) {
                     mainViewModel.logout()
                 })
             }
-            Text(
-                modifier = Modifier
-                    .constrainAs(ref = aboutAuthorRef) {
-                        linkTo(start = parent.start, end = parent.end)
-                        bottom.linkTo(anchor = parent.bottom, margin = padding * 2)
-                    }
-                    .fillMaxWidth()
-                    .wrapContentWidth(align = Alignment.CenterHorizontally),
-                text = "公众号: 字节数组" + "\n" +
-                        "VersionCode: " + BuildConfig.VERSION_CODE + "\n" +
-                        "VersionName: " + BuildConfig.VERSION_NAME,
+            Text(modifier = Modifier
+                .constrainAs(ref = aboutAuthorRef) {
+                    linkTo(
+                        start = parent.start, end = parent.end
+                    )
+                    bottom.linkTo(
+                        anchor = parent.bottom, margin = padding * 2
+                    )
+                }
+                .fillMaxWidth()
+                .wrapContentWidth(align = Alignment.CenterHorizontally),
+                text = "公众号: 字节数组" + "\n" + "VersionCode: " + BuildConfig.VERSION_CODE + "\n" + "VersionName: " + BuildConfig.VERSION_NAME,
                 textAlign = TextAlign.Center,
-                fontSize = 15.sp
-            )
+                fontSize = 15.sp)
         }
     }
 }
 
 @Composable
-private fun SelectableItem(text: String, icon: ImageVector, onClick: () -> Unit) {
+private fun SelectableItem(
+    text: String, icon: ImageVector, onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .height(height = 60.dp)
+            .height(
+                height = 60.dp
+            )
             .padding(start = 20.dp), verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -164,9 +178,7 @@ private fun SelectableItem(text: String, icon: ImageVector, onClick: () -> Unit)
             tint = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            modifier = Modifier.padding(start = 10.dp),
-            text = text,
-            fontSize = 16.sp
+            modifier = Modifier.padding(start = 10.dp), text = text, fontSize = 17.sp
         )
     }
 }

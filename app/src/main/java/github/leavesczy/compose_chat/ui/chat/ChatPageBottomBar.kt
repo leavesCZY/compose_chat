@@ -10,156 +10,93 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.mapSaver
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import github.leavesczy.matisse.Matisse
-import github.leavesczy.matisse.MatisseContract
-import github.leavesczy.matisse.MediaResource
-import github.leavesczy.matisse.MediaStoreCaptureStrategy
+import github.leavesczy.compose_chat.ui.chat.logic.ChatViewModel
+import github.leavesczy.matisse.*
 
 /**
  * @Author: leavesCZY
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-private const val TEXT_MSG_MAX_LENGTH = 200
-
 private val DEFAULT_KEYBOARD_HEIGHT = 305.dp
 
 @Composable
-fun ChatPageBottomBar(
-    sendTextMessage: (TextFieldValue) -> Unit,
-    sendImageMessage: (MediaResource) -> Unit
-) {
+fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
+    val textMessageInputted = chatViewModel.textMessageInputted
+
+    val currentInputSelector = chatViewModel.currentInputSelector
+
     val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
-    var messageInputted by rememberSaveable(stateSaver = run {
-        val textKey = "text"
-        mapSaver(
-            save = { mapOf(textKey to it.text) },
-            restore = { TextFieldValue(text = it[textKey] as String) }
-        )
-    }) {
-        mutableStateOf(TextFieldValue(text = ""))
+    val focusRequester = remember {
+        FocusRequester()
     }
 
-    var currentInputSelector by rememberSaveable {
-        mutableStateOf(value = InputSelector.NONE)
-    }
-    var sendMessageEnabled by rememberSaveable {
-        mutableStateOf(value = false)
-    }
+    val focusManager = LocalFocusManager.current
 
-    fun onInputChange(newMessage: TextFieldValue) {
-        messageInputted = newMessage
-    }
+    BackHandler(enabled = currentInputSelector != InputSelector.NONE, onBack = {
+        focusRequester.requestFocus()
+    })
 
-    fun onMessageSent() {
-        val text = messageInputted.text
-        if (text.isNotBlank()) {
-            sendTextMessage(messageInputted)
-            onInputChange(TextFieldValue())
-        }
-    }
-
-    fun onUserInputChanged(input: TextFieldValue) {
-        val newMessage = if (messageInputted.text.length >= TEXT_MSG_MAX_LENGTH) {
-            if (input.text.length > TEXT_MSG_MAX_LENGTH) {
-                return
-            }
-            input
-        } else {
-            if (input.text.length > TEXT_MSG_MAX_LENGTH) {
-                messageInputted.copy(text = input.text.substring(0, TEXT_MSG_MAX_LENGTH))
-            } else {
-                input
-            }
-        }
-        onInputChange(newMessage)
-    }
-
-    fun appendEmoji(emoji: String) {
-        if (messageInputted.text.length + emoji.length > TEXT_MSG_MAX_LENGTH) {
-            return
-        }
-        val currentText = messageInputted.text
-        val currentSelection = messageInputted.selection.end
-        val currentSelectedText = currentText.substring(0, currentSelection)
-        val messageAppend = currentSelectedText + emoji
-        val selectedAppend = messageAppend.length
-        onInputChange(
-            TextFieldValue(
-                text = messageAppend + currentText.substring(
-                    currentSelection,
-                    currentText.length
-                ),
-                selection = TextRange(index = selectedAppend)
-            )
-        )
-    }
-
-    val onSelectorChange: (InputSelector) -> Unit = remember {
-        {
-            if (it != currentInputSelector) {
-                currentInputSelector = it
-                if (currentInputSelector != InputSelector.NONE) {
-                    softwareKeyboardController?.hide()
-                }
-            }
-        }
-    }
-
-    val selectPictureLauncher = rememberLauncherForActivityResult(
+    val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = MatisseContract()
     ) { result ->
         if (result.isNotEmpty()) {
-            onSelectorChange(InputSelector.NONE)
-            sendImageMessage(result[0])
+            chatViewModel.sendImageMessage(mediaResource = result[0])
         }
     }
 
-    BackHandler(enabled = currentInputSelector != InputSelector.NONE, onBack = {
-        softwareKeyboardController?.show()
-    })
+    val takePictureLauncher = rememberLauncherForActivityResult(
+        contract = MatisseCaptureContract()
+    ) { result ->
+        if (result != null) {
+            chatViewModel.sendImageMessage(mediaResource = result)
+        }
+    }
 
-    val ime = WindowInsets.ime
-    val localDensity = LocalDensity.current
-    val density = localDensity.density
     var keyboardHeightDp by remember {
         mutableStateOf(value = 0.dp)
     }
 
+    val ime = WindowInsets.ime
+    val localDensity = LocalDensity.current
+    val density = localDensity.density
     LaunchedEffect(key1 = density) {
         snapshotFlow {
             ime.getBottom(density = localDensity)
         }.collect {
-            val currentKeyboardHeightDp = (it / density).dp
-            keyboardHeightDp = maxOf(currentKeyboardHeightDp, keyboardHeightDp)
-            if (currentKeyboardHeightDp == keyboardHeightDp) {
-                currentInputSelector = InputSelector.NONE
+            val realtimeKeyboardHeightDp = (it / density).dp
+            keyboardHeightDp = maxOf(
+                realtimeKeyboardHeightDp, keyboardHeightDp
+            )
+            if (realtimeKeyboardHeightDp == keyboardHeightDp) {
+                chatViewModel.onInputSelectorChanged(newSelector = InputSelector.NONE)
+                softwareKeyboardController?.show()
             }
         }
     }
 
-    SideEffect {
-        sendMessageEnabled = messageInputted.text.isNotBlank()
-    }
-
     Column(
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.onSecondaryContainer)
+            .background(
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
             .navigationBarsPadding(),
     ) {
         BasicTextField(
             modifier = Modifier
+                .focusRequester(
+                    focusRequester = focusRequester
+                )
                 .fillMaxWidth()
                 .padding(
                     start = 10.dp, end = 10.dp, top = 12.dp
@@ -168,28 +105,36 @@ fun ChatPageBottomBar(
                     color = MaterialTheme.colorScheme.background,
                     shape = RoundedCornerShape(size = 10.dp)
                 )
-                .padding(horizontal = 8.dp, vertical = 12.dp),
-            value = messageInputted,
+                .padding(
+                    horizontal = 8.dp, vertical = 12.dp
+                ),
+            value = textMessageInputted,
             onValueChange = {
-                onUserInputChanged(it)
+                chatViewModel.onUserInputChanged(input = it)
             },
-            textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
+            maxLines = 6,
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onSurface
+            ),
+            cursorBrush = SolidColor(value = MaterialTheme.colorScheme.primary),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = {
-                onMessageSent()
-            }),
-            cursorBrush = SolidColor(value = MaterialTheme.colorScheme.primary),
-            maxLines = 6
+                focusRequester.requestFocus()
+                chatViewModel.sendTextMessage()
+            })
         )
 
-        InputSelector(
-            currentInputSelector = currentInputSelector,
-            sendMessageEnabled = sendMessageEnabled,
-            onInputSelectorChange = onSelectorChange,
-            onMessageSent = {
-                onMessageSent()
-            }
-        )
+        InputSelector(currentInputSelector = currentInputSelector,
+            sendMessageEnabled = textMessageInputted.text.isNotEmpty(),
+            onInputSelectorChange = {
+                focusManager.clearFocus(force = true)
+                softwareKeyboardController?.hide()
+                chatViewModel.onInputSelectorChanged(newSelector = it)
+            },
+            onClickSend = {
+                focusRequester.requestFocus()
+                chatViewModel.sendTextMessage()
+            })
 
         when (currentInputSelector) {
             InputSelector.NONE -> {
@@ -206,32 +151,40 @@ fun ChatPageBottomBar(
                     keyboardHeightDp
                 }
                 Box(
-                    modifier = Modifier.heightIn(min = keyboardHeightDp, max = maxHeight)
+                    modifier = Modifier.heightIn(
+                        min = keyboardHeightDp, max = maxHeight
+                    )
                 ) {
                     when (currentInputSelector) {
                         InputSelector.EMOJI -> {
-                            EmojiTable(
-                                appendEmoji = {
-                                    appendEmoji(it)
-                                }
-                            )
+                            EmojiTable(appendEmoji = {
+                                chatViewModel.appendEmoji(emoji = it)
+                            })
                         }
                         InputSelector.Picture -> {
                             Box(
                                 modifier = Modifier.heightIn(
-                                    min = keyboardHeightDp,
-                                    max = maxHeight
+                                    min = keyboardHeightDp, max = maxHeight
                                 )
                             ) {
-                                ExtendTable(
-                                    selectPicture = {
-                                        onSelectorChange(InputSelector.NONE)
-                                        val matisse = Matisse(
-                                            maxSelectable = 1,
-                                            captureStrategy = MediaStoreCaptureStrategy()
-                                        )
-                                        selectPictureLauncher.launch(matisse)
-                                    })
+                                ExtendTable(launchImagePicker = {
+                                    chatViewModel.onInputSelectorChanged(
+                                        newSelector = InputSelector.NONE
+                                    )
+                                    val matisse = Matisse(
+                                        maxSelectable = 1,
+                                        captureStrategy = MediaStoreCaptureStrategy()
+                                    )
+                                    imagePickerLauncher.launch(matisse)
+                                }, launchTakePicture = {
+                                    chatViewModel.onInputSelectorChanged(
+                                        newSelector = InputSelector.NONE
+                                    )
+                                    val matisseCapture = MatisseCapture(
+                                        captureStrategy = MediaStoreCaptureStrategy()
+                                    )
+                                    takePictureLauncher.launch(matisseCapture)
+                                })
                             }
                         }
                         else -> {

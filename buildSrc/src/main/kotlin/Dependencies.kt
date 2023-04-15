@@ -23,7 +23,7 @@ object Dependencies {
         const val uiTooling = "androidx.compose.ui:ui-tooling"
         const val uiToolingPreview = "androidx.compose.ui:ui-tooling-preview"
         const val uiTestJunit4 = "androidx.compose.ui:ui-test-junit4"
-        const val uiTestManifes = "androidx.compose.ui:ui-test-manifest"
+        const val uiTestManifest = "androidx.compose.ui:ui-test-manifest"
         const val material = "androidx.compose.material:material"
         const val material3 = "androidx.compose.material3:material3"
         const val materialIcons = "androidx.compose.material:material-icons-extended"
@@ -33,7 +33,7 @@ object Dependencies {
     }
 
     object Accompanist {
-        private const val version = "0.30.0"
+        private const val version = "0.30.1"
         const val systemUiController =
             "com.google.accompanist:accompanist-systemuicontroller:$version"
     }
@@ -43,8 +43,8 @@ object Dependencies {
         const val coilGif = "io.coil-kt:coil-gif:$coilVersion"
         const val coilCompose = "io.coil-kt:coil-compose:$coilVersion"
         const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-        const val matisse = "com.github.leavesCZY:Matisse:0.0.12"
-        const val imSdk = "com.tencent.imsdk:imsdk-plus:7.0.3768"
+        const val matisse = "com.github.leavesCZY:Matisse:fed47eeadb"
+        const val imSdk = "com.tencent.imsdk:imsdk-plus:7.1.3933"
     }
 
 }
