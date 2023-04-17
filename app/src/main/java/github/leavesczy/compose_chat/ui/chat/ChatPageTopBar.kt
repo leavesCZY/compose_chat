@@ -54,6 +54,7 @@ fun ChatPageTopBar(
                         context = context, friendId = chat.id
                     )
                 }
+
                 is Chat.GroupChat -> {
                     GroupProfileActivity.navTo(
                         context = context, groupId = chat.id

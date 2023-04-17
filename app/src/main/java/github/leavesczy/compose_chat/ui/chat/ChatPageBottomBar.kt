@@ -3,13 +3,28 @@ package github.leavesczy.compose_chat.ui.chat
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -20,7 +35,11 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.ui.chat.logic.ChatViewModel
-import github.leavesczy.matisse.*
+import github.leavesczy.matisse.Matisse
+import github.leavesczy.matisse.MatisseCapture
+import github.leavesczy.matisse.MatisseCaptureContract
+import github.leavesczy.matisse.MatisseContract
+import github.leavesczy.matisse.MediaStoreCaptureStrategy
 
 /**
  * @Author: leavesCZY
@@ -144,6 +163,7 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                         .imePadding()
                 )
             }
+
             InputSelector.EMOJI, InputSelector.Picture -> {
                 val maxHeight = if (keyboardHeightDp <= 0.dp) {
                     DEFAULT_KEYBOARD_HEIGHT
@@ -161,6 +181,7 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                                 chatViewModel.appendEmoji(emoji = it)
                             })
                         }
+
                         InputSelector.Picture -> {
                             Box(
                                 modifier = Modifier.heightIn(
@@ -187,6 +208,7 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                                 })
                             }
                         }
+
                         else -> {
 
                         }

@@ -47,6 +47,7 @@ object AppThemeProvider {
             AppTheme.Light, AppTheme.Gray -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+
             AppTheme.Dark -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }

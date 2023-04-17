@@ -43,6 +43,7 @@ class ConversationViewModel : ViewModel() {
                 is C2CConversation -> {
                     ComposeChat.conversationProvider.deleteC2CConversation(userId = conversation.id)
                 }
+
                 is GroupConversation -> {
                     ComposeChat.conversationProvider.deleteGroupConversation(
                         groupId = conversation.id
@@ -53,6 +54,7 @@ class ConversationViewModel : ViewModel() {
                 is ActionResult.Success -> {
                     ComposeChat.conversationProvider.refreshConversationList()
                 }
+
                 is ActionResult.Failed -> {
                     showToast(msg = result.reason)
                 }

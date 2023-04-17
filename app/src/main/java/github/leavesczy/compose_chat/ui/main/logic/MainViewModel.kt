@@ -117,6 +117,7 @@ class MainViewModel : ViewModel() {
                     )
                     onFriendshipDialogDismissRequest()
                 }
+
                 is ActionResult.Failed -> {
                     showToast(msg = result.reason)
                 }
@@ -133,6 +134,7 @@ class MainViewModel : ViewModel() {
                     ComposeChat.groupProvider.refreshJoinedGroupList()
                     onFriendshipDialogDismissRequest()
                 }
+
                 is ActionResult.Failed -> {
                     showToast(msg = result.reason)
                 }
@@ -147,6 +149,7 @@ class MainViewModel : ViewModel() {
                 is ActionResult.Success -> {
                     AccountProvider.onUserLogout()
                 }
+
                 is ActionResult.Failed -> {
                     showToast(msg = result.reason)
                 }

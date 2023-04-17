@@ -70,6 +70,7 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
                     getFriendProfile()
                     showToast(msg = "添加成功")
                 }
+
                 is ActionResult.Failed -> {
                     showToast(msg = result.reason)
                 }
@@ -84,6 +85,7 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
                     showToast(msg = "已删除好友")
                     finishActivity()
                 }
+
                 is ActionResult.Failed -> {
                     showToast(msg = result.reason)
                 }
@@ -117,6 +119,7 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
                     ComposeChat.conversationProvider.refreshConversationList()
                     dismissSetFriendRemarkDialog()
                 }
+
                 is ActionResult.Failed -> {
                     showToast(msg = result.reason)
                 }

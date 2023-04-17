@@ -58,6 +58,7 @@ fun ComposeChatTheme(content: @Composable () -> Unit) {
         AppTheme.Light, AppTheme.Gray -> {
             LightColorScheme
         }
+
         AppTheme.Dark -> {
             DarkColorScheme
         }

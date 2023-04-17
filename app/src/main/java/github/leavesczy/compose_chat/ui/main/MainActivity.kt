@@ -59,9 +59,11 @@ class MainActivity : BaseActivity() {
                         AccountProvider.onUserLogout()
                         navToLoginPage()
                     }
+
                     ServerState.Logout, ServerState.UserSigExpired -> {
                         navToLoginPage()
                     }
+
                     else -> {
 
                     }

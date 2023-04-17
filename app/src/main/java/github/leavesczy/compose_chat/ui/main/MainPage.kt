@@ -11,7 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import github.leavesczy.compose_chat.provider.AppThemeProvider
-import github.leavesczy.compose_chat.ui.main.logic.*
+import github.leavesczy.compose_chat.ui.main.logic.ConversationViewModel
+import github.leavesczy.compose_chat.ui.main.logic.FriendshipViewModel
+import github.leavesczy.compose_chat.ui.main.logic.MainTab
+import github.leavesczy.compose_chat.ui.main.logic.MainViewModel
+import github.leavesczy.compose_chat.ui.main.logic.PersonProfileViewModel
 
 /**
  * @Author: leavesCZY
@@ -50,6 +54,7 @@ fun MainPage(
                                 MainPageTopBar(mainViewModel = mainViewModel)
                                 ConversationPage(conversationViewModel = conversationViewModel)
                             }
+
                             MainTab.Friendship -> {
                                 MainPageTopBar(mainViewModel = mainViewModel)
                                 FriendshipPage(
@@ -57,6 +62,7 @@ fun MainPage(
                                     friendshipViewModel = friendshipViewModel
                                 )
                             }
+
                             MainTab.Person -> {
                                 PersonProfilePage(personProfileViewModel = personProfileViewModel)
                             }

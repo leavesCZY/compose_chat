@@ -117,12 +117,15 @@ internal object GenerateUserSig {
             '+' -> {
                 base64[i] = '*'.code.toByte()
             }
+
             '/' -> {
                 base64[i] = '-'.code.toByte()
             }
+
             '=' -> {
                 base64[i] = '_'.code.toByte()
             }
+
             else -> {
             }
         }

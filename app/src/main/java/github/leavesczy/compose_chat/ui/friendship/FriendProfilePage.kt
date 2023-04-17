@@ -1,17 +1,32 @@
 package github.leavesczy.compose_chat.ui.friendship
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.ui.friendship.logic.FriendProfileViewModel
-import github.leavesczy.compose_chat.ui.widgets.*
+import github.leavesczy.compose_chat.ui.widgets.CommonButton
+import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
+import github.leavesczy.compose_chat.ui.widgets.ComposeBottomSheetDialog
+import github.leavesczy.compose_chat.ui.widgets.MessageDialog
+import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
 
 /**
  * @Author: leavesCZY

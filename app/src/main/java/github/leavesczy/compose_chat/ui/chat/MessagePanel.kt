@@ -4,7 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,7 +31,13 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atMost
-import github.leavesczy.compose_chat.base.model.*
+import github.leavesczy.compose_chat.base.model.Chat
+import github.leavesczy.compose_chat.base.model.ImageMessage
+import github.leavesczy.compose_chat.base.model.Message
+import github.leavesczy.compose_chat.base.model.MessageState
+import github.leavesczy.compose_chat.base.model.SystemMessage
+import github.leavesczy.compose_chat.base.model.TextMessage
+import github.leavesczy.compose_chat.base.model.TimeMessage
 import github.leavesczy.compose_chat.ui.chat.logic.ChatPageAction
 import github.leavesczy.compose_chat.ui.chat.logic.ChatPageViewState
 import github.leavesczy.compose_chat.ui.widgets.CoilImage
@@ -74,9 +87,11 @@ private fun MessageItems(
             is TextMessage -> {
                 TextMessage(message = message)
             }
+
             is ImageMessage -> {
                 ImageMessage(message = message)
             }
+
             else -> {
                 throw IllegalArgumentException()
             }
@@ -308,6 +323,7 @@ private fun StateMessage(
                 strokeWidth = 2.dp
             )
         }
+
         is MessageState.SendFailed -> {
             Image(
                 modifier = modifier.size(size = 20.dp),
@@ -316,6 +332,7 @@ private fun StateMessage(
                 colorFilter = ColorFilter.tint(color = Color.Red)
             )
         }
+
         MessageState.Completed -> {
 
         }

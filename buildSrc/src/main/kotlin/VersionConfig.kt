@@ -5,8 +5,8 @@
  */
 object VersionConfig {
 
-    const val versionCode = 18
+    const val versionCode = 19
 
-    const val versionName = "0.0.18"
+    const val versionName = "0.0.19"
 
 }

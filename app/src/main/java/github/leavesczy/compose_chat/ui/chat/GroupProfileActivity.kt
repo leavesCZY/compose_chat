@@ -59,6 +59,7 @@ class GroupProfileActivity : BaseActivity() {
                         )
                     )
                 }
+
                 is ActionResult.Failed -> {
                     showToast(msg = result.reason)
                 }

@@ -63,6 +63,7 @@ class GroupProfileViewModel(private val groupId: String) : ViewModel() {
                     getGroupProfile()
                     showToast(msg = "修改成功")
                 }
+
                 is ActionResult.Failed -> {
                     showToast(msg = result.reason)
                 }

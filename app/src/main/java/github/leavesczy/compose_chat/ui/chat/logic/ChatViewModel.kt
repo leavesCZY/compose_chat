@@ -8,7 +8,14 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import github.leavesczy.compose_chat.base.model.*
+import github.leavesczy.compose_chat.base.model.Chat
+import github.leavesczy.compose_chat.base.model.ImageMessage
+import github.leavesczy.compose_chat.base.model.LoadMessageResult
+import github.leavesczy.compose_chat.base.model.Message
+import github.leavesczy.compose_chat.base.model.MessageState
+import github.leavesczy.compose_chat.base.model.SystemMessage
+import github.leavesczy.compose_chat.base.model.TextMessage
+import github.leavesczy.compose_chat.base.model.TimeMessage
 import github.leavesczy.compose_chat.base.provider.IMessageProvider
 import github.leavesczy.compose_chat.ui.chat.InputSelector
 import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
@@ -80,6 +87,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                 is Chat.PrivateChat -> {
                     ComposeChat.friendshipProvider.getFriendProfile(friendId = chat.id)?.showName
                 }
+
                 is Chat.GroupChat -> {
                     ComposeChat.groupProvider.getGroupInfo(groupId = chat.id)?.name
                 }
@@ -107,6 +115,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                     addMessageToFooter(newMessageList = loadResult.messageList)
                     loadResult.loadFinish
                 }
+
                 is LoadMessageResult.Failed -> {
                     false
                 }
@@ -198,11 +207,13 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                     sendingMessage = message
                     attachNewMessage(newMessage = message)
                 }
+
                 MessageState.Completed -> {
                     resetMessageState(
                         msgId = sendingMessage.messageDetail.msgId, messageState = state
                     )
                 }
+
                 is MessageState.SendFailed -> {
                     resetMessageState(
                         msgId = sendingMessage.messageDetail.msgId, messageState = state
@@ -227,9 +238,11 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
                 is ImageMessage -> {
                     targetMessage.copy(detail = messageDetail.copy(state = messageState))
                 }
+
                 is TextMessage -> {
                     targetMessage.copy(detail = messageDetail.copy(state = messageState))
                 }
+
                 is SystemMessage, is TimeMessage -> {
                     throw IllegalArgumentException()
                 }

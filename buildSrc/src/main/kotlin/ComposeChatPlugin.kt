@@ -33,6 +33,7 @@ class ComposeChatPlugin : Plugin<Project> {
             is BaseAppModuleExtension -> {
                 androidExtension.appModule(project = project)
             }
+
             is LibraryExtension -> {
                 androidExtension.libraryModule()
             }

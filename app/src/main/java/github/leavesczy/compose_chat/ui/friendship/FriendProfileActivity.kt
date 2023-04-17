@@ -63,6 +63,7 @@ class FriendProfileActivity : BaseActivity() {
                         )
                         finish()
                     }
+
                     FriendProfilePageAction.FinishActivity -> {
                         finish()
                     }

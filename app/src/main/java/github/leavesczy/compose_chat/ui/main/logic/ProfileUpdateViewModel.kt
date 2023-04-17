@@ -111,6 +111,7 @@ class ProfileUpdateViewModel : ViewModel() {
                     is ActionResult.Success -> {
                         showToast(msg = "更新成功")
                     }
+
                     is ActionResult.Failed -> {
                         showToast(msg = result.reason)
                     }

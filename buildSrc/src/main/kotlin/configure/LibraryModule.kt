@@ -2,7 +2,6 @@ package configure
 
 import BuildConfig
 import com.android.build.gradle.LibraryExtension
-import org.gradle.api.JavaVersion
 import org.gradle.api.plugins.ExtensionAware
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import java.io.File
@@ -21,10 +20,10 @@ internal fun LibraryExtension.libraryModule() {
         consumerProguardFiles.add(File("consumer-rules.pro"))
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = BuildConfig.sourceCompatibility
+        targetCompatibility = BuildConfig.targetCompatibility
     }
     ((this as ExtensionAware).extensions.getByName("kotlinOptions") as KotlinJvmOptions).apply {
-        jvmTarget = "1.8"
+        jvmTarget = BuildConfig.jvmTarget
     }
 }

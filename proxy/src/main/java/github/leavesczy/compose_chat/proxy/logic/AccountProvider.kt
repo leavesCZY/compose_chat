@@ -1,7 +1,11 @@
 package github.leavesczy.compose_chat.proxy.logic
 
 import android.app.Application
-import com.tencent.imsdk.v2.*
+import com.tencent.imsdk.v2.V2TIMCallback
+import com.tencent.imsdk.v2.V2TIMManager
+import com.tencent.imsdk.v2.V2TIMSDKConfig
+import com.tencent.imsdk.v2.V2TIMSDKListener
+import com.tencent.imsdk.v2.V2TIMUserFullInfo
 import github.leavesczy.compose_chat.base.model.ActionResult
 import github.leavesczy.compose_chat.base.model.PersonProfile
 import github.leavesczy.compose_chat.base.model.ServerState

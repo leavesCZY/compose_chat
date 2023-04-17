@@ -70,6 +70,7 @@ class ChatActivity : BaseActivity() {
                     )
                 }
             }
+
             else -> {
 
             }
@@ -85,6 +86,7 @@ class ChatActivity : BaseActivity() {
                     showToast(msg = "已复制")
                 }
             }
+
             else -> {
 
             }

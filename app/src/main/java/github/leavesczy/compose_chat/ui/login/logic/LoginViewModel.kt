@@ -62,6 +62,7 @@ class LoginViewModel : ViewModel() {
                     AccountProvider.onUserLogin(userId = formatUserId)
                     _loginPageAction.emit(value = LoginPageAction.LoginSuccess)
                 }
+
                 is ActionResult.Failed -> {
                     showToast(msg = loginResult.reason)
                     loginPageViewState = LoginPageViewState(

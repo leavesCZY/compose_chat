@@ -26,9 +26,11 @@ sealed class Conversation(
             MessageState.Completed -> {
                 lastMessage.formatMessage
             }
+
             MessageState.Sending -> {
                 "[发送中] " + lastMessage.formatMessage
             }
+
             is MessageState.SendFailed -> {
                 "[发送失败] " + lastMessage.formatMessage
             }

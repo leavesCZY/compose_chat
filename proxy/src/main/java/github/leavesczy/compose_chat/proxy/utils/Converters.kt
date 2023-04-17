@@ -1,7 +1,31 @@
 package github.leavesczy.compose_chat.proxy.utils
 
-import com.tencent.imsdk.v2.*
-import github.leavesczy.compose_chat.base.model.*
+import com.tencent.imsdk.v2.V2TIMCallback
+import com.tencent.imsdk.v2.V2TIMFriendCheckResult
+import com.tencent.imsdk.v2.V2TIMFriendInfo
+import com.tencent.imsdk.v2.V2TIMFriendInfoResult
+import com.tencent.imsdk.v2.V2TIMGroupMemberFullInfo
+import com.tencent.imsdk.v2.V2TIMGroupMemberInfo
+import com.tencent.imsdk.v2.V2TIMGroupTipsElem
+import com.tencent.imsdk.v2.V2TIMImageElem
+import com.tencent.imsdk.v2.V2TIMManager
+import com.tencent.imsdk.v2.V2TIMMessage
+import com.tencent.imsdk.v2.V2TIMUserFullInfo
+import com.tencent.imsdk.v2.V2TIMValueCallback
+import github.leavesczy.compose_chat.base.model.ActionResult
+import github.leavesczy.compose_chat.base.model.C2CConversation
+import github.leavesczy.compose_chat.base.model.Chat
+import github.leavesczy.compose_chat.base.model.Conversation
+import github.leavesczy.compose_chat.base.model.GroupConversation
+import github.leavesczy.compose_chat.base.model.GroupMemberProfile
+import github.leavesczy.compose_chat.base.model.ImageElement
+import github.leavesczy.compose_chat.base.model.ImageMessage
+import github.leavesczy.compose_chat.base.model.Message
+import github.leavesczy.compose_chat.base.model.MessageDetail
+import github.leavesczy.compose_chat.base.model.MessageState
+import github.leavesczy.compose_chat.base.model.PersonProfile
+import github.leavesczy.compose_chat.base.model.SystemMessage
+import github.leavesczy.compose_chat.base.model.TextMessage
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -89,12 +113,15 @@ internal object Converters {
             V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_MEMBER -> {
                 "群成员"
             }
+
             V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_ADMIN -> {
                 "群管理员"
             }
+
             V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_OWNER -> {
                 "群主"
             }
+
             else -> {
                 "unknown"
             }
@@ -126,6 +153,7 @@ internal object Converters {
                     detail = messageDetail, text = timMessage.textElem?.text ?: ""
                 )
             }
+
             V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE -> {
                 val imageList = timMessage.imageElem?.imageList
                 if (!imageList.isNullOrEmpty()) {
@@ -139,9 +167,11 @@ internal object Converters {
                     null
                 }
             }
+
             V2TIMMessage.V2TIM_ELEM_TYPE_GROUP_TIPS -> {
                 convertGroupTipsMessage(timMessage = timMessage)
             }
+
             else -> {
                 null
             }
@@ -198,24 +228,31 @@ internal object Converters {
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_JOIN, V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_INVITE -> {
                     tips = memberNames + "加入了群聊"
                 }
+
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_QUIT -> {
                     tips = memberNames + "退出群聊"
                 }
+
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_KICKED -> {
                     tips = memberNames + "被踢出群聊"
                 }
+
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_SET_ADMIN -> {
                     tips = memberNames + "成为管理员"
                 }
+
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_CANCEL_ADMIN -> {
                     tips = memberNames + "被取消管理员身份"
                 }
+
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_GROUP_INFO_CHANGE -> {
                     tips = opMemberName + "修改了群资料"
                 }
+
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_MEMBER_INFO_CHANGE -> {
                     tips = opMemberName + "修改了群成员资料"
                 }
+
                 else -> {
                     tips = "[不支持的系统消息] - ${groupTipsElem.type}"
                 }
@@ -241,12 +278,15 @@ internal object Converters {
             V2TIMMessage.V2TIM_MSG_STATUS_SENDING -> {
                 MessageState.Sending
             }
+
             V2TIMMessage.V2TIM_MSG_STATUS_SEND_SUCC -> {
                 MessageState.Completed
             }
+
             V2TIMMessage.V2TIM_MSG_STATUS_SEND_FAIL -> {
                 MessageState.SendFailed("unknown")
             }
+
             else -> {
                 MessageState.Completed
             }
@@ -282,6 +322,7 @@ internal object Converters {
             is C2CConversation -> {
                 getC2CConversationKey(userId = conversation.id)
             }
+
             is GroupConversation -> {
                 getGroupConversationKey(groupId = conversation.id)
             }
@@ -293,6 +334,7 @@ internal object Converters {
             is Chat.GroupChat -> {
                 getGroupConversationKey(groupId = chat.id)
             }
+
             is Chat.PrivateChat -> {
                 getC2CConversationKey(userId = chat.id)
             }

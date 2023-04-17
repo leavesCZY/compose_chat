@@ -1,6 +1,13 @@
 package github.leavesczy.compose_chat.proxy.logic
 
-import com.tencent.imsdk.v2.*
+import com.tencent.imsdk.v2.V2TIMCallback
+import com.tencent.imsdk.v2.V2TIMFriendAddApplication
+import com.tencent.imsdk.v2.V2TIMFriendInfo
+import com.tencent.imsdk.v2.V2TIMFriendInfoResult
+import com.tencent.imsdk.v2.V2TIMFriendOperationResult
+import com.tencent.imsdk.v2.V2TIMFriendshipListener
+import com.tencent.imsdk.v2.V2TIMManager
+import com.tencent.imsdk.v2.V2TIMValueCallback
 import github.leavesczy.compose_chat.base.model.ActionResult
 import github.leavesczy.compose_chat.base.model.PersonProfile
 import github.leavesczy.compose_chat.base.provider.IFriendshipProvider

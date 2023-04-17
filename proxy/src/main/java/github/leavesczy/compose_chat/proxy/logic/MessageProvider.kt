@@ -1,8 +1,22 @@
 package github.leavesczy.compose_chat.proxy.logic
 
 import android.graphics.BitmapFactory
-import com.tencent.imsdk.v2.*
-import github.leavesczy.compose_chat.base.model.*
+import com.tencent.imsdk.v2.V2TIMAdvancedMsgListener
+import com.tencent.imsdk.v2.V2TIMManager
+import com.tencent.imsdk.v2.V2TIMMessage
+import com.tencent.imsdk.v2.V2TIMSendCallback
+import com.tencent.imsdk.v2.V2TIMValueCallback
+import github.leavesczy.compose_chat.base.model.Chat
+import github.leavesczy.compose_chat.base.model.ImageElement
+import github.leavesczy.compose_chat.base.model.ImageMessage
+import github.leavesczy.compose_chat.base.model.LoadMessageResult
+import github.leavesczy.compose_chat.base.model.Message
+import github.leavesczy.compose_chat.base.model.MessageDetail
+import github.leavesczy.compose_chat.base.model.MessageState
+import github.leavesczy.compose_chat.base.model.PersonProfile
+import github.leavesczy.compose_chat.base.model.SystemMessage
+import github.leavesczy.compose_chat.base.model.TextMessage
+import github.leavesczy.compose_chat.base.model.TimeMessage
 import github.leavesczy.compose_chat.base.provider.IMessageProvider
 import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
 import github.leavesczy.compose_chat.proxy.utils.Converters
@@ -72,6 +86,7 @@ class MessageProvider : IMessageProvider {
                         chatId, count, lastMessage?.tag as? V2TIMMessage, callback
                     )
                 }
+
                 is Chat.GroupChat -> {
                     V2TIMManager.getMessageManager().getGroupHistoryMessageList(
                         chatId, count, lastMessage?.tag as? V2TIMMessage, callback
@@ -125,6 +140,7 @@ class MessageProvider : IMessageProvider {
                 c2cId = chat.id
                 groupId = ""
             }
+
             is Chat.GroupChat -> {
                 c2cId = ""
                 groupId = chat.id
@@ -172,12 +188,15 @@ class MessageProvider : IMessageProvider {
             is TextMessage -> {
                 this.copy(detail = this.messageDetail.copy(state = failedState))
             }
+
             is ImageMessage -> {
                 this.copy(detail = this.messageDetail.copy(state = failedState))
             }
+
             is TimeMessage -> {
                 throw IllegalArgumentException()
             }
+
             is SystemMessage -> {
                 throw IllegalArgumentException()
             }
