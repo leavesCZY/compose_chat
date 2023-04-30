@@ -17,9 +17,9 @@ class FriendshipViewModel : ViewModel() {
 
     var friendshipPageViewState by mutableStateOf(
         value = FriendshipPageViewState(
-            listState = LazyListState(
-                firstVisibleItemIndex = 0, firstVisibleItemScrollOffset = 0
-            ), joinedGroupList = emptyList(), friendList = emptyList()
+            listState = LazyListState(firstVisibleItemIndex = 0, firstVisibleItemScrollOffset = 0),
+            joinedGroupList = emptyList(),
+            friendList = emptyList()
         )
     )
         private set

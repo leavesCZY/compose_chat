@@ -45,9 +45,7 @@ val DarkColorScheme = darkColorScheme(
     onSecondaryContainer = onSecondaryContainerDark
 )
 
-val WindowInsetsEmpty = WindowInsets(
-    left = 0.dp, top = 0.dp, right = 0.dp, bottom = 0.dp
-)
+val WindowInsetsEmpty = WindowInsets(left = 0.dp, top = 0.dp, right = 0.dp, bottom = 0.dp)
 
 private const val DESIGN_WIDTH = 380f
 
@@ -66,21 +64,22 @@ fun ComposeChatTheme(content: @Composable () -> Unit) {
     val context = LocalContext.current
     val rememberedDensity = remember {
         Density(
-            density = context.resources.displayMetrics.widthPixels / DESIGN_WIDTH, fontScale = 1f
+            density = context.resources.displayMetrics.widthPixels / DESIGN_WIDTH,
+            fontScale = 1f
         )
     }
-    CompositionLocalProvider(
-        LocalDensity provides rememberedDensity
-    ) {
-        MaterialTheme(colorScheme = colorScheme, typography = AppTypography, content = {
-            content()
-            if (appTheme == AppTheme.Gray) {
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    drawRect(
-                        color = Color.LightGray, blendMode = BlendMode.Saturation
-                    )
+    CompositionLocalProvider(LocalDensity provides rememberedDensity) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = AppTypography,
+            content = {
+                content()
+                if (appTheme == AppTheme.Gray) {
+                    Canvas(modifier = Modifier.fillMaxSize()) {
+                        drawRect(color = Color.LightGray, blendMode = BlendMode.Saturation)
+                    }
                 }
             }
-        })
+        )
     }
 }

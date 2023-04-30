@@ -22,9 +22,8 @@ class ConversationViewModel : ViewModel() {
 
     var conversationPageViewState by mutableStateOf(
         value = ConversationPageViewState(
-            listState = LazyListState(
-                firstVisibleItemIndex = 0, firstVisibleItemScrollOffset = 0
-            ), conversationList = emptyList()
+            listState = LazyListState(firstVisibleItemIndex = 0, firstVisibleItemScrollOffset = 0),
+            conversationList = emptyList()
         )
     )
         private set
@@ -62,12 +61,11 @@ class ConversationViewModel : ViewModel() {
         }
     }
 
-    fun pinConversation(
-        conversation: Conversation, pin: Boolean
-    ) {
+    fun pinConversation(conversation: Conversation, pin: Boolean) {
         viewModelScope.launch {
             ComposeChat.conversationProvider.pinConversation(
-                conversation = conversation, pin = pin
+                conversation = conversation,
+                pin = pin
             )
         }
     }

@@ -22,15 +22,9 @@ class FriendProfileActivity : BaseActivity() {
 
         private const val keyFriendId = "keyFriendId"
 
-        fun navTo(
-            context: Context, friendId: String
-        ) {
-            val intent = Intent(
-                context, FriendProfileActivity::class.java
-            )
-            intent.putExtra(
-                keyFriendId, friendId
-            )
+        fun navTo(context: Context, friendId: String) {
+            val intent = Intent(context, FriendProfileActivity::class.java)
+            intent.putExtra(keyFriendId, friendId)
             context.startActivity(intent)
         }
 
@@ -40,9 +34,9 @@ class FriendProfileActivity : BaseActivity() {
         intent.getStringExtra(keyFriendId) ?: ""
     }
 
-    private val friendProfileViewModel by viewModelsInstance(create = {
+    private val friendProfileViewModel by viewModelsInstance {
         FriendProfileViewModel(friendId = friendId)
-    })
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

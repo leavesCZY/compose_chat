@@ -19,15 +19,9 @@ class PreviewImageActivity : BaseActivity() {
 
         private const val keyImagePath = "keyImagePath"
 
-        fun navTo(
-            context: Context, imagePath: String
-        ) {
-            val intent = Intent(
-                context, PreviewImageActivity::class.java
-            )
-            intent.putExtra(
-                keyImagePath, imagePath
-            )
+        fun navTo(context: Context, imagePath: String) {
+            val intent = Intent(context, PreviewImageActivity::class.java)
+            intent.putExtra(keyImagePath, imagePath)
             context.startActivity(intent)
         }
 
@@ -39,11 +33,14 @@ class PreviewImageActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent(systemBarTheme = {
-            SystemBarTheme(
-                appTheme = AppTheme.Dark, navigationBarColor = DarkColorScheme.background
-            )
-        }) {
+        setContent(
+            systemBarTheme = {
+                SystemBarTheme(
+                    appTheme = AppTheme.Dark,
+                    navigationBarColor = DarkColorScheme.background
+                )
+            }
+        ) {
             PreviewImagePage(imagePath = imagePath)
         }
     }

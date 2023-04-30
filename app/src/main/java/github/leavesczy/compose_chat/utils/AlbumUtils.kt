@@ -27,23 +27,17 @@ object AlbumUtils {
 
     private const val JPEG_MIME = "image/jpeg"
 
-    suspend fun insertImageToAlbum(
-        context: Context, imageUrl: String
-    ): Boolean {
+    suspend fun insertImageToAlbum(context: Context, imageUrl: String): Boolean {
         return withContext(context = Dispatchers.IO) {
             try {
                 val isHttpUrl = imageUrl.startsWith(prefix = "http")
                 val imageFile = if (isHttpUrl) {
-                    CoilImageLoader.getCachedFileOrDownload(
-                        context = context, imageUrl = imageUrl
-                    )
+                    CoilImageLoader.getCachedFileOrDownload(context = context, imageUrl = imageUrl)
                 } else {
                     File(imageUrl)
                 }
                 if (imageFile != null) {
-                    return@withContext insertImageToAlbum(
-                        context = context, imageFile = imageFile
-                    )
+                    return@withContext insertImageToAlbum(context = context, imageFile = imageFile)
                 }
             } catch (e: Throwable) {
                 e.printStackTrace()
@@ -52,16 +46,16 @@ object AlbumUtils {
         }
     }
 
-    private fun insertImageToAlbum(
-        context: Context, imageFile: File
-    ): Boolean {
+    private fun insertImageToAlbum(context: Context, imageFile: File): Boolean {
         val displayName = UUID.randomUUID().toString()
         var mimeType = getMimeType(imageFile.absolutePath)
         if (mimeType.isNullOrBlank()) {
             mimeType = JPEG_MIME
         }
         val albumImageOutputStream = generateAlbumImageOutputStream(
-            context = context, mimeType = mimeType, displayName = displayName
+            context = context,
+            mimeType = mimeType,
+            displayName = displayName
         )
         if (albumImageOutputStream != null) {
             val fileInputStream = FileInputStream(imageFile)
@@ -74,15 +68,13 @@ object AlbumUtils {
     }
 
     private fun generateAlbumImageOutputStream(
-        context: Context, displayName: String, mimeType: String
+        context: Context,
+        displayName: String,
+        mimeType: String
     ): OutputStream? {
         val contentValues = ContentValues()
-        contentValues.put(
-            MediaStore.MediaColumns.DISPLAY_NAME, displayName
-        )
-        contentValues.put(
-            MediaStore.MediaColumns.MIME_TYPE, mimeType
-        )
+        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             contentValues.put(
                 MediaStore.MediaColumns.RELATIVE_PATH,
@@ -90,20 +82,19 @@ object AlbumUtils {
             )
         } else {
             val directory = File(
-                Environment.getExternalStorageDirectory().path + File.separator + Environment.DIRECTORY_DCIM + File.separator + ALBUM_DIRECTORY
+                Environment.getExternalStorageDirectory().path +
+                        File.separator +
+                        Environment.DIRECTORY_DCIM +
+                        File.separator +
+                        ALBUM_DIRECTORY
             )
             directory.mkdirs()
-            val imageFile = File.createTempFile(
-                displayName, ".$JPG", directory
-            )
-            contentValues.put(
-                MediaStore.MediaColumns.DATA, imageFile.absolutePath
-            )
+            val imageFile = File.createTempFile(displayName, ".$JPG", directory)
+            contentValues.put(MediaStore.MediaColumns.DATA, imageFile.absolutePath)
         }
         val contentResolver = context.contentResolver
-        val uri = contentResolver.insert(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues
-        )
+        val uri =
+            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
         if (uri != null) {
             return contentResolver.openOutputStream(uri)
         }

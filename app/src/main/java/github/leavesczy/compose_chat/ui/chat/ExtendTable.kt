@@ -29,16 +29,16 @@ import androidx.compose.ui.unit.sp
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun ExtendTable(
-    launchImagePicker: () -> Unit, launchTakePicture: () -> Unit
-) {
+fun ExtendTable(launchImagePicker: () -> Unit, launchTakePicture: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 20.dp)
     ) {
         Function(
-            text = "相册", icon = Icons.Filled.InsertPhoto, onClick = launchImagePicker
+            text = "相册",
+            icon = Icons.Filled.InsertPhoto,
+            onClick = launchImagePicker
         )
         Spacer(
             modifier = Modifier
@@ -46,21 +46,22 @@ fun ExtendTable(
                 .width(width = 10.dp)
         )
         Function(
-            text = "拍摄", icon = Icons.Filled.PhotoCamera, onClick = launchTakePicture
+            text = "拍摄",
+            icon = Icons.Filled.PhotoCamera,
+            onClick = launchTakePicture
         )
     }
 }
 
 @Composable
-private fun Function(
-    text: String, icon: ImageVector, onClick: () -> Unit
-) {
+private fun Function(text: String, icon: ImageVector, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .clickable(onClick = onClick)
             .padding(
                 horizontal = 10.dp, vertical = 10.dp
-            ), horizontalAlignment = Alignment.CenterHorizontally
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
             modifier = Modifier.size(size = 42.dp),

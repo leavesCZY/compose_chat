@@ -34,7 +34,9 @@ fun AppIcon(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun AppIcon() {
-    Box(modifier = Modifier.background(color = Color.Transparent)) {
+    Box(
+        modifier = Modifier.background(color = Color.Transparent)
+    ) {
         AppIcon(modifier = Modifier)
     }
 }

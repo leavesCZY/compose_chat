@@ -45,9 +45,7 @@ class AccountProvider : IAccountProvider {
                 dispatchServerState(serverState = ServerState.ConnectSuccess)
             }
 
-            override fun onConnectFailed(
-                code: Int, error: String
-            ) {
+            override fun onConnectFailed(code: Int, error: String) {
                 dispatchServerState(serverState = ServerState.ConnectFailed)
             }
 
@@ -63,9 +61,7 @@ class AccountProvider : IAccountProvider {
                 refreshPersonProfile()
             }
         })
-        V2TIMManager.getInstance().initSDK(
-            application, AppConsts.APP_ID, config
-        )
+        V2TIMManager.getInstance().initSDK(application, AppConsts.APP_ID, config)
     }
 
     private fun dispatchServerState(serverState: ServerState) {
@@ -77,19 +73,19 @@ class AccountProvider : IAccountProvider {
     override suspend fun login(userId: String): ActionResult {
         val formatUserId = userId.lowercase()
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getInstance().login(formatUserId,
+            V2TIMManager.getInstance().login(
+                formatUserId,
                 GenerateUserSig.genUserSig(userId = formatUserId),
                 object : V2TIMCallback {
                     override fun onSuccess() {
                         continuation.resume(value = ActionResult.Success)
                     }
 
-                    override fun onError(
-                        code: Int, desc: String?
-                    ) {
+                    override fun onError(code: Int, desc: String?) {
                         continuation.resume(
                             value = ActionResult.Failed(
-                                code = code, reason = desc ?: ""
+                                code = code,
+                                reason = desc ?: ""
                             )
                         )
                     }
@@ -99,22 +95,23 @@ class AccountProvider : IAccountProvider {
 
     override suspend fun logout(): ActionResult {
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getInstance().logout(object : V2TIMCallback {
-                override fun onSuccess() {
-                    dispatchServerState(serverState = ServerState.Logout)
-                    continuation.resume(value = ActionResult.Success)
-                }
+            V2TIMManager.getInstance().logout(
+                object : V2TIMCallback {
+                    override fun onSuccess() {
+                        dispatchServerState(serverState = ServerState.Logout)
+                        continuation.resume(value = ActionResult.Success)
+                    }
 
-                override fun onError(
-                    code: Int, desc: String?
-                ) {
-                    continuation.resume(
-                        value = ActionResult.Failed(
-                            code = code, reason = desc ?: ""
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(
+                            value = ActionResult.Failed(
+                                code = code,
+                                reason = desc ?: ""
+                            )
                         )
-                    )
+                    }
                 }
-            })
+            )
         }
     }
 
@@ -129,32 +126,26 @@ class AccountProvider : IAccountProvider {
     }
 
     override suspend fun updatePersonProfile(
-        faceUrl: String, nickname: String, signature: String
+        faceUrl: String,
+        nickname: String,
+        signature: String
     ): ActionResult {
         val originProfile = getSelfProfileOrigin() ?: return ActionResult.Failed("更新失败")
         return suspendCancellableCoroutine { continuation ->
-            originProfile.faceUrl = faceUrl.replace(
-                "\\s", ""
-            )
-            originProfile.setNickname(
-                nickname.replace(
-                    "\\s", ""
-                )
-            )
-            originProfile.selfSignature = signature.replace(
-                "\\s", ""
-            )
-            V2TIMManager.getInstance().setSelfInfo(originProfile, object : V2TIMCallback {
-                override fun onSuccess() {
-                    continuation.resume(value = ActionResult.Success)
-                }
+            originProfile.faceUrl = faceUrl.replace("\\s", "")
+            originProfile.setNickname(nickname.replace("\\s", ""))
+            originProfile.selfSignature = signature.replace("\\s", "")
+            V2TIMManager.getInstance().setSelfInfo(
+                originProfile, object : V2TIMCallback {
+                    override fun onSuccess() {
+                        continuation.resume(value = ActionResult.Success)
+                    }
 
-                override fun onError(
-                    code: Int, desc: String?
-                ) {
-                    continuation.resume(value = ActionResult.Failed("code: $code desc: $desc"))
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(value = ActionResult.Failed("code: $code desc: $desc"))
+                    }
                 }
-            })
+            )
         }
     }
 

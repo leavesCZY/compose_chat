@@ -30,19 +30,16 @@ import github.leavesczy.compose_chat.utils.showToast
 @Composable
 fun FriendshipDialog(viewState: FriendshipDialogViewState) {
     ComposeBottomSheetDialog(
-        visible = viewState.visible, onDismissRequest = viewState.onDismissRequest
+        visible = viewState.visible,
+        onDismissRequest = viewState.onDismissRequest
     ) {
         var userId by remember {
-            mutableStateOf("")
+            mutableStateOf(value = "")
         }
         Column(
             modifier = Modifier
                 .fillMaxHeight(fraction = 0.8f)
-                .clip(
-                    shape = RoundedCornerShape(
-                        topStart = 20.dp, topEnd = 20.dp
-                    )
-                )
+                .clip(shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                 .background(color = MaterialTheme.colorScheme.background)
                 .padding(top = 20.dp)
         ) {
@@ -61,7 +58,7 @@ fun FriendshipDialog(viewState: FriendshipDialogViewState) {
                 },
                 label = "输入 UserID",
                 singleLine = true,
-                maxLines = 1,
+                maxLines = 1
             )
             CommonButton(text = "添加好友") {
                 if (userId.isBlank()) {

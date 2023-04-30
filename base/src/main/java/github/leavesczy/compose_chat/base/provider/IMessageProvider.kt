@@ -18,26 +18,16 @@ interface IMessageProvider {
 
     }
 
-    fun startReceive(
-        chat: Chat, messageListener: MessageListener
-    )
+    fun startReceive(chat: Chat, messageListener: MessageListener)
 
     fun stopReceive(messageListener: MessageListener)
 
-    suspend fun sendText(
-        chat: Chat, text: String
-    ): Channel<Message>
+    suspend fun sendText(chat: Chat, text: String): Channel<Message>
 
-    suspend fun sendImage(
-        chat: Chat, imagePath: String
-    ): Channel<Message>
+    suspend fun sendImage(chat: Chat, imagePath: String): Channel<Message>
 
-    suspend fun uploadImage(
-        chat: Chat, imagePath: String
-    ): String
+    suspend fun uploadImage(chat: Chat, imagePath: String): String
 
-    suspend fun getHistoryMessage(
-        chat: Chat, lastMessage: Message?
-    ): LoadMessageResult
+    suspend fun getHistoryMessage(chat: Chat, lastMessage: Message?): LoadMessageResult
 
 }

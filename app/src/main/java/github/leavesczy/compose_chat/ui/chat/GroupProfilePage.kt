@@ -58,9 +58,7 @@ import github.leavesczy.compose_chat.utils.randomFaceUrl
 private val headerPicHeightDp = 500.dp
 
 @Composable
-fun GroupProfilePage(
-    groupProfileViewModel: GroupProfileViewModel, action: GroupProfilePageAction
-) {
+fun GroupProfilePage(groupProfileViewModel: GroupProfileViewModel, action: GroupProfilePageAction) {
     val viewState = groupProfileViewModel.groupProfilePageViewState
     val density = LocalDensity.current.density
     val headerMaxOffsetPx by remember {
@@ -75,16 +73,15 @@ fun GroupProfilePage(
             listState.firstVisibleItemScrollOffset
         }.collect {
             topBarAlpha = if (listState.firstVisibleItemIndex == 0) {
-                minOf(
-                    it / headerMaxOffsetPx, 1f
-                )
+                minOf(it / headerMaxOffsetPx, 1f)
             } else {
                 1f
             }
         }
     }
     Scaffold(
-        modifier = Modifier.fillMaxSize(), contentWindowInsets = WindowInsets.navigationBars
+        modifier = Modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -98,7 +95,8 @@ fun GroupProfilePage(
             ) {
                 item(key = "header") {
                     val groupProfile = viewState.groupProfile
-                    ProfilePanel(title = groupProfile.name,
+                    ProfilePanel(
+                        title = groupProfile.name,
                         subtitle = groupProfile.introduction,
                         introduction = "GroupID: ${groupProfile.id}\nCreateTime: ${groupProfile.createTimeFormat}\nMemberCount: ${groupProfile.memberCount}",
                         avatarUrl = groupProfile.faceUrl,
@@ -106,13 +104,17 @@ fun GroupProfilePage(
 
                         })
                 }
-                items(items = viewState.memberList, key = {
-                    it.detail.id
-                }, itemContent = {
-                    GroupMemberItem(
-                        groupMemberProfile = it, groupProfilePageAction = action
-                    )
-                })
+                items(
+                    items = viewState.memberList,
+                    key = {
+                        it.detail.id
+                    },
+                    itemContent = {
+                        GroupMemberItem(
+                            groupMemberProfile = it, groupProfilePageAction = action
+                        )
+                    }
+                )
             }
             GroupProfilePageTopBar(
                 title = viewState.groupProfile.name,
@@ -125,7 +127,8 @@ fun GroupProfilePage(
 
 @Composable
 private fun GroupMemberItem(
-    groupMemberProfile: GroupMemberProfile, groupProfilePageAction: GroupProfilePageAction
+    groupMemberProfile: GroupMemberProfile,
+    groupProfilePageAction: GroupProfilePageAction
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -142,49 +145,51 @@ private fun GroupMemberItem(
             top.linkTo(anchor = parent.top)
             bottom.linkTo(anchor = parent.bottom)
         }
-        CoilImage(modifier = Modifier
-            .constrainAs(ref = avatarRef) {
-                start.linkTo(anchor = parent.start)
-                linkTo(
-                    top = parent.top, bottom = parent.bottom
-                )
-            }
-            .padding(
-                start = 14.dp, top = 8.dp, bottom = 8.dp
-            )
-            .size(size = 48.dp)
-            .clip(
-                shape = RoundedCornerShape(size = 6.dp)
-            ), data = groupMemberProfile.detail.faceUrl)
-        Text(modifier = Modifier
-            .constrainAs(ref = showNameRef) {
-                linkTo(
-                    start = avatarRef.end,
-                    end = parent.end,
-                    startMargin = 12.dp,
-                    endMargin = 12.dp
-                )
-                width = Dimension.fillToConstraints
-            }
-            .padding(bottom = 1.dp), text = groupMemberProfile.detail.showName + "（${
-            groupMemberProfile.detail.id + if (groupMemberProfile.isOwner) {
-                " - 群主"
-            } else {
-                ""
-            }
-        }）", fontSize = 17.sp, overflow = TextOverflow.Ellipsis, maxLines = 1)
-        Text(modifier = Modifier
-            .constrainAs(ref = roleRef) {
-                linkTo(
-                    start = showNameRef.start, end = parent.end, endMargin = 12.dp
-                )
-                width = Dimension.fillToConstraints
-            }
-            .padding(top = 1.dp),
+        CoilImage(
+            modifier = Modifier
+                .constrainAs(ref = avatarRef) {
+                    start.linkTo(anchor = parent.start)
+                    linkTo(top = parent.top, bottom = parent.bottom)
+                }
+                .padding(start = 14.dp, top = 8.dp, bottom = 8.dp)
+                .size(size = 48.dp)
+                .clip(shape = RoundedCornerShape(size = 6.dp)),
+            data = groupMemberProfile.detail.faceUrl)
+        Text(
+            modifier = Modifier
+                .constrainAs(ref = showNameRef) {
+                    linkTo(
+                        start = avatarRef.end,
+                        end = parent.end,
+                        startMargin = 12.dp,
+                        endMargin = 12.dp
+                    )
+                    width = Dimension.fillToConstraints
+                }
+                .padding(bottom = 1.dp),
+            text = groupMemberProfile.detail.showName + "（${
+                groupMemberProfile.detail.id + if (groupMemberProfile.isOwner) {
+                    " - 群主"
+                } else {
+                    ""
+                }
+            }）",
+            fontSize = 17.sp,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(ref = roleRef) {
+                    linkTo(start = showNameRef.start, end = parent.end, endMargin = 12.dp)
+                    width = Dimension.fillToConstraints
+                }
+                .padding(top = 1.dp),
             text = "joinTime: ${groupMemberProfile.joinTimeFormat}",
             fontSize = 14.sp,
             overflow = TextOverflow.Ellipsis,
-            maxLines = 1)
+            maxLines = 1
+        )
         Divider(
             modifier = Modifier.constrainAs(ref = dividerRef) {
                 linkTo(
@@ -192,7 +197,8 @@ private fun GroupMemberItem(
                 )
                 bottom.linkTo(anchor = parent.bottom)
                 width = Dimension.fillToConstraints
-            }, thickness = 0.2.dp
+            },
+            thickness = 0.2.dp
         )
     }
 }

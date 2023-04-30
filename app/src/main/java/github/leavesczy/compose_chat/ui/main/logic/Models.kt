@@ -18,15 +18,18 @@ enum class MainTab {
 }
 
 data class MainPageDrawerViewState(
-    val drawerState: DrawerState, val personProfile: PersonProfile
+    val drawerState: DrawerState,
+    val personProfile: PersonProfile
 )
 
 data class MainPageBottomBarViewState(
-    val selectedTab: MainTab, val unreadMessageCount: Long
+    val selectedTab: MainTab,
+    val unreadMessageCount: Long
 )
 
 data class ConversationPageViewState(
-    val listState: LazyListState, val conversationList: List<Conversation>
+    val listState: LazyListState,
+    val conversationList: List<Conversation>
 )
 
 data class FriendshipPageViewState(
@@ -47,10 +50,14 @@ data class FriendshipDialogViewState(
 )
 
 data class FriendProfilePageViewState(
-    val personProfile: PersonProfile, val itIsMe: Boolean, val isFriend: Boolean
+    val personProfile: PersonProfile,
+    val itIsMe: Boolean,
+    val isFriend: Boolean
 )
 
-data class ProfileUpdatePageViewStata(val personProfile: PersonProfile)
+data class ProfileUpdatePageViewStata(
+    val personProfile: PersonProfile
+)
 
 enum class AppTheme {
 

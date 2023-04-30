@@ -14,24 +14,14 @@ internal object TimeUtil {
 
     const val YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss"
 
-    private val format_HH_mm = SimpleDateFormat(
-        "HH:mm", Locale.CHINA
-    )
+    private val format_HH_mm = SimpleDateFormat("HH:mm", Locale.CHINA)
 
-    private val format_MM_dd = SimpleDateFormat(
-        "MM-dd", Locale.CHINA
-    )
+    private val format_MM_dd = SimpleDateFormat("MM-dd", Locale.CHINA)
 
-    private val format_MM_dd_HH_mm = SimpleDateFormat(
-        "MM-dd HH:mm", Locale.CHINA
-    )
+    private val format_MM_dd_HH_mm = SimpleDateFormat("MM-dd HH:mm", Locale.CHINA)
 
-    fun formatTime(
-        time: Long, format: String
-    ): String {
-        return SimpleDateFormat(
-            format, Locale.CHINA
-        ).format(Date(time))
+    fun formatTime(time: Long, format: String): String {
+        return SimpleDateFormat(format, Locale.CHINA).format(Date(time))
     }
 
     fun toConversationTime(timeStamp: Long): String {
@@ -47,16 +37,12 @@ internal object TimeUtil {
             return format_HH_mm.format(date)
         }
         // 昨天凌晨
-        tempCalendar.add(
-            Calendar.DATE, -1
-        )
+        tempCalendar.add(Calendar.DATE, -1)
         if (calendar.after(tempCalendar)) {
             return "昨天 " + format_HH_mm.format(date)
         }
         // 前天凌晨
-        tempCalendar.add(
-            Calendar.DATE, -1
-        )
+        tempCalendar.add(Calendar.DATE, -1)
         if (calendar.after(tempCalendar)) {
             return "前天"
         }
@@ -76,16 +62,12 @@ internal object TimeUtil {
             return format_HH_mm.format(date)
         }
         // 昨天凌晨
-        tempCalendar.add(
-            Calendar.DATE, -1
-        )
+        tempCalendar.add(Calendar.DATE, -1)
         if (calendar.after(tempCalendar)) {
             return "昨天 " + format_HH_mm.format(date)
         }
         // 前天凌晨
-        tempCalendar.add(
-            Calendar.DATE, -1
-        )
+        tempCalendar.add(Calendar.DATE, -1)
         if (calendar.after(tempCalendar)) {
             return "前天 " + format_HH_mm.format(date)
         }

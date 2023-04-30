@@ -18,31 +18,36 @@ val AppTypography = Typography(
         fontSize = 21.sp,
         lineHeight = 26.sp,
         letterSpacing = 0.sp
-    ), titleMedium = TextStyle(
+    ),
+    titleMedium = TextStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Normal,
         fontSize = 19.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.sp
-    ), titleSmall = TextStyle(
+    ),
+    titleSmall = TextStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Normal,
         fontSize = 17.sp,
         lineHeight = 22.sp,
         letterSpacing = 0.sp
-    ), bodyLarge = TextStyle(
+    ),
+    bodyLarge = TextStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Normal,
         fontSize = 17.sp,
         lineHeight = 22.sp,
         letterSpacing = 0.sp
-    ), bodyMedium = TextStyle(
+    ),
+    bodyMedium = TextStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Normal,
         fontSize = 15.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.sp
-    ), bodySmall = TextStyle(
+    ),
+    bodySmall = TextStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Normal,
         fontSize = 13.sp,

@@ -67,14 +67,12 @@ class FriendshipProvider : IFriendshipProvider {
             V2TIMManager.getFriendshipManager()
                 .getFriendList(object : V2TIMValueCallback<List<V2TIMFriendInfo>> {
                     override fun onSuccess(result: List<V2TIMFriendInfo>) {
-                        continuation.resume(value = convertFriend(friendInfoList = result.filter {
-                            !it.userID.isNullOrBlank()
-                        }))
+                        continuation.resume(
+                            value = convertFriend(friendInfoList = result.filter { !it.userID.isNullOrBlank() })
+                        )
                     }
 
-                    override fun onError(
-                        code: Int, desc: String?
-                    ) {
+                    override fun onError(code: Int, desc: String?) {
                         continuation.resume(value = null)
                     }
                 })
@@ -95,12 +93,11 @@ class FriendshipProvider : IFriendshipProvider {
                         continuation.resume(value = t?.getOrNull(0))
                     }
 
-                    override fun onError(
-                        code: Int, desc: String?
-                    ) {
+                    override fun onError(code: Int, desc: String?) {
                         continuation.resume(value = null)
                     }
-                })
+                }
+            )
         }
     }
 
@@ -122,16 +119,15 @@ class FriendshipProvider : IFriendshipProvider {
                         continuation.resume(value = ActionResult.Success)
                     }
 
-                    override fun onError(
-                        code: Int, desc: String?
-                    ) {
+                    override fun onError(code: Int, desc: String?) {
                         continuation.resume(
                             value = ActionResult.Failed(
                                 code = code, reason = desc ?: ""
                             )
                         )
                     }
-                })
+                }
+            )
         }
     }
 
@@ -144,12 +140,11 @@ class FriendshipProvider : IFriendshipProvider {
                         continuation.resume(value = ActionResult.Success)
                     }
 
-                    override fun onError(
-                        code: Int, desc: String?
-                    ) {
+                    override fun onError(code: Int, desc: String?) {
                         continuation.resume(
                             value = ActionResult.Failed(
-                                code = code, reason = desc ?: ""
+                                code = code,
+                                reason = desc ?: ""
                             )
                         )
                     }
@@ -157,14 +152,10 @@ class FriendshipProvider : IFriendshipProvider {
         }
     }
 
-    override suspend fun setFriendRemark(
-        friendId: String, remark: String
-    ): ActionResult {
+    override suspend fun setFriendRemark(friendId: String, remark: String): ActionResult {
         val friendProfile = getFriendInfo(friendId)?.friendInfo
             ?: return ActionResult.Failed(reason = "设置失败")
-        friendProfile.friendRemark = remark.replace(
-            "\\s", ""
-        )
+        friendProfile.friendRemark = remark.replace("\\s", "")
         return suspendCancellableCoroutine { continuation ->
             V2TIMManager.getFriendshipManager().setFriendInfo(
                 friendProfile,
@@ -173,13 +164,9 @@ class FriendshipProvider : IFriendshipProvider {
                         continuation.resume(value = ActionResult.Success)
                     }
 
-                    override fun onError(
-                        code: Int, desc: String?
-                    ) {
+                    override fun onError(code: Int, desc: String?) {
                         continuation.resume(
-                            value = ActionResult.Failed(
-                                code = code, reason = desc ?: ""
-                            )
+                            value = ActionResult.Failed(code = code, reason = desc ?: "")
                         )
                     }
                 })

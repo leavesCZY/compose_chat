@@ -36,81 +36,74 @@ fun PersonProfilePage(personProfileViewModel: PersonProfileViewModel) {
     val title = personProfile.showName
     val subtitle = personProfile.signature
     val introduction = "ID: ${personProfile.id}"
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(
+        modifier = Modifier.fillMaxSize()
+    ) {
         val context = LocalContext.current
         ConstraintLayout(modifier = Modifier) {
             val (backgroundRef, avatarRef, titleRef, subtitleRef, introductionRef) = createRefs()
-            BezierImage(modifier = Modifier
-                .constrainAs(ref = backgroundRef) {
-                    linkTo(
-                        start = parent.start, end = parent.end
-                    )
-                    top.linkTo(anchor = parent.top)
-                    width = Dimension.fillToConstraints
-                }
-                .aspectRatio(ratio = 1f)
-                .scrim(color = Color(0x33000000)), data = faceUrl)
-            BouncyImage(modifier = Modifier
-                .constrainAs(ref = avatarRef) {
-                    linkTo(
-                        top = backgroundRef.top, bottom = backgroundRef.bottom, bias = 0.1f
-                    )
-                    linkTo(
-                        start = backgroundRef.start, end = backgroundRef.end
-                    )
-                }
-                .statusBarsPadding()
-                .size(size = 90.dp)
-                .clickableNoRipple {
-                    if (faceUrl.isNotBlank()) {
-                        PreviewImageActivity.navTo(
-                            context = context, imagePath = faceUrl
-                        )
+            BezierImage(
+                modifier = Modifier
+                    .constrainAs(ref = backgroundRef) {
+                        linkTo(start = parent.start, end = parent.end)
+                        top.linkTo(anchor = parent.top)
+                        width = Dimension.fillToConstraints
                     }
-                }, data = faceUrl
+                    .aspectRatio(ratio = 1f)
+                    .scrim(color = Color(0x33000000)),
+                data = faceUrl
             )
-            Text(modifier = Modifier
-                .constrainAs(ref = titleRef) {
-                    linkTo(
-                        start = backgroundRef.start, end = backgroundRef.end
-                    )
-                    top.linkTo(
-                        anchor = avatarRef.bottom, margin = 10.dp
-                    )
-                }
-                .padding(horizontal = 10.dp),
+            BouncyImage(
+                modifier = Modifier
+                    .constrainAs(ref = avatarRef) {
+                        linkTo(top = backgroundRef.top, bottom = backgroundRef.bottom, bias = 0.1f)
+                        linkTo(start = backgroundRef.start, end = backgroundRef.end)
+                    }
+                    .statusBarsPadding()
+                    .size(size = 90.dp)
+                    .clickableNoRipple {
+                        if (faceUrl.isNotBlank()) {
+                            PreviewImageActivity.navTo(context = context, imagePath = faceUrl)
+                        }
+                    },
+                data = faceUrl
+            )
+            Text(
+                modifier = Modifier
+                    .constrainAs(ref = titleRef) {
+                        linkTo(start = backgroundRef.start, end = backgroundRef.end)
+                        top.linkTo(anchor = avatarRef.bottom, margin = 10.dp)
+                    }
+                    .padding(horizontal = 10.dp),
                 text = title,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
-                color = Color.White)
-            Text(modifier = Modifier
-                .constrainAs(ref = subtitleRef) {
-                    linkTo(
-                        start = backgroundRef.start, end = backgroundRef.end
-                    )
-                    top.linkTo(
-                        anchor = titleRef.bottom, margin = 10.dp
-                    )
-                }
-                .padding(horizontal = 10.dp),
+                color = Color.White
+            )
+            Text(
+                modifier = Modifier
+                    .constrainAs(ref = subtitleRef) {
+                        linkTo(start = backgroundRef.start, end = backgroundRef.end)
+                        top.linkTo(anchor = titleRef.bottom, margin = 10.dp)
+                    }
+                    .padding(horizontal = 10.dp),
                 text = subtitle,
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center,
-                color = Color.White)
-            Text(modifier = Modifier
-                .constrainAs(ref = introductionRef) {
-                    linkTo(
-                        start = backgroundRef.start, end = backgroundRef.end
-                    )
-                    top.linkTo(
-                        anchor = subtitleRef.bottom, margin = 10.dp
-                    )
-                }
-                .padding(horizontal = 10.dp),
+                color = Color.White
+            )
+            Text(
+                modifier = Modifier
+                    .constrainAs(ref = introductionRef) {
+                        linkTo(start = backgroundRef.start, end = backgroundRef.end)
+                        top.linkTo(anchor = subtitleRef.bottom, margin = 10.dp)
+                    }
+                    .padding(horizontal = 10.dp),
                 text = introduction,
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center,
-                color = Color.White)
+                color = Color.White
+            )
         }
     }
 }

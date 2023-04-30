@@ -31,24 +31,25 @@ class ConversationProvider : IConversationProvider {
     override val totalUnreadMessageCount = MutableSharedFlow<Long>()
 
     init {
-        V2TIMManager.getConversationManager().addConversationListener(object :
-            V2TIMConversationListener() {
-            override fun onConversationChanged(conversationList: MutableList<V2TIMConversation>) {
-                refreshConversationList()
-            }
+        V2TIMManager.getConversationManager().addConversationListener(
+            object : V2TIMConversationListener() {
+                override fun onConversationChanged(conversationList: MutableList<V2TIMConversation>) {
+                    refreshConversationList()
+                }
 
-            override fun onNewConversation(conversationList: MutableList<V2TIMConversation>?) {
-                refreshConversationList()
-            }
+                override fun onNewConversation(conversationList: MutableList<V2TIMConversation>?) {
+                    refreshConversationList()
+                }
 
-            override fun onTotalUnreadMessageCountChanged(totalUnreadCount: Long) {
-                ChatCoroutineScope.launch {
-                    this@ConversationProvider.totalUnreadMessageCount.emit(
-                        value = totalUnreadCount
-                    )
+                override fun onTotalUnreadMessageCountChanged(totalUnreadCount: Long) {
+                    ChatCoroutineScope.launch {
+                        this@ConversationProvider.totalUnreadMessageCount.emit(
+                            value = totalUnreadCount
+                        )
+                    }
                 }
             }
-        })
+        )
     }
 
     override fun refreshConversationList() {
@@ -66,9 +67,7 @@ class ConversationProvider : IConversationProvider {
                     }
                 }
 
-                override fun onError(
-                    code: Int, desc: String?
-                ) {
+                override fun onError(code: Int, desc: String?) {
                     ChatCoroutineScope.launch {
                         totalUnreadMessageCount.emit(value = 0)
                     }
@@ -78,31 +77,32 @@ class ConversationProvider : IConversationProvider {
 
     override fun cleanConversationUnreadMessageCount(chat: Chat) {
         V2TIMManager.getConversationManager().cleanConversationUnreadMessageCount(
-            Converters.getConversationKey(chat = chat), 0, 0, null
+            Converters.getConversationKey(chat = chat),
+            0,
+            0,
+            null
         )
     }
 
-    override suspend fun pinConversation(
-        conversation: Conversation, pin: Boolean
-    ): ActionResult {
+    override suspend fun pinConversation(conversation: Conversation, pin: Boolean): ActionResult {
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getConversationManager().pinConversation(Converters.getConversationKey(
-                conversation
-            ), pin, object : V2TIMCallback {
-                override fun onSuccess() {
-                    continuation.resume(value = ActionResult.Success)
-                }
+            V2TIMManager.getConversationManager().pinConversation(
+                Converters.getConversationKey(conversation),
+                pin,
+                object : V2TIMCallback {
+                    override fun onSuccess() {
+                        continuation.resume(value = ActionResult.Success)
+                    }
 
-                override fun onError(
-                    code: Int, desc: String?
-                ) {
-                    continuation.resume(
-                        value = ActionResult.Failed(
-                            code = code, reason = desc ?: ""
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(
+                            value = ActionResult.Failed(
+                                code = code,
+                                reason = desc ?: ""
+                            )
                         )
-                    )
-                }
-            })
+                    }
+                })
         }
     }
 
@@ -142,9 +142,8 @@ class ConversationProvider : IConversationProvider {
                     override fun onSuccess(result: V2TIMConversationResult) {
                         continuation.resume(
                             value = Pair(
-                                convertConversation(result.conversationList.filter {
-                                    !it.userID.isNullOrBlank() || !it.groupID.isNullOrBlank()
-                                }), if (result.isFinished) {
+                                convertConversation(result.conversationList.filter { !it.userID.isNullOrBlank() || !it.groupID.isNullOrBlank() }),
+                                if (result.isFinished) {
                                     0
                                 } else {
                                     result.nextSeq
@@ -153,24 +152,17 @@ class ConversationProvider : IConversationProvider {
                         )
                     }
 
-                    override fun onError(
-                        code: Int, desc: String?
-                    ) {
-                        continuation.resume(
-                            value = Pair(
-                                emptyList(), 0
-                            )
-                        )
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(value = Pair(emptyList(), 0))
                     }
-                })
+                }
+            )
         }
     }
 
     private fun convertConversation(convertersList: List<V2TIMConversation>?): List<Conversation> {
         return convertersList?.mapNotNull {
-            convertConversation(
-                conversation = it
-            )
+            convertConversation(conversation = it)
         }?.sortedByDescending {
             if (it.isPinned) {
                 it.lastMessage.messageDetail.timestamp.toDouble() + Long.MAX_VALUE

@@ -43,9 +43,7 @@ fun PreviewImagePage(imagePath: String) {
     val coroutineScope = rememberCoroutineScope()
     fun insertImageToAlbum() {
         coroutineScope.launch {
-            val result = AlbumUtils.insertImageToAlbum(
-                context = context, imageUrl = imagePath
-            )
+            val result = AlbumUtils.insertImageToAlbum(context = context, imageUrl = imagePath)
             if (result) {
                 showToast(msg = "图片已保存到相册")
             } else {
@@ -63,6 +61,7 @@ fun PreviewImagePage(imagePath: String) {
             showToast(msg = "请先授予存储权限再保存图片")
         }
     }
+
     Scaffold(
         modifier = Modifier
             .background(color = BackgroundColorDark)
@@ -79,15 +78,19 @@ fun PreviewImagePage(imagePath: String) {
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(state = rememberScrollState()),
-                data = ImageRequest.Builder(context = LocalContext.current).data(
-                    data = imagePath
-                ).size(size = Size.ORIGINAL).scale(scale = Scale.FILL).build(),
+                data = ImageRequest
+                    .Builder(context = LocalContext.current)
+                    .data(data = imagePath)
+                    .size(size = Size.ORIGINAL)
+                    .scale(scale = Scale.FILL)
+                    .build(),
                 contentScale = ContentScale.FillWidth,
                 backgroundColor = BackgroundColorDark
             )
-            IconButton(modifier = Modifier
-                .align(alignment = Alignment.BottomEnd)
-                .padding(all = 20.dp),
+            IconButton(
+                modifier = Modifier
+                    .align(alignment = Alignment.BottomEnd)
+                    .padding(all = 20.dp),
                 content = {
                     Icon(
                         imageVector = Icons.Filled.SaveAlt,
@@ -96,15 +99,13 @@ fun PreviewImagePage(imagePath: String) {
                     )
                 },
                 onClick = {
-                    if (PermissionUtils.mustRequestWriteExternalStoragePermission(
-                            context = context
-                        )
-                    ) {
+                    if (PermissionUtils.mustRequestWriteExternalStoragePermission(context = context)) {
                         requestPermissionLaunch.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     } else {
                         insertImageToAlbum()
                     }
-                })
+                }
+            )
         }
     }
 }

@@ -53,10 +53,13 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
                     profile.isFriend
                 }
                 friendProfilePageState = FriendProfilePageViewState(
-                    personProfile = profile, itIsMe = itIsMe, isFriend = isFriend
+                    personProfile = profile,
+                    itIsMe = itIsMe,
+                    isFriend = isFriend
                 )
                 setFriendRemarkDialogViewState = SetFriendRemarkDialogViewState(
-                    visible = false, personProfile = profile
+                    visible = false,
+                    personProfile = profile
                 )
             }
         }
@@ -110,7 +113,8 @@ class FriendProfileViewModel(private val friendId: String) : ViewModel() {
     fun setFriendRemark(remark: String) {
         viewModelScope.launch {
             when (val result = ComposeChat.friendshipProvider.setFriendRemark(
-                friendId = friendId, remark = remark
+                friendId = friendId,
+                remark = remark
             )) {
                 is ActionResult.Success -> {
                     delay(timeMillis = 300)

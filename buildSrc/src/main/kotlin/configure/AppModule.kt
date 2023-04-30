@@ -38,9 +38,7 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
                 }
             }
         }
-        buildConfigField(
-            "String", "VERSION_NAME", "\"${VersionConfig.versionName}\""
-        )
+        buildConfigField("String", "VERSION_NAME", "\"${VersionConfig.versionName}\"")
     }
     signingConfigs {
         create("release") {
@@ -59,7 +57,8 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
             isShrinkResources = false
             isDebuggable = true
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
         release {
@@ -68,7 +67,8 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
             isShrinkResources = true
             isDebuggable = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
             ndk {
                 abiFilters.add("arm64-v8a")
@@ -83,7 +83,7 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Dependencies.Compose.composeCompilerVersion
+        kotlinCompilerExtensionVersion = Dependencies.Compose.compilerVersion
     }
     ((this as ExtensionAware).extensions.getByName("kotlinOptions") as KotlinJvmOptions).apply {
         jvmTarget = BuildConfig.jvmTarget

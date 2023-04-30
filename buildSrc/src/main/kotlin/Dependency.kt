@@ -28,8 +28,8 @@ fun DependencyHandlerScope.implementationTest() {
 }
 
 fun DependencyHandlerScope.implementationCompose() {
-    implementationExtend(platform(Dependencies.Compose.composeBom))
-    androidTestImplementationExtend(platform(Dependencies.Compose.composeBom))
+    implementationExtend(platform(Dependencies.Compose.bom))
+    androidTestImplementationExtend(platform(Dependencies.Compose.bom))
     implementationExtend(Dependencies.Compose.ui)
     implementationExtend(Dependencies.Compose.uiToolingPreview)
     debugImplementationExtend(Dependencies.Compose.uiTooling)

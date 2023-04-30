@@ -44,9 +44,7 @@ internal object Converters {
                         continuation.resume(value = t[0])
                     }
 
-                    override fun onError(
-                        code: Int, desc: String?
-                    ) {
+                    override fun onError(code: Int, desc: String?) {
                         continuation.resume(value = null)
                     }
                 })
@@ -150,7 +148,8 @@ internal object Converters {
         val message = when (timMessage.elemType) {
             V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> {
                 TextMessage(
-                    detail = messageDetail, text = timMessage.textElem?.text ?: ""
+                    detail = messageDetail,
+                    text = timMessage.textElem?.text ?: ""
                 )
             }
 
@@ -161,7 +160,10 @@ internal object Converters {
                     val large = imageList.getOrNull(1).toImageElement()
                     val thumb = imageList.getOrNull(2).toImageElement()
                     ImageMessage(
-                        detail = messageDetail, original = origin!!, large = large, thumb = thumb
+                        detail = messageDetail,
+                        original = origin!!,
+                        large = large,
+                        thumb = thumb
                     )
                 } else {
                     null
@@ -176,7 +178,8 @@ internal object Converters {
                 null
             }
         } ?: TextMessage(
-            detail = messageDetail, text = "[不支持的消息类型] - ${timMessage.elemType}"
+            detail = messageDetail,
+            text = "[不支持的消息类型] - ${timMessage.elemType}"
         )
         message.tag = timMessage
         return message
@@ -205,7 +208,11 @@ internal object Converters {
                 state = MessageState.Completed,
                 timestamp = timMessage.timestamp,
                 sender = PersonProfile(
-                    id = timMessage.sender, faceUrl = "", nickname = "", remark = "", signature = ""
+                    id = timMessage.sender,
+                    faceUrl = "",
+                    nickname = "",
+                    remark = "",
+                    signature = ""
                 ),
                 isSelfMessage = false
             )
@@ -268,9 +275,7 @@ internal object Converters {
         if (this == null) {
             return null
         }
-        return ImageElement(
-            width = width, height = height, url = url
-        )
+        return ImageElement(width = width, height = height, url = url)
     }
 
     private fun convertMessageState(state: Int): MessageState {
@@ -300,9 +305,7 @@ internal object Converters {
                     continuation.resume(ActionResult.Success)
                 }
 
-                override fun onError(
-                    code: Int, desc: String?
-                ) {
+                override fun onError(code: Int, desc: String?) {
                     continuation.resume(ActionResult.Failed(desc ?: ""))
                 }
             })
@@ -342,15 +345,11 @@ internal object Converters {
     }
 
     private fun getC2CConversationKey(userId: String): String {
-        return String.format(
-            "c2c_%s", userId
-        )
+        return String.format("c2c_%s", userId)
     }
 
     private fun getGroupConversationKey(groupId: String): String {
-        return String.format(
-            "group_%s", groupId
-        )
+        return String.format("group_%s", groupId)
     }
 
 }

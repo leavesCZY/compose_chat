@@ -45,10 +45,11 @@ import kotlin.math.roundToInt
 object CoilImageLoader {
 
     fun init(application: Application) {
-        val imageLoader =
-            ImageLoader.Builder(context = application).crossfade(enable = false).allowHardware(
-                enable = false
-            ).components {
+        val imageLoader = ImageLoader
+            .Builder(context = application)
+            .crossfade(enable = false)
+            .allowHardware(enable = true)
+            .components {
                 if (Build.VERSION.SDK_INT >= 28) {
                     add(ImageDecoderDecoder.Factory())
                 } else {
@@ -58,31 +59,23 @@ object CoilImageLoader {
         Coil.setImageLoader(imageLoader)
     }
 
-    suspend fun getCachedFileOrDownload(
-        context: Context, imageUrl: String
-    ): File? {
+    suspend fun getCachedFileOrDownload(context: Context, imageUrl: String): File? {
         return withContext(context = Dispatchers.IO) {
-            val file = getCachedFile(
-                context = context, imageUrl = imageUrl
-            )
+            val file = getCachedFile(context = context, imageUrl = imageUrl)
             if (file != null) {
                 return@withContext file
             }
             val request = ImageRequest.Builder(context = context).data(data = imageUrl).build()
             val imageResult = context.imageLoader.execute(request = request)
             if (imageResult is SuccessResult) {
-                return@withContext getCachedFile(
-                    context = context, imageUrl = imageUrl
-                )
+                return@withContext getCachedFile(context = context, imageUrl = imageUrl)
             }
             return@withContext null
         }
     }
 
     @OptIn(ExperimentalCoilApi::class)
-    private fun getCachedFile(
-        context: Context, imageUrl: String
-    ): File? {
+    private fun getCachedFile(context: Context, imageUrl: String): File? {
         val snapshot = context.imageLoader.diskCache?.get(imageUrl)
         val file = snapshot?.data?.toFile()
         snapshot?.close()

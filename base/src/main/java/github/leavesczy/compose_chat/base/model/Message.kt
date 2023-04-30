@@ -44,7 +44,8 @@ sealed class Message(val messageDetail: MessageDetail) {
 }
 
 data class TextMessage(
-    private val detail: MessageDetail, private val text: String
+    private val detail: MessageDetail,
+    private val text: String
 ) : Message(
     messageDetail = detail
 ) {
@@ -54,7 +55,8 @@ data class TextMessage(
 }
 
 data class SystemMessage(
-    private val detail: MessageDetail, private val tips: String
+    private val detail: MessageDetail,
+    private val tips: String
 ) : Message(
     messageDetail = detail
 ) {
@@ -91,12 +93,12 @@ data class ImageMessage(
 }
 
 class ImageElement(
-    val width: Int, val height: Int, val url: String
+    val width: Int,
+    val height: Int,
+    val url: String
 )
 
-class TimeMessage(
-    targetMessage: Message
-) : Message(
+class TimeMessage(targetMessage: Message) : Message(
     messageDetail = MessageDetail(
         msgId = (targetMessage.messageDetail.timestamp + targetMessage.messageDetail.msgId.hashCode()).toString(),
         timestamp = targetMessage.messageDetail.timestamp,
@@ -112,9 +114,8 @@ class TimeMessage(
 
 sealed class LoadMessageResult {
 
-    data class Success(
-        val messageList: List<Message>, val loadFinish: Boolean
-    ) : LoadMessageResult()
+    data class Success(val messageList: List<Message>, val loadFinish: Boolean) :
+        LoadMessageResult()
 
     data class Failed(val reason: String) : LoadMessageResult()
 

@@ -36,61 +36,74 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainPageTopBar(mainViewModel: MainViewModel) {
     var menuExpanded by remember {
-        mutableStateOf(false)
+        mutableStateOf(value = false)
     }
     val coroutineScope = rememberCoroutineScope()
-    CenterAlignedTopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
+    CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
         title = {
 
         },
         navigationIcon = {
-            IconButton(modifier = Modifier, content = {
-                Icon(
-                    imageVector = Icons.Filled.Menu, contentDescription = null
-                )
-            }, onClick = {
-                coroutineScope.launch {
-                    mainViewModel.drawerViewState.drawerState.open()
+            IconButton(
+                modifier = Modifier,
+                content = {
+                    Icon(
+                        imageVector = Icons.Filled.Menu, contentDescription = null
+                    )
+                },
+                onClick = {
+                    coroutineScope.launch {
+                        mainViewModel.drawerViewState.drawerState.open()
+                    }
                 }
-            })
+            )
         },
         actions = {
             Box(modifier = Modifier) {
-                IconButton(content = {
-                    Icon(
-                        imageVector = Icons.Filled.MoreVert, contentDescription = null
-                    )
-                }, onClick = {
-                    menuExpanded = true
-                })
+                IconButton(
+                    content = {
+                        Icon(
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = null
+                        )
+                    },
+                    onClick = {
+                        menuExpanded = true
+                    })
                 Box(
                     modifier = Modifier
                         .align(alignment = Alignment.TopEnd)
                         .padding(end = 10.dp)
                 ) {
-                    DropdownMenu(modifier = Modifier.background(
-                        color = MaterialTheme.colorScheme.background
-                    ), expanded = menuExpanded, onDismissRequest = {
-                        menuExpanded = false
-                    }) {
-                        DropdownMenuItem(text = {
-                            Text(
-                                text = "添加好友", fontSize = 18.sp
-                            )
-                        }, onClick = {
+                    DropdownMenu(
+                        modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+                        expanded = menuExpanded,
+                        onDismissRequest = {
                             menuExpanded = false
-                            mainViewModel.showFriendshipDialog()
-                        })
-                        DropdownMenuItem(text = {
-                            Text(
-                                text = "加入群聊", fontSize = 18.sp
-                            )
-                        }, onClick = {
-                            menuExpanded = false
-                            mainViewModel.showFriendshipDialog()
-                        })
+                        }
+                    ) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = "添加好友", fontSize = 18.sp)
+                            },
+                            onClick = {
+                                menuExpanded = false
+                                mainViewModel.showFriendshipDialog()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = "加入群聊", fontSize = 18.sp)
+                            },
+                            onClick = {
+                                menuExpanded = false
+                                mainViewModel.showFriendshipDialog()
+                            }
+                        )
                     }
                 }
             }
-        })
+        }
+    )
 }

@@ -26,7 +26,11 @@ internal object GenerateUserSig {
 
     @Suppress("SameParameterValue")
     private fun genTLSSignature(
-        sdkAppId: Long, userId: String, expire: Long, userBuf: ByteArray?, priKeyContent: String
+        sdkAppId: Long,
+        userId: String,
+        expire: Long,
+        userBuf: ByteArray?,
+        priKeyContent: String
     ): String {
         val currTime = System.currentTimeMillis() / 1000
         val sigDoc = JSONObject()

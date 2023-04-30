@@ -62,9 +62,9 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
 
     val focusManager = LocalFocusManager.current
 
-    BackHandler(enabled = currentInputSelector != InputSelector.NONE, onBack = {
+    BackHandler(enabled = currentInputSelector != InputSelector.NONE) {
         focusRequester.requestFocus()
-    })
+    }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = MatisseContract()
@@ -106,35 +106,25 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
 
     Column(
         modifier = Modifier
-            .background(
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
+            .background(color = MaterialTheme.colorScheme.onSecondaryContainer)
             .navigationBarsPadding(),
     ) {
         BasicTextField(
             modifier = Modifier
-                .focusRequester(
-                    focusRequester = focusRequester
-                )
+                .focusRequester(focusRequester = focusRequester)
                 .fillMaxWidth()
-                .padding(
-                    start = 10.dp, end = 10.dp, top = 12.dp
-                )
+                .padding(start = 10.dp, end = 10.dp, top = 12.dp)
                 .background(
                     color = MaterialTheme.colorScheme.background,
                     shape = RoundedCornerShape(size = 10.dp)
                 )
-                .padding(
-                    horizontal = 8.dp, vertical = 12.dp
-                ),
+                .padding(horizontal = 8.dp, vertical = 12.dp),
             value = textMessageInputted,
             onValueChange = {
                 chatViewModel.onUserInputChanged(input = it)
             },
             maxLines = 6,
-            textStyle = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.colorScheme.onSurface
-            ),
+            textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
             cursorBrush = SolidColor(value = MaterialTheme.colorScheme.primary),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = {
@@ -143,7 +133,8 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
             })
         )
 
-        InputSelector(currentInputSelector = currentInputSelector,
+        InputSelector(
+            currentInputSelector = currentInputSelector,
             sendMessageEnabled = textMessageInputted.text.isNotEmpty(),
             onInputSelectorChange = {
                 focusManager.clearFocus(force = true)
@@ -153,7 +144,8 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
             onClickSend = {
                 focusRequester.requestFocus()
                 chatViewModel.sendTextMessage()
-            })
+            }
+        )
 
         when (currentInputSelector) {
             InputSelector.NONE -> {
@@ -171,27 +163,26 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                     keyboardHeightDp
                 }
                 Box(
-                    modifier = Modifier.heightIn(
-                        min = keyboardHeightDp, max = maxHeight
-                    )
+                    modifier = Modifier.heightIn(min = keyboardHeightDp, max = maxHeight)
                 ) {
                     when (currentInputSelector) {
                         InputSelector.EMOJI -> {
-                            EmojiTable(appendEmoji = {
-                                chatViewModel.appendEmoji(emoji = it)
-                            })
+                            EmojiTable(
+                                appendEmoji = {
+                                    chatViewModel.appendEmoji(emoji = it)
+                                }
+                            )
                         }
 
                         InputSelector.Picture -> {
                             Box(
                                 modifier = Modifier.heightIn(
-                                    min = keyboardHeightDp, max = maxHeight
+                                    min = keyboardHeightDp,
+                                    max = maxHeight
                                 )
                             ) {
                                 ExtendTable(launchImagePicker = {
-                                    chatViewModel.onInputSelectorChanged(
-                                        newSelector = InputSelector.NONE
-                                    )
+                                    chatViewModel.onInputSelectorChanged(newSelector = InputSelector.NONE)
                                     val matisse = Matisse(
                                         maxSelectable = 1,
                                         captureStrategy = MediaStoreCaptureStrategy()

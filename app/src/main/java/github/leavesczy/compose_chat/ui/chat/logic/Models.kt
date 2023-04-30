@@ -13,13 +13,14 @@ import github.leavesczy.compose_chat.base.model.Message
  */
 data class ChatPageViewState(
     val chat: Chat,
-    val topBarTitle: String,
     val listState: LazyListState,
+    val topBarTitle: String,
     val messageList: List<Message>
 )
 
 data class LoadMessageViewState(
-    val refreshing: Boolean, val loadFinish: Boolean
+    val refreshing: Boolean,
+    val loadFinish: Boolean
 )
 
 data class ChatPageAction(
@@ -29,7 +30,8 @@ data class ChatPageAction(
 )
 
 data class GroupProfilePageViewState(
-    val groupProfile: GroupProfile, val memberList: List<GroupMemberProfile>
+    val groupProfile: GroupProfile,
+    val memberList: List<GroupMemberProfile>
 )
 
 data class GroupProfilePageAction(

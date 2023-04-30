@@ -17,7 +17,8 @@ object PermissionUtils {
             return false
         }
         return ActivityCompat.checkSelfPermission(
-            context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            context,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
         ) != PackageManager.PERMISSION_GRANTED
     }
 

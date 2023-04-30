@@ -38,9 +38,12 @@ fun FriendProfilePage(friendProfileViewModel: FriendProfileViewModel) {
     val friendProfilePageViewState = friendProfileViewModel.friendProfilePageState
     if (friendProfilePageViewState != null) {
         val personProfile = friendProfilePageViewState.personProfile
-        var openDeleteFriendDialog by remember { mutableStateOf(false) }
+        var openDeleteFriendDialog by remember {
+            mutableStateOf(value = false)
+        }
         Scaffold(
-            modifier = Modifier.fillMaxSize(), contentWindowInsets = WindowInsets.navigationBars
+            modifier = Modifier.fillMaxSize(),
+            contentWindowInsets = WindowInsets.navigationBars
         ) { innerPadding ->
             Box {
                 Box(
@@ -78,11 +81,15 @@ fun FriendProfilePage(friendProfileViewModel: FriendProfileViewModel) {
                     }
                     SetFriendRemarkDialog(friendProfileViewModel = friendProfileViewModel)
                 }
-                DeleteFriendDialog(visible = openDeleteFriendDialog, deleteFriend = {
-                    friendProfileViewModel.deleteFriend()
-                }, onDismissRequest = {
-                    openDeleteFriendDialog = false
-                })
+                DeleteFriendDialog(
+                    visible = openDeleteFriendDialog,
+                    deleteFriend = {
+                        friendProfileViewModel.deleteFriend()
+                    },
+                    onDismissRequest = {
+                        openDeleteFriendDialog = false
+                    }
+                )
             }
         }
     }
@@ -90,7 +97,9 @@ fun FriendProfilePage(friendProfileViewModel: FriendProfileViewModel) {
 
 @Composable
 private fun DeleteFriendDialog(
-    visible: Boolean, deleteFriend: () -> Unit, onDismissRequest: () -> Unit
+    visible: Boolean,
+    deleteFriend: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     MessageDialog(
         visible = visible,

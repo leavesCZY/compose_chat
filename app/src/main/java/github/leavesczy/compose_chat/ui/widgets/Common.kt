@@ -58,10 +58,10 @@ fun CommonButton(
             .fillMaxWidth()
             .padding(
                 horizontal = 20.dp, vertical = 8.dp
-            ), content = {
-            Text(
-                text = text, fontSize = 14.sp, color = Color.White
-            )
-        }, onClick = onClick
+            ),
+        content = {
+            Text(text = text, fontSize = 14.sp, color = Color.White)
+        },
+        onClick = onClick
     )
 }

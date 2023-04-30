@@ -48,7 +48,9 @@ fun LoginPage(loginViewModel: LoginViewModel) {
     BackHandler(enabled = viewState.loading) {
 
     }
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()

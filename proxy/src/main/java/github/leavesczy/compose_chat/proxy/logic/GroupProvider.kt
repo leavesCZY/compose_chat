@@ -33,7 +33,8 @@ class GroupProvider : IGroupProvider {
     init {
         V2TIMManager.getInstance().addGroupListener(object : V2TIMGroupListener() {
             override fun onMemberEnter(
-                groupId: String, memberList: MutableList<V2TIMGroupMemberInfo>
+                groupId: String,
+                memberList: MutableList<V2TIMGroupMemberInfo>
             ) {
                 refreshJoinedGroupList()
             }
@@ -50,7 +51,8 @@ class GroupProvider : IGroupProvider {
             }
 
             override fun onGroupInfoChanged(
-                groupID: String?, changeInfos: MutableList<V2TIMGroupChangeInfo>?
+                groupID: String?,
+                changeInfos: MutableList<V2TIMGroupChangeInfo>?
             ) {
                 refreshJoinedGroupList()
             }
@@ -64,12 +66,11 @@ class GroupProvider : IGroupProvider {
                     continuation.resume(value = ActionResult.Success)
                 }
 
-                override fun onError(
-                    code: Int, desc: String?
-                ) {
+                override fun onError(code: Int, desc: String?) {
                     continuation.resume(
                         value = ActionResult.Failed(
-                            code = code, reason = desc ?: ""
+                            code = code,
+                            reason = desc ?: ""
                         )
                     )
                 }
@@ -84,12 +85,11 @@ class GroupProvider : IGroupProvider {
                     continuation.resume(value = ActionResult.Success)
                 }
 
-                override fun onError(
-                    code: Int, desc: String?
-                ) {
+                override fun onError(code: Int, desc: String?) {
                     continuation.resume(
                         value = ActionResult.Failed(
-                            code = code, reason = desc ?: ""
+                            code = code,
+                            reason = desc ?: ""
                         )
                     )
                 }
@@ -97,9 +97,7 @@ class GroupProvider : IGroupProvider {
         }
     }
 
-    override suspend fun transferGroupOwner(
-        groupId: String, newOwnerUserID: String
-    ): ActionResult {
+    override suspend fun transferGroupOwner(groupId: String, newOwnerUserID: String): ActionResult {
         return suspendCancellableCoroutine { continuation ->
             V2TIMManager.getGroupManager().transferGroupOwner(
                 groupId,
@@ -109,12 +107,11 @@ class GroupProvider : IGroupProvider {
                         continuation.resume(value = ActionResult.Success)
                     }
 
-                    override fun onError(
-                        code: Int, desc: String?
-                    ) {
+                    override fun onError(code: Int, desc: String?) {
                         continuation.resume(
                             value = ActionResult.Failed(
-                                code = code, reason = desc ?: ""
+                                code = code,
+                                reason = desc ?: ""
                             )
                         )
                     }
@@ -122,9 +119,7 @@ class GroupProvider : IGroupProvider {
         }
     }
 
-    override suspend fun setAvatar(
-        groupId: String, avatarUrl: String
-    ): ActionResult {
+    override suspend fun setAvatar(groupId: String, avatarUrl: String): ActionResult {
         return suspendCancellableCoroutine { continuation ->
             val v2TIMGroupInfo = V2TIMGroupInfo()
             v2TIMGroupInfo.groupID = groupId
@@ -134,12 +129,11 @@ class GroupProvider : IGroupProvider {
                     continuation.resume(value = ActionResult.Success)
                 }
 
-                override fun onError(
-                    code: Int, desc: String?
-                ) {
+                override fun onError(code: Int, desc: String?) {
                     continuation.resume(
                         value = ActionResult.Failed(
-                            code = code, reason = desc ?: ""
+                            code = code,
+                            reason = desc ?: ""
                         )
                     )
                 }
@@ -155,9 +149,7 @@ class GroupProvider : IGroupProvider {
                         continuation.resume(value = convertGroup(t[0].groupInfo))
                     }
 
-                    override fun onError(
-                        code: Int, desc: String?
-                    ) {
+                    override fun onError(code: Int, desc: String?) {
                         continuation.resume(value = null)
                     }
                 })
@@ -182,9 +174,7 @@ class GroupProvider : IGroupProvider {
                         )
                     }
 
-                    override fun onError(
-                        code: Int, desc: String?
-                    ) {
+                    override fun onError(code: Int, desc: String?) {
                         continuation.resume(value = emptyList())
                     }
                 })
@@ -232,7 +222,8 @@ class GroupProvider : IGroupProvider {
     }
 
     private suspend fun getGroupMemberList(
-        groupId: String, nextStep: Long
+        groupId: String,
+        nextStep: Long
     ): Pair<List<GroupMemberProfile>, Long> {
         return suspendCancellableCoroutine { continuation ->
             V2TIMManager.getGroupManager().getGroupMemberList(groupId,
@@ -248,14 +239,8 @@ class GroupProvider : IGroupProvider {
                         )
                     }
 
-                    override fun onError(
-                        code: Int, desc: String?
-                    ) {
-                        continuation.resume(
-                            value = Pair(
-                                emptyList(), -111
-                            )
-                        )
+                    override fun onError(code: Int, desc: String?) {
+                        continuation.resume(value = Pair(emptyList(), -111))
                     }
                 })
         }

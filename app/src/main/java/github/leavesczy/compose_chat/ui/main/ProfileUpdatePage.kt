@@ -42,14 +42,13 @@ fun ProfileUpdatePage(profileUpdateViewModel: ProfileUpdateViewModel) {
             }
         }
         Scaffold(
-            modifier = Modifier.fillMaxSize(), contentWindowInsets = WindowInsets.navigationBars
+            modifier = Modifier.fillMaxSize(),
+            contentWindowInsets = WindowInsets.navigationBars
         ) { innerPadding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(
-                        paddingValues = innerPadding
-                    )
+                    .padding(paddingValues = innerPadding)
                     .verticalScroll(state = rememberScrollState())
             ) {
                 ProfilePanel(
@@ -67,24 +66,28 @@ fun ProfileUpdatePage(profileUpdateViewModel: ProfileUpdateViewModel) {
                                 .fillMaxWidth()
                                 .padding(
                                     horizontal = 20.dp, vertical = 5.dp
-                                ), value = personProfile.nickname, onValueChange = {
+                                ),
+                            value = personProfile.nickname,
+                            onValueChange = {
                                 if (it.length > 16) {
                                     return@CommonOutlinedTextField
                                 }
                                 profileUpdateViewModel.onNicknameChanged(nickname = it)
-                            }, label = "nickname"
+                            },
+                            label = "nickname"
                         )
                         CommonOutlinedTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(
-                                    horizontal = 20.dp, vertical = 5.dp
-                                ), value = personProfile.signature, onValueChange = {
+                                .padding(horizontal = 20.dp, vertical = 5.dp),
+                            value = personProfile.signature,
+                            onValueChange = {
                                 if (it.length > 40) {
                                     return@CommonOutlinedTextField
                                 }
                                 profileUpdateViewModel.onSignatureChanged(signature = it)
-                            }, label = "signature"
+                            },
+                            label = "signature"
                         )
                         CommonButton(text = "随机图片") {
                             profileUpdateViewModel.onFaceUrlChanged(imageUrl = randomFaceUrl())

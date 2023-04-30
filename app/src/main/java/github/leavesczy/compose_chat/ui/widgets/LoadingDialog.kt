@@ -17,15 +17,17 @@ import github.leavesczy.compose_chat.extend.clickableNoRipple
  */
 @Composable
 fun LoadingDialog(visible: Boolean) {
-    BackHandler(enabled = visible, onBack = {
+    BackHandler(enabled = visible) {
 
-    })
+    }
     if (visible) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .clickableNoRipple {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickableNoRipple {
 
-            }) {
+                }
+        ) {
             CircularProgressIndicator(
                 modifier = Modifier.align(alignment = Alignment.Center),
                 color = MaterialTheme.colorScheme.primary

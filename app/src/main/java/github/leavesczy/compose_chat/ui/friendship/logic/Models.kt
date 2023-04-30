@@ -8,11 +8,11 @@ import github.leavesczy.compose_chat.base.model.PersonProfile
  * @Github：https://github.com/leavesCZY
  */
 data class SetFriendRemarkDialogViewState(
-    val visible: Boolean, val personProfile: PersonProfile
+    val visible: Boolean,
+    val personProfile: PersonProfile
 )
 
 enum class FriendProfilePageAction {
     NavToChat,
     FinishActivity
-
 }

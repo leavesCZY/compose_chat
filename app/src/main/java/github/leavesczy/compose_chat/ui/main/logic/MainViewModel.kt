@@ -32,7 +32,8 @@ class MainViewModel : ViewModel() {
 
     var bottomBarViewState by mutableStateOf(
         value = MainPageBottomBarViewState(
-            selectedTab = MainTab.Conversation, unreadMessageCount = 0
+            selectedTab = MainTab.Conversation,
+            unreadMessageCount = 0
         )
     )
         private set
