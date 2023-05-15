@@ -4,6 +4,6 @@
  */
 object WorkflowsMonitor {
 
-    val index = 2
+    val index = 3
 
 }
