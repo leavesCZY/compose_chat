@@ -1,9 +1,7 @@
 package configure
 
 import BuildConfig
-import BuildFunction
 import Dependencies
-import VersionConfig
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
@@ -22,8 +20,8 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
         applicationId = BuildConfig.applicationId
         minSdk = BuildConfig.minSdk
         targetSdk = BuildConfig.targetSdk
-        versionCode = VersionConfig.versionCode
-        versionName = VersionConfig.versionName
+        versionCode = BuildConfig.versionCode
+        versionName = BuildConfig.versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations.add("zh")
         vectorDrawables {
@@ -34,11 +32,11 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
             outputs.all {
                 if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
                     this.outputFileName =
-                        "compose_chat_${variant.name}_${variant.versionCode}_v${variant.versionName}_${BuildFunction.getFormattedTime()}.apk"
+                        "compose_chat_${variant.name}_versionCode_${variant.versionCode}_versionName_${variant.versionName}_${BuildFunction.getFormattedTime()}.apk"
                 }
             }
         }
-        buildConfigField("String", "VERSION_NAME", "\"${VersionConfig.versionName}\"")
+        buildConfigField("String", "VERSION_NAME", "\"${BuildConfig.versionName}\"")
     }
     signingConfigs {
         create("release") {

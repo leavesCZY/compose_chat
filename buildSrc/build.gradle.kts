@@ -18,7 +18,7 @@ sourceSets {
 
 dependencies {
     val agpVersion = "8.0.0"
-    val kotlinVersion = "1.8.20"
+    val kotlinVersion = "1.8.21"
     implementation("com.android.tools.build:gradle-api:${agpVersion}")
     implementation("com.android.tools.build:gradle:${agpVersion}")
     implementation(kotlin("gradle-plugin", version = kotlinVersion))

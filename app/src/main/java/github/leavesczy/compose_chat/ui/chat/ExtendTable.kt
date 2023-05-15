@@ -36,9 +36,9 @@ fun ExtendTable(launchImagePicker: () -> Unit, launchTakePicture: () -> Unit) {
             .padding(start = 20.dp)
     ) {
         Function(
-            text = "相册",
-            icon = Icons.Filled.InsertPhoto,
-            onClick = launchImagePicker
+            text = "拍照",
+            icon = Icons.Filled.PhotoCamera,
+            onClick = launchTakePicture
         )
         Spacer(
             modifier = Modifier
@@ -46,9 +46,9 @@ fun ExtendTable(launchImagePicker: () -> Unit, launchTakePicture: () -> Unit) {
                 .width(width = 10.dp)
         )
         Function(
-            text = "拍摄",
-            icon = Icons.Filled.PhotoCamera,
-            onClick = launchTakePicture
+            text = "相册",
+            icon = Icons.Filled.InsertPhoto,
+            onClick = launchImagePicker
         )
     }
 }

@@ -13,12 +13,12 @@ object Dependencies {
 
     object Appcompat {
         const val appcompat = "androidx.appcompat:appcompat:1.6.1"
-        const val material = "com.google.android.material:material:1.8.0"
+        const val material = "com.google.android.material:material:1.9.0"
     }
 
     object Compose {
-        const val compilerVersion = "1.4.6"
-        const val bom = "androidx.compose:compose-bom:2023.04.01"
+        const val compilerVersion = "1.4.7"
+        const val bom = "androidx.compose:compose-bom:2023.05.01"
         const val ui = "androidx.compose.ui:ui"
         const val uiTooling = "androidx.compose.ui:ui-tooling"
         const val uiToolingPreview = "androidx.compose.ui:ui-tooling-preview"
@@ -41,9 +41,9 @@ object Dependencies {
         private const val coilVersion = "2.3.0"
         const val coilGif = "io.coil-kt:coil-gif:$coilVersion"
         const val coilCompose = "io.coil-kt:coil-compose:$coilVersion"
-        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
         const val matisse = "com.github.leavesCZY:Matisse:0.0.13"
-        const val imSdk = "com.tencent.imsdk:imsdk-plus:7.2.4123"
+        const val imSdk = "com.tencent.imsdk:imsdk-plus:7.2.4146"
     }
 
 }

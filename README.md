@@ -23,6 +23,6 @@ Apk 下载体验：[releases](https://github.com/leavesCZY/compose_chat/releases
 - Java
 - Kotlin
 - Dart
-- Hello
 - Admin
+- Hello
 - Test
