@@ -3,8 +3,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":base"))
     implementationTest()
     implementation(Dependencies.Components.coroutines)
     implementation(Dependencies.Components.imSdk)
-    implementation(project(":base"))
 }

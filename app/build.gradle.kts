@@ -3,6 +3,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":base"))
+    implementation(project(":proxy"))
     implementationTest()
     implementationCompose()
     implementationCoil()
@@ -11,6 +13,4 @@ dependencies {
     implementation(Dependencies.Accompanist.uiController)
     implementation(Dependencies.Components.coroutines)
     implementation(Dependencies.Components.matisse)
-    implementation(project(":base"))
-    implementation(project(":proxy"))
 }

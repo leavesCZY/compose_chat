@@ -28,7 +28,7 @@ object Dependencies {
         const val material3 = "androidx.compose.material3:material3"
         const val materialIcons = "androidx.compose.material:material-icons-extended"
         const val constraintLayout = "androidx.constraintlayout:constraintlayout-compose:1.0.1"
-        const val activity = "androidx.activity:activity-compose:1.7.1"
+        const val activity = "androidx.activity:activity-compose:1.7.2"
         const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
     }
 
@@ -38,11 +38,11 @@ object Dependencies {
     }
 
     object Components {
-        private const val coilVersion = "2.3.0"
+        private const val coilVersion = "2.4.0"
         const val coilGif = "io.coil-kt:coil-gif:$coilVersion"
         const val coilCompose = "io.coil-kt:coil-compose:$coilVersion"
         const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
-        const val matisse = "com.github.leavesCZY:Matisse:0.0.13"
+        const val matisse = "com.github.leavesCZY:Matisse:b31719b1c5"
         const val imSdk = "com.tencent.imsdk:imsdk-plus:7.2.4146"
     }
 

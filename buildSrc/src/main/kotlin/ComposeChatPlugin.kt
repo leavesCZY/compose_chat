@@ -13,7 +13,8 @@ import org.gradle.api.Project
 class ComposeChatPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        if (project.isAppModule()) {
+        val projectNname = project.name
+        if (projectNname == "app") {
             project.apply {
                 plugin("com.android.application")
                 plugin("org.jetbrains.kotlin.android")
@@ -23,7 +24,7 @@ class ComposeChatPlugin : Plugin<Project> {
                 plugin("com.android.library")
                 plugin("org.jetbrains.kotlin.android")
             }
-            if (project.name == "base") {
+            if (projectNname == "base") {
                 project.apply {
                     plugin("kotlin-parcelize")
                 }
@@ -38,10 +39,6 @@ class ComposeChatPlugin : Plugin<Project> {
                 androidExtension.libraryModule()
             }
         }
-    }
-
-    private fun Project.isAppModule(): Boolean {
-        return project.name == "app"
     }
 
 }
