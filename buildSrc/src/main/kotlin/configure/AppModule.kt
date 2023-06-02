@@ -1,6 +1,7 @@
 package configure
 
 import BuildConfig
+import BuildFunction
 import Dependencies
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.Project

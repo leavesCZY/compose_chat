@@ -38,7 +38,7 @@ fun ProfileUpdatePage(profileUpdateViewModel: ProfileUpdateViewModel) {
             contract = MatisseContract()
         ) { result ->
             if (result.isNotEmpty()) {
-                profileUpdateViewModel.onFaceUrlChanged(mediaResource = result[0])
+                profileUpdateViewModel.onAvatarUrlChanged(mediaResource = result[0])
             }
         }
         Scaffold(
@@ -90,7 +90,7 @@ fun ProfileUpdatePage(profileUpdateViewModel: ProfileUpdateViewModel) {
                             label = "signature"
                         )
                         CommonButton(text = "随机图片") {
-                            profileUpdateViewModel.onFaceUrlChanged(imageUrl = randomFaceUrl())
+                            profileUpdateViewModel.onAvatarUrlChanged(imageUrl = randomFaceUrl())
                         }
                         CommonButton(text = "本地图片") {
                             val matisse = Matisse(

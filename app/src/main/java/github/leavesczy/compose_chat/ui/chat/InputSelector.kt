@@ -96,7 +96,7 @@ private fun InputSelectorButton(
 ) {
     Icon(
         modifier = modifier
-            .size(size = 24.dp)
+            .size(size = 26.dp)
             .clickableNoRipple(onClick = onClick),
         imageVector = icon,
         tint = if (selected) {

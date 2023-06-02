@@ -72,13 +72,18 @@ fun ComposeChatTheme(content: @Composable () -> Unit) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = AppTypography,
-            content = {
-                content()
-                if (appTheme == AppTheme.Gray) {
+            content = if (appTheme == AppTheme.Gray) {
+                {
+                    content()
                     Canvas(modifier = Modifier.fillMaxSize()) {
-                        drawRect(color = Color.LightGray, blendMode = BlendMode.Saturation)
+                        drawRect(
+                            color = Color.LightGray,
+                            blendMode = BlendMode.Saturation
+                        )
                     }
                 }
+            } else {
+                content
             }
         )
     }

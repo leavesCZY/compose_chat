@@ -58,7 +58,7 @@ class ProfileUpdateViewModel : ViewModel() {
         }
     }
 
-    fun onFaceUrlChanged(imageUrl: String) {
+    fun onAvatarUrlChanged(imageUrl: String) {
         val mProfileUpdatePageViewStata = profileUpdatePageViewStata
         if (mProfileUpdatePageViewStata != null) {
             profileUpdatePageViewStata = mProfileUpdatePageViewStata.copy(
@@ -69,29 +69,33 @@ class ProfileUpdateViewModel : ViewModel() {
         }
     }
 
-    fun onFaceUrlChanged(mediaResource: MediaResource) {
+    fun onAvatarUrlChanged(mediaResource: MediaResource) {
         viewModelScope.launch {
+            showToast(msg = "正在上传图片")
             val imageFile = CompressImageUtils.compressImage(
-                context = ContextHolder.context, mediaResource = mediaResource
+                context = ContextHolder.context,
+                mediaResource = mediaResource
             )
             val imagePath = imageFile?.absolutePath
-            if (!imagePath.isNullOrBlank()) {
-                val result = ComposeChat.messageProvider.uploadImage(
+            val result = if (imagePath.isNullOrBlank()) {
+                null
+            } else {
+                ComposeChat.messageProvider.uploadImage(
                     chat = Chat.GroupChat(id = ComposeChat.groupIdToUploadAvatar),
                     imagePath = imagePath
                 )
-                if (result.isBlank()) {
-                    showToast(msg = "图片上传失败")
-                } else {
-                    showToast(msg = "图片已上传")
-                    val mProfileUpdatePageViewStata = profileUpdatePageViewStata
-                    if (mProfileUpdatePageViewStata != null) {
-                        profileUpdatePageViewStata = mProfileUpdatePageViewStata.copy(
-                            personProfile = mProfileUpdatePageViewStata.personProfile.copy(
-                                faceUrl = result
-                            )
+            }
+            if (result.isNullOrBlank()) {
+                showToast(msg = "图片上传失败")
+            } else {
+                showToast(msg = "图片上传成功")
+                val mProfileUpdatePageViewStata = profileUpdatePageViewStata
+                if (mProfileUpdatePageViewStata != null) {
+                    profileUpdatePageViewStata = mProfileUpdatePageViewStata.copy(
+                        personProfile = mProfileUpdatePageViewStata.personProfile.copy(
+                            faceUrl = result
                         )
-                    }
+                    )
                 }
             }
         }
