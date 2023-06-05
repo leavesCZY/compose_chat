@@ -33,7 +33,7 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
             outputs.all {
                 if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
                     this.outputFileName =
-                        "compose_chat_${variant.name}_versionCode_${variant.versionCode}_versionName_${variant.versionName}_${BuildFunction.getFormattedTime()}.apk"
+                        "compose_chat_${variant.name}_versionCode_${variant.versionCode}_versionName_${variant.versionName}_${BuildFunction.getApkBuildTime()}.apk"
                 }
             }
         }

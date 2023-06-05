@@ -11,7 +11,7 @@ Jetpack Compose 最佳实践，用 Jetpack Compose 写一个 IM APP
 
 Apk 下载体验：[releases](https://github.com/leavesCZY/compose_chat/releases)
 
-由于腾讯云 IM SDK 免费版最多只能注册一百个账号，因此如果发现注册不了的话，可以使用以下几个账号进行登录
+由于腾讯云 IM SDK 免费版最多只能注册一百个账号，如果已经发现注册不了的话，可以使用以下几个账号进行登录
 
 - Android
 - Google

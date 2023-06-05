@@ -1,6 +1,6 @@
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
+import java.util.TimeZone
 
 /**
  * @Author: leavesCZY
@@ -9,14 +9,19 @@ import java.util.Locale
  */
 object BuildFunction {
 
-    fun getFormattedTime(): String {
-        val format = "yyyy_MM_dd_HH_mm_ss"
-        return SimpleDateFormat(
-            format,
-            Locale.CHINA
-        ).format(
-            Calendar.getInstance(Locale.CHINA).time
-        )
+    private fun getTime(pattern: String): String {
+        return SimpleDateFormat(pattern).let {
+            it.timeZone = TimeZone.getTimeZone("Asia/Shanghai")
+            it.format(Calendar.getInstance().time)
+        }
+    }
+
+    fun getApkBuildTime(): String {
+        return getTime("yyyy_MM_dd_HH_mm_ss")
+    }
+
+    fun getBuildConfigTime(): String {
+        return getTime("yyyy-MM-dd HH:mm:ss")
     }
 
 }
