@@ -35,11 +35,13 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.ui.chat.logic.ChatViewModel
+import github.leavesczy.compose_chat.ui.widgets.CoilImageEngine
 import github.leavesczy.matisse.Matisse
 import github.leavesczy.matisse.MatisseCapture
 import github.leavesczy.matisse.MatisseCaptureContract
 import github.leavesczy.matisse.MatisseContract
 import github.leavesczy.matisse.MediaStoreCaptureStrategy
+import github.leavesczy.matisse.MimeType
 
 /**
  * @Author: leavesCZY
@@ -50,6 +52,7 @@ private val DEFAULT_KEYBOARD_HEIGHT = 305.dp
 
 @Composable
 fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
+
     val textMessageInputted = chatViewModel.textMessageInputted
 
     val currentInputSelector = chatViewModel.currentInputSelector
@@ -163,7 +166,8 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                     keyboardHeightDp
                 }
                 Box(
-                    modifier = Modifier.heightIn(min = keyboardHeightDp, max = maxHeight)
+                    modifier = Modifier
+                        .heightIn(min = keyboardHeightDp, max = maxHeight)
                 ) {
                     when (currentInputSelector) {
                         InputSelector.EMOJI -> {
@@ -181,22 +185,26 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                                     max = maxHeight
                                 )
                             ) {
-                                ExtendTable(launchImagePicker = {
-                                    chatViewModel.onInputSelectorChanged(newSelector = InputSelector.NONE)
-                                    val matisse = Matisse(
-                                        maxSelectable = 1,
-                                        captureStrategy = MediaStoreCaptureStrategy()
-                                    )
-                                    imagePickerLauncher.launch(matisse)
-                                }, launchTakePicture = {
-                                    chatViewModel.onInputSelectorChanged(
-                                        newSelector = InputSelector.NONE
-                                    )
-                                    val matisseCapture = MatisseCapture(
-                                        captureStrategy = MediaStoreCaptureStrategy()
-                                    )
-                                    takePictureLauncher.launch(matisseCapture)
-                                })
+                                ExtendTable(
+                                    launchImagePicker = {
+                                        chatViewModel.onInputSelectorChanged(newSelector = InputSelector.NONE)
+                                        val matisse = Matisse(
+                                            maxSelectable = 1,
+                                            mimeTypes = MimeType.ofImage(hasGif = true),
+                                            imageEngine = CoilImageEngine(),
+                                            captureStrategy = MediaStoreCaptureStrategy()
+                                        )
+                                        imagePickerLauncher.launch(matisse)
+                                    },
+                                    launchTakePicture = {
+                                        chatViewModel.onInputSelectorChanged(
+                                            newSelector = InputSelector.NONE
+                                        )
+                                        val matisseCapture = MatisseCapture(
+                                            captureStrategy = MediaStoreCaptureStrategy()
+                                        )
+                                        takePictureLauncher.launch(matisseCapture)
+                                    })
                             }
                         }
 

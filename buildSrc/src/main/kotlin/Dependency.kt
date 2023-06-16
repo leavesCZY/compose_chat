@@ -28,8 +28,9 @@ fun DependencyHandlerScope.implementationTest() {
 }
 
 fun DependencyHandlerScope.implementationCompose() {
-    implementationExtend(platform(Dependencies.Compose.bom))
-    androidTestImplementationExtend(platform(Dependencies.Compose.bom))
+    val platform = platform(Dependencies.Compose.bom)
+    implementationExtend(platform)
+    androidTestImplementationExtend(platform)
     implementationExtend(Dependencies.Compose.ui)
     implementationExtend(Dependencies.Compose.uiToolingPreview)
     debugImplementationExtend(Dependencies.Compose.uiTooling)

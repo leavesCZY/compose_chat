@@ -7,4 +7,5 @@
         <item name="android:windowSplashScreenBackground">@android:color/white</item>
         <item name="android:windowSplashScreenAnimationDuration">1000</item>
     </style>
+
 </resources>

@@ -25,7 +25,7 @@ fun CommonOutlinedTextField(
     label: String,
     singleLine: Boolean = false,
     maxLines: Int = 4,
-    onValueChange: (String) -> Unit,
+    onValueChange: (String) -> Unit
 ) {
     OutlinedTextField(
         modifier = modifier,
@@ -50,17 +50,20 @@ fun CommonOutlinedTextField(
 }
 
 @Composable
-fun CommonButton(
-    text: String, onClick: () -> Unit
-) {
+fun CommonButton(text: String, onClick: () -> Unit) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = 20.dp, vertical = 8.dp
+                horizontal = 20.dp,
+                vertical = 8.dp
             ),
         content = {
-            Text(text = text, fontSize = 14.sp, color = Color.White)
+            Text(
+                text = text,
+                fontSize = 14.sp,
+                color = Color.White
+            )
         },
         onClick = onClick
     )

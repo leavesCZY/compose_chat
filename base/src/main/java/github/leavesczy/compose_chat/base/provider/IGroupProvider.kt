@@ -3,7 +3,7 @@ package github.leavesczy.compose_chat.base.provider
 import github.leavesczy.compose_chat.base.model.ActionResult
 import github.leavesczy.compose_chat.base.model.GroupMemberProfile
 import github.leavesczy.compose_chat.base.model.GroupProfile
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * @Author: leavesCZY
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.SharedFlow
  */
 interface IGroupProvider {
 
-    val joinedGroupList: SharedFlow<List<GroupProfile>>
+    val joinedGroupList: StateFlow<List<GroupProfile>>
 
     fun refreshJoinedGroupList()
 

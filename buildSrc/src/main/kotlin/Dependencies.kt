@@ -18,7 +18,7 @@ object Dependencies {
 
     object Compose {
         const val compilerVersion = "1.4.7"
-        const val bom = "androidx.compose:compose-bom:2023.05.01"
+        const val bom = "androidx.compose:compose-bom:2023.06.00"
         const val ui = "androidx.compose.ui:ui"
         const val uiTooling = "androidx.compose.ui:ui-tooling"
         const val uiToolingPreview = "androidx.compose.ui:ui-tooling-preview"
@@ -42,7 +42,7 @@ object Dependencies {
         const val coilGif = "io.coil-kt:coil-gif:$coilVersion"
         const val coilCompose = "io.coil-kt:coil-compose:$coilVersion"
         const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
-        const val matisse = "com.github.leavesCZY:Matisse:0.0.14"
+        const val matisse = "com.github.leavesCZY:Matisse:1.0.0-beta01"
         const val imSdk = "com.tencent.imsdk:imsdk-plus:7.2.4146"
     }
 

@@ -34,15 +34,17 @@ fun ProfilePanel(
     val context = LocalContext.current
     ConstraintLayout(modifier = Modifier) {
         val (titleRef, subtitleRef, introductionRef, backgroundRef, avatarRef, contentRef) = createRefs()
-        BezierImage(modifier = Modifier
-            .constrainAs(ref = backgroundRef) {
-                linkTo(start = parent.start, end = parent.end)
-                top.linkTo(anchor = parent.top)
-            }
-            .aspectRatio(ratio = 5f / 4f)
-            .zIndex(zIndex = -100f)
-            .scrim(color = Color(0x33000000)),
-            data = avatarUrl)
+        BezierImage(
+            modifier = Modifier
+                .constrainAs(ref = backgroundRef) {
+                    linkTo(start = parent.start, end = parent.end)
+                    top.linkTo(anchor = parent.top)
+                }
+                .aspectRatio(ratio = 5f / 4f)
+                .zIndex(zIndex = -100f)
+                .scrim(color = Color(0x33000000)),
+            data = avatarUrl
+        )
         BouncyImage(
             modifier = Modifier
                 .constrainAs(ref = avatarRef) {
@@ -52,9 +54,7 @@ fun ProfilePanel(
                 .size(size = 90.dp)
                 .clickableNoRipple {
                     if (avatarUrl.isNotBlank()) {
-                        PreviewImageActivity.navTo(
-                            context = context, imagePath = avatarUrl
-                        )
+                        PreviewImageActivity.navTo(context = context, imagePath = avatarUrl)
                     }
                 },
             data = avatarUrl

@@ -58,9 +58,7 @@ private fun Function(text: String, icon: ImageVector, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .clickable(onClick = onClick)
-            .padding(
-                horizontal = 10.dp, vertical = 10.dp
-            ),
+            .padding(horizontal = 10.dp, vertical = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(

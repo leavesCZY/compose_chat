@@ -21,9 +21,7 @@ fun AppIcon(modifier: Modifier = Modifier) {
     Icon(
         modifier = modifier
             .background(color = Color(0xFF073042))
-            .wrapContentSize(
-                align = Alignment.Center
-            )
+            .wrapContentSize(align = Alignment.Center)
             .size(size = 400.dp),
         painter = painterResource(id = R.drawable.icon_app),
         tint = Color(0xFF3DDC84),
@@ -44,7 +42,5 @@ fun AppIcon() {
 @Preview
 @Composable
 fun AppIconRound() {
-    AppIcon(
-        modifier = Modifier.clip(shape = CircleShape)
-    )
+    AppIcon(modifier = Modifier.clip(shape = CircleShape))
 }

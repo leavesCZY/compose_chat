@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 import github.leavesczy.compose_chat.ui.widgets.SystemBarTheme
 
@@ -51,6 +52,10 @@ open class BaseActivity : AppCompatActivity() {
                 }
             }
         )
+    }
+
+    protected fun showToast(msg: String) {
+        ToastProvider.showToast(msg = msg)
     }
 
     protected inline fun <reified T : Activity> startActivity() {

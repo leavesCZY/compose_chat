@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.ui.friendship.FriendProfileActivity
+import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
 
 /**
  * @Author: leavesCZY
@@ -36,31 +36,34 @@ fun ChatPageTopBar(title: String, chat: Chat) {
             )
         },
         navigationIcon = {
-            IconButton(content = {
-                Icon(
-                    imageVector = Icons.Default.ArrowBackIosNew, contentDescription = null
-                )
-            }, onClick = {
-                (context as Activity).finish()
-            })
+            IconButton(
+                content = {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBackIosNew,
+                        contentDescription = null
+                    )
+                },
+                onClick = {
+                    (context as Activity).finish()
+                }
+            )
         },
         actions = {
             IconButton(
                 content = {
-                    Icon(imageVector = Icons.Filled.MoreVert, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Filled.MoreVert,
+                        contentDescription = null
+                    )
                 },
                 onClick = {
                     when (chat) {
                         is Chat.PrivateChat -> {
-                            FriendProfileActivity.navTo(
-                                context = context, friendId = chat.id
-                            )
+                            FriendProfileActivity.navTo(context = context, friendId = chat.id)
                         }
 
                         is Chat.GroupChat -> {
-                            GroupProfileActivity.navTo(
-                                context = context, groupId = chat.id
-                            )
+                            GroupProfileActivity.navTo(context = context, groupId = chat.id)
                         }
                     }
                 }

@@ -3,82 +3,72 @@ package github.leavesczy.compose_chat.ui.login.logic
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.model.ActionResult
 import github.leavesczy.compose_chat.provider.AccountProvider
-import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
-import github.leavesczy.compose_chat.utils.showToast
+import github.leavesczy.compose_chat.ui.base.BaseViewModel
+import github.leavesczy.compose_chat.ui.logic.ComposeChat
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-class LoginViewModel : ViewModel() {
+class LoginViewModel : BaseViewModel() {
 
     var loginPageViewState by mutableStateOf(
         value = LoginPageViewState(
+            lastLoginUserId = "",
             showPanel = false,
-            loading = false,
-            lastLoginUserId = ""
+            loading = false
         )
     )
         private set
 
-    private val _loginPageAction = MutableSharedFlow<LoginPageAction>()
-
-    val loginPageAction: SharedFlow<LoginPageAction> = _loginPageAction
-
-    fun tryLogin() {
+    suspend fun tryLogin(): Boolean {
         val lastLoginUserId = AccountProvider.lastLoginUserId
-        if (lastLoginUserId.isBlank() || !AccountProvider.canAutoLogin) {
-            loginPageViewState = LoginPageViewState(
+        return if (lastLoginUserId.isBlank() || !AccountProvider.canAutoLogin) {
+            loginPageViewState = loginPageViewState.copy(
+                lastLoginUserId = lastLoginUserId,
                 showPanel = true,
-                loading = false,
-                lastLoginUserId = lastLoginUserId
+                loading = false
             )
+            false
         } else {
-            loginPageViewState = LoginPageViewState(
+            loginPageViewState = loginPageViewState.copy(
+                lastLoginUserId = lastLoginUserId,
                 showPanel = false,
-                loading = true,
-                lastLoginUserId = lastLoginUserId
+                loading = true
             )
             login(userId = lastLoginUserId)
         }
     }
 
-    fun goToLogin(userId: String) {
-        loginPageViewState = LoginPageViewState(
-            showPanel = true,
-            loading = true,
-            lastLoginUserId = userId
+    suspend fun onClickLoginButton(userId: String): Boolean {
+        loginPageViewState = loginPageViewState.copy(
+            lastLoginUserId = userId,
+            loading = true
         )
-        login(userId = userId)
+        return login(userId = userId)
     }
 
-    private fun login(userId: String) {
+    private suspend fun login(userId: String): Boolean {
         val formatUserId = userId.lowercase()
-        viewModelScope.launch {
-            when (val loginResult = ComposeChat.accountProvider.login(userId = formatUserId)) {
-                is ActionResult.Success -> {
-                    delay(timeMillis = 400)
-                    AccountProvider.onUserLogin(userId = formatUserId)
-                    _loginPageAction.emit(value = LoginPageAction.LoginSuccess)
-                }
+        return when (val loginResult = ComposeChat.accountProvider.login(userId = formatUserId)) {
+            is ActionResult.Success -> {
+                AccountProvider.onUserLogin(userId = formatUserId)
+                delay(timeMillis = 250)
+                true
+            }
 
-                is ActionResult.Failed -> {
-                    showToast(msg = loginResult.reason)
-                    loginPageViewState = LoginPageViewState(
-                        showPanel = true,
-                        loading = false,
-                        lastLoginUserId = formatUserId
-                    )
-                }
+            is ActionResult.Failed -> {
+                showToast(msg = loginResult.reason)
+                loginPageViewState = loginPageViewState.copy(
+                    lastLoginUserId = formatUserId,
+                    showPanel = true,
+                    loading = false
+                )
+                false
             }
         }
     }

@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import github.leavesczy.compose_chat.ui.main.logic.AppTheme
+import github.leavesczy.compose_chat.ui.logic.AppTheme
 
 /**
  * @Author: leavesCZY
@@ -22,7 +22,9 @@ object AppThemeProvider {
 
     private lateinit var preferences: SharedPreferences
 
-    var appTheme by mutableStateOf(value = AppTheme.Default)
+    private val defaultTheme = AppTheme.Light
+
+    var appTheme by mutableStateOf(value = defaultTheme)
         private set
 
     fun init(application: Application) {
@@ -32,14 +34,14 @@ object AppThemeProvider {
     }
 
     private fun getAppThemeOfDefault(): AppTheme {
-        val themeIndex = preferences.getInt(KEY_APP_THEME, AppTheme.Default.ordinal)
-        return AppTheme.values().find { it.ordinal == themeIndex } ?: AppTheme.Default
+        val themeIndex = preferences.getInt(KEY_APP_THEME, defaultTheme.ordinal)
+        return AppTheme.values().find { it.ordinal == themeIndex } ?: defaultTheme
     }
 
     fun onAppThemeChanged(appTheme: AppTheme) {
         preferences.edit().putInt(KEY_APP_THEME, appTheme.ordinal).apply()
-        this.appTheme = appTheme
         initThemeDelegate(appTheme = appTheme)
+        this.appTheme = appTheme
     }
 
     private fun initThemeDelegate(appTheme: AppTheme) {

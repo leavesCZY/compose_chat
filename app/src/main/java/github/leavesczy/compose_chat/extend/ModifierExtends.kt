@@ -20,8 +20,8 @@ fun Modifier.scrim(color: Color): Modifier = drawWithContent {
 
 fun Modifier.clickableNoRipple(onClick: () -> Unit): Modifier = composed {
     clickable(
-        indication = null,
+        onClick = onClick,
         interactionSource = remember { MutableInteractionSource() },
-        onClick = onClick
+        indication = null
     )
 }

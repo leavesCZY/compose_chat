@@ -76,7 +76,7 @@ object CoilImageLoader {
 
     @OptIn(ExperimentalCoilApi::class)
     private fun getCachedFile(context: Context, imageUrl: String): File? {
-        val snapshot = context.imageLoader.diskCache?.get(imageUrl)
+        val snapshot = context.imageLoader.diskCache?.openSnapshot(imageUrl)
         val file = snapshot?.data?.toFile()
         snapshot?.close()
         if (file != null && file.exists()) {
@@ -92,10 +92,8 @@ fun CoilImage(
     modifier: Modifier,
     data: Any,
     contentScale: ContentScale = ContentScale.Crop,
-    filterQuality: FilterQuality = FilterQuality.Low,
-    backgroundColor: Color = Color.Gray.copy(
-        alpha = 0.4f
-    )
+    filterQuality: FilterQuality = FilterQuality.None,
+    backgroundColor: Color = Color.Gray.copy(alpha = 0.4f)
 ) {
     AsyncImage(
         modifier = modifier.background(color = backgroundColor),
@@ -111,41 +109,33 @@ fun CircleBorderImage(
     modifier: Modifier,
     data: Any,
     borderWidth: Dp = 2.dp,
-    borderColor: Color = MaterialTheme.colorScheme.primary.copy(
-        alpha = 0.8f
-    )
+    borderColor: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
 ) {
     CoilImage(
         modifier = modifier
             .clip(shape = CircleShape)
-            .border(
-                width = borderWidth, color = borderColor, shape = CircleShape
-            ), data = data
+            .border(width = borderWidth, color = borderColor, shape = CircleShape),
+        data = data
     )
 }
 
 @Composable
-fun BezierImage(
-    modifier: Modifier, data: Any
-) {
+fun BezierImage(modifier: Modifier, data: Any) {
     val animateValue by rememberInfiniteTransition().animateFloat(
         initialValue = 0f,
         targetValue = 1.04f,
         animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = 900, easing = FastOutSlowInEasing
-            ),
+            animation = tween(durationMillis = 900, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse,
         ),
     )
     CoilImage(
         modifier = Modifier
-            .scale(scale = (animateValue + 1f) * 1.2f)
-            .clip(
-                shape = BezierShape(animateValue = animateValue)
-            )
+            .scale(scale = (animateValue + 1f) * 1.1f)
+            .clip(shape = BezierShape(animateValue = animateValue))
             .rotate(degrees = animateValue * 13f)
-            .then(other = modifier), data = data
+            .then(other = modifier),
+        data = data
     )
 }
 
@@ -180,21 +170,16 @@ private class BezierShape(private val animateValue: Float) : Shape {
 }
 
 @Composable
-fun BouncyImage(
-    modifier: Modifier, data: Any
-) {
+fun BouncyImage(modifier: Modifier, data: Any) {
     val coroutineScope = rememberCoroutineScope()
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }
     fun launchDragAnimate() {
         coroutineScope.launch {
             Animatable(
-                initialValue = Offset(
-                    x = offsetX, y = offsetY
-                ), typeConverter = Offset.VectorConverter
-            ).animateTo(targetValue = Offset(
-                x = 0f, y = 0f
-            ),
+                initialValue = Offset(x = offsetX, y = offsetY),
+                typeConverter = Offset.VectorConverter
+            ).animateTo(targetValue = Offset(x = 0f, y = 0f),
                 animationSpec = SpringSpec(dampingRatio = Spring.DampingRatioHighBouncy),
                 block = {
                     offsetX = value.x
@@ -202,30 +187,30 @@ fun BouncyImage(
                 })
         }
     }
-    CircleBorderImage(modifier = modifier
-        .zIndex(zIndex = Float.MAX_VALUE)
-        .offset {
-            IntOffset(
-                x = offsetX.roundToInt(), y = offsetY.roundToInt()
-            )
-        }
-        .pointerInput(key1 = Unit) {
-            detectDragGestures(
-                onDragStart = {
+    CircleBorderImage(
+        modifier = modifier
+            .zIndex(zIndex = Float.MAX_VALUE)
+            .offset {
+                IntOffset(x = offsetX.roundToInt(), y = offsetY.roundToInt())
+            }
+            .pointerInput(key1 = Unit) {
+                detectDragGestures(
+                    onDragStart = {
 
-                },
-                onDragCancel = {
-                    launchDragAnimate()
-                },
-                onDragEnd = {
-                    launchDragAnimate()
-                },
-                onDrag = { change, dragAmount ->
-                    change.consume()
-                    offsetX += dragAmount.x
-                    offsetY += dragAmount.y
-                },
-            )
-        }, data = data
+                    },
+                    onDragCancel = {
+                        launchDragAnimate()
+                    },
+                    onDragEnd = {
+                        launchDragAnimate()
+                    },
+                    onDrag = { change, dragAmount ->
+                        change.consume()
+                        offsetX += dragAmount.x
+                        offsetY += dragAmount.y
+                    },
+                )
+            },
+        data = data
     )
 }

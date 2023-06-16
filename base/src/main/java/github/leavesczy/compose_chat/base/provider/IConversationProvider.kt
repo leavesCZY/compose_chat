@@ -3,7 +3,7 @@ package github.leavesczy.compose_chat.base.provider
 import github.leavesczy.compose_chat.base.model.ActionResult
 import github.leavesczy.compose_chat.base.model.Chat
 import github.leavesczy.compose_chat.base.model.Conversation
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * @Author: leavesCZY
@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.SharedFlow
  */
 interface IConversationProvider {
 
-    val conversationList: SharedFlow<List<Conversation>>
+    val conversationList: StateFlow<List<Conversation>>
 
-    val totalUnreadMessageCount: SharedFlow<Long>
+    val totalUnreadMessageCount: StateFlow<Long>
 
     fun refreshConversationList()
 

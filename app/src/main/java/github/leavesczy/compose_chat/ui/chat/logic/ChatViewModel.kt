@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.model.Chat
 import github.leavesczy.compose_chat.base.model.ImageMessage
@@ -17,11 +16,11 @@ import github.leavesczy.compose_chat.base.model.SystemMessage
 import github.leavesczy.compose_chat.base.model.TextMessage
 import github.leavesczy.compose_chat.base.model.TimeMessage
 import github.leavesczy.compose_chat.base.provider.IMessageProvider
+import github.leavesczy.compose_chat.provider.ContextProvider
+import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.chat.InputSelector
-import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
+import github.leavesczy.compose_chat.ui.logic.ComposeChat
 import github.leavesczy.compose_chat.utils.CompressImageUtils
-import github.leavesczy.compose_chat.utils.ContextHolder
-import github.leavesczy.compose_chat.utils.showToast
 import github.leavesczy.matisse.MediaResource
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -33,7 +32,7 @@ import kotlin.system.measureTimeMillis
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-class ChatViewModel(private val chat: Chat) : ViewModel() {
+class ChatViewModel(private val chat: Chat) : BaseViewModel() {
 
     companion object {
 
@@ -182,7 +181,7 @@ class ChatViewModel(private val chat: Chat) : ViewModel() {
     fun sendImageMessage(mediaResource: MediaResource) {
         viewModelScope.launch {
             val imageFile = CompressImageUtils.compressImage(
-                context = ContextHolder.context,
+                context = ContextProvider.context,
                 mediaResource = mediaResource
             )
             val imagePath = imageFile?.absolutePath

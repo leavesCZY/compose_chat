@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.provider.AppThemeProvider
-import github.leavesczy.compose_chat.ui.main.logic.AppTheme
+import github.leavesczy.compose_chat.ui.logic.AppTheme
 
 /**
  * @Author: leavesCZY
@@ -72,9 +72,9 @@ fun ComposeChatTheme(content: @Composable () -> Unit) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = AppTypography,
-            content = if (appTheme == AppTheme.Gray) {
-                {
-                    content()
+            content = {
+                content()
+                if (appTheme == AppTheme.Gray) {
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         drawRect(
                             color = Color.LightGray,
@@ -82,8 +82,6 @@ fun ComposeChatTheme(content: @Composable () -> Unit) {
                         )
                     }
                 }
-            } else {
-                content
             }
         )
     }

@@ -14,7 +14,9 @@ class ComposeChatPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         val projectNname = project.name
-        if (projectNname == "app") {
+        val isAppProject = projectNname == "app"
+        val isBaseProject = projectNname == "base"
+        if (isAppProject) {
             project.apply {
                 plugin("com.android.application")
                 plugin("org.jetbrains.kotlin.android")
@@ -24,10 +26,10 @@ class ComposeChatPlugin : Plugin<Project> {
                 plugin("com.android.library")
                 plugin("org.jetbrains.kotlin.android")
             }
-            if (projectNname == "base") {
-                project.apply {
-                    plugin("kotlin-parcelize")
-                }
+        }
+        if (isAppProject || isBaseProject) {
+            project.apply {
+                plugin("kotlin-parcelize")
             }
         }
         when (val androidExtension = project.extensions.getByName("android")) {

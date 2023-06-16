@@ -38,13 +38,14 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
             }
         }
         buildConfigField("String", "VERSION_NAME", "\"${BuildConfig.versionName}\"")
+        buildConfigField("String", "BUILD_TIME", "\"${BuildFunction.getBuildConfigTime()}\"")
     }
     signingConfigs {
         create("release") {
             storeFile = File(project.rootDir.absolutePath + File.separator + "key.jks")
             keyAlias = BuildConfig.keyAlias
-            storePassword = BuildConfig.storePassword
             keyPassword = BuildConfig.keyPassword
+            storePassword = BuildConfig.storePassword
             enableV1Signing = true
             enableV2Signing = true
         }

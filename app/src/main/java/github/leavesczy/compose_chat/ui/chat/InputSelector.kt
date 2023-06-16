@@ -73,9 +73,7 @@ fun InputSelector(
                     other = if (sendMessageEnabled) {
                         Modifier.background(color = MaterialTheme.colorScheme.primary)
                     } else {
-                        Modifier.background(
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.46f)
-                        )
+                        Modifier.background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.46f))
                     }
                 )
                 .clickable(onClick = onClickSend)

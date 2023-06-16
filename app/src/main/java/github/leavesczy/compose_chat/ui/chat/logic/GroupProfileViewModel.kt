@@ -3,12 +3,10 @@ package github.leavesczy.compose_chat.ui.chat.logic
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.GroupProfile
-import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
-import github.leavesczy.compose_chat.utils.showToast
+import github.leavesczy.compose_chat.ui.base.BaseViewModel
+import github.leavesczy.compose_chat.ui.logic.ComposeChat
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -17,34 +15,40 @@ import kotlinx.coroutines.launch
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-class GroupProfileViewModel(private val groupId: String) : ViewModel() {
+class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
 
-    var groupProfilePageViewState by mutableStateOf(
-        value = GroupProfilePageViewState(
-            groupProfile = GroupProfile.Empty,
-            memberList = emptyList()
-        )
+    var pageViewState by mutableStateOf<GroupProfilePageViewState?>(
+        value = null
     )
+        private set
+
+    var loadingDialogVisible by mutableStateOf(value = false)
         private set
 
     init {
         viewModelScope.launch {
+            loadingDialog(visible = true)
             val groupProfileAsync = async {
-                ComposeChat.groupProvider.getGroupInfo(groupId = groupId) ?: GroupProfile.Empty
+                ComposeChat.groupProvider.getGroupInfo(groupId = groupId)
             }
             val memberListAsync = async {
                 ComposeChat.groupProvider.getGroupMemberList(groupId = groupId)
             }
-            groupProfilePageViewState = groupProfilePageViewState.copy(
-                groupProfile = groupProfileAsync.await(), memberList = memberListAsync.await()
-            )
+            val groupProfile = groupProfileAsync.await()
+            if (groupProfile != null) {
+                pageViewState = GroupProfilePageViewState(
+                    groupProfile = groupProfile,
+                    memberList = memberListAsync.await()
+                )
+            }
+            loadingDialog(visible = false)
         }
     }
 
     private fun getGroupProfile() {
         viewModelScope.launch {
             ComposeChat.groupProvider.getGroupInfo(groupId = groupId)?.let {
-                groupProfilePageViewState = groupProfilePageViewState.copy(groupProfile = it)
+                pageViewState = pageViewState?.copy(groupProfile = it)
             }
         }
     }
@@ -67,6 +71,10 @@ class GroupProfileViewModel(private val groupId: String) : ViewModel() {
                 }
             }
         }
+    }
+
+    private fun loadingDialog(visible: Boolean) {
+        loadingDialogVisible = visible
     }
 
 }

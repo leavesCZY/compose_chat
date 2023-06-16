@@ -78,9 +78,7 @@ fun MessageDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .align(
-                        alignment = Alignment.Center
-                    )
+                    .align(alignment = Alignment.Center)
                     .background(
                         color = MaterialTheme.colorScheme.background,
                         shape = RoundedCornerShape(size = 12.dp)
