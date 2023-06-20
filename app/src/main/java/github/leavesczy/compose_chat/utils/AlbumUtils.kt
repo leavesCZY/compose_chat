@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import github.leavesczy.compose_chat.ui.widgets.CoilImageLoader
+import github.leavesczy.compose_chat.provider.ImageLoaderProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -32,7 +32,10 @@ object AlbumUtils {
             try {
                 val isHttpUrl = imageUrl.startsWith(prefix = "http")
                 val imageFile = if (isHttpUrl) {
-                    CoilImageLoader.getCachedFileOrDownload(context = context, imageUrl = imageUrl)
+                    ImageLoaderProvider.getCachedFileOrDownload(
+                        context = context,
+                        imageUrl = imageUrl
+                    )
                 } else {
                     File(imageUrl)
                 }

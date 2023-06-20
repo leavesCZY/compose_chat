@@ -138,7 +138,7 @@ private fun LazyItemScope.ConversationItem(
                     linkTo(top = parent.top, bottom = parent.bottom)
                 }
                 .padding(start = 14.dp, top = 8.dp, bottom = 8.dp)
-                .size(size = 54.dp)
+                .size(size = 50.dp)
                 .clip(shape = RoundedCornerShape(size = 6.dp)),
             data = conversation.faceUrl
         )

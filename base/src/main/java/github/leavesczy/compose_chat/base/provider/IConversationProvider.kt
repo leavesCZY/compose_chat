@@ -28,4 +28,6 @@ interface IConversationProvider {
 
     suspend fun deleteGroupConversation(groupId: String): ActionResult
 
+    suspend fun clear()
+
 }

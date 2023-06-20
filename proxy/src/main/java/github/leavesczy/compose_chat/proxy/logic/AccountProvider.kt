@@ -28,7 +28,7 @@ import kotlin.coroutines.resume
  */
 class AccountProvider : IAccountProvider {
 
-    override val personProfile = MutableStateFlow(PersonProfile.Empty)
+    override val personProfile = MutableStateFlow(value = PersonProfile.Empty)
 
     override val serverConnectState = MutableSharedFlow<ServerState>()
 

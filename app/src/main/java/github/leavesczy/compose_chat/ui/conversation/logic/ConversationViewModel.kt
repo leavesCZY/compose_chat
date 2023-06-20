@@ -39,6 +39,8 @@ class ConversationViewModel : BaseViewModel() {
                 pageViewState = pageViewState.copy(conversationList = it)
             }
         }
+        ComposeChat.conversationProvider.refreshConversationList()
+        ComposeChat.conversationProvider.refreshTotalUnreadMessageCount()
     }
 
     private fun onClickConversation(conversation: Conversation) {

@@ -45,6 +45,6 @@ fun DependencyHandlerScope.implementationCompose() {
 }
 
 fun DependencyHandlerScope.implementationCoil() {
-    implementationExtend(Dependencies.Components.coilGif)
-    implementationExtend(Dependencies.Components.coilCompose)
+    implementationExtend(Dependencies.Coil.compose)
+    implementationExtend(Dependencies.Coil.gif)
 }

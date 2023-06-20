@@ -77,7 +77,8 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
 
     init {
         ComposeChat.messageProvider.startReceive(
-            chat = chat, messageListener = messageListener
+            chat = chat,
+            messageListener = messageListener
         )
         ComposeChat.accountProvider.refreshPersonProfile()
         viewModelScope.launch {

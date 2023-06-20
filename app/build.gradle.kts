@@ -8,9 +8,8 @@ dependencies {
     implementationTest()
     implementationCompose()
     implementationCoil()
-    implementation(Dependencies.Appcompat.appcompat)
-    implementation(Dependencies.Appcompat.material)
     implementation(Dependencies.Accompanist.uiController)
+    implementation(Dependencies.Components.appcompat)
     implementation(Dependencies.Components.coroutines)
     implementation(Dependencies.Components.matisse)
 }

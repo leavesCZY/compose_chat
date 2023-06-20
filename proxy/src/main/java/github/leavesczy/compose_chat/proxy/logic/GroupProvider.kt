@@ -252,4 +252,8 @@ class GroupProvider : IGroupProvider {
         } ?: emptyList()
     }
 
+    override suspend fun clear() {
+        joinedGroupList.emit(value = emptyList())
+    }
+
 }

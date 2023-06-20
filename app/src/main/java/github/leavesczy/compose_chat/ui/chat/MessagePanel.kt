@@ -109,7 +109,7 @@ private fun MessageItems(message: Message, showPartyName: Boolean, chatPageActio
     }
 }
 
-private val avatarSize = 48.dp
+private val avatarSize = 44.dp
 private val itemHorizontalPadding = 14.dp
 private val itemVerticalPadding = 10.dp
 private val textMessageWidthAtMost = 230.dp

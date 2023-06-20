@@ -23,4 +23,6 @@ interface IFriendshipProvider {
 
     suspend fun deleteFriend(friendId: String): ActionResult
 
+    suspend fun clear()
+
 }

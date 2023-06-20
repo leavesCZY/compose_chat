@@ -17,10 +17,10 @@ import github.leavesczy.compose_chat.extend.clickableNoRipple
  */
 @Composable
 fun LoadingDialog(visible: Boolean) {
-    BackHandler(enabled = visible) {
-
-    }
     if (visible) {
+        BackHandler(enabled = true) {
+
+        }
         Box(
             modifier = Modifier
                 .fillMaxSize()

@@ -62,7 +62,7 @@ fun PersonProfileContentPage(pageViewState: PersonProfilePageViewState) {
                         linkTo(start = backgroundRef.start, end = backgroundRef.end)
                     }
                     .statusBarsPadding()
-                    .size(size = 90.dp)
+                    .size(size = 100.dp)
                     .clickableNoRipple {
                         pageViewState.previewImage(faceUrl)
                     },

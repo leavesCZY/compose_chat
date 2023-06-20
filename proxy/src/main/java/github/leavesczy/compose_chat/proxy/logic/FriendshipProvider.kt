@@ -173,4 +173,8 @@ class FriendshipProvider : IFriendshipProvider {
         }
     }
 
+    override suspend fun clear() {
+        friendList.emit(value = emptyList())
+    }
+
 }

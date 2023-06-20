@@ -4,7 +4,7 @@ on:
   push:
     branches: [ master ]
     paths:
-      - "**/WorkflowsMonitor.kt"
+      - "**/WorkflowsTrigger.kt"
 
 jobs:
   build:
@@ -32,9 +32,9 @@ jobs:
       - name: Create a Release APK
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "app/build/outputs/apk/release/*.apk"
+          commit: master
           artifactErrorsFailBuild: true
+          artifacts: "app/build/outputs/apk/release/*.apk"
           body: "create by workflows"
           token: ${{ secrets.ACTION_TOKEN }}
-          commit: master
           tag: v0.0.${{ github.run_number }}

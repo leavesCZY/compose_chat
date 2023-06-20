@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="Theme.ComposeChat.Base" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.ComposeChat.Base" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowAnimationStyle">@style/activityAnimationTransverse</item>
     </style>
 

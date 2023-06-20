@@ -51,8 +51,7 @@ private const val DESIGN_WIDTH = 380f
 
 @Composable
 fun ComposeChatTheme(content: @Composable () -> Unit) {
-    val appTheme = AppThemeProvider.appTheme
-    val colorScheme = when (appTheme) {
+    val colorScheme = when (AppThemeProvider.appTheme) {
         AppTheme.Light, AppTheme.Gray -> {
             LightColorScheme
         }
@@ -74,7 +73,7 @@ fun ComposeChatTheme(content: @Composable () -> Unit) {
             typography = AppTypography,
             content = {
                 content()
-                if (appTheme == AppTheme.Gray) {
+                if (AppThemeProvider.appTheme == AppTheme.Gray) {
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         drawRect(
                             color = Color.LightGray,

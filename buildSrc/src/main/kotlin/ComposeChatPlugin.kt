@@ -19,18 +19,19 @@ class ComposeChatPlugin : Plugin<Project> {
         if (isAppProject) {
             project.apply {
                 plugin("com.android.application")
-                plugin("org.jetbrains.kotlin.android")
             }
         } else {
             project.apply {
                 plugin("com.android.library")
-                plugin("org.jetbrains.kotlin.android")
             }
         }
         if (isAppProject || isBaseProject) {
             project.apply {
                 plugin("kotlin-parcelize")
             }
+        }
+        project.apply {
+            plugin("org.jetbrains.kotlin.android")
         }
         when (val androidExtension = project.extensions.getByName("android")) {
             is BaseAppModuleExtension -> {

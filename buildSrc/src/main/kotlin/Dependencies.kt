@@ -11,9 +11,11 @@ object Dependencies {
         const val espresso = "androidx.test.espresso:espresso-core:3.5.1"
     }
 
-    object Appcompat {
+    object Components {
         const val appcompat = "androidx.appcompat:appcompat:1.6.1"
-        const val material = "com.google.android.material:material:1.9.0"
+        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
+        const val matisse = "com.github.leavesCZY:Matisse:1.0.0-beta03"
+        const val imSdk = "com.tencent.imsdk:imsdk-plus:7.2.4146"
     }
 
     object Compose {
@@ -37,13 +39,10 @@ object Dependencies {
         const val uiController = "com.google.accompanist:accompanist-systemuicontroller:$version"
     }
 
-    object Components {
+    object Coil {
         private const val coilVersion = "2.4.0"
-        const val coilGif = "io.coil-kt:coil-gif:$coilVersion"
-        const val coilCompose = "io.coil-kt:coil-compose:$coilVersion"
-        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
-        const val matisse = "com.github.leavesCZY:Matisse:1.0.0-beta01"
-        const val imSdk = "com.tencent.imsdk:imsdk-plus:7.2.4146"
+        const val compose = "io.coil-kt:coil-compose:$coilVersion"
+        const val gif = "io.coil-kt:coil-gif:$coilVersion"
     }
 
 }

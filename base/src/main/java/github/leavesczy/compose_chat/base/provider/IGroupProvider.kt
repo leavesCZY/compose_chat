@@ -28,4 +28,6 @@ interface IGroupProvider {
 
     suspend fun transferGroupOwner(groupId: String, newOwnerUserID: String): ActionResult
 
+    suspend fun clear()
+
 }

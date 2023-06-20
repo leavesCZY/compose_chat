@@ -236,7 +236,7 @@ private fun GroupMemberItem(
                     linkTo(top = parent.top, bottom = parent.bottom)
                 }
                 .padding(start = 14.dp, top = 8.dp, bottom = 8.dp)
-                .size(size = 52.dp)
+                .size(size = 50.dp)
                 .clip(shape = RoundedCornerShape(size = 6.dp)),
             data = groupMemberProfile.detail.faceUrl)
         Text(

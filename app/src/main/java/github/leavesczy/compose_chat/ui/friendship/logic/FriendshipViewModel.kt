@@ -45,6 +45,8 @@ class FriendshipViewModel : BaseViewModel() {
                 }
             }
         }
+        ComposeChat.groupProvider.refreshJoinedGroupList()
+        ComposeChat.friendshipProvider.refreshFriendList()
     }
 
     private fun onClickGroupItem(groupProfile: GroupProfile) {

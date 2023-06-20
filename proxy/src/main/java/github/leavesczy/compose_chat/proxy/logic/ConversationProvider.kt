@@ -114,6 +114,11 @@ class ConversationProvider : IConversationProvider {
         return Converters.deleteGroupConversation(groupId)
     }
 
+    override suspend fun clear() {
+        conversationList.emit(value = emptyList())
+        totalUnreadMessageCount.emit(value = 0L)
+    }
+
     private fun dispatchConversationList(conversationList: List<Conversation>) {
         ChatCoroutineScope.launch {
             this@ConversationProvider.conversationList.emit(value = conversationList)

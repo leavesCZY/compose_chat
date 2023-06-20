@@ -55,7 +55,7 @@ class MainViewModel : BaseViewModel() {
             drawerState = DrawerState(initialValue = DrawerValue.Closed),
             personProfile = ComposeChat.accountProvider.personProfile.value,
             previewImage = ::previewImage,
-            switchToNextTheme = ::switchToNextTheme,
+            switchTheme = ::switchTheme,
             logout = ::logout,
             updateProfile = ::updateProfile
         )
@@ -159,6 +159,9 @@ class MainViewModel : BaseViewModel() {
             loadingDialog(visible = true)
             when (val result = ComposeChat.accountProvider.logout()) {
                 is ActionResult.Success -> {
+                    ComposeChat.conversationProvider.clear()
+                    ComposeChat.groupProvider.clear()
+                    ComposeChat.friendshipProvider.clear()
                     AccountProvider.onUserLogout()
                 }
 
@@ -194,7 +197,7 @@ class MainViewModel : BaseViewModel() {
         }
     }
 
-    private fun switchToNextTheme() {
+    private fun switchTheme() {
         val nextTheme = AppThemeProvider.appTheme.nextTheme()
         AppThemeProvider.onAppThemeChanged(appTheme = nextTheme)
     }

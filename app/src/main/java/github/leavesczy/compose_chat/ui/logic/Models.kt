@@ -18,7 +18,7 @@ data class MainPageDrawerViewState(
     val drawerState: DrawerState,
     val personProfile: PersonProfile,
     val previewImage: (String) -> Unit,
-    val switchToNextTheme: () -> Unit,
+    val switchTheme: () -> Unit,
     val updateProfile: () -> Unit,
     val logout: () -> Unit
 )

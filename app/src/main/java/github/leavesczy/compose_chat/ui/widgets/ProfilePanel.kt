@@ -1,6 +1,7 @@
 package github.leavesczy.compose_chat.ui.widgets
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,7 +30,7 @@ fun ProfilePanel(
     subtitle: String,
     introduction: String,
     avatarUrl: String,
-    content: @Composable () -> Unit
+    content: @Composable BoxScope.() -> Unit
 ) {
     val context = LocalContext.current
     ConstraintLayout(modifier = Modifier) {
@@ -51,7 +52,7 @@ fun ProfilePanel(
                     linkTo(top = backgroundRef.top, bottom = backgroundRef.bottom, bias = 0.3f)
                     linkTo(start = backgroundRef.start, end = backgroundRef.end)
                 }
-                .size(size = 90.dp)
+                .size(size = 100.dp)
                 .clickableNoRipple {
                     if (avatarUrl.isNotBlank()) {
                         PreviewImageActivity.navTo(context = context, imagePath = avatarUrl)
@@ -101,9 +102,8 @@ fun ProfilePanel(
                     linkTo(start = backgroundRef.start, end = backgroundRef.end)
                     top.linkTo(anchor = introductionRef.bottom, margin = 60.dp)
                 }
-                .zIndex(zIndex = 1f)
-        ) {
-            content()
-        }
+                .zIndex(zIndex = 1f),
+            content = content
+        )
     }
 }

@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,10 +41,10 @@ fun CommonOutlinedTextField(
         textStyle = MaterialTheme.typography.bodyMedium.copy(
             color = MaterialTheme.colorScheme.onSurface
         ),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
+        colors = OutlinedTextFieldDefaults.colors(
+            cursorColor = MaterialTheme.colorScheme.primary,
             focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
-            unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-            cursorColor = MaterialTheme.colorScheme.primary
+            unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
         )
     )
 }

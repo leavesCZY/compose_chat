@@ -4,6 +4,7 @@ import BuildConfig
 import BuildFunction
 import Dependencies
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
@@ -76,8 +77,8 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
         }
     }
     compileOptions {
-        sourceCompatibility = BuildConfig.sourceCompatibility
-        targetCompatibility = BuildConfig.targetCompatibility
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
@@ -86,7 +87,7 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
         kotlinCompilerExtensionVersion = Dependencies.Compose.compilerVersion
     }
     ((this as ExtensionAware).extensions.getByName("kotlinOptions") as KotlinJvmOptions).apply {
-        jvmTarget = BuildConfig.jvmTarget
+        jvmTarget = "17"
         freeCompilerArgs = freeCompilerArgs.toMutableList().apply {
             addAll(
                 listOf(

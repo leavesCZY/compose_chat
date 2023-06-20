@@ -3,9 +3,10 @@ package github.leavesczy.compose_chat.ui
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -30,8 +31,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import github.leavesczy.compose_chat.BuildConfig
 import github.leavesczy.compose_chat.extend.clickableNoRipple
 import github.leavesczy.compose_chat.ui.logic.MainPageDrawerViewState
@@ -52,93 +51,72 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
         }
     }
     Surface(
-        modifier = Modifier,
+        modifier = Modifier
+            .fillMaxWidth(fraction = 0.85f)
+            .background(color = MaterialTheme.colorScheme.surface)
+            .padding(vertical = 22.dp)
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         color = Color.Transparent,
         contentColor = contentColorFor(MaterialTheme.colorScheme.surface)
     ) {
-        val personProfile = viewState.personProfile
-        val id = personProfile.id
-        val faceUrl = personProfile.faceUrl
-        val nickname = personProfile.nickname
-        val signature = personProfile.signature
-        val padding = 18.dp
-        ConstraintLayout(
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.surface)
-                .fillMaxWidth(fraction = 0.90f)
-                .fillMaxHeight()
-                .statusBarsPadding()
-                .navigationBarsPadding()
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            val (avatarRef, userIdRef, nicknameRef, signatureRef, contentRef, aboutAuthorRef) = createRefs()
+            val personProfile = viewState.personProfile
+            val padding = 20.dp
             BouncyImage(
                 modifier = Modifier
-                    .constrainAs(ref = avatarRef) {
-                        start.linkTo(anchor = parent.start, margin = padding)
-                        top.linkTo(anchor = parent.top, margin = padding / 2)
-                    }
+                    .padding(start = padding)
                     .size(size = 90.dp)
                     .clickableNoRipple {
-                        viewState.previewImage(faceUrl)
+                        viewState.previewImage(personProfile.faceUrl)
                     },
-                data = faceUrl
+                data = personProfile.faceUrl
             )
             Text(
-                modifier = Modifier.constrainAs(ref = userIdRef) {
-                    linkTo(start = avatarRef.start, end = parent.end, endMargin = padding)
-                    top.linkTo(anchor = avatarRef.bottom, margin = padding)
-                    width = Dimension.fillToConstraints
-                },
-                text = id,
+                modifier = Modifier.padding(
+                    start = padding,
+                    end = padding,
+                    top = padding
+                ),
+                text = personProfile.id,
                 fontSize = 18.sp
             )
             Text(
-                modifier = Modifier.constrainAs(ref = nicknameRef) {
-                    linkTo(start = avatarRef.start, end = parent.end, endMargin = padding)
-                    top.linkTo(anchor = userIdRef.bottom, margin = padding / 4)
-                    width = Dimension.fillToConstraints
-                },
-                text = nickname,
-                fontSize = 14.sp
+                modifier = Modifier.padding(horizontal = padding),
+                text = personProfile.nickname,
+                fontSize = 18.sp
             )
             Text(
-                modifier = Modifier.constrainAs(ref = signatureRef) {
-                    linkTo(start = avatarRef.start, end = parent.end, endMargin = padding)
-                    top.linkTo(anchor = nicknameRef.bottom, margin = padding / 4)
-                    width = Dimension.fillToConstraints
-                },
-                text = signature,
-                fontSize = 14.sp
+                modifier = Modifier.padding(horizontal = padding),
+                text = personProfile.signature,
+                fontSize = 18.sp
             )
-            Column(
-                modifier = Modifier.constrainAs(ref = contentRef) {
-                    linkTo(start = parent.start, end = parent.end)
-                    linkTo(top = signatureRef.bottom, bottom = parent.bottom, topMargin = padding)
-                    height = Dimension.fillToConstraints
-                }
-            ) {
-                SelectableItem(
-                    text = "个人资料",
-                    icon = Icons.Filled.Cabin,
-                    onClick = viewState.updateProfile
-                )
-                SelectableItem(
-                    text = "切换主题",
-                    icon = Icons.Filled.Sailing,
-                    onClick = viewState.switchToNextTheme
-                )
-                SelectableItem(
-                    text = "切换账号",
-                    icon = Icons.Filled.ColorLens,
-                    onClick = viewState.logout
-                )
-            }
+            SelectableItem(
+                text = "个人资料",
+                icon = Icons.Filled.Cabin,
+                onClick = viewState.updateProfile
+            )
+            SelectableItem(
+                text = "切换主题",
+                icon = Icons.Filled.Sailing,
+                onClick = viewState.switchTheme
+            )
+            SelectableItem(
+                text = "切换账号",
+                icon = Icons.Filled.ColorLens,
+                onClick = viewState.logout
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(weight = 1f, fill = true)
+            )
             Text(
                 modifier = Modifier
-                    .constrainAs(ref = aboutAuthorRef) {
-                        centerHorizontallyTo(other = parent)
-                        bottom.linkTo(anchor = parent.bottom, margin = padding * 2)
-                    },
+                    .fillMaxWidth()
+                    .padding(horizontal = padding),
                 text = buildString {
                     append("公众号: 字节数组")
                     append("\n")

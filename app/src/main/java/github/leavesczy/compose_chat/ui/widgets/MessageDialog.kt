@@ -62,8 +62,18 @@ fun MessageDialog(
     )
     AnimatedVisibility(
         visible = visible,
-        enter = fadeIn(animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing)),
-        exit = fadeOut(animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
+        enter = fadeIn(
+            animationSpec = tween(
+                durationMillis = 300,
+                easing = LinearOutSlowInEasing
+            )
+        ),
+        exit = fadeOut(
+            animationSpec = tween(
+                durationMillis = 300,
+                easing = LinearOutSlowInEasing
+            )
+        )
     ) {
         Box(
             modifier = Modifier
