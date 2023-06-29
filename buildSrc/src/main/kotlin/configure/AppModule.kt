@@ -91,12 +91,12 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
         freeCompilerArgs = freeCompilerArgs.toMutableList().apply {
             addAll(
                 listOf(
-                    "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi",
-                    "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi",
-                    "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi",
-                    "-Xopt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi",
-                    "-Xopt-in=androidx.compose.material.ExperimentalMaterialApi",
-                    "-Xopt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+                    "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
+                    "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
+                    "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+                    "-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi",
+                    "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
+                    "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
                 )
             )
         }
@@ -109,13 +109,13 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
             excludes.addAll(
                 listOf(
                     "**/*.md",
-                    "**/*.properties",
                     "**/*.version",
+                    "**/*.properties",
                     "**/**/*.properties",
                     "META-INF/{AL2.0,LGPL2.1}",
                     "META-INF/CHANGES",
                     "DebugProbesKt.bin",
-                    "kotlin-tooling-metadata.json",
+                    "kotlin-tooling-metadata.json"
                 )
             )
         }

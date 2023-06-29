@@ -14,13 +14,13 @@ object Dependencies {
     object Components {
         const val appcompat = "androidx.appcompat:appcompat:1.6.1"
         const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
-        const val matisse = "com.github.leavesCZY:Matisse:1.0.0-beta03"
-        const val imSdk = "com.tencent.imsdk:imsdk-plus:7.2.4146"
+        const val matisse = "com.github.leavesCZY:Matisse:1.0.0-beta04"
+        const val imSdk = "com.tencent.imsdk:imsdk-plus:7.3.4358"
     }
 
     object Compose {
-        const val compilerVersion = "1.4.7"
-        const val bom = "androidx.compose:compose-bom:2023.06.00"
+        const val compilerVersion = "1.4.8"
+        const val bom = "androidx.compose:compose-bom:2023.06.01"
         const val ui = "androidx.compose.ui:ui"
         const val uiTooling = "androidx.compose.ui:ui-tooling"
         const val uiToolingPreview = "androidx.compose.ui:ui-tooling-preview"

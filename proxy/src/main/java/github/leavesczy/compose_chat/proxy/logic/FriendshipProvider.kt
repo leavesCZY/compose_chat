@@ -51,7 +51,7 @@ class FriendshipProvider : IFriendshipProvider {
     override fun refreshFriendList() {
         ChatCoroutineScope.launch {
             friendList.emit(value = getFriendListOrigin()?.sortedBy {
-                it.showName.first().uppercaseChar()
+                it.showName
             } ?: emptyList())
         }
     }
