@@ -58,7 +58,7 @@ fun ConversationPage() {
 }
 
 @Composable
-fun ConversationContentPage(pageViewState: ConversationPageViewState) {
+private fun ConversationContentPage(pageViewState: ConversationPageViewState) {
     val conversationList = pageViewState.conversationList
     if (conversationList.isEmpty()) {
         Text(

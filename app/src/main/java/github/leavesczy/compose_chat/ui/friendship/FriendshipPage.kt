@@ -1,6 +1,7 @@
 package github.leavesczy.compose_chat.ui.friendship
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,12 +13,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Divider
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,67 +46,89 @@ import github.leavesczy.compose_chat.ui.widgets.CoilImage
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun FriendshipPage() {
+fun FriendshipPage(showFriendshipDialog: () -> Unit) {
     val friendshipViewModel = viewModel<FriendshipViewModel>()
-    FriendshipContentPage(pageViewState = friendshipViewModel.pageViewState)
+    FriendshipContentPage(
+        pageViewState = friendshipViewModel.pageViewState,
+        showFriendshipDialog = showFriendshipDialog
+    )
 }
 
 @Composable
-private fun FriendshipContentPage(pageViewState: FriendshipPageViewState) {
-    val joinedGroupList = pageViewState.joinedGroupList
-    val friendList = pageViewState.friendList
-    if (joinedGroupList.isEmpty() && friendList.isEmpty()) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(fraction = 0.45f)
-                .wrapContentSize(align = Alignment.BottomCenter),
-            text = "Empty",
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            fontSize = 70.sp
-        )
-    } else {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            state = pageViewState.listState,
-            contentPadding = PaddingValues(bottom = 60.dp)
-        ) {
-            items(
-                items = joinedGroupList,
-                key = {
-                    it.id
-                },
-                contentType = {
-                    "Group"
-                },
-                itemContent = {
-                    GroupItem(
-                        groupProfile = it,
-                        onClick = {
-                            pageViewState.onClickGroupItem(it)
-                        }
-                    )
-                }
+private fun FriendshipContentPage(
+    pageViewState: FriendshipPageViewState,
+    showFriendshipDialog: () -> Unit
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        val joinedGroupList = pageViewState.joinedGroupList
+        val friendList = pageViewState.friendList
+        if (joinedGroupList.isEmpty() && friendList.isEmpty()) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(fraction = 0.45f)
+                    .wrapContentSize(align = Alignment.BottomCenter),
+                text = "Empty",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                fontSize = 70.sp
             )
-            items(
-                items = friendList,
-                key = {
-                    it.id
-                },
-                contentType = {
-                    "friend"
-                },
-                itemContent = {
-                    FriendItem(
-                        personProfile = it,
-                        onClick = {
-                            pageViewState.onClickFriendItem(it)
-                        }
-                    )
-                }
-            )
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = pageViewState.listState,
+                contentPadding = PaddingValues(bottom = 100.dp)
+            ) {
+                items(
+                    items = joinedGroupList,
+                    key = {
+                        it.id
+                    },
+                    contentType = {
+                        "Group"
+                    },
+                    itemContent = {
+                        GroupItem(
+                            groupProfile = it,
+                            onClick = {
+                                pageViewState.onClickGroupItem(it)
+                            }
+                        )
+                    }
+                )
+                items(
+                    items = friendList,
+                    key = {
+                        it.id
+                    },
+                    contentType = {
+                        "friend"
+                    },
+                    itemContent = {
+                        FriendItem(
+                            personProfile = it,
+                            onClick = {
+                                pageViewState.onClickFriendItem(it)
+                            }
+                        )
+                    }
+                )
+            }
         }
+        FloatingActionButton(
+            modifier = Modifier
+                .align(alignment = Alignment.BottomEnd)
+                .padding(bottom = 30.dp, end = 30.dp),
+            containerColor = MaterialTheme.colorScheme.primary,
+            content = {
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    tint = Color.White,
+                    contentDescription = null,
+                )
+            },
+            onClick = showFriendshipDialog
+        )
     }
 }
 

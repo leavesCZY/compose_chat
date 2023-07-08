@@ -66,13 +66,22 @@ fun FriendshipDialog(viewState: FriendshipDialogViewState) {
                 }
             }
             CommonButton(text = "加入交流群 0x01") {
-                viewState.joinGroup(ComposeChat.groupId01)
+                viewState.joinGroup(ComposeChat.MeetingGroupId01)
             }
             CommonButton(text = "加入交流群 0x02") {
-                viewState.joinGroup(ComposeChat.groupId02)
+                viewState.joinGroup(ComposeChat.MeetingGroupId02)
             }
             CommonButton(text = "加入交流群 0x03") {
-                viewState.joinGroup(ComposeChat.groupId03)
+                viewState.joinGroup(ComposeChat.MeetingGroupId03)
+            }
+            CommonButton(text = "加入交流群 0x04") {
+                viewState.joinGroup(ComposeChat.MeetingGroupId04)
+            }
+            CommonButton(text = "加入交流群 0x05") {
+                viewState.joinGroup(ComposeChat.MeetingGroupId05)
+            }
+            CommonButton(text = "加入交流群 0x06") {
+                viewState.joinGroup(ComposeChat.MeetingGroupId06)
             }
         }
     }

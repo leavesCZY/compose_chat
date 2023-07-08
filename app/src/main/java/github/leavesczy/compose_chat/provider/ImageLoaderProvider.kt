@@ -28,7 +28,8 @@ object ImageLoaderProvider {
                 } else {
                     add(GifDecoder.Factory())
                 }
-            }.build()
+            }
+            .build()
         Coil.setImageLoader(imageLoader)
     }
 

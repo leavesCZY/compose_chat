@@ -18,22 +18,27 @@ import github.leavesczy.compose_chat.extend.clickableNoRipple
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-
-private const val EMOJI_COLUMNS = 6
-
 @Composable
 fun EmojiTable(appendEmoji: (String) -> Unit) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(count = EMOJI_COLUMNS),
-        contentPadding = PaddingValues(start = 6.dp, end = 6.dp, bottom = 6.dp)
+        columns = GridCells.Fixed(count = 7),
+        contentPadding = PaddingValues(start = 4.dp, end = 4.dp, bottom = 12.dp)
     ) {
-        items(items = emojis) {
+        items(
+            items = emojis,
+            contentType = {
+                "emojis"
+            },
+            key = {
+                it
+            }
+        ) {
             Text(
                 modifier = Modifier
                     .clickableNoRipple {
                         appendEmoji(it)
                     }
-                    .padding(vertical = 12.dp),
+                    .padding(vertical = 10.dp),
                 text = it,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center

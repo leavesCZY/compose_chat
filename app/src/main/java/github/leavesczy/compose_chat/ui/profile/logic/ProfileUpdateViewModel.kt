@@ -81,7 +81,7 @@ class ProfileUpdateViewModel : BaseViewModel() {
                 null
             } else {
                 ComposeChat.messageProvider.uploadImage(
-                    chat = Chat.GroupChat(id = ComposeChat.groupIdToUploadAvatar),
+                    chat = Chat.GroupChat(id = ComposeChat.AVChatRoomIdToUploadAvatar),
                     imagePath = imagePath
                 )
             }

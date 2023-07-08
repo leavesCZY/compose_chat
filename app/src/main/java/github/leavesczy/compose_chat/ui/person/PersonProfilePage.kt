@@ -35,7 +35,7 @@ fun PersonProfilePage() {
 }
 
 @Composable
-fun PersonProfileContentPage(pageViewState: PersonProfilePageViewState) {
+private fun PersonProfileContentPage(pageViewState: PersonProfilePageViewState) {
     val personProfile = pageViewState.personProfile
     val faceUrl = personProfile.faceUrl
     val title = personProfile.showName

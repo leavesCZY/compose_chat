@@ -59,7 +59,8 @@ fun CoilImage(
     backgroundColor: Color = Color.Gray.copy(alpha = 0.4f)
 ) {
     AsyncImage(
-        modifier = modifier.background(color = backgroundColor),
+        modifier = modifier
+            .background(color = backgroundColor),
         model = data,
         contentScale = contentScale,
         filterQuality = filterQuality,

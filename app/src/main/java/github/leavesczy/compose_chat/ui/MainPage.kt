@@ -53,7 +53,7 @@ fun MainPage(mainViewModel: MainViewModel) {
                         }
 
                         MainPageTab.Friendship -> {
-                            FriendshipPage()
+                            FriendshipPage(showFriendshipDialog = mainViewModel.topBarViewState.showFriendshipDialog)
                         }
 
                         MainPageTab.Person -> {

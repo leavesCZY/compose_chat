@@ -18,13 +18,19 @@ import github.leavesczy.compose_chat.proxy.logic.MessageProvider
  */
 object ComposeChat {
 
-    const val groupId01 = "@TGS#3SSMB3WHI"
+    const val MeetingGroupId01 = "@TGS#3SSMB3WHI"
 
-    const val groupId02 = "@TGS#3VOZA3WHT"
+    const val MeetingGroupId02 = "@TGS#3VOZA3WHT"
 
-    const val groupId03 = "@TGS#3W42A3WHP"
+    const val MeetingGroupId03 = "@TGS#3W42A3WHP"
 
-    const val groupIdToUploadAvatar = "@TGS#aZRGY4WHQ"
+    const val MeetingGroupId04 = "@TGS#3DMJIK6MS"
+
+    const val MeetingGroupId05 = "@TGS#3YCNIK6MC"
+
+    const val MeetingGroupId06 = "@TGS#33PPIK6MK"
+
+    const val AVChatRoomIdToUploadAvatar = "@TGS#aZRGY4WHQ"
 
     val accountProvider: IAccountProvider = AccountProvider()
 
