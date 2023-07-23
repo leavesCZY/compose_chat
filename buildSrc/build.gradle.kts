@@ -8,20 +8,11 @@ plugins {
     `kotlin-dsl`
 }
 
-sourceSets {
-    main {
-        java {
-            srcDir("src/main/kotlin")
-        }
-    }
-}
-
 dependencies {
     val agpVersion = "8.0.2"
-    val kotlinVersion = "1.8.22"
+    val kotlinVersion = "1.9.0"
     implementation("com.android.tools.build:gradle-api:${agpVersion}")
     implementation("com.android.tools.build:gradle:${agpVersion}")
-    implementation(kotlin("gradle-plugin", version = kotlinVersion))
-    implementation(kotlin("gradle-plugin-api", version = kotlinVersion))
-    implementation(gradleKotlinDsl())
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin-api:${kotlinVersion}")
 }
