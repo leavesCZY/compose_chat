@@ -27,6 +27,7 @@ Apk 下载：[releases](https://github.com/leavesCZY/compose_chat/releases)
 
 ![](https://user-images.githubusercontent.com/30774063/221415412-57eb8da5-e85c-4409-9a0f-37df11f71a70.gif)
 
-另外，Compose Chat 也使用到了我的另一个开源库：[Matisse](https://github.com/leavesCZY/Matisse)
+另外，Compose Chat 也使用到了我的另两个开源库
 
-Matisse 是一个用 Jetpack Compose 实现的 Android 图片/视频 选择框架，欢迎关注
+- 一个用 Jetpack Compose 实现的 Android 图片/视频 选择框架：[Matisse](https://github.com/leavesCZY/Matisse)
+- 一个适用于 Android 的字节码插桩库：[Trace](https://github.com/leavesCZY/Trace)

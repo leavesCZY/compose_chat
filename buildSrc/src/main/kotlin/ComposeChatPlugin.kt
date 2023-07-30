@@ -13,25 +13,25 @@ import org.gradle.api.Project
 class ComposeChatPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        val projectNname = project.name
-        val isAppProject = projectNname == "app"
-        val isBaseProject = projectNname == "base"
+        val projectName = project.name
+        val isAppProject = projectName == "app"
+        val isBaseProject = projectName == "base"
         if (isAppProject) {
             project.apply {
                 plugin("com.android.application")
+                plugin("org.jetbrains.kotlin.android")
+                plugin("io.github.leavesczy.trace")
             }
         } else {
             project.apply {
                 plugin("com.android.library")
+                plugin("org.jetbrains.kotlin.android")
             }
         }
         if (isAppProject || isBaseProject) {
             project.apply {
                 plugin("kotlin-parcelize")
             }
-        }
-        project.apply {
-            plugin("org.jetbrains.kotlin.android")
         }
         when (val androidExtension = project.extensions.getByName("android")) {
             is BaseAppModuleExtension -> {
