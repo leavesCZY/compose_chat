@@ -6,6 +6,9 @@ on:
     paths:
       - "**/WorkflowsTrigger.kt"
 
+env:
+  TZ: Asia/Shanghai
+
 jobs:
   build:
 
@@ -23,18 +26,19 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Clean with Gradle
-        run: ./gradlew clean
-
-      - name: Build with Gradle
+      - name: Build apk with Gradle
         run: ./gradlew app:assembleRelease
 
-      - name: Create a Release APK
+      - name: Get current time
+        id: currentTime
+        run: echo "time=$(date +'%Y-%m-%d-%H-%M-%S')" >> $GITHUB_OUTPUT
+
+      - name: Create a Release
         uses: ncipollo/release-action@v1
         with:
-          commit: master
-          artifactErrorsFailBuild: true
           artifacts: "app/build/outputs/apk/release/*.apk"
           body: "create by workflows"
+          artifactErrorsFailBuild: true
+          generateReleaseNotes: true
           token: ${{ secrets.ACTION_TOKEN }}
-          tag: v0.0.${{ github.run_number }}
+          tag: ${{ steps.currentTime.outputs.time }}
