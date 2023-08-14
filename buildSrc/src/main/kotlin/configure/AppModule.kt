@@ -79,8 +79,8 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
         compose = true
@@ -89,36 +89,30 @@ internal fun BaseAppModuleExtension.appModule(project: Project) {
         kotlinCompilerExtensionVersion = Dependencies.Compose.compilerVersion
     }
     ((this as ExtensionAware).extensions.getByName("kotlinOptions") as KotlinJvmOptions).apply {
-        jvmTarget = "17"
-        freeCompilerArgs = freeCompilerArgs.toMutableList().apply {
-            addAll(
-                listOf(
-                    "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
-                    "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
-                    "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
-                    "-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi",
-                    "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
-                    "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-                )
-            )
-        }
+        jvmTarget = "11"
+        freeCompilerArgs += setOf(
+            "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
+            "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
+            "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+            "-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi",
+            "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
+            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+        )
     }
     packaging {
         jniLibs {
-            excludes.add("META-INF/{AL2.0,LGPL2.1}")
+            excludes += setOf("META-INF/{AL2.0,LGPL2.1}")
         }
         resources {
-            excludes.addAll(
-                listOf(
-                    "**/*.md",
-                    "**/*.version",
-                    "**/*.properties",
-                    "**/**/*.properties",
-                    "META-INF/{AL2.0,LGPL2.1}",
-                    "META-INF/CHANGES",
-                    "DebugProbesKt.bin",
-                    "kotlin-tooling-metadata.json"
-                )
+            excludes += setOf(
+                "**/*.md",
+                "**/*.version",
+                "**/*.properties",
+                "**/**/*.properties",
+                "META-INF/{AL2.0,LGPL2.1}",
+                "META-INF/CHANGES",
+                "DebugProbesKt.bin",
+                "kotlin-tooling-metadata.json"
             )
         }
     }

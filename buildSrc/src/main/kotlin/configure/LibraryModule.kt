@@ -20,10 +20,10 @@ internal fun LibraryExtension.libraryModule() {
         consumerProguardFiles.add(File("consumer-rules.pro"))
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     ((this as ExtensionAware).extensions.getByName("kotlinOptions") as KotlinJvmOptions).apply {
-        jvmTarget = "17"
+        jvmTarget = "11"
     }
 }
