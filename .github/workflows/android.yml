@@ -6,6 +6,9 @@ on:
     paths:
       - "**/WorkflowsTrigger.kt"
 
+env:
+  TZ: Asia/Shanghai
+
 jobs:
   build:
 

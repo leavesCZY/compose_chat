@@ -68,7 +68,11 @@ class FriendshipProvider : IFriendshipProvider {
                 .getFriendList(object : V2TIMValueCallback<List<V2TIMFriendInfo>> {
                     override fun onSuccess(result: List<V2TIMFriendInfo>) {
                         continuation.resume(
-                            value = convertFriend(friendInfoList = result.filter { !it.userID.isNullOrBlank() })
+                            value = convertFriend(
+                                friendInfoList = result.filter {
+                                    !it.userID.isNullOrBlank()
+                                }
+                            )
                         )
                     }
 
@@ -113,30 +117,8 @@ class FriendshipProvider : IFriendshipProvider {
             val requiresOpt = V2TIMFriendAddApplication(formatUserId)
             requiresOpt.setAddType(V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH)
             V2TIMManager.getFriendshipManager().addFriend(
-                requiresOpt,
-                object : V2TIMValueCallback<V2TIMFriendOperationResult> {
+                requiresOpt, object : V2TIMValueCallback<V2TIMFriendOperationResult> {
                     override fun onSuccess(t: V2TIMFriendOperationResult) {
-                        continuation.resume(value = ActionResult.Success)
-                    }
-
-                    override fun onError(code: Int, desc: String?) {
-                        continuation.resume(
-                            value = ActionResult.Failed(
-                                code = code, reason = desc ?: ""
-                            )
-                        )
-                    }
-                }
-            )
-        }
-    }
-
-    override suspend fun deleteFriend(friendId: String): ActionResult {
-        return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getFriendshipManager().deleteFromFriendList(listOf(friendId),
-                V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH,
-                object : V2TIMValueCallback<List<V2TIMFriendOperationResult>> {
-                    override fun onSuccess(t: List<V2TIMFriendOperationResult>) {
                         continuation.resume(value = ActionResult.Success)
                     }
 
@@ -148,7 +130,29 @@ class FriendshipProvider : IFriendshipProvider {
                             )
                         )
                     }
-                })
+                }
+            )
+        }
+    }
+
+    override suspend fun deleteFriend(friendId: String): ActionResult {
+        return suspendCancellableCoroutine { continuation ->
+            V2TIMManager.getFriendshipManager()
+                .deleteFromFriendList(listOf(friendId), V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH,
+                    object : V2TIMValueCallback<List<V2TIMFriendOperationResult>> {
+                        override fun onSuccess(t: List<V2TIMFriendOperationResult>) {
+                            continuation.resume(value = ActionResult.Success)
+                        }
+
+                        override fun onError(code: Int, desc: String?) {
+                            continuation.resume(
+                                value = ActionResult.Failed(
+                                    code = code,
+                                    reason = desc ?: ""
+                                )
+                            )
+                        }
+                    })
         }
     }
 
@@ -157,9 +161,8 @@ class FriendshipProvider : IFriendshipProvider {
             ?: return ActionResult.Failed(reason = "设置失败")
         friendProfile.friendRemark = remark.replace("\\s", "")
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getFriendshipManager().setFriendInfo(
-                friendProfile,
-                object : V2TIMCallback {
+            V2TIMManager.getFriendshipManager()
+                .setFriendInfo(friendProfile, object : V2TIMCallback {
                     override fun onSuccess() {
                         continuation.resume(value = ActionResult.Success)
                     }

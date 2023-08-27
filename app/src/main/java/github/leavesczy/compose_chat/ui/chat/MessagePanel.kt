@@ -109,7 +109,7 @@ private fun MessageItems(message: Message, showPartyName: Boolean, chatPageActio
     }
 }
 
-private val avatarSize = 44.dp
+private val avatarSize = 42.dp
 private val itemHorizontalPadding = 14.dp
 private val itemVerticalPadding = 10.dp
 private val textMessageWidthAtMost = 230.dp
@@ -132,7 +132,7 @@ private fun SelfMessageContainer(
                 vertical = itemVerticalPadding
             )
     ) {
-        val (avatarRef, showNameRef, messageRef, messageStateRef) = createRefs()
+        val (avatarRef, messageRef, messageStateRef) = createRefs()
         CoilImage(
             modifier = Modifier
                 .constrainAs(ref = avatarRef) {
@@ -146,23 +146,14 @@ private fun SelfMessageContainer(
                 }),
             data = message.messageDetail.sender.faceUrl
         )
-        Text(
-            modifier = Modifier.constrainAs(ref = showNameRef) {
-                top.linkTo(anchor = avatarRef.top)
-                end.linkTo(anchor = avatarRef.start, margin = textMessageHorizontalPadding)
-            },
-            text = "",
-            fontSize = 16.sp,
-            textAlign = TextAlign.End
-        )
         Box(
             modifier = Modifier
                 .constrainAs(ref = messageRef) {
                     top.linkTo(
-                        anchor = showNameRef.bottom,
-                        margin = textMessageSenderNameVerticalPadding
+                        anchor = avatarRef.top,
+                        margin = 12.dp
                     )
-                    end.linkTo(anchor = showNameRef.end)
+                    end.linkTo(anchor = avatarRef.start, margin = textMessageHorizontalPadding)
                     width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
                 }
                 .clip(shape = messageShape)
@@ -312,7 +303,7 @@ private fun ImageMessage(message: ImageMessage) {
             width = message.widgetWidthDp.dp,
             height = message.widgetHeightDp.dp
         ),
-        data = message.preview.url
+        data = message.previewImage.url
     )
 }
 

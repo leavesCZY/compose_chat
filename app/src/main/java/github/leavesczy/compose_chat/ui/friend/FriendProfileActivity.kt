@@ -62,7 +62,7 @@ class FriendProfileActivity : BaseActivity() {
 
     }
 
-    private val friendId by lazy {
+    private val friendId by lazy(mode = LazyThreadSafetyMode.NONE) {
         intent.getStringExtra(keyFriendId) ?: ""
     }
 

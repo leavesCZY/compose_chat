@@ -24,6 +24,7 @@ import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
 import github.leavesczy.compose_chat.utils.randomFaceUrl
+import github.leavesczy.matisse.DefaultMediaFilter
 import github.leavesczy.matisse.Matisse
 import github.leavesczy.matisse.MatisseContract
 import github.leavesczy.matisse.MediaStoreCaptureStrategy
@@ -110,7 +111,9 @@ private fun ProfileUpdatePage(profileUpdateViewModel: ProfileUpdateViewModel) {
                         CommonButton(text = "本地图片") {
                             val matisse = Matisse(
                                 maxSelectable = 1,
-                                mimeTypes = MimeType.ofImage(hasGif = true),
+                                mediaFilter = DefaultMediaFilter(
+                                    supportedMimeTypes = MimeType.ofImage(hasGif = true)
+                                ),
                                 imageEngine = CoilImageEngine(),
                                 captureStrategy = MediaStoreCaptureStrategy()
                             )

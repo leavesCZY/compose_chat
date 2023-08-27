@@ -36,6 +36,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.ui.chat.logic.ChatViewModel
 import github.leavesczy.compose_chat.ui.widgets.CoilImageEngine
+import github.leavesczy.matisse.DefaultMediaFilter
 import github.leavesczy.matisse.Matisse
 import github.leavesczy.matisse.MatisseCapture
 import github.leavesczy.matisse.MatisseCaptureContract
@@ -130,10 +131,12 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
             textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
             cursorBrush = SolidColor(value = MaterialTheme.colorScheme.primary),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-            keyboardActions = KeyboardActions(onSend = {
-                focusRequester.requestFocus()
-                chatViewModel.sendTextMessage()
-            })
+            keyboardActions = KeyboardActions(
+                onSend = {
+                    focusRequester.requestFocus()
+                    chatViewModel.sendTextMessage()
+                }
+            )
         )
 
         InputSelector(
@@ -190,7 +193,9 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                                         chatViewModel.onInputSelectorChanged(newSelector = InputSelector.NONE)
                                         val matisse = Matisse(
                                             maxSelectable = 1,
-                                            mimeTypes = MimeType.ofImage(hasGif = true),
+                                            mediaFilter = DefaultMediaFilter(
+                                                supportedMimeTypes = MimeType.ofImage(hasGif = true)
+                                            ),
                                             imageEngine = CoilImageEngine(),
                                             captureStrategy = MediaStoreCaptureStrategy()
                                         )
@@ -204,7 +209,8 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                                             captureStrategy = MediaStoreCaptureStrategy()
                                         )
                                         takePictureLauncher.launch(matisseCapture)
-                                    })
+                                    }
+                                )
                             }
                         }
 

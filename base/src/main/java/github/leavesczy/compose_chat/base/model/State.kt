@@ -7,7 +7,7 @@ package github.leavesczy.compose_chat.base.model
  */
 sealed class ActionResult {
 
-    object Success : ActionResult()
+    data object Success : ActionResult()
 
     data class Failed(val code: Int, val reason: String) : ActionResult() {
 

@@ -2,6 +2,7 @@ package github.leavesczy.compose_chat.provider
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Build
 import coil.Coil
 import coil.ImageLoader
@@ -22,6 +23,7 @@ object ImageLoaderProvider {
             .Builder(context = application)
             .crossfade(enable = false)
             .allowHardware(enable = true)
+            .bitmapConfig(bitmapConfig = Bitmap.Config.RGB_565)
             .components {
                 if (Build.VERSION.SDK_INT >= 28) {
                     add(ImageDecoderDecoder.Factory())
@@ -49,14 +51,16 @@ object ImageLoaderProvider {
     }
 
     @OptIn(ExperimentalCoilApi::class)
-    private fun getCachedFile(context: Context, imageUrl: String): File? {
-        val snapshot = context.imageLoader.diskCache?.openSnapshot(imageUrl)
-        val file = snapshot?.data?.toFile()
-        snapshot?.close()
-        if (file != null && file.exists()) {
-            return file
+    private suspend fun getCachedFile(context: Context, imageUrl: String): File? {
+        return withContext(context = Dispatchers.IO) {
+            val snapshot = context.imageLoader.diskCache?.openSnapshot(imageUrl)
+            val file = snapshot?.data?.toFile()
+            snapshot?.close()
+            if (file != null && file.exists()) {
+                return@withContext file
+            }
+            return@withContext null
         }
-        return null
     }
 
 }

@@ -14,7 +14,7 @@ sealed class Conversation(
     val isPinned: Boolean
 ) {
 
-    val formatMsg by lazy {
+    val formatMsg by lazy(mode = LazyThreadSafetyMode.NONE) {
         val messageDetail = lastMessage.messageDetail
         val prefix =
             if (this is GroupConversation && lastMessage !is SystemMessage && !messageDetail.isSelfMessage) {

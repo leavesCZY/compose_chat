@@ -9,9 +9,9 @@ plugins {
 }
 
 dependencies {
-    val agpVersion = "8.1.0"
+    val agpVersion = "8.1.1"
     val kotlinVersion = "1.9.0"
-    val traceVersion = "0.0.2"
+    val traceVersion = "0.0.3"
     implementation("com.android.tools.build:gradle-api:${agpVersion}")
     implementation("com.android.tools.build:gradle:${agpVersion}")
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")

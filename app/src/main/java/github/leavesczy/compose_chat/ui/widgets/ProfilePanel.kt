@@ -41,7 +41,7 @@ fun ProfilePanel(
                     linkTo(start = parent.start, end = parent.end)
                     top.linkTo(anchor = parent.top)
                 }
-                .aspectRatio(ratio = 5f / 4f)
+                .aspectRatio(ratio = 5f / 4.2f)
                 .zIndex(zIndex = -100f)
                 .scrim(color = Color(0x33000000)),
             data = avatarUrl
@@ -55,7 +55,7 @@ fun ProfilePanel(
                 .size(size = 100.dp)
                 .clickableNoRipple {
                     if (avatarUrl.isNotBlank()) {
-                        PreviewImageActivity.navTo(context = context, imagePath = avatarUrl)
+                        PreviewImageActivity.navTo(context = context, imageUrl = avatarUrl)
                     }
                 },
             data = avatarUrl

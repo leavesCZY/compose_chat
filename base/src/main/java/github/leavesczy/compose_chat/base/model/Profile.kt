@@ -47,9 +47,8 @@ class GroupMemberProfile(
     val joinTime: Long
 ) {
 
-    val joinTimeFormat = TimeUtil.formatTime(
-        time = joinTime * 1000, format = TimeUtil.YYYY_MM_DD_HH_MM_SS
-    )
+    val joinTimeFormat =
+        TimeUtil.formatTime(time = joinTime * 1000, format = TimeUtil.YYYY_MM_DD_HH_MM_SS)
 
 }
 
@@ -61,19 +60,6 @@ class GroupProfile(
     val createTime: Long,
     val memberCount: Int
 ) {
-
-    companion object {
-
-        val Empty = GroupProfile(
-            id = "",
-            faceUrl = "",
-            name = "",
-            introduction = "",
-            createTime = 0L,
-            memberCount = 0
-        )
-
-    }
 
     val createTimeFormat =
         TimeUtil.formatTime(time = createTime * 1000, format = TimeUtil.YYYY_MM_DD_HH_MM_SS)

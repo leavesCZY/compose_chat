@@ -13,7 +13,7 @@ object ToastProvider {
 
     private lateinit var context: Application
 
-    private val handler by lazy {
+    private val handler by lazy(mode = LazyThreadSafetyMode.NONE) {
         Handler(Looper.getMainLooper())
     }
 
@@ -43,8 +43,8 @@ object ToastProvider {
     @SuppressLint("DiscouragedPrivateApi")
     private fun hookToastIfNeed(toast: Toast) {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1) {
-            val cToast = Toast::class.java
             try {
+                val cToast = Toast::class.java
                 val fTn = cToast.getDeclaredField("mTN")
                 fTn.isAccessible = true
                 val oTn = fTn.get(toast)

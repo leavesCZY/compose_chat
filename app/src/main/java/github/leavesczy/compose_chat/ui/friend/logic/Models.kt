@@ -1,5 +1,6 @@
 package github.leavesczy.compose_chat.ui.friend.logic
 
+import androidx.compose.runtime.Stable
 import github.leavesczy.compose_chat.base.model.PersonProfile
 
 /**
@@ -7,6 +8,7 @@ import github.leavesczy.compose_chat.base.model.PersonProfile
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
+@Stable
 data class FriendProfilePageViewState(
     val personProfile: PersonProfile,
     val itIsMe: Boolean,
@@ -15,6 +17,7 @@ data class FriendProfilePageViewState(
     val addFriend: () -> Unit
 )
 
+@Stable
 data class SetFriendRemarkDialogViewState(
     val visible: Boolean,
     val personProfile: PersonProfile,

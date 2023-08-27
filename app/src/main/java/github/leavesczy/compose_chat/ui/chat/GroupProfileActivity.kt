@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -85,7 +86,7 @@ class GroupProfileActivity : BaseActivity() {
 
     }
 
-    private val groupId by lazy {
+    private val groupId by lazy(mode = LazyThreadSafetyMode.NONE) {
         intent.getStringExtra(keyGroupId) ?: ""
     }
 
@@ -144,10 +145,10 @@ private fun GroupProfilePage(
 ) {
     val density = LocalDensity.current.density
     val headerMaxOffsetPx by remember {
-        mutableStateOf(value = density * (headerPicHeightDp.value))
+        mutableFloatStateOf(value = density * (headerPicHeightDp.value))
     }
     var topBarAlpha by remember {
-        mutableStateOf(value = 0f)
+        mutableFloatStateOf(value = 0f)
     }
     val listState = rememberLazyListState()
     LaunchedEffect(key1 = "") {

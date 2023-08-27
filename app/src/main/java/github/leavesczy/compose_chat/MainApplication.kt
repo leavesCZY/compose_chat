@@ -13,7 +13,7 @@ import github.leavesczy.compose_chat.ui.logic.ComposeChat
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-class ChatApplication : Application() {
+class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()

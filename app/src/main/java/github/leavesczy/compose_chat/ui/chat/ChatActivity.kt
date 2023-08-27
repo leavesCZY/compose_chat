@@ -52,7 +52,7 @@ class ChatActivity : BaseActivity() {
     }
 
     @Suppress("DEPRECATION")
-    private val chat: Chat by lazy {
+    private val chat: Chat by lazy(mode = LazyThreadSafetyMode.NONE) {
         intent.getParcelableExtra(keyChat)!!
     }
 
@@ -70,11 +70,16 @@ class ChatActivity : BaseActivity() {
         onClickMessage = {
             when (it) {
                 is ImageMessage -> {
-                    val imagePath = it.previewUrl
-                    if (imagePath.isBlank()) {
-                        showToast(msg = "图片路径为空")
-                    } else {
-                        PreviewImageActivity.navTo(context = this, imagePath = imagePath)
+                    val allImageUrl = chatViewModel.filterAllImageMessageUrl()
+                    val initialImageUrl = it.previewImageUrl
+                    if (allImageUrl.isNotEmpty() && initialImageUrl.isNotBlank()) {
+                        val initialPage = allImageUrl.indexOf(element = initialImageUrl)
+                            .coerceAtLeast(minimumValue = 0)
+                        PreviewImageActivity.navTo(
+                            context = this,
+                            imageUrlList = allImageUrl,
+                            initialPage = initialPage
+                        )
                     }
                 }
 
@@ -108,7 +113,8 @@ class ChatActivity : BaseActivity() {
             }
         ) {
             ChatPage(
-                chatViewModel = chatViewModel, chatPageAction = chatPageAction
+                chatViewModel = chatViewModel,
+                chatPageAction = chatPageAction
             )
         }
     }

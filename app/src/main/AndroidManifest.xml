@@ -14,7 +14,7 @@
         android:maxSdkVersion="28" />
 
     <application
-        android:name=".ChatApplication"
+        android:name=".MainApplication"
         android:icon="@drawable/icon_logo"
         android:label="@string/app_name"
         android:roundIcon="@drawable/icon_logo_round"

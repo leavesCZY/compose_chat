@@ -285,6 +285,12 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
         }
     }
 
+    fun filterAllImageMessageUrl(): List<String> {
+        return allMessage.mapNotNull {
+            (it as? ImageMessage)?.previewImageUrl
+        }.reversed()
+    }
+
     private fun markMessageAsRead() {
         ComposeChat.conversationProvider.cleanConversationUnreadMessageCount(chat = chat)
     }

@@ -2,7 +2,9 @@ package github.leavesczy.compose_chat.ui.friendship
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,9 +32,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ChainStyle
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import github.leavesczy.compose_chat.base.model.GroupProfile
 import github.leavesczy.compose_chat.base.model.PersonProfile
@@ -90,9 +89,7 @@ private fun FriendshipContentPage(
                     itemContent = {
                         GroupItem(
                             groupProfile = it,
-                            onClick = {
-                                pageViewState.onClickGroupItem(it)
-                            }
+                            onClick = pageViewState.onClickGroupItem
                         )
                     }
                 )
@@ -107,9 +104,7 @@ private fun FriendshipContentPage(
                     itemContent = {
                         FriendItem(
                             personProfile = it,
-                            onClick = {
-                                pageViewState.onClickFriendItem(it)
-                            }
+                            onClick = pageViewState.onClickFriendItem
                         )
                     }
                 )
@@ -118,10 +113,12 @@ private fun FriendshipContentPage(
         FloatingActionButton(
             modifier = Modifier
                 .align(alignment = Alignment.BottomEnd)
-                .padding(bottom = 30.dp, end = 30.dp),
+                .padding(bottom = 30.dp, end = 30.dp)
+                .size(size = 48.dp),
             containerColor = MaterialTheme.colorScheme.primary,
             content = {
                 Icon(
+                    modifier = Modifier,
                     imageVector = Icons.Filled.Favorite,
                     tint = Color.White,
                     contentDescription = null,
@@ -135,50 +132,42 @@ private fun FriendshipContentPage(
 @Composable
 private fun LazyItemScope.GroupItem(
     groupProfile: GroupProfile,
-    onClick: () -> Unit
+    onClick: (GroupProfile) -> Unit
 ) {
-    ConstraintLayout(
+    Column(
         modifier = Modifier
             .animateItemPlacement()
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .clickable(onClick = {
+                onClick(groupProfile)
+            })
+            .padding(horizontal = 14.dp)
     ) {
-        val (avatarRef, showNameRef, dividerRef) = createRefs()
-        CoilImage(
+        Row(
             modifier = Modifier
-                .constrainAs(ref = avatarRef) {
-                    start.linkTo(anchor = parent.start)
-                    linkTo(top = parent.top, bottom = parent.bottom)
-                }
-                .padding(start = 14.dp, top = 8.dp, bottom = 8.dp)
-                .size(size = 50.dp)
-                .clip(shape = RoundedCornerShape(size = 6.dp)),
-            data = groupProfile.faceUrl
-        )
-        Text(
-            modifier = Modifier
-                .constrainAs(ref = showNameRef) {
-                    linkTo(
-                        start = avatarRef.end,
-                        end = parent.end,
-                        startMargin = 12.dp,
-                        endMargin = 12.dp
-                    )
-                    linkTo(top = parent.top, bottom = parent.bottom)
-                    width = Dimension.fillToConstraints
-                },
-            text = groupProfile.name,
-            fontSize = 17.sp,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CoilImage(
+                modifier = Modifier
+                    .size(size = 50.dp)
+                    .clip(shape = RoundedCornerShape(size = 6.dp)),
+                data = groupProfile.faceUrl
+            )
+            Text(
+                modifier = Modifier
+                    .weight(weight = 1f)
+                    .padding(start = 10.dp),
+                text = groupProfile.name,
+                fontSize = 17.sp,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
+        }
         Divider(
             modifier = Modifier
-                .constrainAs(ref = dividerRef) {
-                    linkTo(start = avatarRef.end, end = parent.end)
-                    bottom.linkTo(anchor = parent.bottom)
-                    width = Dimension.fillToConstraints
-                },
+                .padding(start = 60.dp, top = 8.dp),
             thickness = 0.2.dp
         )
     }
@@ -187,73 +176,53 @@ private fun LazyItemScope.GroupItem(
 @Composable
 private fun LazyItemScope.FriendItem(
     personProfile: PersonProfile,
-    onClick: () -> Unit
+    onClick: (PersonProfile) -> Unit
 ) {
-    ConstraintLayout(
+    Column(
         modifier = Modifier
             .animateItemPlacement()
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .clickable(onClick = {
+                onClick(personProfile)
+            })
+            .padding(horizontal = 14.dp)
     ) {
-        val (avatarRef, showNameRef, signatureRef, dividerRef) = createRefs()
-        val verticalChain = createVerticalChain(
-            showNameRef, signatureRef, chainStyle = ChainStyle.Packed
-        )
-        constrain(ref = verticalChain) {
-            top.linkTo(anchor = parent.top)
-            bottom.linkTo(anchor = parent.bottom)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CoilImage(
+                modifier = Modifier
+                    .size(size = 50.dp)
+                    .clip(shape = RoundedCornerShape(size = 6.dp)),
+                data = personProfile.faceUrl
+            )
+            Column(
+                modifier = Modifier
+                    .weight(weight = 1f)
+                    .padding(start = 10.dp)
+            ) {
+                Text(
+                    modifier = Modifier,
+                    text = personProfile.showName,
+                    fontSize = 17.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
+                )
+                Text(
+                    modifier = Modifier,
+                    text = personProfile.signature,
+                    fontSize = 14.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
+                )
+            }
         }
-        CoilImage(
-            modifier = Modifier
-                .constrainAs(ref = avatarRef) {
-                    start.linkTo(anchor = parent.start)
-                    linkTo(top = parent.top, bottom = parent.bottom)
-                }
-                .padding(start = 14.dp, top = 8.dp, bottom = 8.dp)
-                .size(size = 50.dp)
-                .clip(shape = RoundedCornerShape(size = 6.dp)),
-            data = personProfile.faceUrl
-        )
-        Text(
-            modifier = Modifier
-                .constrainAs(ref = showNameRef) {
-                    linkTo(
-                        start = avatarRef.end,
-                        end = parent.end,
-                        startMargin = 12.dp,
-                        endMargin = 12.dp
-                    )
-                    width = Dimension.fillToConstraints
-                }
-                .padding(bottom = 1.dp),
-            text = personProfile.showName,
-            fontSize = 17.sp,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
-        Text(
-            modifier = Modifier
-                .constrainAs(ref = signatureRef) {
-                    linkTo(
-                        start = showNameRef.start,
-                        end = parent.end,
-                        endMargin = 12.dp
-                    )
-                    width = Dimension.fillToConstraints
-                }
-                .padding(bottom = 1.dp),
-            text = personProfile.signature,
-            fontSize = 14.sp,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
         Divider(
             modifier = Modifier
-                .constrainAs(ref = dividerRef) {
-                    linkTo(start = avatarRef.end, end = parent.end)
-                    bottom.linkTo(anchor = parent.bottom)
-                    width = Dimension.fillToConstraints
-                },
+                .padding(start = 60.dp, top = 8.dp),
             thickness = 0.2.dp
         )
     }

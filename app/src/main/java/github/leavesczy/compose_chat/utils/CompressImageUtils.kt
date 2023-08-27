@@ -4,14 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
-import android.os.Environment
 import github.leavesczy.matisse.MediaResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
-import java.util.*
 
 /**
  * @Author: leavesCZY
@@ -22,42 +19,62 @@ object CompressImageUtils {
 
     private const val IMAGE_MAX_SIZE = (0.8 * 1024 * 1024).toInt()
 
-    private const val GIF_MIME = "image/gif"
+    private const val jpegMime = "image/jpeg"
 
-    private const val JPEG = "jpeg"
+    private const val webpMime = "image/webp"
 
-    @Suppress("SameParameterValue")
+    private const val gifMime = "image/gif"
+
+    private const val jpeg = "jpeg"
+
     suspend fun compressImage(context: Context, mediaResource: MediaResource): File? {
         return withContext(context = Dispatchers.IO) {
             try {
                 val imageUri = mediaResource.uri
                 val imagePath = mediaResource.path
-                val extension = imagePath.substringAfterLast('.', "")
-                val isGif = mediaResource.mimeType == GIF_MIME
+                val imageMimeType = FileUtils.getMimeType(filePath = imagePath) ?: jpegMime
+                val imageExtension =
+                    FileUtils.getExtensionFromMimeType(mimeType = imageMimeType) ?: jpeg
+                val isAnimatedImage = imageMimeType == gifMime || imageMimeType == webpMime
+                val result: File?
                 val inputStream = context.contentResolver.openInputStream(imageUri)
-                if (inputStream != null) {
+                if (inputStream == null) {
+                    result = null
+                } else {
                     val byteArray = inputStream.readBytes()
                     inputStream.close()
-                    if (isGif || byteArray.size <= IMAGE_MAX_SIZE) {
-                        if (isAndroidQ()) {
-                            val imageTempFile =
-                                createTempFile(context = context, extension = extension)
-                            val imageTempFileOutputStream = FileOutputStream(imageTempFile)
-                            imageTempFileOutputStream.write(byteArray)
-                            imageTempFileOutputStream.close()
-                            return@withContext imageTempFile
+                    if (isAnimatedImage || byteArray.size <= IMAGE_MAX_SIZE) {
+                        result = if (isAndroidQ()) {
+                            val tempFile =
+                                FileUtils.createTempFile(
+                                    context = context,
+                                    extension = imageExtension
+                                )
+                            tempFile.writeBytes(byteArray)
+                            FileUtils.copyExifOrientation(
+                                sourceImagePath = imagePath,
+                                targetImagePath = tempFile.absolutePath
+                            )
+                            tempFile
+                        } else {
+                            File(imagePath)
                         }
-                        return@withContext File(imagePath)
+                    } else {
+                        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                        val tempFile = FileUtils.createTempFile(context = context, extension = jpeg)
+                        compressImage(
+                            bitmap = bitmap,
+                            maxSize = IMAGE_MAX_SIZE,
+                            targetFile = tempFile
+                        )
+                        FileUtils.copyExifOrientation(
+                            sourceImagePath = imagePath,
+                            targetImagePath = tempFile.absolutePath
+                        )
+                        result = tempFile
                     }
-                    val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-                    val imageTempFile = createTempFile(context = context, extension = JPEG)
-                    compressImage(
-                        bitmap = bitmap,
-                        maxSize = IMAGE_MAX_SIZE,
-                        targetFile = imageTempFile
-                    )
-                    return@withContext imageTempFile
                 }
+                return@withContext result
             } catch (e: Throwable) {
                 e.printStackTrace()
             }
@@ -65,36 +82,21 @@ object CompressImageUtils {
         }
     }
 
-    @Suppress("SameParameterValue")
-    private fun compressImage(bitmap: Bitmap, maxSize: Int, targetFile: File) {
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        var quality = 100
-        while (true) {
-            byteArrayOutputStream.reset()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream)
-            if (byteArrayOutputStream.size() > maxSize) {
-                quality -= 10
-            } else {
-                FileOutputStream(targetFile).apply {
-                    write(byteArrayOutputStream.toByteArray())
-                    close()
+    private suspend fun compressImage(bitmap: Bitmap, maxSize: Int, targetFile: File) {
+        withContext(context = Dispatchers.IO) {
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            var quality = 100
+            while (true) {
+                byteArrayOutputStream.reset()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream)
+                if (byteArrayOutputStream.size() > maxSize) {
+                    quality -= 10
+                } else {
+                    targetFile.writeBytes(byteArrayOutputStream.toByteArray())
+                    break
                 }
-                return
             }
         }
-    }
-
-    private fun createTempFile(context: Context, extension: String): File {
-        val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val file = File(storageDir, createImageName(extension = extension))
-        file.createNewFile()
-        return file
-    }
-
-    private fun createImageName(extension: String): String {
-        val uuid = UUID.randomUUID().toString()
-        val randomName = uuid.substring(0, 6)
-        return "compose_chat_$randomName.$extension"
     }
 
     private fun isAndroidQ(): Boolean {

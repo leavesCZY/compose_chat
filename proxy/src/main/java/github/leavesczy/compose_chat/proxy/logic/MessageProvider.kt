@@ -108,17 +108,13 @@ class MessageProvider : IMessageProvider {
     }
 
     override suspend fun sendImage(chat: Chat, imagePath: String): Channel<Message> {
-        return withContext(context = Dispatchers.IO) {
+        return withContext(context = Dispatchers.Default) {
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
-            BitmapFactory.decodeFile(
-                imagePath, options
-            )
+            BitmapFactory.decodeFile(imagePath, options)
             val localTempMessage = ImageMessage(
                 detail = generatePreSendMessageDetail(),
-                original = ImageElement(
-                    options.outWidth, options.outHeight, imagePath
-                ),
+                original = ImageElement(options.outWidth, options.outHeight, imagePath),
                 large = null,
                 thumb = null
             )
@@ -213,7 +209,7 @@ class MessageProvider : IMessageProvider {
                 object : V2TIMSendCallback<V2TIMMessage> {
                     override fun onSuccess(message: V2TIMMessage) {
                         val res = Converters.convertMessage(message)
-                        continuation.resume((res as? ImageMessage)?.previewUrl ?: "")
+                        continuation.resume((res as? ImageMessage)?.previewImageUrl ?: "")
                     }
 
                     override fun onError(code: Int, desc: String?) {

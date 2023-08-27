@@ -9,11 +9,11 @@ import github.leavesczy.compose_chat.base.utils.TimeUtil
  */
 sealed class MessageState {
 
-    object Sending : MessageState()
+    data object Sending : MessageState()
 
     class SendFailed(val reason: String) : MessageState()
 
-    object Completed : MessageState()
+    data object Completed : MessageState()
 
 }
 
@@ -25,12 +25,12 @@ data class MessageDetail(
     val isSelfMessage: Boolean
 ) {
 
-    val conversationTime by lazy {
-        TimeUtil.toConversationTime(timestamp)
+    val conversationTime by lazy(mode = LazyThreadSafetyMode.NONE) {
+        TimeUtil.toConversationTime(timeStamp = timestamp)
     }
 
-    val chatTime by lazy {
-        TimeUtil.toChatTime(timestamp)
+    val chatTime by lazy(mode = LazyThreadSafetyMode.NONE) {
+        TimeUtil.toChatTime(timeStamp = timestamp)
     }
 
 }
@@ -48,7 +48,8 @@ data class TextMessage(
     private val text: String
 ) : Message(messageDetail = detail) {
 
-    override val formatMessage = text
+    override val formatMessage: String
+        get() = text
 
 }
 
@@ -57,7 +58,8 @@ data class SystemMessage(
     private val tips: String
 ) : Message(messageDetail = detail) {
 
-    override val formatMessage = tips
+    override val formatMessage: String
+        get() = tips
 
 }
 
@@ -68,21 +70,22 @@ data class ImageMessage(
     private val thumb: ImageElement?,
 ) : Message(messageDetail = detail) {
 
-    val preview = large ?: original
+    override val formatMessage: String
+        get() = "[图片]"
 
-    val previewUrl = preview.url
+    val previewImage: ImageElement
+        get() = large ?: original
 
-    override val formatMessage = "[图片]"
-
-    private val maxImageRatio = 1.9f
+    val previewImageUrl: String
+        get() = previewImage.url
 
     val widgetWidthDp = 190f
 
-    val widgetHeightDp = if (preview.width <= 0f || preview.height <= 0f) {
+    val widgetHeightDp = if (previewImage.width <= 0f || previewImage.height <= 0f) {
         widgetWidthDp
     } else {
         widgetWidthDp * (minOf(
-            maxImageRatio, 1.0f * preview.height / preview.width
+            1.9f, 1.0f * previewImage.height / previewImage.width
         ))
     }
 
@@ -104,7 +107,8 @@ class TimeMessage(targetMessage: Message) : Message(
     )
 ) {
 
-    override val formatMessage = messageDetail.chatTime
+    override val formatMessage: String
+        get() = messageDetail.chatTime
 
 }
 

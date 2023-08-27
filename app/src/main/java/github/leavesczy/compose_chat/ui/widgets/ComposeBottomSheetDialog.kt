@@ -21,7 +21,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -98,13 +98,14 @@ private fun BoxScope.InnerDialog(
     content: @Composable () -> Unit
 ) {
     var offsetY by remember {
-        mutableStateOf(value = 0f)
+        mutableFloatStateOf(value = 0f)
     }
     val offsetYAnimate by animateFloatAsState(
-        targetValue = offsetY
+        targetValue = offsetY,
+        label = ""
     )
     var bottomSheetHeight by remember {
-        mutableStateOf(value = 0f)
+        mutableFloatStateOf(value = 0f)
     }
     AnimatedVisibility(
         modifier = Modifier

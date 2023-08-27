@@ -18,13 +18,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -56,7 +55,7 @@ fun CoilImage(
     data: Any,
     contentScale: ContentScale = ContentScale.Crop,
     filterQuality: FilterQuality = FilterQuality.None,
-    backgroundColor: Color = Color.Gray.copy(alpha = 0.4f)
+    backgroundColor: Color = Color(0x66888888)
 ) {
     AsyncImage(
         modifier = modifier
@@ -85,19 +84,19 @@ fun CircleBorderImage(
 
 @Composable
 fun BezierImage(modifier: Modifier, data: Any) {
-    val animateValue by rememberInfiniteTransition().animateFloat(
+    val animateFloat by rememberInfiniteTransition(label = "").animateFloat(
         initialValue = 0f,
-        targetValue = 1.04f,
+        targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 900, easing = FastOutSlowInEasing),
+            animation = tween(durationMillis = 600, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse,
-        )
+        ),
+        label = ""
     )
     CoilImage(
         modifier = Modifier
-            .scale(scale = (animateValue + 1f) * 1.1f)
-            .clip(shape = BezierShape(animateValue = animateValue))
-            .rotate(degrees = animateValue * 13f)
+            .scale(scale = 1.0f + animateFloat * 0.1f)
+            .clip(shape = BezierShape(animateValue = animateFloat))
             .then(other = modifier),
         data = data
     )
@@ -128,12 +127,11 @@ private class BezierShape(private val animateValue: Float) : Shape {
 @Composable
 fun BouncyImage(modifier: Modifier, data: Any) {
     val coroutineScope = rememberCoroutineScope()
-
     var offsetX by remember {
-        mutableStateOf(value = 0f)
+        mutableFloatStateOf(value = 0f)
     }
     var offsetY by remember {
-        mutableStateOf(value = 0f)
+        mutableFloatStateOf(value = 0f)
     }
 
     fun launchDragAnimate() {
