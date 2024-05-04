@@ -89,10 +89,6 @@ class LoginActivity : BaseActivity() {
 
 @Composable
 private fun LoginPage(viewState: LoginPageViewState, onClickLoginButton: (String) -> Unit) {
-    val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
-    BackHandler(enabled = viewState.loading) {
-
-    }
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -101,11 +97,15 @@ private fun LoginPage(viewState: LoginPageViewState, onClickLoginButton: (String
                 .fillMaxSize()
                 .padding(paddingValues = innerPadding),
         ) {
+            val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
+            BackHandler(enabled = viewState.loading.value) {
+
+            }
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (viewState.showPanel) {
+                if (viewState.showPanel.value) {
                     Text(
                         text = stringResource(id = R.string.app_name),
                         modifier = Modifier
@@ -117,7 +117,7 @@ private fun LoginPage(viewState: LoginPageViewState, onClickLoginButton: (String
                         textAlign = TextAlign.Center
                     )
                     var userId by remember {
-                        val lastLoginUserId = viewState.lastLoginUserId
+                        val lastLoginUserId by viewState.lastLoginUserId
                         mutableStateOf(
                             value = TextFieldValue(
                                 text = lastLoginUserId,
@@ -174,7 +174,7 @@ private fun LoginPage(viewState: LoginPageViewState, onClickLoginButton: (String
                     )
                 }
             }
-            LoadingDialog(visible = viewState.loading)
+            LoadingDialog(visible = viewState.loading.value)
         }
     }
 }

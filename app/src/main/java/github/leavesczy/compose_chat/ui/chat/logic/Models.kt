@@ -1,11 +1,12 @@
 package github.leavesczy.compose_chat.ui.chat.logic
 
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
-import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.base.model.GroupMemberProfile
-import github.leavesczy.compose_chat.base.model.GroupProfile
-import github.leavesczy.compose_chat.base.model.Message
+import github.leavesczy.compose_chat.base.models.Chat
+import github.leavesczy.compose_chat.base.models.GroupMemberProfile
+import github.leavesczy.compose_chat.base.models.GroupProfile
+import github.leavesczy.compose_chat.base.models.Message
 
 /**
  * @Author: leavesCZY
@@ -16,14 +17,14 @@ import github.leavesczy.compose_chat.base.model.Message
 data class ChatPageViewState(
     val chat: Chat,
     val listState: LazyListState,
-    val topBarTitle: String,
-    val messageList: List<Message>
+    val topBarTitle: MutableState<String>,
+    val messageList: MutableState<List<Message>>
 )
 
 @Stable
 data class LoadMessageViewState(
-    val refreshing: Boolean,
-    val loadFinish: Boolean
+    val refreshing: MutableState<Boolean>,
+    val loadFinish: MutableState<Boolean>
 )
 
 @Stable
@@ -35,8 +36,8 @@ data class ChatPageAction(
 
 @Stable
 data class GroupProfilePageViewState(
-    val groupProfile: GroupProfile,
-    val memberList: List<GroupMemberProfile>
+    val groupProfile: MutableState<GroupProfile?>,
+    val memberList: MutableState<List<GroupMemberProfile>>
 )
 
 @Stable

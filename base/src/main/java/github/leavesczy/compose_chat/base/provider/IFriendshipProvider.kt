@@ -1,8 +1,8 @@
 package github.leavesczy.compose_chat.base.provider
 
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.PersonProfile
-import kotlinx.coroutines.flow.StateFlow
+import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.models.PersonProfile
+import kotlinx.coroutines.flow.SharedFlow
 
 /**
  * @Author: leavesCZY
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
  */
 interface IFriendshipProvider {
 
-    val friendList: StateFlow<List<PersonProfile>>
+    val friendList: SharedFlow<List<PersonProfile>>
 
     fun refreshFriendList()
 
@@ -22,7 +22,5 @@ interface IFriendshipProvider {
     suspend fun addFriend(friendId: String): ActionResult
 
     suspend fun deleteFriend(friendId: String): ActionResult
-
-    suspend fun clear()
 
 }

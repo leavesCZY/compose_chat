@@ -2,15 +2,10 @@ package github.leavesczy.compose_chat.ui.profile.logic
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.provider.ContextProvider
+import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.logic.ComposeChat
-import github.leavesczy.compose_chat.utils.CompressImageUtils
-import github.leavesczy.matisse.MediaResource
 import kotlinx.coroutines.launch
 
 /**
@@ -20,96 +15,53 @@ import kotlinx.coroutines.launch
  */
 class ProfileUpdateViewModel : BaseViewModel() {
 
-    var profileUpdatePageViewStata by mutableStateOf<ProfileUpdatePageViewStata?>(
-        value = null
+    val profileUpdatePageViewStata by mutableStateOf(
+        value = ProfileUpdatePageViewStata(
+            personProfile = mutableStateOf(value = null),
+            onNicknameChanged = ::onNicknameChanged,
+            onSignatureChanged = ::onSignatureChanged,
+            onAvatarUrlChanged = ::onAvatarUrlChanged,
+            confirmUpdate = ::confirmUpdate
+        )
     )
-        private set
 
     init {
         viewModelScope.launch {
             val profile = ComposeChat.accountProvider.getPersonProfile()
-            profileUpdatePageViewStata = if (profile == null) {
-                null
-            } else {
-                ProfileUpdatePageViewStata(personProfile = profile)
-            }
+            profileUpdatePageViewStata.personProfile.value = profile
         }
     }
 
-    fun onNicknameChanged(nickname: String) {
-        val mProfileUpdatePageViewStata = profileUpdatePageViewStata
-        if (mProfileUpdatePageViewStata != null) {
-            profileUpdatePageViewStata = mProfileUpdatePageViewStata.copy(
-                personProfile = mProfileUpdatePageViewStata.personProfile.copy(
-                    nickname = nickname
-                )
-            )
+    private fun onNicknameChanged(nickname: String) {
+        val personProfile = profileUpdatePageViewStata.personProfile.value
+        if (personProfile != null) {
+            profileUpdatePageViewStata.personProfile.value = personProfile.copy(nickname = nickname)
         }
     }
 
-    fun onSignatureChanged(signature: String) {
-        val mProfileUpdatePageViewStata = profileUpdatePageViewStata
-        if (mProfileUpdatePageViewStata != null) {
-            profileUpdatePageViewStata = mProfileUpdatePageViewStata.copy(
-                personProfile = mProfileUpdatePageViewStata.personProfile.copy(
-                    signature = signature
-                )
-            )
+    private fun onSignatureChanged(signature: String) {
+        val personProfile = profileUpdatePageViewStata.personProfile.value
+        if (personProfile != null) {
+            profileUpdatePageViewStata.personProfile.value =
+                personProfile.copy(signature = signature)
         }
     }
 
-    fun onAvatarUrlChanged(imageUrl: String) {
-        val mProfileUpdatePageViewStata = profileUpdatePageViewStata
-        if (mProfileUpdatePageViewStata != null) {
-            profileUpdatePageViewStata = mProfileUpdatePageViewStata.copy(
-                personProfile = mProfileUpdatePageViewStata.personProfile.copy(
-                    faceUrl = imageUrl
-                )
-            )
+    private fun onAvatarUrlChanged(imageUrl: String) {
+        val personProfile = profileUpdatePageViewStata.personProfile.value
+        if (personProfile != null) {
+            profileUpdatePageViewStata.personProfile.value = personProfile.copy(faceUrl = imageUrl)
         }
     }
 
-    fun onAvatarUrlChanged(mediaResource: MediaResource) {
+    private fun confirmUpdate() {
         viewModelScope.launch {
-            showToast(msg = "正在上传图片")
-            val imageFile = CompressImageUtils.compressImage(
-                context = ContextProvider.context,
-                mediaResource = mediaResource
-            )
-            val imagePath = imageFile?.absolutePath
-            val result = if (imagePath.isNullOrBlank()) {
-                null
-            } else {
-                ComposeChat.messageProvider.uploadImage(
-                    chat = Chat.GroupChat(id = ComposeChat.AVChatRoomIdToUploadAvatar),
-                    imagePath = imagePath
-                )
-            }
-            if (result.isNullOrBlank()) {
-                showToast(msg = "图片上传失败")
-            } else {
-                showToast(msg = "图片上传成功")
-                val mProfileUpdatePageViewStata = profileUpdatePageViewStata
-                if (mProfileUpdatePageViewStata != null) {
-                    profileUpdatePageViewStata = mProfileUpdatePageViewStata.copy(
-                        personProfile = mProfileUpdatePageViewStata.personProfile.copy(
-                            faceUrl = result
-                        )
-                    )
-                }
-            }
-        }
-    }
-
-    fun confirmUpdate() {
-        viewModelScope.launch {
-            val mProfileUpdatePageViewStata = profileUpdatePageViewStata
-            if (mProfileUpdatePageViewStata != null) {
-                val profile = mProfileUpdatePageViewStata.personProfile
+            val personProfile = profileUpdatePageViewStata.personProfile.value
+            if (personProfile != null) {
                 val result = ComposeChat.accountProvider.updatePersonProfile(
-                    faceUrl = profile.faceUrl,
-                    nickname = profile.nickname,
-                    signature = profile.signature
+                    faceUrl = personProfile.faceUrl,
+                    nickname = personProfile.nickname,
+                    signature = personProfile.signature
                 )
                 when (result) {
                     is ActionResult.Success -> {

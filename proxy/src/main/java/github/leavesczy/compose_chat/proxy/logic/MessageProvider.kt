@@ -6,17 +6,17 @@ import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMMessage
 import com.tencent.imsdk.v2.V2TIMSendCallback
 import com.tencent.imsdk.v2.V2TIMValueCallback
-import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.base.model.ImageElement
-import github.leavesczy.compose_chat.base.model.ImageMessage
-import github.leavesczy.compose_chat.base.model.LoadMessageResult
-import github.leavesczy.compose_chat.base.model.Message
-import github.leavesczy.compose_chat.base.model.MessageDetail
-import github.leavesczy.compose_chat.base.model.MessageState
-import github.leavesczy.compose_chat.base.model.PersonProfile
-import github.leavesczy.compose_chat.base.model.SystemMessage
-import github.leavesczy.compose_chat.base.model.TextMessage
-import github.leavesczy.compose_chat.base.model.TimeMessage
+import github.leavesczy.compose_chat.base.models.Chat
+import github.leavesczy.compose_chat.base.models.ImageElement
+import github.leavesczy.compose_chat.base.models.ImageMessage
+import github.leavesczy.compose_chat.base.models.LoadMessageResult
+import github.leavesczy.compose_chat.base.models.Message
+import github.leavesczy.compose_chat.base.models.MessageDetail
+import github.leavesczy.compose_chat.base.models.MessageState
+import github.leavesczy.compose_chat.base.models.PersonProfile
+import github.leavesczy.compose_chat.base.models.SystemMessage
+import github.leavesczy.compose_chat.base.models.TextMessage
+import github.leavesczy.compose_chat.base.models.TimeMessage
 import github.leavesczy.compose_chat.base.provider.IMessageProvider
 import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
 import github.leavesczy.compose_chat.proxy.utils.Converters
@@ -40,22 +40,22 @@ class MessageProvider : IMessageProvider {
         mutableMapOf<String, SoftReference<IMessageProvider.MessageListener>>()
 
     init {
-        V2TIMManager.getMessageManager()
-            .addAdvancedMsgListener(
-                object : V2TIMAdvancedMsgListener() {
-                    override fun onRecvNewMessage(msg: V2TIMMessage) {
-                        val partId = msg.groupID ?: msg.userID ?: ""
-                        val messageListener = messageListenerMap[partId]?.get()
-                        if (messageListener != null) {
-                            val message = Converters.convertMessage(msg)
-                            messageListener.onReceiveMessage(
-                                message = message
-                            )
-                        } else {
-                            messageListenerMap.remove(partId)
-                        }
+        V2TIMManager.getMessageManager().addAdvancedMsgListener(
+            object : V2TIMAdvancedMsgListener() {
+                override fun onRecvNewMessage(msg: V2TIMMessage) {
+                    val partId = msg.groupID ?: msg.userID ?: ""
+                    val messageListener = messageListenerMap[partId]?.get()
+                    if (messageListener != null) {
+                        val message = Converters.convertMessage(msg)
+                        messageListener.onReceiveMessage(
+                            message = message
+                        )
+                    } else {
+                        messageListenerMap.remove(partId)
                     }
-                })
+                }
+            }
+        )
     }
 
     override suspend fun getHistoryMessage(chat: Chat, lastMessage: Message?): LoadMessageResult {
@@ -66,7 +66,8 @@ class MessageProvider : IMessageProvider {
                 override fun onSuccess(t: List<V2TIMMessage>) {
                     continuation.resume(
                         value = LoadMessageResult.Success(
-                            messageList = Converters.convertMessage(t), loadFinish = t.size < count
+                            messageList = Converters.convertMessage(t),
+                            loadFinish = t.size < count
                         )
                     )
                 }
@@ -98,7 +99,8 @@ class MessageProvider : IMessageProvider {
     }
 
     override suspend fun sendText(chat: Chat, text: String): Channel<Message> {
-        val localTempMessage = TextMessage(detail = generatePreSendMessageDetail(), text = text)
+        val localTempMessage =
+            TextMessage(messageDetail = generatePreSendMessageDetail(), text = text)
         val createdMessage = V2TIMManager.getMessageManager().createTextMessage(text)
         return sendMessage(
             chat = chat,
@@ -113,7 +115,7 @@ class MessageProvider : IMessageProvider {
             options.inJustDecodeBounds = true
             BitmapFactory.decodeFile(imagePath, options)
             val localTempMessage = ImageMessage(
-                detail = generatePreSendMessageDetail(),
+                messageDetail = generatePreSendMessageDetail(),
                 original = ImageElement(options.outWidth, options.outHeight, imagePath),
                 large = null,
                 thumb = null
@@ -180,11 +182,11 @@ class MessageProvider : IMessageProvider {
         val failedState = MessageState.SendFailed(reason = failReason)
         return when (this) {
             is TextMessage -> {
-                this.copy(detail = this.messageDetail.copy(state = failedState))
+                this.copy(messageDetail = this.detail.copy(state = failedState))
             }
 
             is ImageMessage -> {
-                this.copy(detail = this.messageDetail.copy(state = failedState))
+                this.copy(messageDetail = this.detail.copy(state = failedState))
             }
 
             is TimeMessage -> {
@@ -197,32 +199,6 @@ class MessageProvider : IMessageProvider {
         }
     }
 
-    override suspend fun uploadImage(chat: Chat, imagePath: String): String {
-        return suspendCancellableCoroutine { continuation ->
-            val imageMessage = V2TIMManager.getMessageManager().createImageMessage(imagePath)
-            V2TIMManager.getMessageManager().sendMessage(imageMessage,
-                "",
-                chat.id,
-                V2TIMMessage.V2TIM_PRIORITY_HIGH,
-                false,
-                null,
-                object : V2TIMSendCallback<V2TIMMessage> {
-                    override fun onSuccess(message: V2TIMMessage) {
-                        val res = Converters.convertMessage(message)
-                        continuation.resume((res as? ImageMessage)?.previewImageUrl ?: "")
-                    }
-
-                    override fun onError(code: Int, desc: String?) {
-                        continuation.resume("")
-                    }
-
-                    override fun onProgress(progress: Int) {
-
-                    }
-                })
-        }
-    }
-
     override fun startReceive(chat: Chat, messageListener: IMessageProvider.MessageListener) {
         val id = chat.id
         messageListenerMap.remove(id)
@@ -232,6 +208,15 @@ class MessageProvider : IMessageProvider {
 
     override fun stopReceive(messageListener: IMessageProvider.MessageListener) {
         removeReduceListener(listener = messageListener, listenerMap = messageListenerMap)
+    }
+
+    override fun cleanConversationUnreadMessageCount(chat: Chat) {
+        V2TIMManager.getConversationManager().cleanConversationUnreadMessageCount(
+            Converters.getConversationKey(chat = chat),
+            0,
+            0,
+            null
+        )
     }
 
     private fun checkListener() {
@@ -254,7 +239,7 @@ class MessageProvider : IMessageProvider {
             timestamp = generateMessageTimestamp(),
             state = MessageState.Sending,
             sender = Converters.getSelfProfile() ?: PersonProfile.Empty,
-            isSelfMessage = true
+            isOwnMessage = true
         )
     }
 

@@ -1,7 +1,7 @@
 package github.leavesczy.compose_chat.proxy.utils
 
 import android.util.Base64
-import github.leavesczy.compose_chat.proxy.consts.AppConsts
+import github.leavesczy.compose_chat.proxy.consts.AppConstant
 import org.json.JSONObject
 import java.util.zip.Deflater
 import javax.crypto.Mac
@@ -16,11 +16,11 @@ internal object GenerateUserSig {
 
     fun genUserSig(userId: String): String {
         return genTLSSignature(
-            sdkAppId = AppConsts.APP_ID.toLong(),
+            sdkAppId = AppConstant.APP_ID.toLong(),
             userId = userId,
             expire = 365 * 24 * 60 * 60L,
             userBuf = null,
-            priKeyContent = AppConsts.APP_SECRET_KEY
+            priKeyContent = AppConstant.APP_SECRET_KEY
         )
     }
 

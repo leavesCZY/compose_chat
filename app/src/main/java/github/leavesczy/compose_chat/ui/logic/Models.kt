@@ -1,8 +1,9 @@
 package github.leavesczy.compose_chat.ui.logic
 
 import androidx.compose.material3.DrawerState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
-import github.leavesczy.compose_chat.base.model.PersonProfile
+import github.leavesczy.compose_chat.base.models.PersonProfile
 
 /**
  * @Author: leavesCZY
@@ -19,7 +20,7 @@ enum class MainPageTab {
 @Stable
 data class MainPageDrawerViewState(
     val drawerState: DrawerState,
-    val personProfile: PersonProfile,
+    val personProfile: MutableState<PersonProfile>,
     val previewImage: (String) -> Unit,
     val switchTheme: () -> Unit,
     val updateProfile: () -> Unit,
@@ -28,14 +29,13 @@ data class MainPageDrawerViewState(
 
 @Stable
 data class MainPageTopBarViewState(
-    val openDrawer: suspend () -> Unit,
-    val showFriendshipDialog: () -> Unit
+    val openDrawer: suspend () -> Unit
 )
 
 @Stable
 data class MainPageBottomBarViewState(
-    val selectedTab: MainPageTab,
-    val unreadMessageCount: Long,
+    val selectedTab: MutableState<MainPageTab>,
+    val unreadMessageCount: MutableState<Long>,
     val onClickTab: (MainPageTab) -> Unit
 )
 

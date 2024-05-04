@@ -2,8 +2,7 @@ package github.leavesczy.compose_chat.ui.login.logic
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import github.leavesczy.compose_chat.base.model.ActionResult
+import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.provider.AccountProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.logic.ComposeChat
@@ -16,39 +15,32 @@ import kotlinx.coroutines.delay
  */
 class LoginViewModel : BaseViewModel() {
 
-    var loginPageViewState by mutableStateOf(
+    val loginPageViewState by mutableStateOf(
         value = LoginPageViewState(
-            lastLoginUserId = "",
-            showPanel = false,
-            loading = false
+            lastLoginUserId = mutableStateOf(value = ""),
+            showPanel = mutableStateOf(value = false),
+            loading = mutableStateOf(value = false)
         )
     )
-        private set
 
     suspend fun tryLogin(): Boolean {
         val lastLoginUserId = AccountProvider.lastLoginUserId
         return if (lastLoginUserId.isBlank() || !AccountProvider.canAutoLogin) {
-            loginPageViewState = loginPageViewState.copy(
-                lastLoginUserId = lastLoginUserId,
-                showPanel = true,
-                loading = false
-            )
+            loginPageViewState.lastLoginUserId.value = lastLoginUserId
+            loginPageViewState.showPanel.value = true
+            loginPageViewState.loading.value = false
             false
         } else {
-            loginPageViewState = loginPageViewState.copy(
-                lastLoginUserId = lastLoginUserId,
-                showPanel = false,
-                loading = true
-            )
+            loginPageViewState.lastLoginUserId.value = lastLoginUserId
+            loginPageViewState.showPanel.value = false
+            loginPageViewState.loading.value = true
             login(userId = lastLoginUserId)
         }
     }
 
     suspend fun onClickLoginButton(userId: String): Boolean {
-        loginPageViewState = loginPageViewState.copy(
-            lastLoginUserId = userId,
-            loading = true
-        )
+        loginPageViewState.lastLoginUserId.value = userId
+        loginPageViewState.loading.value = true
         return login(userId = userId)
     }
 
@@ -63,11 +55,9 @@ class LoginViewModel : BaseViewModel() {
 
             is ActionResult.Failed -> {
                 showToast(msg = loginResult.reason)
-                loginPageViewState = loginPageViewState.copy(
-                    lastLoginUserId = formatUserId,
-                    showPanel = true,
-                    loading = false
-                )
+                loginPageViewState.lastLoginUserId.value = formatUserId
+                loginPageViewState.showPanel.value = true
+                loginPageViewState.loading.value = false
                 false
             }
         }

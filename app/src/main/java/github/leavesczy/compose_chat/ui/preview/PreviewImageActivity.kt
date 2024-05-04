@@ -11,18 +11,19 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SaveAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,14 +31,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.ui.base.BaseActivity
-import github.leavesczy.compose_chat.ui.logic.AppTheme
-import github.leavesczy.compose_chat.ui.theme.BackgroundColorDark
-import github.leavesczy.compose_chat.ui.theme.DarkColorScheme
-import github.leavesczy.compose_chat.ui.widgets.CoilImage
-import github.leavesczy.compose_chat.ui.widgets.SystemBarTheme
+import github.leavesczy.compose_chat.ui.theme.backgroundColorDark
+import github.leavesczy.compose_chat.ui.widgets.ZoomableComponentImage
 import github.leavesczy.compose_chat.utils.AlbumUtils
 import kotlinx.coroutines.launch
 
@@ -50,18 +50,18 @@ class PreviewImageActivity : BaseActivity() {
 
     companion object {
 
-        private const val keyImageUrlList = "keyImageUrlList"
+        private const val keyImageUriList = "keyImageUriList"
 
         private const val keyInitialPage = "keyInitialPage"
 
-        fun navTo(context: Context, imageUrl: String) {
-            navTo(context = context, imageUrlList = listOf(element = imageUrl), initialPage = 0)
+        fun navTo(context: Context, imageUri: String) {
+            navTo(context = context, imageUriList = listOf(element = imageUri), initialPage = 0)
         }
 
-        fun navTo(context: Context, imageUrlList: List<String>, initialPage: Int) {
+        fun navTo(context: Context, imageUriList: List<String>, initialPage: Int) {
             val intent = Intent(context, PreviewImageActivity::class.java)
-            intent.putStringArrayListExtra(keyImageUrlList, arrayListOf<String>().apply {
-                addAll(imageUrlList)
+            intent.putStringArrayListExtra(keyImageUriList, arrayListOf<String>().apply {
+                addAll(imageUriList)
             })
             intent.putExtra(keyInitialPage, initialPage)
             if (context !is Activity) {
@@ -72,8 +72,8 @@ class PreviewImageActivity : BaseActivity() {
 
     }
 
-    private val imageUrlList by lazy(mode = LazyThreadSafetyMode.NONE) {
-        intent.getStringArrayListExtra(keyImageUrlList)?.filter { it.isNotBlank() } ?: emptyList()
+    private val imageUriList by lazy(mode = LazyThreadSafetyMode.NONE) {
+        intent.getStringArrayListExtra(keyImageUriList)?.filter { it.isNotBlank() } ?: emptyList()
     }
 
     private val initialPage by lazy(mode = LazyThreadSafetyMode.NONE) {
@@ -82,30 +82,43 @@ class PreviewImageActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent(
-            systemBarTheme = {
-                SystemBarTheme(
-                    appTheme = AppTheme.Dark,
-                    navigationBarColor = DarkColorScheme.background
-                )
-            }
-        ) {
+        setContent {
             PreviewImagePage(
-                imageUrlList = imageUrlList,
+                imageUriList = imageUriList,
                 initialPage = initialPage,
                 insertImageToAlbum = ::insertImageToAlbum
             )
         }
     }
 
-    private fun insertImageToAlbum(imageUrl: String) {
+    @Composable
+    override fun SetSystemBarUi() {
+        val context = LocalContext.current
+        LaunchedEffect(key1 = null) {
+            if (context is Activity) {
+                val window = context.window
+                window.statusBarColor = android.graphics.Color.TRANSPARENT
+                window.navigationBarColor = android.graphics.Color.TRANSPARENT
+                WindowInsetsControllerCompat(window, window.decorView).apply {
+                    hide(WindowInsetsCompat.Type.statusBars())
+                    systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+                    isAppearanceLightStatusBars = false
+                    isAppearanceLightNavigationBars = false
+                }
+            }
+        }
+    }
+
+    private fun insertImageToAlbum(imageUri: String) {
         lifecycleScope.launch {
-            val result =
-                AlbumUtils.insertImageToAlbum(context = applicationContext, imageUrl = imageUrl)
+            val result = AlbumUtils.insertImageToAlbum(
+                context = applicationContext,
+                imageUri = imageUri
+            )
             if (result) {
-                showToast(msg = "图片已保存到相册")
+                showToast(msg = "已保存到相册")
             } else {
-                showToast(msg = "图片保存失败")
+                showToast(msg = "保存失败")
             }
         }
     }
@@ -114,7 +127,7 @@ class PreviewImageActivity : BaseActivity() {
 
 @Composable
 private fun PreviewImagePage(
-    imageUrlList: List<String>,
+    imageUriList: List<String>,
     initialPage: Int,
     insertImageToAlbum: (String) -> Unit
 ) {
@@ -123,22 +136,23 @@ private fun PreviewImagePage(
         initialPage = initialPage,
         initialPageOffsetFraction = 0f
     ) {
-        imageUrlList.size
+        imageUriList.size
     }
     val requestPermissionLaunch = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) {
         if (it) {
-            insertImageToAlbum(imageUrlList[pagerState.currentPage])
+            insertImageToAlbum(imageUriList[pagerState.currentPage])
         } else {
             ToastProvider.showToast(msg = "请先授予存储权限再保存图片")
         }
     }
     Scaffold(
         modifier = Modifier
-            .background(color = BackgroundColorDark)
+            .background(color = backgroundColorDark)
             .fillMaxSize(),
-        containerColor = BackgroundColorDark
+        containerColor = backgroundColorDark,
+        contentWindowInsets = WindowInsets(left = 0.dp, top = 0.dp, right = 0.dp, bottom = 0.dp),
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -149,14 +163,15 @@ private fun PreviewImagePage(
                 modifier = Modifier
                     .fillMaxSize(),
                 state = pagerState,
-                pageSpacing = 2.dp,
+                pageSpacing = 0.dp,
                 verticalAlignment = Alignment.CenterVertically
             ) { pageIndex ->
-                PreviewPage(imageUrl = imageUrlList[pageIndex])
+                PreviewPage(imageUrl = imageUriList[pageIndex])
             }
             IconButton(
                 modifier = Modifier
                     .align(alignment = Alignment.BottomEnd)
+                    .navigationBarsPadding()
                     .padding(all = 20.dp),
                 content = {
                     Icon(
@@ -167,7 +182,7 @@ private fun PreviewImagePage(
                     )
                 },
                 onClick = {
-                    val imageUrl = imageUrlList[pagerState.currentPage]
+                    val imageUrl = imageUriList[pagerState.currentPage]
                     if (mustRequestWriteExternalStoragePermission(context = context)) {
                         requestPermissionLaunch.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     } else {
@@ -183,21 +198,20 @@ private fun PreviewImagePage(
 private fun PreviewPage(imageUrl: String) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(state = rememberScrollState()),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CoilImage(
+        ZoomableComponentImage(
             modifier = Modifier
                 .fillMaxSize(),
-            data = imageUrl,
-            contentScale = ContentScale.FillWidth
+            model = imageUrl,
+            contentScale = ContentScale.Fit
         )
     }
 }
 
 private fun mustRequestWriteExternalStoragePermission(context: Context): Boolean {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         return false
     }
     return ActivityCompat.checkSelfPermission(

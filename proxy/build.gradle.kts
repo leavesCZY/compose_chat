@@ -1,10 +1,13 @@
+plugins {
+    alias(libs.plugins.chat.android.library)
+}
+
 android {
     namespace = "github.leavesczy.compose_chat.proxy"
 }
 
 dependencies {
     implementation(project(":base"))
-    implementationTest()
-    implementation(Dependencies.Components.coroutines)
-    implementation(Dependencies.Components.imSdk)
+    implementation(libs.kotlinx.coroutines)
+    implementation(libs.tencent.imsdk)
 }

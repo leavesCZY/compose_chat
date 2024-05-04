@@ -17,12 +17,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,12 +33,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import github.leavesczy.compose_chat.base.model.GroupProfile
-import github.leavesczy.compose_chat.base.model.PersonProfile
+import github.leavesczy.compose_chat.base.models.GroupProfile
+import github.leavesczy.compose_chat.base.models.PersonProfile
 import github.leavesczy.compose_chat.ui.friendship.logic.FriendshipPageViewState
-import github.leavesczy.compose_chat.ui.friendship.logic.FriendshipViewModel
-import github.leavesczy.compose_chat.ui.widgets.CoilImage
+import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 
 /**
  * @Author: leavesCZY
@@ -45,22 +44,10 @@ import github.leavesczy.compose_chat.ui.widgets.CoilImage
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun FriendshipPage(showFriendshipDialog: () -> Unit) {
-    val friendshipViewModel = viewModel<FriendshipViewModel>()
-    FriendshipContentPage(
-        pageViewState = friendshipViewModel.pageViewState,
-        showFriendshipDialog = showFriendshipDialog
-    )
-}
-
-@Composable
-private fun FriendshipContentPage(
-    pageViewState: FriendshipPageViewState,
-    showFriendshipDialog: () -> Unit
-) {
+fun FriendshipPage(pageViewState: FriendshipPageViewState) {
     Box(modifier = Modifier.fillMaxSize()) {
-        val joinedGroupList = pageViewState.joinedGroupList
-        val friendList = pageViewState.friendList
+        val joinedGroupList by pageViewState.joinedGroupList
+        val friendList by pageViewState.friendList
         if (joinedGroupList.isEmpty() && friendList.isEmpty()) {
             Text(
                 modifier = Modifier
@@ -75,7 +62,7 @@ private fun FriendshipContentPage(
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                state = pageViewState.listState,
+                state = pageViewState.listState.value,
                 contentPadding = PaddingValues(bottom = 100.dp)
             ) {
                 items(
@@ -114,7 +101,7 @@ private fun FriendshipContentPage(
             modifier = Modifier
                 .align(alignment = Alignment.BottomEnd)
                 .padding(bottom = 30.dp, end = 30.dp)
-                .size(size = 48.dp),
+                .size(size = 50.dp),
             containerColor = MaterialTheme.colorScheme.primary,
             content = {
                 Icon(
@@ -124,7 +111,7 @@ private fun FriendshipContentPage(
                     contentDescription = null,
                 )
             },
-            onClick = showFriendshipDialog
+            onClick = pageViewState.showFriendshipDialog
         )
     }
 }
@@ -149,23 +136,23 @@ private fun LazyItemScope.GroupItem(
                 .padding(top = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CoilImage(
+            ComponentImage(
                 modifier = Modifier
                     .size(size = 50.dp)
                     .clip(shape = RoundedCornerShape(size = 6.dp)),
-                data = groupProfile.faceUrl
+                model = groupProfile.faceUrl
             )
             Text(
                 modifier = Modifier
                     .weight(weight = 1f)
                     .padding(start = 10.dp),
                 text = groupProfile.name,
-                fontSize = 17.sp,
+                fontSize = 18.sp,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
         }
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .padding(start = 60.dp, top = 8.dp),
             thickness = 0.2.dp
@@ -193,11 +180,11 @@ private fun LazyItemScope.FriendItem(
                 .padding(top = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CoilImage(
+            ComponentImage(
                 modifier = Modifier
                     .size(size = 50.dp)
                     .clip(shape = RoundedCornerShape(size = 6.dp)),
-                data = personProfile.faceUrl
+                model = personProfile.faceUrl
             )
             Column(
                 modifier = Modifier
@@ -207,20 +194,20 @@ private fun LazyItemScope.FriendItem(
                 Text(
                     modifier = Modifier,
                     text = personProfile.showName,
-                    fontSize = 17.sp,
+                    fontSize = 18.sp,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
                 Text(
                     modifier = Modifier,
                     text = personProfile.signature,
-                    fontSize = 14.sp,
+                    fontSize = 15.sp,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
             }
         }
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .padding(start = 60.dp, top = 8.dp),
             thickness = 0.2.dp

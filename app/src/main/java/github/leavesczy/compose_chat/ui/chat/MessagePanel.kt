@@ -2,17 +2,23 @@ package github.leavesczy.compose_chat.ui.chat
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
@@ -26,21 +32,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
-import androidx.constraintlayout.compose.atMost
-import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.base.model.ImageMessage
-import github.leavesczy.compose_chat.base.model.Message
-import github.leavesczy.compose_chat.base.model.MessageState
-import github.leavesczy.compose_chat.base.model.SystemMessage
-import github.leavesczy.compose_chat.base.model.TextMessage
-import github.leavesczy.compose_chat.base.model.TimeMessage
+import github.leavesczy.compose_chat.base.models.Chat
+import github.leavesczy.compose_chat.base.models.ImageMessage
+import github.leavesczy.compose_chat.base.models.Message
+import github.leavesczy.compose_chat.base.models.MessageState
+import github.leavesczy.compose_chat.base.models.SystemMessage
+import github.leavesczy.compose_chat.base.models.TextMessage
+import github.leavesczy.compose_chat.base.models.TimeMessage
 import github.leavesczy.compose_chat.ui.chat.logic.ChatPageAction
 import github.leavesczy.compose_chat.ui.chat.logic.ChatPageViewState
-import github.leavesczy.compose_chat.ui.widgets.CoilImage
+import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 
 /**
  * @Author: leavesCZY
@@ -48,132 +52,131 @@ import github.leavesczy.compose_chat.ui.widgets.CoilImage
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun MessagePanel(chatPageViewState: ChatPageViewState, chatPageAction: ChatPageAction) {
+fun MessagePanel(pageViewState: ChatPageViewState, pageAction: ChatPageAction) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        state = chatPageViewState.listState,
+        state = pageViewState.listState,
         reverseLayout = true,
-        contentPadding = PaddingValues(bottom = 80.dp),
+        contentPadding = PaddingValues(bottom = 60.dp),
         verticalArrangement = Arrangement.Top,
     ) {
-        for (message in chatPageViewState.messageList) {
-            item(key = message.messageDetail.msgId) {
-                MessageItems(
-                    message = message,
-                    showPartyName = chatPageViewState.chat is Chat.GroupChat,
-                    chatPageAction = chatPageAction
-                )
+        items(
+            items = pageViewState.messageList.value,
+            key = {
+                it.detail.msgId
+            },
+            contentType = {
+                when (it) {
+                    is TimeMessage -> {
+                        "TimeMessage"
+                    }
+
+                    is SystemMessage -> {
+                        "SystemMessage"
+                    }
+
+                    is TextMessage -> {
+                        val isOwnMessage = it.detail.isOwnMessage
+                        if (isOwnMessage) {
+                            "ownTextMessage"
+                        } else {
+                            "fiendTextMessage"
+                        }
+                    }
+
+                    is ImageMessage -> {
+                        val isOwnMessage = it.detail.isOwnMessage
+                        if (isOwnMessage) {
+                            "ownImageMessage"
+                        } else {
+                            "fiendImageMessage"
+                        }
+                    }
+                }
+            }
+        ) { message ->
+            when (message) {
+                is TimeMessage -> {
+                    TimeMessage(message = message)
+                }
+
+                is SystemMessage -> {
+                    SystemMessage(message = message)
+                }
+
+                is TextMessage, is ImageMessage -> {
+                    val messageContent = @Composable {
+                        when (message) {
+                            is TextMessage -> {
+                                TextMessage(
+                                    message = message,
+                                    onClickMessage = pageAction.onClickMessage,
+                                    onLongClickMessage = pageAction.onLongClickMessage
+                                )
+                            }
+
+                            is ImageMessage -> {
+                                ImageMessage(
+                                    message = message,
+                                    onClickMessage = pageAction.onClickMessage
+                                )
+                            }
+
+                            else -> {
+                                throw IllegalArgumentException()
+                            }
+                        }
+                    }
+                    if (message.detail.isOwnMessage) {
+                        OwnMessageContainer(
+                            message = message,
+                            messageContent = messageContent
+                        )
+                    } else {
+                        FriendMessageContainer(
+                            message = message,
+                            onClickAvatar = pageAction.onClickAvatar,
+                            showPartDetail = pageViewState.chat is Chat.GroupChat,
+                            messageContent = messageContent
+                        )
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun MessageItems(message: Message, showPartyName: Boolean, chatPageAction: ChatPageAction) {
-    if (message is TimeMessage) {
-        TimeMessage(message = message)
-        return
-    }
-    if (message is SystemMessage) {
-        SystemMessage(message = message)
-        return
-    }
-    val messageContent = @Composable {
-        when (message) {
-            is TextMessage -> {
-                TextMessage(message = message)
-            }
-
-            is ImageMessage -> {
-                ImageMessage(message = message)
-            }
-
-            else -> {
-                throw IllegalArgumentException()
-            }
-        }
-    }
-    if (message.messageDetail.isSelfMessage) {
-        SelfMessageContainer(
-            message = message,
-            chatPageAction = chatPageAction,
-            messageContent = messageContent
-        )
-    } else {
-        FriendMessageContainer(
-            message = message,
-            showPartyName = showPartyName,
-            chatPageAction = chatPageAction,
-            messageContent = messageContent
-        )
-    }
-}
-
-private val avatarSize = 42.dp
-private val itemHorizontalPadding = 14.dp
-private val itemVerticalPadding = 10.dp
-private val textMessageWidthAtMost = 230.dp
-private val textMessageSenderNameVerticalPadding = 3.dp
-private val textMessageHorizontalPadding = 8.dp
-private val messageShape = RoundedCornerShape(size = 6.dp)
-private val timeMessageShape = RoundedCornerShape(size = 4.dp)
-
-@Composable
-private fun SelfMessageContainer(
+private fun OwnMessageContainer(
     message: Message,
-    chatPageAction: ChatPageAction,
     messageContent: @Composable () -> Unit
 ) {
-    ConstraintLayout(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                horizontal = itemHorizontalPadding,
-                vertical = itemVerticalPadding
-            )
+            .padding(start = 14.dp, end = 14.dp, top = 10.dp, bottom = 10.dp),
+        horizontalArrangement = Arrangement.End
     ) {
-        val (avatarRef, messageRef, messageStateRef) = createRefs()
-        CoilImage(
+        Row(
             modifier = Modifier
-                .constrainAs(ref = avatarRef) {
-                    top.linkTo(anchor = parent.top)
-                    end.linkTo(anchor = parent.end)
-                }
-                .size(size = avatarSize)
-                .clip(shape = RoundedCornerShape(size = 6.dp))
-                .clickable(onClick = {
-                    chatPageAction.onClickAvatar(message)
-                }),
-            data = message.messageDetail.sender.faceUrl
-        )
-        Box(
-            modifier = Modifier
-                .constrainAs(ref = messageRef) {
-                    top.linkTo(
-                        anchor = avatarRef.top,
-                        margin = 12.dp
-                    )
-                    end.linkTo(anchor = avatarRef.start, margin = textMessageHorizontalPadding)
-                    width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
-                }
-                .clip(shape = messageShape)
-                .combinedClickable(
-                    onClick = {
-                        chatPageAction.onClickMessage(message)
-                    }, onLongClick = {
-                        chatPageAction.onLongClickMessage(message)
-                    }
-                )
+                .align(alignment = Alignment.Top)
+                .weight(weight = 1f, fill = false)
+                .padding(end = 6.dp, top = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            StateMessage(messageState = message.detail.state)
             messageContent()
         }
-        StateMessage(
-            modifier = Modifier.constrainAs(ref = messageStateRef) {
-                top.linkTo(anchor = messageRef.top)
-                bottom.linkTo(anchor = messageRef.bottom)
-                end.linkTo(anchor = messageRef.start, margin = textMessageHorizontalPadding)
-            },
-            messageState = message.messageDetail.state
+        ComponentImage(
+            modifier = Modifier
+                .size(size = 42.dp)
+                .clip(shape = CircleShape)
+                .border(
+                    width = 2.dp,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                    shape = CircleShape
+                ),
+            model = message.detail.sender.faceUrl
         )
     }
 }
@@ -181,90 +184,128 @@ private fun SelfMessageContainer(
 @Composable
 private fun FriendMessageContainer(
     message: Message,
-    showPartyName: Boolean,
-    chatPageAction: ChatPageAction,
+    showPartDetail: Boolean,
+    onClickAvatar: (Message) -> Unit,
     messageContent: @Composable () -> Unit
 ) {
-    ConstraintLayout(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = itemHorizontalPadding, vertical = itemVerticalPadding)
+            .padding(start = 10.dp, end = 0.dp, top = 10.dp, bottom = 10.dp),
+        horizontalArrangement = Arrangement.Start
     ) {
-        val (avatarRef, showNameRef, messageRef, messageStateRef) = createRefs()
-        CoilImage(
+        ComponentImage(
             modifier = Modifier
-                .constrainAs(ref = avatarRef) {
-                    top.linkTo(anchor = parent.top)
-                    start.linkTo(anchor = parent.start)
-                }
-                .size(size = avatarSize)
-                .clip(shape = RoundedCornerShape(size = 6.dp))
+                .padding(end = 6.dp)
+                .size(size = 42.dp)
+                .clip(shape = CircleShape)
+                .border(
+                    width = 2.dp,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                    shape = CircleShape
+                )
                 .clickable(
                     onClick = {
-                        chatPageAction.onClickAvatar(message)
+                        onClickAvatar(message)
                     }
                 ),
-            data = message.messageDetail.sender.faceUrl
+            model = message.detail.sender.faceUrl
         )
-        Text(
-            modifier = Modifier.constrainAs(ref = showNameRef) {
-                top.linkTo(anchor = avatarRef.top)
-                start.linkTo(anchor = avatarRef.end, margin = textMessageHorizontalPadding)
-            },
-            text = if (showPartyName) {
-                message.messageDetail.sender.showName
-            } else {
-                ""
-            },
-            fontSize = 12.sp,
-            textAlign = TextAlign.Start
-        )
-        Box(
+        Column(
             modifier = Modifier
-                .constrainAs(ref = messageRef) {
-                    top.linkTo(
-                        anchor = showNameRef.bottom,
-                        margin = textMessageSenderNameVerticalPadding
-                    )
-                    start.linkTo(anchor = showNameRef.start)
-                    width = Dimension.preferredWrapContent.atMost(dp = textMessageWidthAtMost)
-                }
-                .clip(shape = messageShape)
-                .combinedClickable(
-                    onClick = {
-                        chatPageAction.onClickMessage(message)
-                    },
-                    onLongClick = {
-                        chatPageAction.onLongClickMessage(message)
-                    }
-                )
+                .padding(top = 8.dp)
         ) {
-            messageContent()
+            if (showPartDetail) {
+                Text(
+                    modifier = Modifier.padding(end = 30.dp),
+                    text = message.detail.sender.showName,
+                    fontSize = 13.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Start
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .padding(top = 3.dp)
+                    .fillMaxWidth(fraction = 0.90f)
+                    .wrapContentWidth(align = Alignment.Start),
+                contentAlignment = Alignment.TopStart
+            ) {
+                messageContent()
+            }
         }
-        StateMessage(
-            modifier = Modifier
-                .constrainAs(ref = messageStateRef) {
-                    top.linkTo(anchor = messageRef.top)
-                    bottom.linkTo(anchor = messageRef.bottom)
-                    start.linkTo(
-                        anchor = messageRef.end, margin = textMessageHorizontalPadding
-                    )
-                },
-            messageState = message.messageDetail.state
-        )
     }
 }
 
 @Composable
-private fun TextMessage(message: TextMessage) {
+private fun TextMessage(
+    message: TextMessage,
+    onClickMessage: (Message) -> Unit,
+    onLongClickMessage: (Message) -> Unit
+) {
     Text(
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.primary)
-            .padding(horizontal = 6.dp, vertical = 6.dp),
+            .clip(
+                shape = if (message.detail.isOwnMessage) {
+                    RoundedCornerShape(
+                        topStart = 20.dp,
+                        topEnd = 6.dp,
+                        bottomEnd = 20.dp,
+                        bottomStart = 20.dp
+                    )
+                } else {
+                    RoundedCornerShape(
+                        topStart = 6.dp,
+                        topEnd = 20.dp,
+                        bottomEnd = 20.dp,
+                        bottomStart = 20.dp
+                    )
+                }
+            )
+            .background(
+                color = if (message.detail.isOwnMessage) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.inverseSurface
+                }
+            )
+            .combinedClickable(
+                onClick = {
+                    onClickMessage(message)
+                },
+                onLongClick = {
+                    onLongClickMessage(message)
+                }
+            )
+            .padding(horizontal = 14.dp, vertical = 8.dp),
         text = message.formatMessage,
         fontSize = 16.sp,
-        color = Color.White,
+        color = if (message.detail.isOwnMessage) {
+            Color.White
+        } else {
+            MaterialTheme.colorScheme.inverseOnSurface
+        },
         textAlign = TextAlign.Start
+    )
+}
+
+@Composable
+private fun ImageMessage(
+    message: ImageMessage,
+    onClickMessage: (Message) -> Unit
+) {
+    ComponentImage(
+        modifier = Modifier
+            .size(
+                width = message.widgetWidthDp.dp,
+                height = message.widgetHeightDp.dp
+            )
+            .clip(shape = RoundedCornerShape(size = 10.dp))
+            .clickable {
+                onClickMessage(message)
+            },
+        model = message.previewImage.url
     )
 }
 
@@ -275,8 +316,11 @@ private fun TimeMessage(message: TimeMessage) {
             .fillMaxWidth()
             .padding(top = 20.dp, bottom = 20.dp)
             .wrapContentWidth(align = Alignment.CenterHorizontally)
-            .background(color = Color.LightGray.copy(alpha = 0.4f), shape = timeMessageShape)
-            .padding(all = 3.dp),
+            .background(
+                color = Color.LightGray.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(size = 4.dp)
+            )
+            .padding(horizontal = 6.dp, vertical = 4.dp),
         text = message.formatMessage,
         fontSize = 11.sp
     )
@@ -289,46 +333,45 @@ private fun SystemMessage(message: SystemMessage) {
             .fillMaxWidth()
             .padding(top = 20.dp, bottom = 20.dp)
             .wrapContentWidth(align = Alignment.CenterHorizontally)
-            .background(color = Color.LightGray.copy(alpha = 0.4f), shape = timeMessageShape)
-            .padding(all = 3.dp),
+            .background(
+                color = Color.LightGray.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(size = 4.dp)
+            )
+            .padding(all = 4.dp),
         text = message.formatMessage,
         fontSize = 12.sp
     )
 }
 
 @Composable
-private fun ImageMessage(message: ImageMessage) {
-    CoilImage(
-        modifier = Modifier.size(
-            width = message.widgetWidthDp.dp,
-            height = message.widgetHeightDp.dp
-        ),
-        data = message.previewImage.url
-    )
-}
+private fun RowScope.StateMessage(messageState: MessageState) {
+    Box(
+        modifier = Modifier
+            .align(alignment = Alignment.CenterVertically)
+            .padding(end = 8.dp)
+            .size(size = 20.dp)
+    ) {
+        when (messageState) {
+            MessageState.Sending -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.primary,
+                    strokeWidth = 2.dp
+                )
+            }
 
-@Composable
-private fun StateMessage(modifier: Modifier, messageState: MessageState) {
-    when (messageState) {
-        MessageState.Sending -> {
-            CircularProgressIndicator(
-                modifier = modifier.size(size = 20.dp),
-                color = MaterialTheme.colorScheme.primary,
-                strokeWidth = 2.dp
-            )
-        }
+            is MessageState.SendFailed -> {
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    imageVector = Icons.Outlined.Warning,
+                    colorFilter = ColorFilter.tint(color = Color.Red),
+                    contentDescription = null
+                )
+            }
 
-        is MessageState.SendFailed -> {
-            Image(
-                modifier = modifier.size(size = 20.dp),
-                imageVector = Icons.Outlined.Warning,
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(color = Color.Red)
-            )
-        }
+            MessageState.Completed -> {
 
-        MessageState.Completed -> {
-
+            }
         }
     }
 }

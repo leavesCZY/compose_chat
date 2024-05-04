@@ -22,25 +22,26 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -50,40 +51,51 @@ import kotlin.math.roundToInt
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun CoilImage(
-    modifier: Modifier,
-    data: Any,
+fun ComponentImage(
+    modifier: Modifier = Modifier,
+    model: Any?,
+    alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Crop,
-    filterQuality: FilterQuality = FilterQuality.None,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null,
+    contentDescription: String? = null,
     backgroundColor: Color = Color(0x66888888)
 ) {
     AsyncImage(
         modifier = modifier
             .background(color = backgroundColor),
-        model = data,
+        model = model,
+        alignment = alignment,
         contentScale = contentScale,
-        filterQuality = filterQuality,
-        contentDescription = null
+        alpha = alpha,
+        colorFilter = colorFilter,
+        contentDescription = contentDescription
     )
 }
 
 @Composable
-fun CircleBorderImage(
-    modifier: Modifier,
-    data: Any,
-    borderWidth: Dp = 2.dp,
-    borderColor: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+fun ZoomableComponentImage(
+    modifier: Modifier = Modifier,
+    model: Any?,
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null,
+    contentDescription: String? = null
 ) {
-    CoilImage(
-        modifier = modifier
-            .clip(shape = CircleShape)
-            .border(width = borderWidth, color = borderColor, shape = CircleShape),
-        data = data
+    AsyncImage(
+        modifier = modifier,
+        model = model,
+        alignment = alignment,
+        contentScale = contentScale,
+        alpha = alpha,
+        colorFilter = colorFilter,
+        contentDescription = contentDescription
     )
 }
 
 @Composable
-fun BezierImage(modifier: Modifier, data: Any) {
+fun BezierImage(modifier: Modifier, model: Any) {
     val animateFloat by rememberInfiniteTransition(label = "").animateFloat(
         initialValue = 0f,
         targetValue = 1f,
@@ -93,12 +105,12 @@ fun BezierImage(modifier: Modifier, data: Any) {
         ),
         label = ""
     )
-    CoilImage(
+    ComponentImage(
         modifier = Modifier
             .scale(scale = 1.0f + animateFloat * 0.1f)
             .clip(shape = BezierShape(animateValue = animateFloat))
             .then(other = modifier),
-        data = data
+        model = model
     )
 }
 
@@ -149,10 +161,8 @@ fun BouncyImage(modifier: Modifier, data: Any) {
             )
         }
     }
-
-    CircleBorderImage(
+    ComponentImage(
         modifier = modifier
-            .zIndex(zIndex = Float.MAX_VALUE)
             .offset {
                 IntOffset(
                     x = offsetX.roundToInt(),
@@ -176,7 +186,14 @@ fun BouncyImage(modifier: Modifier, data: Any) {
                         offsetY += dragAmount.y
                     }
                 )
-            },
-        data = data
+            }
+            .clip(shape = CircleShape)
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                shape = CircleShape
+            )
+            .zIndex(zIndex = Float.MAX_VALUE),
+        model = data
     )
 }

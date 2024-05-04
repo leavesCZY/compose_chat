@@ -1,15 +1,8 @@
-/local.properties
 /.idea/
 /app/release/
 /build
-/captures
+/local.properties
 *.iml
+*.apk
 .gradle
 .DS_Store
-.externalNativeBuild
-.cxx
-.idea
-*.apk
-*.json
-local.properties
-build

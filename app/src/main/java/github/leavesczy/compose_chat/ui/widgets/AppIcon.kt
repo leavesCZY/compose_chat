@@ -15,10 +15,10 @@ import github.leavesczy.compose_chat.R
 private fun AppIcon(modifier: Modifier = Modifier) {
     Icon(
         modifier = modifier
-            .size(size = 400.dp)
-            .background(color = Color(0xFF0D82E0)),
+            .size(size = 200.dp)
+            .background(color = Color(0xFF08384D)),
         painter = painterResource(id = R.drawable.icon_app),
-        tint = Color(0xFFFFFFFF),
+        tint = Color(0xFF39E084),
         contentDescription = null
     )
 }

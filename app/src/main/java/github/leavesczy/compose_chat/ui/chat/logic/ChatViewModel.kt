@@ -1,5 +1,6 @@
 package github.leavesczy.compose_chat.ui.chat.logic
 
+import android.net.Uri
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,25 +8,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
-import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.base.model.ImageMessage
-import github.leavesczy.compose_chat.base.model.LoadMessageResult
-import github.leavesczy.compose_chat.base.model.Message
-import github.leavesczy.compose_chat.base.model.MessageState
-import github.leavesczy.compose_chat.base.model.SystemMessage
-import github.leavesczy.compose_chat.base.model.TextMessage
-import github.leavesczy.compose_chat.base.model.TimeMessage
+import github.leavesczy.compose_chat.base.models.Chat
+import github.leavesczy.compose_chat.base.models.ImageMessage
+import github.leavesczy.compose_chat.base.models.LoadMessageResult
+import github.leavesczy.compose_chat.base.models.Message
+import github.leavesczy.compose_chat.base.models.MessageState
+import github.leavesczy.compose_chat.base.models.SystemMessage
+import github.leavesczy.compose_chat.base.models.TextMessage
+import github.leavesczy.compose_chat.base.models.TimeMessage
+import github.leavesczy.compose_chat.base.provider.IFriendshipProvider
+import github.leavesczy.compose_chat.base.provider.IGroupProvider
 import github.leavesczy.compose_chat.base.provider.IMessageProvider
-import github.leavesczy.compose_chat.provider.ContextProvider
+import github.leavesczy.compose_chat.proxy.logic.FriendshipProvider
+import github.leavesczy.compose_chat.proxy.logic.GroupProvider
+import github.leavesczy.compose_chat.proxy.logic.MessageProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.chat.InputSelector
 import github.leavesczy.compose_chat.ui.logic.ComposeChat
 import github.leavesczy.compose_chat.utils.CompressImageUtils
-import github.leavesczy.matisse.MediaResource
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.system.measureTimeMillis
 
 /**
  * @Author: leavesCZY
@@ -54,20 +57,21 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
         }
     }
 
-    var chatPageViewState by mutableStateOf(
+    val chatPageViewState by mutableStateOf(
         value = ChatPageViewState(
             chat = chat,
-            topBarTitle = "",
+            topBarTitle = mutableStateOf(value = ""),
             listState = LazyListState(firstVisibleItemIndex = 0, firstVisibleItemScrollOffset = 0),
-            messageList = emptyList()
+            messageList = mutableStateOf(value = emptyList())
         )
     )
-        private set
 
-    var loadMessageViewState by mutableStateOf(
-        value = LoadMessageViewState(refreshing = false, loadFinish = false)
+    val loadMessageViewState by mutableStateOf(
+        value = LoadMessageViewState(
+            refreshing = mutableStateOf(value = false),
+            loadFinish = mutableStateOf(value = false)
+        )
     )
-        private set
 
     var textMessageInputted by mutableStateOf(value = TextFieldValue(text = ""))
         private set
@@ -75,8 +79,10 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
     var currentInputSelector by mutableStateOf(value = InputSelector.NONE)
         private set
 
+    private val messageProvider: IMessageProvider = MessageProvider()
+
     init {
-        ComposeChat.messageProvider.startReceive(
+        messageProvider.startReceive(
             chat = chat,
             messageListener = messageListener
         )
@@ -84,32 +90,27 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
         viewModelScope.launch {
             val name = when (chat) {
                 is Chat.PrivateChat -> {
-                    ComposeChat.friendshipProvider.getFriendProfile(friendId = chat.id)?.showName
+                    val friendshipProvider: IFriendshipProvider = FriendshipProvider()
+                    friendshipProvider.getFriendProfile(friendId = chat.id)?.showName
                 }
 
                 is Chat.GroupChat -> {
-                    ComposeChat.groupProvider.getGroupInfo(groupId = chat.id)?.name
+                    val groupProvider: IGroupProvider = GroupProvider()
+                    groupProvider.getGroupInfo(groupId = chat.id)?.name
                 }
             } ?: ""
-            chatPageViewState = chatPageViewState.copy(topBarTitle = name)
+            chatPageViewState.topBarTitle.value = name
         }
         loadMoreMessage()
     }
 
     fun loadMoreMessage() {
         viewModelScope.launch {
-            loadMessageViewState = loadMessageViewState.copy(refreshing = true)
-            val loadResult: LoadMessageResult
-            val loadDuration = measureTimeMillis {
-                loadResult = ComposeChat.messageProvider.getHistoryMessage(
-                    chat = chat,
-                    lastMessage = lastMessage
-                )
-            }
-            val delay = 500L - loadDuration
-            if (delay > 0) {
-                delay(timeMillis = delay)
-            }
+            loadMessageViewState.refreshing.value = true
+            val loadResult = messageProvider.getHistoryMessage(
+                chat = chat,
+                lastMessage = lastMessage
+            )
             val loadFinish = when (loadResult) {
                 is LoadMessageResult.Success -> {
                     addMessageToFooter(newMessageList = loadResult.messageList)
@@ -120,7 +121,8 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                     false
                 }
             }
-            loadMessageViewState = LoadMessageViewState(refreshing = false, loadFinish = loadFinish)
+            loadMessageViewState.refreshing.value = false
+            loadMessageViewState.loadFinish.value = loadFinish
         }
     }
 
@@ -132,11 +134,7 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
             input
         } else {
             if (input.text.length > TEXT_MSG_MAX_LENGTH) {
-                textMessageInputted.copy(
-                    text = input.text.substring(
-                        0, TEXT_MSG_MAX_LENGTH
-                    )
-                )
+                textMessageInputted.copy(text = input.text.substring(0, TEXT_MSG_MAX_LENGTH))
             } else {
                 input
             }
@@ -156,9 +154,7 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
         val messageAppend = currentSelectedText + emoji
         val selectedAppend = messageAppend.length
         textMessageInputted = TextFieldValue(
-            text = messageAppend + currentText.substring(
-                currentSelection, currentText.length
-            ),
+            text = messageAppend + currentText.substring(currentSelection, currentText.length),
             selection = TextRange(index = selectedAppend)
         )
     }
@@ -174,23 +170,22 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                 return@launch
             }
             textMessageInputted = TextFieldValue(text = "")
-            val messageChannel = ComposeChat.messageProvider.sendText(chat = chat, text = text)
+            val messageChannel = messageProvider.sendText(chat = chat, text = text)
             handleMessageChannel(messageChannel = messageChannel)
         }
     }
 
-    fun sendImageMessage(mediaResource: MediaResource) {
+    fun sendImageMessage(imageUri: Uri) {
         viewModelScope.launch {
             val imageFile = CompressImageUtils.compressImage(
-                context = ContextProvider.context,
-                mediaResource = mediaResource
+                context = context,
+                imageUri = imageUri
             )
             val imagePath = imageFile?.absolutePath
             if (imagePath.isNullOrBlank()) {
                 showToast(msg = "图片获取失败")
             } else {
-                val messageChannel =
-                    ComposeChat.messageProvider.sendImage(chat = chat, imagePath = imagePath)
+                val messageChannel = messageProvider.sendImage(chat = chat, imagePath = imagePath)
                 handleMessageChannel(messageChannel = messageChannel)
             }
         }
@@ -199,7 +194,7 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
     private suspend fun handleMessageChannel(messageChannel: Channel<Message>) {
         lateinit var sendingMessage: Message
         for (message in messageChannel) {
-            when (val state = message.messageDetail.state) {
+            when (val state = message.detail.state) {
                 MessageState.Sending -> {
                     sendingMessage = message
                     attachNewMessage(newMessage = message)
@@ -207,13 +202,13 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
 
                 MessageState.Completed -> {
                     resetMessageState(
-                        msgId = sendingMessage.messageDetail.msgId, messageState = state
+                        msgId = sendingMessage.detail.msgId, messageState = state
                     )
                 }
 
                 is MessageState.SendFailed -> {
                     resetMessageState(
-                        msgId = sendingMessage.messageDetail.msgId, messageState = state
+                        msgId = sendingMessage.detail.msgId, messageState = state
                     )
                     val failReason = state.reason
                     if (failReason.isNotBlank()) {
@@ -227,17 +222,17 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
     private fun resetMessageState(
         msgId: String, messageState: MessageState
     ) {
-        val index = allMessage.indexOfFirst { it.messageDetail.msgId == msgId }
+        val index = allMessage.indexOfFirst { it.detail.msgId == msgId }
         if (index >= 0) {
             val targetMessage = allMessage[index]
-            val messageDetail = targetMessage.messageDetail
+            val messageDetail = targetMessage.detail
             val newMessage = when (targetMessage) {
                 is ImageMessage -> {
-                    targetMessage.copy(detail = messageDetail.copy(state = messageState))
+                    targetMessage.copy(messageDetail = messageDetail.copy(state = messageState))
                 }
 
                 is TextMessage -> {
-                    targetMessage.copy(detail = messageDetail.copy(state = messageState))
+                    targetMessage.copy(messageDetail = messageDetail.copy(state = messageState))
                 }
 
                 is SystemMessage, is TimeMessage -> {
@@ -245,17 +240,17 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                 }
             }
             allMessage[index] = newMessage
-            chatPageViewState = chatPageViewState.copy(messageList = allMessage.toList())
+            chatPageViewState.messageList.value = allMessage.toList()
         }
     }
 
     private fun attachNewMessage(newMessage: Message) {
         val firstMessage = allMessage.getOrNull(0)
-        if (firstMessage == null || newMessage.messageDetail.timestamp - firstMessage.messageDetail.timestamp > 60) {
+        if (firstMessage == null || newMessage.detail.timestamp - firstMessage.detail.timestamp > 60) {
             allMessage.add(0, TimeMessage(targetMessage = newMessage))
         }
         allMessage.add(0, newMessage)
-        chatPageViewState = chatPageViewState.copy(messageList = allMessage.toList())
+        chatPageViewState.messageList.value = allMessage.toList()
         viewModelScope.launch {
             delay(timeMillis = 80)
             chatPageViewState.listState.scrollToItem(index = 0)
@@ -265,7 +260,7 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
     private fun addMessageToFooter(newMessageList: List<Message>) {
         if (newMessageList.isNotEmpty()) {
             if (allMessage.isNotEmpty()) {
-                if (allMessage[allMessage.size - 1].messageDetail.timestamp - newMessageList[0].messageDetail.timestamp > 60) {
+                if (allMessage[allMessage.size - 1].detail.timestamp - newMessageList[0].detail.timestamp > 60) {
                     allMessage.add(TimeMessage(targetMessage = allMessage[allMessage.size - 1]))
                 }
             }
@@ -274,14 +269,14 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                 val currentMsg = newMessageList[index]
                 val preMsg = newMessageList.getOrNull(index + 1)
                 allMessage.add(currentMsg)
-                if (preMsg == null || currentMsg.messageDetail.timestamp - preMsg.messageDetail.timestamp > 60 || filteredMsg >= 10) {
+                if (preMsg == null || currentMsg.detail.timestamp - preMsg.detail.timestamp > 60 || filteredMsg >= 10) {
                     allMessage.add(TimeMessage(targetMessage = currentMsg))
                     filteredMsg = 1
                 } else {
                     filteredMsg++
                 }
             }
-            chatPageViewState = chatPageViewState.copy(messageList = allMessage.toList())
+            chatPageViewState.messageList.value = allMessage.toList()
         }
     }
 
@@ -292,12 +287,12 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
     }
 
     private fun markMessageAsRead() {
-        ComposeChat.conversationProvider.cleanConversationUnreadMessageCount(chat = chat)
+        messageProvider.cleanConversationUnreadMessageCount(chat = chat)
     }
 
     override fun onCleared() {
         super.onCleared()
-        ComposeChat.messageProvider.stopReceive(messageListener = messageListener)
+        messageProvider.stopReceive(messageListener = messageListener)
         markMessageAsRead()
     }
 

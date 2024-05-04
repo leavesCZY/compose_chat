@@ -3,16 +3,15 @@ package github.leavesczy.compose_chat.ui.conversation.logic
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.C2CConversation
-import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.base.model.Conversation
-import github.leavesczy.compose_chat.base.model.GroupConversation
+import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.models.Chat
+import github.leavesczy.compose_chat.base.models.Conversation
+import github.leavesczy.compose_chat.base.models.ConversationType
+import github.leavesczy.compose_chat.base.provider.IConversationProvider
+import github.leavesczy.compose_chat.proxy.logic.ConversationProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.chat.ChatActivity
-import github.leavesczy.compose_chat.ui.logic.ComposeChat
 import kotlinx.coroutines.launch
 
 /**
@@ -22,37 +21,42 @@ import kotlinx.coroutines.launch
  */
 class ConversationViewModel : BaseViewModel() {
 
-    var pageViewState by mutableStateOf(
+    private val conversationProvider: IConversationProvider = ConversationProvider()
+
+    val pageViewState by mutableStateOf(
         value = ConversationPageViewState(
-            listState = LazyListState(firstVisibleItemIndex = 0, firstVisibleItemScrollOffset = 0),
-            conversationList = emptyList(),
+            listState = mutableStateOf(
+                value = LazyListState(
+                    firstVisibleItemIndex = 0,
+                    firstVisibleItemScrollOffset = 0
+                )
+            ),
+            conversationList = mutableStateOf(value = emptyList()),
             onClickConversation = ::onClickConversation,
             deleteConversation = ::deleteConversation,
             pinConversation = ::pinConversation
         )
     )
-        private set
 
     init {
         viewModelScope.launch {
-            ComposeChat.conversationProvider.conversationList.collect {
-                pageViewState = pageViewState.copy(conversationList = it)
+            conversationProvider.conversationList.collect {
+                pageViewState.conversationList.value = it
             }
         }
-        ComposeChat.conversationProvider.refreshConversationList()
-        ComposeChat.conversationProvider.refreshTotalUnreadMessageCount()
+        conversationProvider.refreshConversationList()
     }
 
     private fun onClickConversation(conversation: Conversation) {
-        when (conversation) {
-            is C2CConversation -> {
+        when (conversation.type) {
+            ConversationType.C2C -> {
                 ChatActivity.navTo(
                     context = context,
                     chat = Chat.PrivateChat(id = conversation.id)
                 )
             }
 
-            is GroupConversation -> {
+            ConversationType.Group -> {
                 ChatActivity.navTo(
                     context = context,
                     chat = Chat.GroupChat(id = conversation.id)
@@ -63,20 +67,18 @@ class ConversationViewModel : BaseViewModel() {
 
     private fun deleteConversation(conversation: Conversation) {
         viewModelScope.launch {
-            val result = when (conversation) {
-                is C2CConversation -> {
-                    ComposeChat.conversationProvider.deleteC2CConversation(userId = conversation.id)
+            val result = when (conversation.type) {
+                ConversationType.C2C -> {
+                    conversationProvider.deleteC2CConversation(userId = conversation.id)
                 }
 
-                is GroupConversation -> {
-                    ComposeChat.conversationProvider.deleteGroupConversation(
-                        groupId = conversation.id
-                    )
+                ConversationType.Group -> {
+                    conversationProvider.deleteGroupConversation(groupId = conversation.id)
                 }
             }
             when (result) {
                 is ActionResult.Success -> {
-                    ComposeChat.conversationProvider.refreshConversationList()
+                    conversationProvider.refreshConversationList()
                 }
 
                 is ActionResult.Failed -> {
@@ -88,7 +90,7 @@ class ConversationViewModel : BaseViewModel() {
 
     private fun pinConversation(conversation: Conversation, pin: Boolean) {
         viewModelScope.launch {
-            ComposeChat.conversationProvider.pinConversation(
+            conversationProvider.pinConversation(
                 conversation = conversation,
                 pin = pin
             )

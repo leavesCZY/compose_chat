@@ -2,22 +2,25 @@ package github.leavesczy.compose_chat.ui.conversation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,16 +38,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ChainStyle
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
-import androidx.constraintlayout.compose.atLeast
-import androidx.lifecycle.viewmodel.compose.viewModel
-import github.leavesczy.compose_chat.base.model.Conversation
+import github.leavesczy.compose_chat.base.models.Conversation
 import github.leavesczy.compose_chat.extend.scrim
 import github.leavesczy.compose_chat.ui.conversation.logic.ConversationPageViewState
-import github.leavesczy.compose_chat.ui.conversation.logic.ConversationViewModel
-import github.leavesczy.compose_chat.ui.widgets.CoilImage
+import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 
 /**
  * @Author: leavesCZY
@@ -52,14 +49,8 @@ import github.leavesczy.compose_chat.ui.widgets.CoilImage
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun ConversationPage() {
-    val conversationViewModel = viewModel<ConversationViewModel>()
-    ConversationContentPage(pageViewState = conversationViewModel.pageViewState)
-}
-
-@Composable
-private fun ConversationContentPage(pageViewState: ConversationPageViewState) {
-    val conversationList = pageViewState.conversationList
+fun ConversationPage(pageViewState: ConversationPageViewState) {
+    val conversationList by pageViewState.conversationList
     if (conversationList.isEmpty()) {
         Text(
             modifier = Modifier
@@ -74,8 +65,8 @@ private fun ConversationContentPage(pageViewState: ConversationPageViewState) {
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            state = pageViewState.listState,
-            contentPadding = PaddingValues(bottom = 60.dp),
+            state = pageViewState.listState.value,
+            contentPadding = PaddingValues(bottom = 30.dp),
         ) {
             items(
                 items = conversationList,
@@ -88,7 +79,9 @@ private fun ConversationContentPage(pageViewState: ConversationPageViewState) {
             ) {
                 ConversationItem(
                     conversation = it,
-                    pageViewState = pageViewState
+                    onClickConversation = pageViewState.onClickConversation,
+                    deleteConversation = pageViewState.deleteConversation,
+                    pinConversation = pageViewState.pinConversation
                 )
             }
         }
@@ -96,17 +89,17 @@ private fun ConversationContentPage(pageViewState: ConversationPageViewState) {
 }
 
 @Composable
-private fun LazyItemScope.ConversationItem(
+private fun ConversationItem(
     conversation: Conversation,
-    pageViewState: ConversationPageViewState
+    onClickConversation: (Conversation) -> Unit,
+    deleteConversation: (Conversation) -> Unit,
+    pinConversation: (Conversation, Boolean) -> Unit
 ) {
     var menuExpanded by remember {
         mutableStateOf(value = false)
     }
-    ConstraintLayout(
+    Box(
         modifier = Modifier
-            .animateItemPlacement()
-            .background(color = MaterialTheme.colorScheme.background)
             .then(
                 other = if (conversation.isPinned) {
                     Modifier.scrim(color = Color(0x26CCCCCC))
@@ -115,137 +108,137 @@ private fun LazyItemScope.ConversationItem(
                 }
             )
             .fillMaxWidth()
+            .height(height = 70.dp)
             .combinedClickable(
                 onClick = {
-                    pageViewState.onClickConversation(conversation)
+                    onClickConversation(conversation)
                 },
                 onLongClick = {
                     menuExpanded = true
                 }
-            )
+            ),
+        contentAlignment = Alignment.Center
     ) {
-        val (avatarRef, unreadMessageCountRef, nicknameRef, lastMsgRef, timeRef, dividerRef, dropdownMenuRef) = createRefs()
-        val verticalChain =
-            createVerticalChain(nicknameRef, lastMsgRef, chainStyle = ChainStyle.Packed)
-        constrain(ref = verticalChain) {
-            top.linkTo(anchor = parent.top)
-            bottom.linkTo(anchor = parent.bottom)
-        }
-        CoilImage(
+        Row(
             modifier = Modifier
-                .constrainAs(ref = avatarRef) {
-                    start.linkTo(anchor = parent.start)
-                    linkTo(top = parent.top, bottom = parent.bottom)
-                }
-                .padding(start = 14.dp, top = 8.dp, bottom = 8.dp)
-                .size(size = 50.dp)
-                .clip(shape = RoundedCornerShape(size = 6.dp)),
-            data = conversation.faceUrl
-        )
-        if (conversation.unreadMessageCount > 0) {
-            val count = if (conversation.unreadMessageCount > 99) {
-                "99+"
-            } else {
-                conversation.unreadMessageCount.toString()
-            }
-            Text(
-                modifier = Modifier
-                    .constrainAs(ref = unreadMessageCountRef) {
-                        start.linkTo(anchor = avatarRef.end)
-                        top.linkTo(anchor = avatarRef.top, margin = 2.dp)
-                        end.linkTo(anchor = avatarRef.end)
-                        width = Dimension.preferredWrapContent.atLeast(dp = 20.dp)
-                        height = Dimension.preferredWrapContent.atLeast(dp = 20.dp)
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier.fillMaxHeight()
+            ) {
+                ComponentImage(
+                    modifier = Modifier
+                        .align(alignment = Alignment.Center)
+                        .padding(horizontal = 12.dp)
+                        .size(size = 50.dp)
+                        .clip(shape = RoundedCornerShape(size = 6.dp)),
+                    model = conversation.faceUrl
+                )
+                val unreadMessageCount = conversation.unreadMessageCount
+                if (unreadMessageCount > 0) {
+                    val count = if (unreadMessageCount > 99) {
+                        "99+"
+                    } else {
+                        unreadMessageCount.toString()
                     }
-                    .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
-                    .wrapContentSize(align = Alignment.Center),
-                text = count,
-                color = Color.White,
-                fontSize = 12.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-        Text(
-            modifier = Modifier
-                .constrainAs(ref = nicknameRef) {
-                    linkTo(
-                        start = avatarRef.end,
-                        end = timeRef.start,
-                        startMargin = 12.dp,
-                        endMargin = 12.dp
+                    Text(
+                        modifier = Modifier
+                            .align(alignment = Alignment.TopEnd)
+                            .padding(top = 2.dp)
+                            .size(size = 20.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = CircleShape
+                            )
+                            .wrapContentSize(align = Alignment.Center),
+                        text = count,
+                        color = Color.White,
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center
                     )
-                    width = Dimension.fillToConstraints
                 }
-                .padding(bottom = 1.dp),
-            text = conversation.name,
-            fontSize = 17.sp,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
-        Text(
-            modifier = Modifier
-                .constrainAs(ref = lastMsgRef) {
-                    linkTo(start = nicknameRef.start, end = parent.end, endMargin = 12.dp)
-                    width = Dimension.fillToConstraints
+            }
+            Column(
+                modifier = Modifier
+                    .weight(weight = 1f)
+                    .fillMaxHeight()
+                    .padding(end = 12.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(weight = 1f)
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .weight(weight = 1f),
+                        text = conversation.name,
+                        fontSize = 18.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        modifier = Modifier,
+                        text = conversation.lastMessage.detail.conversationTime,
+                        fontSize = 12.sp
+                    )
                 }
-                .padding(top = 1.dp),
-            text = conversation.formatMsg,
-            fontSize = 14.sp,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
-        Text(
-            modifier = Modifier
-                .constrainAs(ref = timeRef) {
-                    centerVerticallyTo(other = nicknameRef)
-                    end.linkTo(anchor = parent.end, margin = 12.dp)
-                    height = Dimension.wrapContent
-                },
-            text = conversation.lastMessage.messageDetail.conversationTime,
-            fontSize = 12.sp,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
-        Divider(
-            modifier = Modifier
-                .constrainAs(ref = dividerRef) {
-                    linkTo(start = avatarRef.end, end = parent.end)
-                    bottom.linkTo(anchor = parent.bottom)
-                    width = Dimension.fillToConstraints
-                },
-            thickness = 0.2.dp
-        )
+                Text(
+                    modifier = Modifier
+                        .padding(top = 2.dp),
+                    text = conversation.formatMsg,
+                    fontSize = 15.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(weight = 1f)
+                )
+                HorizontalDivider(
+                    modifier = Modifier,
+                    thickness = 0.2.dp
+                )
+            }
+        }
         MoreActionDropdownMenu(
-            modifier = Modifier
-                .constrainAs(ref = dropdownMenuRef) {
-                    linkTo(start = parent.start, end = parent.end, bias = 0.3f)
-                    linkTo(top = parent.top, bottom = parent.bottom)
-                },
             expanded = menuExpanded,
+            conversation = conversation,
             onDismissRequest = {
                 menuExpanded = false
             },
-            conversation = conversation,
-            deleteConversation = pageViewState.deleteConversation,
-            pinConversation = pageViewState.pinConversation
+            deleteConversation = deleteConversation,
+            pinConversation = pinConversation
         )
     }
 }
 
 @Composable
 private fun MoreActionDropdownMenu(
-    modifier: Modifier,
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     conversation: Conversation,
     deleteConversation: (Conversation) -> Unit,
     pinConversation: (Conversation, Boolean) -> Unit
+
 ) {
     Box(
-        modifier = modifier
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(align = Alignment.Center)
     ) {
         DropdownMenu(
-            modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+            modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.background),
             expanded = expanded,
             onDismissRequest = onDismissRequest
         ) {
@@ -253,6 +246,7 @@ private fun MoreActionDropdownMenu(
                 modifier = Modifier,
                 text = {
                     Text(
+                        modifier = Modifier,
                         text = if (conversation.isPinned) {
                             "取消置顶"
                         } else {
@@ -270,6 +264,7 @@ private fun MoreActionDropdownMenu(
                 modifier = Modifier,
                 text = {
                     Text(
+                        modifier = Modifier,
                         text = "删除会话",
                         style = TextStyle(fontSize = 18.sp)
                     )

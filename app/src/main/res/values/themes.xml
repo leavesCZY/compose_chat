@@ -1,7 +1,12 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.ComposeChat.Base" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges
+        </item>
         <item name="android:windowAnimationStyle">@style/activityAnimationTransverse</item>
+        <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="s">500</item>
     </style>
 
     <style name="activityAnimationTransverse" parent="@android:style/Animation">
@@ -13,8 +18,11 @@
     </style>
 
     <style name="Theme.ComposeChat" parent="Theme.ComposeChat.Base">
-        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
         <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowSplashScreenBackground" tools:targetApi="s">@android:color/white
+        </item>
     </style>
 
 </resources>

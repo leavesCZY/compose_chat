@@ -12,20 +12,19 @@ import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMMessage
 import com.tencent.imsdk.v2.V2TIMUserFullInfo
 import com.tencent.imsdk.v2.V2TIMValueCallback
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.C2CConversation
-import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.base.model.Conversation
-import github.leavesczy.compose_chat.base.model.GroupConversation
-import github.leavesczy.compose_chat.base.model.GroupMemberProfile
-import github.leavesczy.compose_chat.base.model.ImageElement
-import github.leavesczy.compose_chat.base.model.ImageMessage
-import github.leavesczy.compose_chat.base.model.Message
-import github.leavesczy.compose_chat.base.model.MessageDetail
-import github.leavesczy.compose_chat.base.model.MessageState
-import github.leavesczy.compose_chat.base.model.PersonProfile
-import github.leavesczy.compose_chat.base.model.SystemMessage
-import github.leavesczy.compose_chat.base.model.TextMessage
+import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.models.Chat
+import github.leavesczy.compose_chat.base.models.Conversation
+import github.leavesczy.compose_chat.base.models.ConversationType
+import github.leavesczy.compose_chat.base.models.GroupMemberProfile
+import github.leavesczy.compose_chat.base.models.ImageElement
+import github.leavesczy.compose_chat.base.models.ImageMessage
+import github.leavesczy.compose_chat.base.models.Message
+import github.leavesczy.compose_chat.base.models.MessageDetail
+import github.leavesczy.compose_chat.base.models.MessageState
+import github.leavesczy.compose_chat.base.models.PersonProfile
+import github.leavesczy.compose_chat.base.models.SystemMessage
+import github.leavesczy.compose_chat.base.models.TextMessage
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -61,6 +60,7 @@ internal object Converters {
                 nickname = profile.nickName ?: "",
                 remark = profile.nickName ?: "",
                 faceUrl = profile.faceUrl ?: "",
+                addTime = 0,
                 signature = profile.selfSignature ?: ""
             )
         }
@@ -73,6 +73,7 @@ internal object Converters {
             remark = friendInfo.friendRemark ?: "",
             faceUrl = friendInfo.userProfile.faceUrl ?: "",
             signature = friendInfo.userProfile.selfSignature ?: "",
+            addTime = friendInfo.friendAddTime,
             isFriend = true
         )
     }
@@ -84,6 +85,7 @@ internal object Converters {
             remark = friendInfo.friendInfo.friendRemark ?: "",
             faceUrl = friendInfo.friendInfo.userProfile.faceUrl ?: "",
             signature = friendInfo.friendInfo.userProfile.selfSignature ?: "",
+            addTime = friendInfo.friendInfo.friendAddTime,
             isFriend = friendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_BOTH_WAY || friendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_IN_MY_FRIEND_LIST
         )
     }
@@ -96,6 +98,7 @@ internal object Converters {
             faceUrl = memberFullInfo.faceUrl ?: "",
             nickname = memberFullInfo.nickName ?: "",
             remark = memberFullInfo.friendRemark ?: "",
+            addTime = 0,
             signature = ""
         )
         return GroupMemberProfile(
@@ -136,6 +139,7 @@ internal object Converters {
             faceUrl = timMessage.faceUrl ?: "",
             nickname = timMessage.nickName ?: "",
             remark = timMessage.friendRemark ?: "",
+            addTime = 0,
             signature = ""
         )
         val messageDetail = MessageDetail(
@@ -143,12 +147,12 @@ internal object Converters {
             state = convertMessageState(timMessage.status),
             timestamp = timMessage.timestamp,
             sender = senderProfile,
-            isSelfMessage = timMessage.isSelf
+            isOwnMessage = timMessage.isSelf
         )
         val message = when (timMessage.elemType) {
             V2TIMMessage.V2TIM_ELEM_TYPE_TEXT -> {
                 TextMessage(
-                    detail = messageDetail,
+                    messageDetail = messageDetail,
                     text = timMessage.textElem?.text ?: ""
                 )
             }
@@ -160,7 +164,7 @@ internal object Converters {
                     val large = imageList.getOrNull(1).toImageElement()
                     val thumb = imageList.getOrNull(2).toImageElement()
                     ImageMessage(
-                        detail = messageDetail,
+                        messageDetail = messageDetail,
                         original = origin!!,
                         large = large,
                         thumb = thumb
@@ -178,7 +182,7 @@ internal object Converters {
                 null
             }
         } ?: TextMessage(
-            detail = messageDetail,
+            messageDetail = messageDetail,
             text = "[不支持的消息类型] - ${timMessage.elemType}"
         )
         message.tag = timMessage
@@ -212,9 +216,10 @@ internal object Converters {
                     faceUrl = "",
                     nickname = "",
                     remark = "",
+                    addTime = 0,
                     signature = ""
                 ),
-                isSelfMessage = false
+                isOwnMessage = false
             )
             val memberList = groupTipsElem.memberList
             val opMember = groupTipsElem.opMember
@@ -265,7 +270,7 @@ internal object Converters {
                 }
             }
             return SystemMessage(
-                detail = messageDetail, tips = tips
+                messageDetail = messageDetail, tips = tips
             )
         }
         return null
@@ -289,7 +294,7 @@ internal object Converters {
             }
 
             V2TIMMessage.V2TIM_MSG_STATUS_SEND_FAIL -> {
-                MessageState.SendFailed("unknown")
+                MessageState.SendFailed(reason = "unknown")
             }
 
             else -> {
@@ -321,12 +326,12 @@ internal object Converters {
     }
 
     fun getConversationKey(conversation: Conversation): String {
-        return when (conversation) {
-            is C2CConversation -> {
+        return when (conversation.type) {
+            ConversationType.C2C -> {
                 getC2CConversationKey(userId = conversation.id)
             }
 
-            is GroupConversation -> {
+            ConversationType.Group -> {
                 getGroupConversationKey(groupId = conversation.id)
             }
         }

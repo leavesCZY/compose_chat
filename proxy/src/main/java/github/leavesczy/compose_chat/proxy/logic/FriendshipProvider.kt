@@ -8,12 +8,12 @@ import com.tencent.imsdk.v2.V2TIMFriendOperationResult
 import com.tencent.imsdk.v2.V2TIMFriendshipListener
 import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMValueCallback
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.PersonProfile
+import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.models.PersonProfile
 import github.leavesczy.compose_chat.base.provider.IFriendshipProvider
 import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
 import github.leavesczy.compose_chat.proxy.utils.Converters
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -25,7 +25,7 @@ import kotlin.coroutines.resume
  */
 class FriendshipProvider : IFriendshipProvider {
 
-    override val friendList = MutableStateFlow<List<PersonProfile>>(value = emptyList())
+    override val friendList = MutableSharedFlow<List<PersonProfile>>()
 
     init {
         V2TIMManager.getFriendshipManager().addFriendListener(object : V2TIMFriendshipListener() {
@@ -50,9 +50,9 @@ class FriendshipProvider : IFriendshipProvider {
 
     override fun refreshFriendList() {
         ChatCoroutineScope.launch {
-            friendList.emit(value = getFriendListOrigin()?.sortedBy {
-                it.showName
-            } ?: emptyList())
+            friendList.emit(value = getFriendListOrigin()?.sortedByDescending {
+                it.addTime
+            }?.toList() ?: emptyList())
         }
     }
 
@@ -174,10 +174,6 @@ class FriendshipProvider : IFriendshipProvider {
                     }
                 })
         }
-    }
-
-    override suspend fun clear() {
-        friendList.emit(value = emptyList())
     }
 
 }

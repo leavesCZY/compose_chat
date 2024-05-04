@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.ui.friendship.logic.FriendshipDialogViewState
-import github.leavesczy.compose_chat.ui.logic.ComposeChat
+import github.leavesczy.compose_chat.ui.logic.GroupIds
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.ui.widgets.ComposeBottomSheetDialog
@@ -30,15 +30,15 @@ import github.leavesczy.compose_chat.ui.widgets.ComposeBottomSheetDialog
 @Composable
 fun FriendshipDialog(viewState: FriendshipDialogViewState) {
     ComposeBottomSheetDialog(
-        visible = viewState.visible,
-        onDismissRequest = viewState.onDismissRequest
+        visible = viewState.visible.value,
+        onDismissRequest = viewState.dismissDialog
     ) {
         var userId by remember {
             mutableStateOf(value = "")
         }
         Column(
             modifier = Modifier
-                .fillMaxHeight(fraction = 0.8f)
+                .fillMaxHeight(fraction = 0.90f)
                 .clip(shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                 .background(color = MaterialTheme.colorScheme.background)
                 .padding(top = 20.dp)
@@ -66,22 +66,22 @@ fun FriendshipDialog(viewState: FriendshipDialogViewState) {
                 }
             }
             CommonButton(text = "加入交流群 0x01") {
-                viewState.joinGroup(ComposeChat.MeetingGroupId01)
+                viewState.joinGroup(GroupIds.meetingGroupId01)
             }
             CommonButton(text = "加入交流群 0x02") {
-                viewState.joinGroup(ComposeChat.MeetingGroupId02)
+                viewState.joinGroup(GroupIds.meetingGroupId02)
             }
             CommonButton(text = "加入交流群 0x03") {
-                viewState.joinGroup(ComposeChat.MeetingGroupId03)
+                viewState.joinGroup(GroupIds.meetingGroupId03)
             }
             CommonButton(text = "加入交流群 0x04") {
-                viewState.joinGroup(ComposeChat.MeetingGroupId04)
+                viewState.joinGroup(GroupIds.meetingGroupId04)
             }
             CommonButton(text = "加入交流群 0x05") {
-                viewState.joinGroup(ComposeChat.MeetingGroupId05)
+                viewState.joinGroup(GroupIds.meetingGroupId05)
             }
             CommonButton(text = "加入交流群 0x06") {
-                viewState.joinGroup(ComposeChat.MeetingGroupId06)
+                viewState.joinGroup(GroupIds.meetingGroupId06)
             }
         }
     }

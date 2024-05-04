@@ -42,7 +42,7 @@ jobs:
           body: "create by workflows"
           allowUpdates: true
           artifactErrorsFailBuild: true
-          generateReleaseNotes: true
+          generateReleaseNotes: false
           token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ steps.currentTime.outputs.time }}
           name: v${{ steps.currentTime.outputs.time }}

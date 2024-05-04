@@ -1,3 +1,10 @@
+plugins {
+    alias(libs.plugins.chat.android.application)
+    alias(libs.plugins.chat.android.compose)
+    alias(libs.plugins.chat.kotlin.parcelize)
+    alias(libs.plugins.chat.leavesczy.trace)
+}
+
 android {
     namespace = "github.leavesczy.compose_chat"
 }
@@ -5,17 +12,13 @@ android {
 dependencies {
     implementation(project(":base"))
     implementation(project(":proxy"))
-    implementationTest()
-    implementationCompose()
-    implementationCoil()
-    implementation(Dependencies.Accompanist.uiController)
-    implementation(Dependencies.Components.appcompat)
-    implementation(Dependencies.Components.exifinterface)
-    implementation(Dependencies.Components.coroutines)
-    implementation(Dependencies.Components.matisse)
-}
-
-composeClickTrace {
-    onClickClass = "github.leavesczy.compose_chat.extend.ComposeOnClick"
-    onClickWhiteList = "notCheck"
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.exifinterface)
+    implementation(libs.kotlinx.coroutines)
+    implementation(libs.leavesczy.matisse)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
+    implementation(libs.coil.network.okhttp)
 }

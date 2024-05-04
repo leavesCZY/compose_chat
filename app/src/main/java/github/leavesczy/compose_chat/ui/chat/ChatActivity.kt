@@ -15,18 +15,18 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import github.leavesczy.compose_chat.R
-import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.base.model.ImageMessage
-import github.leavesczy.compose_chat.base.model.TextMessage
+import github.leavesczy.compose_chat.base.models.Chat
+import github.leavesczy.compose_chat.base.models.ImageMessage
+import github.leavesczy.compose_chat.base.models.TextMessage
 import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.chat.logic.ChatPageAction
 import github.leavesczy.compose_chat.ui.chat.logic.ChatViewModel
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
-import github.leavesczy.compose_chat.ui.widgets.SystemBarTheme
 
 /**
  * @Author: leavesCZY
@@ -62,7 +62,7 @@ class ChatActivity : BaseActivity() {
 
     private val chatPageAction = ChatPageAction(
         onClickAvatar = {
-            val messageSenderId = it.messageDetail.sender.id
+            val messageSenderId = it.detail.sender.id
             if (messageSenderId.isNotBlank()) {
                 FriendProfileActivity.navTo(context = this, friendId = messageSenderId)
             }
@@ -77,7 +77,7 @@ class ChatActivity : BaseActivity() {
                             .coerceAtLeast(minimumValue = 0)
                         PreviewImageActivity.navTo(
                             context = this,
-                            imageUrlList = allImageUrl,
+                            imageUriList = allImageUrl,
                             initialPage = initialPage
                         )
                     }
@@ -107,11 +107,7 @@ class ChatActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent(
-            systemBarTheme = {
-                SystemBarTheme(navigationBarColor = MaterialTheme.colorScheme.onSecondaryContainer)
-            }
-        ) {
+        setContent {
             ChatPage(
                 chatViewModel = chatViewModel,
                 chatPageAction = chatPageAction
@@ -133,12 +129,11 @@ class ChatActivity : BaseActivity() {
 @Composable
 private fun ChatPage(chatViewModel: ChatViewModel, chatPageAction: ChatPageAction) {
     val chatPageViewState = chatViewModel.chatPageViewState
-    val loadMessageViewState = chatViewModel.loadMessageViewState
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             ChatPageTopBar(
-                title = chatPageViewState.topBarTitle,
+                title = chatPageViewState.topBarTitle.value,
                 chat = chatPageViewState.chat
             )
         },
@@ -146,24 +141,31 @@ private fun ChatPage(chatViewModel: ChatViewModel, chatPageAction: ChatPageActio
             ChatPageBottomBar(chatViewModel = chatViewModel)
         }
     ) { innerPadding ->
+        val refreshing by chatViewModel.loadMessageViewState.refreshing
+        val loadFinish by chatViewModel.loadMessageViewState.loadFinish
         val pullRefreshState = rememberPullRefreshState(
-            refreshing = loadMessageViewState.refreshing,
+            refreshing = refreshing,
             onRefresh = {
                 chatViewModel.loadMoreMessage()
-            })
+            }
+        )
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues = innerPadding)
                 .pullRefresh(
                     state = pullRefreshState,
-                    enabled = !loadMessageViewState.loadFinish
+                    enabled = !loadFinish
                 )
         ) {
-            MessagePanel(chatPageViewState = chatPageViewState, chatPageAction = chatPageAction)
+            MessagePanel(
+                pageViewState = chatPageViewState,
+                pageAction = chatPageAction
+            )
             PullRefreshIndicator(
-                modifier = Modifier.align(alignment = Alignment.TopCenter),
-                refreshing = loadMessageViewState.refreshing,
+                modifier = Modifier
+                    .align(alignment = Alignment.TopCenter),
+                refreshing = refreshing,
                 state = pullRefreshState,
                 backgroundColor = MaterialTheme.colorScheme.onSecondaryContainer,
                 contentColor = MaterialTheme.colorScheme.primary

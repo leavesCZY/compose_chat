@@ -1,9 +1,9 @@
 package github.leavesczy.compose_chat.base.provider
 
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.GroupMemberProfile
-import github.leavesczy.compose_chat.base.model.GroupProfile
-import kotlinx.coroutines.flow.StateFlow
+import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.models.GroupMemberProfile
+import github.leavesczy.compose_chat.base.models.GroupProfile
+import kotlinx.coroutines.flow.SharedFlow
 
 /**
  * @Author: leavesCZY
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
  */
 interface IGroupProvider {
 
-    val joinedGroupList: StateFlow<List<GroupProfile>>
+    val joinedGroupList: SharedFlow<List<GroupProfile>>
 
     fun refreshJoinedGroupList()
 
@@ -27,7 +27,5 @@ interface IGroupProvider {
     suspend fun setAvatar(groupId: String, avatarUrl: String): ActionResult
 
     suspend fun transferGroupOwner(groupId: String, newOwnerUserID: String): ActionResult
-
-    suspend fun clear()
 
 }

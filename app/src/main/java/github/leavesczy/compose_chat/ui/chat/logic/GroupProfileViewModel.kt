@@ -4,9 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import github.leavesczy.compose_chat.base.model.ActionResult
+import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.provider.IGroupProvider
+import github.leavesczy.compose_chat.proxy.logic.GroupProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
-import github.leavesczy.compose_chat.ui.logic.ComposeChat
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -17,10 +18,14 @@ import kotlinx.coroutines.launch
  */
 class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
 
-    var pageViewState by mutableStateOf<GroupProfilePageViewState?>(
-        value = null
+    private val groupProvider: IGroupProvider = GroupProvider()
+
+    val pageViewState by mutableStateOf(
+        value = GroupProfilePageViewState(
+            groupProfile = mutableStateOf(value = null),
+            memberList = mutableStateOf(value = emptyList())
+        )
     )
-        private set
 
     var loadingDialogVisible by mutableStateOf(value = false)
         private set
@@ -29,17 +34,16 @@ class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
         viewModelScope.launch {
             loadingDialog(visible = true)
             val groupProfileAsync = async {
-                ComposeChat.groupProvider.getGroupInfo(groupId = groupId)
+                groupProvider.getGroupInfo(groupId = groupId)
             }
             val memberListAsync = async {
-                ComposeChat.groupProvider.getGroupMemberList(groupId = groupId)
+                groupProvider.getGroupMemberList(groupId = groupId)
             }
             val groupProfile = groupProfileAsync.await()
+            val memberList = memberListAsync.await()
             if (groupProfile != null) {
-                pageViewState = GroupProfilePageViewState(
-                    groupProfile = groupProfile,
-                    memberList = memberListAsync.await()
-                )
+                pageViewState.groupProfile.value = groupProfile
+                pageViewState.memberList.value = memberList
             }
             loadingDialog(visible = false)
         }
@@ -47,20 +51,20 @@ class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
 
     private fun getGroupProfile() {
         viewModelScope.launch {
-            ComposeChat.groupProvider.getGroupInfo(groupId = groupId)?.let {
-                pageViewState = pageViewState?.copy(groupProfile = it)
+            groupProvider.getGroupInfo(groupId = groupId)?.let {
+                pageViewState.groupProfile.value = it
             }
         }
     }
 
     suspend fun quitGroup(): ActionResult {
-        return ComposeChat.groupProvider.quitGroup(groupId = groupId)
+        return groupProvider.quitGroup(groupId = groupId)
     }
 
     fun setAvatar(avatarUrl: String) {
         viewModelScope.launch {
             when (val result =
-                ComposeChat.groupProvider.setAvatar(groupId = groupId, avatarUrl = avatarUrl)) {
+                groupProvider.setAvatar(groupId = groupId, avatarUrl = avatarUrl)) {
                 ActionResult.Success -> {
                     getGroupProfile()
                     showToast(msg = "修改成功")

@@ -1,9 +1,9 @@
 package github.leavesczy.compose_chat.base.provider
 
 import android.app.Application
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.PersonProfile
-import github.leavesczy.compose_chat.base.model.ServerState
+import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.models.PersonProfile
+import github.leavesczy.compose_chat.base.models.ServerState
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 

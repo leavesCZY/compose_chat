@@ -21,7 +21,7 @@ import github.leavesczy.compose_chat.extend.clickableNoRipple
 @Composable
 fun EmojiTable(appendEmoji: (String) -> Unit) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(count = 7),
+        columns = GridCells.Fixed(count = 6),
         contentPadding = PaddingValues(start = 4.dp, end = 4.dp, bottom = 12.dp)
     ) {
         items(

@@ -20,7 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,24 +42,20 @@ import github.leavesczy.compose_chat.extend.clickableNoRipple
 @Composable
 fun MessageDialog(
     visible: Boolean,
+    dismissOnBackPress: Boolean = true,
+    dismissOnClickOutside: Boolean = true,
     title: String,
     leftButtonText: String,
     rightButtonText: String,
+    onDismissRequest: () -> Unit,
     onClickLeftButton: () -> Unit,
     onClickRightButton: () -> Unit
 ) {
     val onClickLeft by rememberUpdatedState(onClickLeftButton)
     val onClickRight by rememberUpdatedState(onClickRightButton)
-    BackHandler(enabled = visible) {
-
+    if (dismissOnBackPress) {
+        BackHandler(enabled = visible, onBack = onDismissRequest)
     }
-    SystemBarTheme(
-        navigationBarColor = if (visible) {
-            Color.Transparent
-        } else {
-            MaterialTheme.colorScheme.background
-        }
-    )
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(
@@ -78,7 +74,9 @@ fun MessageDialog(
         Box(
             modifier = Modifier
                 .clickableNoRipple {
-
+                    if (dismissOnClickOutside) {
+                        onDismissRequest()
+                    }
                 }
                 .fillMaxSize()
                 .background(color = Color(0x99000000))
@@ -103,7 +101,7 @@ fun MessageDialog(
                     lineHeight = 24.sp,
                     textAlign = TextAlign.Center,
                 )
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth(),
                     thickness = 0.4.dp

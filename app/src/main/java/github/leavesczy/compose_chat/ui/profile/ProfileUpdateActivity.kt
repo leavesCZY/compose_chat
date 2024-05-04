@@ -1,7 +1,6 @@
 package github.leavesczy.compose_chat.ui.profile
 
 import android.os.Bundle
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -18,17 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import github.leavesczy.compose_chat.ui.base.BaseActivity
+import github.leavesczy.compose_chat.ui.profile.logic.ProfileUpdatePageViewStata
 import github.leavesczy.compose_chat.ui.profile.logic.ProfileUpdateViewModel
-import github.leavesczy.compose_chat.ui.widgets.CoilImageEngine
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
 import github.leavesczy.compose_chat.utils.randomFaceUrl
-import github.leavesczy.matisse.DefaultMediaFilter
-import github.leavesczy.matisse.Matisse
-import github.leavesczy.matisse.MatisseContract
-import github.leavesczy.matisse.MediaStoreCaptureStrategy
-import github.leavesczy.matisse.MimeType
 
 /**
  * @Author: leavesCZY
@@ -41,34 +35,26 @@ class ProfileUpdateActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val profileUpdateViewModel = viewModel<ProfileUpdateViewModel>()
-            ProfileUpdatePage(profileUpdateViewModel = profileUpdateViewModel)
+            ProfileUpdatePage(pageViewStata = profileUpdateViewModel.profileUpdatePageViewStata)
         }
     }
 
 }
 
 @Composable
-private fun ProfileUpdatePage(profileUpdateViewModel: ProfileUpdateViewModel) {
-    val profileUpdatePageViewStata = profileUpdateViewModel.profileUpdatePageViewStata
-    if (profileUpdatePageViewStata != null) {
-        val personProfile = profileUpdatePageViewStata.personProfile
-        val selectPictureLauncher = rememberLauncherForActivityResult(
-            contract = MatisseContract()
-        ) { result ->
-            if (result.isNotEmpty()) {
-                profileUpdateViewModel.onAvatarUrlChanged(mediaResource = result[0])
-            }
-        }
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            contentWindowInsets = WindowInsets.navigationBars
-        ) { innerPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues = innerPadding)
-                    .verticalScroll(state = rememberScrollState())
-            ) {
+private fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets.navigationBars
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues = innerPadding)
+                .verticalScroll(state = rememberScrollState())
+        ) {
+            val personProfile = pageViewStata.personProfile.value
+            if (personProfile != null) {
                 ProfilePanel(
                     title = personProfile.nickname,
                     subtitle = personProfile.signature,
@@ -88,7 +74,7 @@ private fun ProfileUpdatePage(profileUpdateViewModel: ProfileUpdateViewModel) {
                                 if (it.length > 16) {
                                     return@CommonOutlinedTextField
                                 }
-                                profileUpdateViewModel.onNicknameChanged(nickname = it)
+                                pageViewStata.onNicknameChanged(it)
                             },
                             label = "nickname"
                         )
@@ -101,26 +87,15 @@ private fun ProfileUpdatePage(profileUpdateViewModel: ProfileUpdateViewModel) {
                                 if (it.length > 40) {
                                     return@CommonOutlinedTextField
                                 }
-                                profileUpdateViewModel.onSignatureChanged(signature = it)
+                                pageViewStata.onSignatureChanged(it)
                             },
                             label = "signature"
                         )
-                        CommonButton(text = "随机图片") {
-                            profileUpdateViewModel.onAvatarUrlChanged(imageUrl = randomFaceUrl())
-                        }
-                        CommonButton(text = "本地图片") {
-                            val matisse = Matisse(
-                                maxSelectable = 1,
-                                mediaFilter = DefaultMediaFilter(
-                                    supportedMimeTypes = MimeType.ofImage(hasGif = true)
-                                ),
-                                imageEngine = CoilImageEngine(),
-                                captureStrategy = MediaStoreCaptureStrategy()
-                            )
-                            selectPictureLauncher.launch(matisse)
+                        CommonButton(text = "随机头像") {
+                            pageViewStata.onAvatarUrlChanged(randomFaceUrl())
                         }
                         CommonButton(text = "确认修改") {
-                            profileUpdateViewModel.confirmUpdate()
+                            pageViewStata.confirmUpdate()
                         }
                     }
                 }

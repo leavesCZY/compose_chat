@@ -4,7 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import github.leavesczy.compose_chat.base.model.ActionResult
+import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.provider.IFriendshipProvider
+import github.leavesczy.compose_chat.proxy.logic.FriendshipProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.logic.ComposeChat
 import kotlinx.coroutines.delay
@@ -17,11 +19,26 @@ import kotlinx.coroutines.launch
  */
 class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
 
-    var pageViewState by mutableStateOf<FriendProfilePageViewState?>(value = null)
-        private set
+    private val friendshipProvider: IFriendshipProvider = FriendshipProvider()
 
-    var setFriendRemarkDialogViewState by mutableStateOf<SetFriendRemarkDialogViewState?>(value = null)
-        private set
+    val pageViewState by mutableStateOf(
+        value = FriendProfilePageViewState(
+            personProfile = mutableStateOf(value = null),
+            itIsMe = mutableStateOf(value = false),
+            isFriend = mutableStateOf(value = false),
+            showSetFriendRemarkPanel = ::showSetFriendRemarkPanel,
+            addFriend = ::addFriend
+        )
+    )
+
+    val setFriendRemarkDialogViewState by mutableStateOf(
+        value = SetFriendRemarkDialogViewState(
+            visible = mutableStateOf(value = false),
+            remark = mutableStateOf(value = ""),
+            dismissDialog = ::dismissSetFriendRemarkDialog,
+            setFriendRemark = ::setFriendRemark
+        )
+    )
 
     var loadingDialogVisible by mutableStateOf(value = false)
         private set
@@ -33,9 +50,9 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
     private fun getFriendProfile() {
         viewModelScope.launch {
             loadingDialog(visible = true)
-            val profile = ComposeChat.friendshipProvider.getFriendProfile(friendId = friendId)
+            val profile = friendshipProvider.getFriendProfile(friendId = friendId)
             if (profile == null) {
-                pageViewState = null
+                pageViewState.personProfile.value = null
             } else {
                 val itIsMe = kotlin.run {
                     val selfId = ComposeChat.accountProvider.personProfile.value.id
@@ -46,19 +63,12 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
                 } else {
                     profile.isFriend
                 }
-                pageViewState = FriendProfilePageViewState(
-                    personProfile = profile,
-                    itIsMe = itIsMe,
-                    isFriend = isFriend,
-                    showSetFriendRemarkPanel = ::showSetFriendRemarkPanel,
-                    addFriend = ::addFriend
-                )
-                setFriendRemarkDialogViewState = SetFriendRemarkDialogViewState(
-                    visible = false,
-                    personProfile = profile,
-                    dismissSetFriendRemarkDialog = ::dismissSetFriendRemarkDialog,
-                    setFriendRemark = ::setFriendRemark
-                )
+                pageViewState.personProfile.value = profile
+                pageViewState.itIsMe.value = itIsMe
+                pageViewState.isFriend.value = isFriend
+
+                setFriendRemarkDialogViewState.visible.value = false
+                setFriendRemarkDialogViewState.remark.value = profile.remark
             }
             loadingDialog(visible = false)
         }
@@ -66,7 +76,7 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
 
     private fun addFriend() {
         viewModelScope.launch {
-            when (val result = ComposeChat.friendshipProvider.addFriend(friendId = friendId)) {
+            when (val result = friendshipProvider.addFriend(friendId = friendId)) {
                 is ActionResult.Success -> {
                     delay(timeMillis = 400)
                     getFriendProfile()
@@ -82,7 +92,7 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
 
     suspend fun deleteFriend(): Boolean {
         return when (val result =
-            ComposeChat.friendshipProvider.deleteFriend(friendId = friendId)) {
+            friendshipProvider.deleteFriend(friendId = friendId)) {
             is ActionResult.Success -> {
                 showToast(msg = "已删除好友")
                 true
@@ -96,30 +106,21 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
     }
 
     private fun showSetFriendRemarkPanel() {
-        val mSetFriendRemarkDialogViewState = setFriendRemarkDialogViewState
-        if (mSetFriendRemarkDialogViewState != null) {
-            setFriendRemarkDialogViewState = mSetFriendRemarkDialogViewState.copy(visible = true)
-        }
+        setFriendRemarkDialogViewState.visible.value = true
     }
 
     private fun dismissSetFriendRemarkDialog() {
-        val mSetFriendRemarkDialogViewState = setFriendRemarkDialogViewState
-        if (mSetFriendRemarkDialogViewState != null) {
-            setFriendRemarkDialogViewState = mSetFriendRemarkDialogViewState.copy(visible = false)
-        }
+        setFriendRemarkDialogViewState.visible.value = false
     }
 
     private fun setFriendRemark(remark: String) {
         viewModelScope.launch {
-            when (val result = ComposeChat.friendshipProvider.setFriendRemark(
-                friendId = friendId,
-                remark = remark
-            )) {
+            when (val result =
+                friendshipProvider.setFriendRemark(friendId = friendId, remark = remark)) {
                 is ActionResult.Success -> {
+                    setFriendRemarkDialogViewState.remark.value = remark
                     delay(timeMillis = 300)
                     getFriendProfile()
-                    ComposeChat.friendshipProvider.refreshFriendList()
-                    ComposeChat.conversationProvider.refreshConversationList()
                     dismissSetFriendRemarkDialog()
                 }
 

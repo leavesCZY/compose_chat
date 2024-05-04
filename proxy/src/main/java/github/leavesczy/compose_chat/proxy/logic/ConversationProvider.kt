@@ -6,15 +6,14 @@ import com.tencent.imsdk.v2.V2TIMConversationListener
 import com.tencent.imsdk.v2.V2TIMConversationResult
 import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMValueCallback
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.C2CConversation
-import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.base.model.Conversation
-import github.leavesczy.compose_chat.base.model.GroupConversation
+import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.models.Chat
+import github.leavesczy.compose_chat.base.models.Conversation
+import github.leavesczy.compose_chat.base.models.ConversationType
 import github.leavesczy.compose_chat.base.provider.IConversationProvider
 import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
 import github.leavesczy.compose_chat.proxy.utils.Converters
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -26,9 +25,9 @@ import kotlin.coroutines.resume
  */
 class ConversationProvider : IConversationProvider {
 
-    override val conversationList = MutableStateFlow<List<Conversation>>(value = emptyList())
+    override val conversationList = MutableSharedFlow<List<Conversation>>()
 
-    override val totalUnreadMessageCount = MutableStateFlow<Long>(value = 0)
+    override val totalUnreadMessageCount = MutableSharedFlow<Long>()
 
     init {
         V2TIMManager.getConversationManager().addConversationListener(
@@ -43,9 +42,7 @@ class ConversationProvider : IConversationProvider {
 
                 override fun onTotalUnreadMessageCountChanged(totalUnreadCount: Long) {
                     ChatCoroutineScope.launch {
-                        this@ConversationProvider.totalUnreadMessageCount.emit(
-                            value = totalUnreadCount
-                        )
+                        totalUnreadMessageCount.emit(value = totalUnreadCount)
                     }
                 }
             }
@@ -102,7 +99,8 @@ class ConversationProvider : IConversationProvider {
                             )
                         )
                     }
-                })
+                }
+            )
         }
     }
 
@@ -114,15 +112,8 @@ class ConversationProvider : IConversationProvider {
         return Converters.deleteGroupConversation(groupId)
     }
 
-    override suspend fun clear() {
-        conversationList.emit(value = emptyList())
-        totalUnreadMessageCount.emit(value = 0L)
-    }
-
-    private fun dispatchConversationList(conversationList: List<Conversation>) {
-        ChatCoroutineScope.launch {
-            this@ConversationProvider.conversationList.emit(value = conversationList)
-        }
+    private suspend fun dispatchConversationList(conversationList: List<Conversation>) {
+        this@ConversationProvider.conversationList.emit(value = conversationList)
     }
 
     private suspend fun getConversationListOrigin(): List<Conversation> {
@@ -170,37 +161,42 @@ class ConversationProvider : IConversationProvider {
             convertConversation(conversation = it)
         }?.sortedByDescending {
             if (it.isPinned) {
-                it.lastMessage.messageDetail.timestamp.toDouble() + Long.MAX_VALUE
+                it.lastMessage.detail.timestamp.toDouble() + Long.MAX_VALUE
             } else {
-                it.lastMessage.messageDetail.timestamp.toDouble()
+                it.lastMessage.detail.timestamp.toDouble()
             }
         } ?: emptyList()
     }
 
     private fun convertConversation(conversation: V2TIMConversation): Conversation? {
         val lastConversationMessage = conversation.lastMessage ?: return null
+        val name = conversation.showName ?: ""
+        val faceUrl = conversation.faceUrl ?: ""
+        val unreadMessageCount = conversation.unreadCount
+        val lastMessage = Converters.convertMessage(timMessage = lastConversationMessage)
+        val isPinned = conversation.isPinned
         return when (conversation.type) {
             V2TIMConversation.V2TIM_C2C -> {
-                val lastMessage = Converters.convertMessage(timMessage = lastConversationMessage)
-                return C2CConversation(
+                return Conversation(
                     id = conversation.userID ?: "",
-                    name = conversation.showName ?: "",
-                    faceUrl = conversation.faceUrl ?: "",
-                    unreadMessageCount = conversation.unreadCount,
+                    name = name,
+                    faceUrl = faceUrl,
+                    unreadMessageCount = unreadMessageCount,
                     lastMessage = lastMessage,
-                    isPinned = conversation.isPinned
+                    isPinned = isPinned,
+                    type = ConversationType.C2C
                 )
             }
 
             V2TIMConversation.V2TIM_GROUP -> {
-                val lastMessage = Converters.convertMessage(timMessage = lastConversationMessage)
-                return GroupConversation(
+                return Conversation(
                     id = conversation.groupID ?: "",
-                    name = conversation.showName ?: "",
-                    faceUrl = conversation.faceUrl ?: "",
-                    unreadMessageCount = conversation.unreadCount,
+                    name = name,
+                    faceUrl = faceUrl,
+                    unreadMessageCount = unreadMessageCount,
                     lastMessage = lastMessage,
-                    isPinned = conversation.isPinned
+                    isPinned = isPinned,
+                    type = ConversationType.Group
                 )
             }
 

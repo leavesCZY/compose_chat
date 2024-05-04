@@ -4,11 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
-import github.leavesczy.compose_chat.base.model.ServerState
+import github.leavesczy.compose_chat.base.models.ServerState
 import github.leavesczy.compose_chat.provider.AccountProvider
 import github.leavesczy.compose_chat.ui.base.BaseActivity
+import github.leavesczy.compose_chat.ui.conversation.logic.ConversationViewModel
+import github.leavesczy.compose_chat.ui.friendship.logic.FriendshipViewModel
 import github.leavesczy.compose_chat.ui.logic.MainViewModel
 import github.leavesczy.compose_chat.ui.login.LoginActivity
+import github.leavesczy.compose_chat.ui.person.logic.PersonProfileViewModel
 import kotlinx.coroutines.launch
 
 /**
@@ -20,10 +23,21 @@ class MainActivity : BaseActivity() {
 
     private val mainViewModel by viewModels<MainViewModel>()
 
+    private val conversationViewModel by viewModels<ConversationViewModel>()
+
+    private val friendshipViewModel by viewModels<FriendshipViewModel>()
+
+    private val personProfileViewModel by viewModels<PersonProfileViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainPage(mainViewModel = mainViewModel)
+            MainPage(
+                mainViewModel = mainViewModel,
+                conversationViewModel = conversationViewModel,
+                friendshipViewModel = friendshipViewModel,
+                personProfileViewModel = personProfileViewModel
+            )
         }
         initEvent()
     }

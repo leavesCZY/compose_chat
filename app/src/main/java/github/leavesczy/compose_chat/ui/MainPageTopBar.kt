@@ -23,6 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -36,13 +37,16 @@ import kotlinx.coroutines.launch
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun MainPageTopBar(viewState: MainPageTopBarViewState) {
+fun MainPageTopBar(
+    viewState: MainPageTopBarViewState,
+    showFriendshipDialog: () -> Unit
+) {
     var menuExpanded by remember {
         mutableStateOf(value = false)
     }
     val coroutineScope = rememberCoroutineScope()
     CenterAlignedTopAppBar(
-        modifier = Modifier,
+        modifier = Modifier.shadow(elevation = 0.2.dp),
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
         title = {
 
@@ -52,7 +56,8 @@ fun MainPageTopBar(viewState: MainPageTopBarViewState) {
                 modifier = Modifier,
                 content = {
                     Icon(
-                        modifier = Modifier.size(size = 26.dp),
+                        modifier = Modifier
+                            .size(size = 26.dp),
                         imageVector = Icons.Filled.Menu,
                         contentDescription = null
                     )
@@ -70,7 +75,8 @@ fun MainPageTopBar(viewState: MainPageTopBarViewState) {
                     modifier = Modifier,
                     content = {
                         Icon(
-                            modifier = Modifier.size(size = 26.dp),
+                            modifier = Modifier
+                                .size(size = 26.dp),
                             imageVector = Icons.Filled.MoreVert,
                             contentDescription = null
                         )
@@ -85,7 +91,8 @@ fun MainPageTopBar(viewState: MainPageTopBarViewState) {
                         .padding(end = 10.dp)
                 ) {
                     DropdownMenu(
-                        modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+                        modifier = Modifier
+                            .background(color = MaterialTheme.colorScheme.background),
                         expanded = menuExpanded,
                         onDismissRequest = {
                             menuExpanded = false
@@ -94,25 +101,27 @@ fun MainPageTopBar(viewState: MainPageTopBarViewState) {
                         DropdownMenuItem(
                             text = {
                                 Text(
+                                    modifier = Modifier,
                                     text = "添加好友",
                                     style = TextStyle(fontSize = 18.sp)
                                 )
                             },
                             onClick = {
                                 menuExpanded = false
-                                viewState.showFriendshipDialog()
+                                showFriendshipDialog()
                             }
                         )
                         DropdownMenuItem(
                             text = {
                                 Text(
+                                    modifier = Modifier,
                                     text = "加入群聊",
                                     style = TextStyle(fontSize = 18.sp)
                                 )
                             },
                             onClick = {
                                 menuExpanded = false
-                                viewState.showFriendshipDialog()
+                                showFriendshipDialog()
                             }
                         )
                     }

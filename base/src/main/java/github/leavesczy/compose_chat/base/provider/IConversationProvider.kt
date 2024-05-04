@@ -1,9 +1,9 @@
 package github.leavesczy.compose_chat.base.provider
 
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.Chat
-import github.leavesczy.compose_chat.base.model.Conversation
-import kotlinx.coroutines.flow.StateFlow
+import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.models.Chat
+import github.leavesczy.compose_chat.base.models.Conversation
+import kotlinx.coroutines.flow.SharedFlow
 
 /**
  * @Author: leavesCZY
@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.StateFlow
  */
 interface IConversationProvider {
 
-    val conversationList: StateFlow<List<Conversation>>
+    val conversationList: SharedFlow<List<Conversation>>
 
-    val totalUnreadMessageCount: StateFlow<Long>
+    val totalUnreadMessageCount: SharedFlow<Long>
 
     fun refreshConversationList()
 
@@ -27,7 +27,5 @@ interface IConversationProvider {
     suspend fun deleteC2CConversation(userId: String): ActionResult
 
     suspend fun deleteGroupConversation(groupId: String): ActionResult
-
-    suspend fun clear()
 
 }

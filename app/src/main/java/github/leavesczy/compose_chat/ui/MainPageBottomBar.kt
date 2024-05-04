@@ -40,21 +40,21 @@ import github.leavesczy.compose_chat.ui.logic.MainPageTab
 fun MainPageBottomBar(viewState: MainPageBottomBarViewState) {
     Row(
         modifier = Modifier
-            .shadow(elevation = 18.dp)
+            .shadow(elevation = 28.dp)
             .background(color = MaterialTheme.colorScheme.background)
             .fillMaxWidth()
             .navigationBarsPadding()
             .height(height = 54.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        for (tab in MainPageTab.values()) {
-            val selected = viewState.selectedTab == tab
+        for (tab in MainPageTab.entries) {
+            val selected = viewState.selectedTab.value == tab
             val icon: ImageVector
             val unreadMessageCount: Long
             when (tab) {
                 MainPageTab.Conversation -> {
                     icon = Icons.Rounded.WbSunny
-                    unreadMessageCount = viewState.unreadMessageCount
+                    unreadMessageCount = viewState.unreadMessageCount.value
                 }
 
                 MainPageTab.Friendship -> {
@@ -112,7 +112,10 @@ private fun RowScope.NavigationBarItem(
             }
         },
         selected = selected,
-        colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.primary),
+        colors = NavigationBarItemDefaults.colors(
+            unselectedIconColor = MaterialTheme.colorScheme.inverseOnSurface,
+            selectedIconColor = MaterialTheme.colorScheme.primary
+        ),
         onClick = onClick
     )
 }

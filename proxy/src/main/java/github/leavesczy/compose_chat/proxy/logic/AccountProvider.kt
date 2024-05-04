@@ -6,11 +6,11 @@ import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMSDKConfig
 import com.tencent.imsdk.v2.V2TIMSDKListener
 import com.tencent.imsdk.v2.V2TIMUserFullInfo
-import github.leavesczy.compose_chat.base.model.ActionResult
-import github.leavesczy.compose_chat.base.model.PersonProfile
-import github.leavesczy.compose_chat.base.model.ServerState
+import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.models.PersonProfile
+import github.leavesczy.compose_chat.base.models.ServerState
 import github.leavesczy.compose_chat.base.provider.IAccountProvider
-import github.leavesczy.compose_chat.proxy.consts.AppConsts
+import github.leavesczy.compose_chat.proxy.consts.AppConstant
 import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
 import github.leavesczy.compose_chat.proxy.utils.Converters.getSelfProfile
 import github.leavesczy.compose_chat.proxy.utils.Converters.getSelfProfileOrigin
@@ -42,7 +42,7 @@ class AccountProvider : IAccountProvider {
             }
 
             override fun onConnectSuccess() {
-                dispatchServerState(serverState = ServerState.ConnectSuccess)
+                dispatchServerState(serverState = ServerState.Connected)
             }
 
             override fun onConnectFailed(code: Int, error: String) {
@@ -61,7 +61,7 @@ class AccountProvider : IAccountProvider {
                 refreshPersonProfile()
             }
         })
-        V2TIMManager.getInstance().initSDK(application, AppConsts.APP_ID, config)
+        V2TIMManager.getInstance().initSDK(application, AppConstant.APP_ID, config)
     }
 
     private fun dispatchServerState(serverState: ServerState) {
