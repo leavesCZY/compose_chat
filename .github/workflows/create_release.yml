@@ -1,10 +1,10 @@
-name: Android CI
+name: create release
 
 on:
   push:
     branches: [ master ]
     paths:
-      - "**/WorkflowsTrigger.kt"
+      - "**/workflows-trigger.properties"
 
 jobs:
   build:
