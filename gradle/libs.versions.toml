@@ -1,19 +1,18 @@
 [versions]
-android-plugin = "8.4.0"
-kotlin-plugin = "1.9.23"
+android-plugin = "8.4.1"
+kotlin-plugin = "2.0.0"
 trace-plugin = "1.1.0"
 
 androidx-junit = "1.1.5"
 androidx-espresso = "3.5.1"
-androidx-appcompat = "1.6.1"
+androidx-appcompat = "1.7.0"
 androidx-exifinterface = "1.3.7"
 androidx-activity-compose = "1.9.0"
-androidx-lifecycle-viewmodel-compose = "2.7.0"
+androidx-lifecycle-viewmodel-compose = "2.8.1"
 
 androidx-compose-bom = "2024.05.00"
-androidx-compose-compiler = "1.5.13"
 
-kotlinx-coroutines = "1.8.0"
+kotlinx-coroutines = "1.8.1"
 
 junit = "4.13.2"
 
@@ -27,6 +26,7 @@ tencent-imsdk = "7.9.5680"
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-plugin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin-plugin" }
 leavesczy-trace = { id = "io.github.leavesczy.trace", version.ref = "trace-plugin" }
 

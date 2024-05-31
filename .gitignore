@@ -6,3 +6,4 @@
 *.apk
 .gradle
 .DS_Store
+/.kotlin/

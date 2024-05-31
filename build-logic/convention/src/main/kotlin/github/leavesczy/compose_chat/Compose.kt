@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package github.leavesczy.compose_chat
 
 import com.android.build.api.dsl.CommonExtension
@@ -21,10 +19,6 @@ internal fun Project.configureCompose(commonExtension: CommonExtension<*, *, *, 
         buildFeatures {
             compose = true
         }
-        composeOptions {
-            kotlinCompilerExtensionVersion =
-                libs.findVersion("androidx-compose-compiler").get().toString()
-        }
         dependencies {
             val composeBom = libs.findLibrary("androidx-compose-bom").get()
             val composeBomPlatform = platform(composeBom)
@@ -42,16 +36,17 @@ internal fun Project.configureCompose(commonExtension: CommonExtension<*, *, *, 
         }
     }
     tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions {
-            freeCompilerArgs += setOf(
-                "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
-                "-opt-in=androidx.compose.ui.text.ExperimentalTextApi",
-                "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
-                "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-                "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
-                "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
-                "-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi",
-                "-opt-in=androidx.constraintlayout.compose.ExperimentalMotionApi"
+        compilerOptions {
+            freeCompilerArgs.value(
+                setOf(
+                    "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
+                    "-opt-in=androidx.compose.ui.text.ExperimentalTextApi",
+                    "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
+                    "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+                    "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
+                    "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+                    "-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi"
+                )
             )
         }
     }

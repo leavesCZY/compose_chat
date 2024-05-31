@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package github.leavesczy.compose_chat
 
 import com.android.build.gradle.internal.api.ApkVariantOutputImpl
