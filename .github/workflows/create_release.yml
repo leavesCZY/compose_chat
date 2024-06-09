@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: "18"
-          distribution: "corretto"
+          distribution: "oracle"
           architecture: x64
 
       - name: checkout
@@ -24,8 +24,8 @@ jobs:
       - name: grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: build apk
-        run: ./gradlew app:assembleRelease
+      - name: assembleRelease
+        run: ./gradlew assembleRelease
 
       - name: get current time
         id: currentTime

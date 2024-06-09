@@ -192,6 +192,7 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                                         chatViewModel.onInputSelectorChanged(newSelector = InputSelector.NONE)
                                         val matisse = Matisse(
                                             maxSelectable = 1,
+                                            fastSelect = true,
                                             mediaType = MediaType.ImageOnly,
                                             imageEngine = MatisseImageEngine(),
                                             captureStrategy = MediaStoreCaptureStrategy()
