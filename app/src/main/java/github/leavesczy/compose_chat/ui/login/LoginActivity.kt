@@ -17,19 +17,16 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,9 +54,7 @@ class LoginActivity : BaseActivity() {
         setContent {
             LoginPage(
                 viewState = loginViewModel.loginPageViewState,
-                onClickLoginButton = {
-                    onClickLoginButton(userId = it)
-                }
+                onClickLoginButton = ::onClickLoginButton
             )
         }
         tryLogin()
@@ -75,9 +70,9 @@ class LoginActivity : BaseActivity() {
         }
     }
 
-    private fun onClickLoginButton(userId: String) {
+    private fun onClickLoginButton() {
         lifecycleScope.launch {
-            val result = loginViewModel.onClickLoginButton(userId = userId)
+            val result = loginViewModel.onClickLoginButton()
             if (result) {
                 startActivity<MainActivity>()
                 finish()
@@ -88,9 +83,13 @@ class LoginActivity : BaseActivity() {
 }
 
 @Composable
-private fun LoginPage(viewState: LoginPageViewState, onClickLoginButton: (String) -> Unit) {
+private fun LoginPage(
+    viewState: LoginPageViewState,
+    onClickLoginButton: () -> Unit
+) {
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -98,56 +97,49 @@ private fun LoginPage(viewState: LoginPageViewState, onClickLoginButton: (String
                 .padding(paddingValues = innerPadding),
         ) {
             val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
-            BackHandler(enabled = viewState.loading.value) {
+            BackHandler(enabled = viewState.loading) {
 
             }
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (viewState.showPanel.value) {
+                if (viewState.showPanel) {
                     Text(
-                        text = stringResource(id = R.string.app_name),
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(fraction = 0.19f)
                             .wrapContentSize(align = Alignment.BottomCenter),
-                        fontSize = 60.sp,
-                        fontFamily = FontFamily.Cursive,
-                        textAlign = TextAlign.Center
-                    )
-                    var userId by remember {
-                        val lastLoginUserId by viewState.lastLoginUserId
-                        mutableStateOf(
-                            value = TextFieldValue(
-                                text = lastLoginUserId,
-                                selection = TextRange(index = lastLoginUserId.length)
+                        text = stringResource(id = R.string.app_name),
+                        style = TextStyle(
+                            fontSize = 64.sp,
+                            fontFamily = FontFamily.Cursive,
+                            textAlign = TextAlign.Center,
+                            shadow = Shadow(
+                                offset = Offset(5.4f, 12f),
+                                blurRadius = 3f
                             )
                         )
-                    }
+                    )
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(
-                                top = 60.dp, start = 40.dp, end = 40.dp
-                            ),
+                            .padding(top = 60.dp, start = 40.dp, end = 40.dp),
+                        value = viewState.userId,
+                        onValueChange = viewState.onUserIdInputChanged,
                         maxLines = 1,
                         singleLine = true,
-                        value = userId,
                         label = {
-                            Text(text = "UserId", fontSize = 14.sp)
-                        },
-                        onValueChange = { textField ->
-                            val trimText = textField.text.trimStart().trimEnd()
-                            if (trimText.length <= 12 && trimText.all {
-                                    it.isLowerCase() || it.isUpperCase()
-                                }) {
-                                userId = textField
-                            }
+                            Text(
+                                modifier = Modifier,
+                                text = "UserId",
+                                fontSize = 14.sp
+                            )
                         },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
                         keyboardActions = KeyboardActions(onGo = {
-                            onClickLoginButton(userId.text)
+                            onClickLoginButton()
                         })
                     )
                     Button(
@@ -163,18 +155,18 @@ private fun LoginPage(viewState: LoginPageViewState, onClickLoginButton: (String
                             )
                         },
                         onClick = {
-                            val text = userId.text.trim()
-                            if (text.isBlank()) {
+                            val input = viewState.userId.text
+                            if (input.isBlank()) {
                                 ToastProvider.showToast(msg = "请输入 UserID")
                             } else {
                                 localSoftwareKeyboardController?.hide()
-                                onClickLoginButton(text)
+                                onClickLoginButton()
                             }
                         }
                     )
                 }
             }
-            LoadingDialog(visible = viewState.loading.value)
+            LoadingDialog(visible = viewState.loading)
         }
     }
 }

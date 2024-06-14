@@ -63,8 +63,7 @@ class GroupProfile(
     val faceUrl: String,
     val name: String,
     val introduction: String,
-    val createTime: Long,
-    val memberCount: Int
+    val createTime: Long
 ) {
 
     val createTimeFormat =

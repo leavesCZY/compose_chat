@@ -37,11 +37,11 @@ class ChatActivity : BaseActivity() {
 
     companion object {
 
-        private const val keyChat = "keyChat"
+        private const val KEY_CHAT = "keyChat"
 
         fun navTo(context: Context, chat: Chat) {
             val intent = Intent(context, ChatActivity::class.java)
-            intent.putExtra(keyChat, chat)
+            intent.putExtra(KEY_CHAT, chat)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             if (context !is Activity) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -51,9 +51,8 @@ class ChatActivity : BaseActivity() {
 
     }
 
-    @Suppress("DEPRECATION")
     private val chat: Chat by lazy(mode = LazyThreadSafetyMode.NONE) {
-        intent.getParcelableExtra(keyChat)!!
+        intent.getParcelableExtra(KEY_CHAT)!!
     }
 
     private val chatViewModel by viewModelsInstance {

@@ -13,7 +13,7 @@ import github.leavesczy.compose_chat.base.models.ServerState
 import github.leavesczy.compose_chat.base.provider.IConversationProvider
 import github.leavesczy.compose_chat.provider.AccountProvider
 import github.leavesczy.compose_chat.provider.AppThemeProvider
-import github.leavesczy.compose_chat.proxy.logic.ConversationProvider
+import github.leavesczy.compose_chat.proxy.ConversationProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
 import github.leavesczy.compose_chat.ui.profile.ProfileUpdateActivity

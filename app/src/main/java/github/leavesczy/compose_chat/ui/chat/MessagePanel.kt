@@ -54,7 +54,8 @@ import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 @Composable
 fun MessagePanel(pageViewState: ChatPageViewState, pageAction: ChatPageAction) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         state = pageViewState.listState,
         reverseLayout = true,
         contentPadding = PaddingValues(bottom = 60.dp),
@@ -154,7 +155,7 @@ private fun OwnMessageContainer(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 14.dp, end = 14.dp, top = 10.dp, bottom = 10.dp),
+            .padding(horizontal = 14.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.End
     ) {
         Row(

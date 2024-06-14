@@ -55,7 +55,10 @@ fun PersonProfilePage(pageViewState: PersonProfilePageViewState) {
         delay(timeMillis = 1000)
         animated = false
     }
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         Box(modifier = Modifier) {
             BezierImage(
                 modifier = Modifier

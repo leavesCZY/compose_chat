@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.proxy.logic
+package github.leavesczy.compose_chat.proxy
 
 import android.graphics.BitmapFactory
 import com.tencent.imsdk.v2.V2TIMAdvancedMsgListener
@@ -18,8 +18,6 @@ import github.leavesczy.compose_chat.base.models.SystemMessage
 import github.leavesczy.compose_chat.base.models.TextMessage
 import github.leavesczy.compose_chat.base.models.TimeMessage
 import github.leavesczy.compose_chat.base.provider.IMessageProvider
-import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
-import github.leavesczy.compose_chat.proxy.utils.Converters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch

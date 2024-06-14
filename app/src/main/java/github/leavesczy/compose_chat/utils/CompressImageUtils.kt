@@ -19,13 +19,13 @@ object CompressImageUtils {
 
     private const val IMAGE_MAX_SIZE = (1.0 * 1024 * 1024).toInt()
 
-    private const val jpegMime = "image/jpeg"
+    private const val JPEG_MIME_TYPE = "image/jpeg"
 
-    private const val gifMime = "image/gif"
+    private const val GIF_MIME_TYPE = "image/gif"
 
-    private const val webpMime = "image/webp"
+    private const val WEBP_MIME_TYPE = "image/webp"
 
-    private const val jpeg = "jpeg"
+    private const val JPEG = "jpeg"
 
     suspend fun compressImage(context: Context, imageUri: Uri): File? {
         return withContext(context = Dispatchers.IO) {
@@ -38,14 +38,15 @@ object CompressImageUtils {
                     false
                 } else {
                     val imageMimeType =
-                        FileUtils.getMimeType(context = context, uri = imageUri) ?: jpegMime
-                    val isAnimatedImage = imageMimeType == gifMime || imageMimeType == webpMime
+                        FileUtils.getMimeType(context = context, uri = imageUri) ?: JPEG_MIME_TYPE
+                    val isAnimatedImage =
+                        imageMimeType == GIF_MIME_TYPE || imageMimeType == WEBP_MIME_TYPE
                     !isAnimatedImage
                 }
                 val result: File?
                 if (mustBeCompressed) {
                     val bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
-                    val tempFile = FileUtils.createTempFile(context = context, extension = jpeg)
+                    val tempFile = FileUtils.createTempFile(context = context, extension = JPEG)
                     compressImage(
                         bitmap = bitmap,
                         maxSize = IMAGE_MAX_SIZE,
@@ -59,9 +60,10 @@ object CompressImageUtils {
                 } else {
                     result = if (isAndroidQ()) {
                         val imageMimeType =
-                            FileUtils.getMimeType(context = context, uri = imageUri) ?: jpegMime
+                            FileUtils.getMimeType(context = context, uri = imageUri)
+                                ?: JPEG_MIME_TYPE
                         val imageExtension =
-                            FileUtils.getExtensionFromMimeType(mimeType = imageMimeType) ?: jpeg
+                            FileUtils.getExtensionFromMimeType(mimeType = imageMimeType) ?: JPEG
                         val tempFile = FileUtils.createTempFile(
                             context = context,
                             extension = imageExtension

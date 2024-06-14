@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.proxy.coroutine
+package github.leavesczy.compose_chat.proxy
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

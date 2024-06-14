@@ -9,7 +9,7 @@ import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.base.models.Conversation
 import github.leavesczy.compose_chat.base.models.ConversationType
 import github.leavesczy.compose_chat.base.provider.IConversationProvider
-import github.leavesczy.compose_chat.proxy.logic.ConversationProvider
+import github.leavesczy.compose_chat.proxy.ConversationProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.chat.ChatActivity
 import kotlinx.coroutines.launch

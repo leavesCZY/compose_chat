@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.proxy.logic
+package github.leavesczy.compose_chat.proxy
 
 import android.app.Application
 import com.tencent.imsdk.v2.V2TIMCallback
@@ -10,11 +10,8 @@ import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.PersonProfile
 import github.leavesczy.compose_chat.base.models.ServerState
 import github.leavesczy.compose_chat.base.provider.IAccountProvider
-import github.leavesczy.compose_chat.proxy.consts.AppConstant
-import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
-import github.leavesczy.compose_chat.proxy.utils.Converters.getSelfProfile
-import github.leavesczy.compose_chat.proxy.utils.Converters.getSelfProfileOrigin
-import github.leavesczy.compose_chat.proxy.utils.GenerateUserSig
+import github.leavesczy.compose_chat.proxy.Converters.getSelfProfile
+import github.leavesczy.compose_chat.proxy.Converters.getSelfProfileOrigin
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -61,7 +58,7 @@ class AccountProvider : IAccountProvider {
                 refreshPersonProfile()
             }
         })
-        V2TIMManager.getInstance().initSDK(application, AppConstant.APP_ID, config)
+        V2TIMManager.getInstance().initSDK(application, GenerateUserSig.APP_ID, config)
     }
 
     private fun dispatchServerState(serverState: ServerState) {

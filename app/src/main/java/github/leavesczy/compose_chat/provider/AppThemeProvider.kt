@@ -35,7 +35,7 @@ object AppThemeProvider {
 
     private fun getAppThemeOfDefault(): AppTheme {
         val themeIndex = preferences.getInt(KEY_APP_THEME, defaultTheme.ordinal)
-        return AppTheme.values().find { it.ordinal == themeIndex } ?: defaultTheme
+        return AppTheme.entries.find { it.ordinal == themeIndex } ?: defaultTheme
     }
 
     fun onAppThemeChanged(appTheme: AppTheme) {

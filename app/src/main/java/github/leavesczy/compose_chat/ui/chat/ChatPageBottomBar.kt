@@ -52,23 +52,16 @@ private val DEFAULT_KEYBOARD_HEIGHT = 305.dp
 
 @Composable
 fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
-
     val textMessageInputted = chatViewModel.textMessageInputted
-
     val currentInputSelector = chatViewModel.currentInputSelector
-
     val softwareKeyboardController = LocalSoftwareKeyboardController.current
-
     val focusRequester = remember {
         FocusRequester()
     }
-
     val focusManager = LocalFocusManager.current
-
     BackHandler(enabled = currentInputSelector != InputSelector.NONE) {
         focusRequester.requestFocus()
     }
-
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = MatisseContract()
     ) { result ->
@@ -76,7 +69,6 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
             chatViewModel.sendImageMessage(imageUri = result[0].uri)
         }
     }
-
     val takePictureLauncher = rememberLauncherForActivityResult(
         contract = MatisseCaptureContract()
     ) { result ->
@@ -84,11 +76,9 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
             chatViewModel.sendImageMessage(imageUri = result.uri)
         }
     }
-
     var keyboardHeightDp by remember {
         mutableStateOf(value = 0.dp)
     }
-
     val ime = WindowInsets.ime
     val localDensity = LocalDensity.current
     val density = localDensity.density
@@ -106,7 +96,6 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
             }
         }
     }
-
     Column(
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.onSecondaryContainer)
@@ -137,7 +126,6 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                 }
             )
         )
-
         InputSelector(
             currentInputSelector = currentInputSelector,
             sendMessageEnabled = textMessageInputted.text.isNotEmpty(),
@@ -151,7 +139,6 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                 chatViewModel.sendTextMessage()
             }
         )
-
         when (currentInputSelector) {
             InputSelector.NONE -> {
                 Box(
@@ -182,17 +169,18 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
 
                         InputSelector.Picture -> {
                             Box(
-                                modifier = Modifier.heightIn(
-                                    min = keyboardHeightDp,
-                                    max = maxHeight
-                                )
+                                modifier = Modifier
+                                    .heightIn(
+                                        min = keyboardHeightDp,
+                                        max = maxHeight
+                                    )
                             ) {
                                 ExtendTable(
                                     launchImagePicker = {
                                         chatViewModel.onInputSelectorChanged(newSelector = InputSelector.NONE)
                                         val matisse = Matisse(
                                             maxSelectable = 1,
-                                            fastSelect = true,
+                                            fastSelect = false,
                                             mediaType = MediaType.ImageOnly,
                                             imageEngine = MatisseImageEngine(),
                                             captureStrategy = MediaStoreCaptureStrategy()
@@ -200,12 +188,9 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                                         imagePickerLauncher.launch(matisse)
                                     },
                                     launchTakePicture = {
-                                        chatViewModel.onInputSelectorChanged(
-                                            newSelector = InputSelector.NONE
-                                        )
-                                        val matisseCapture = MatisseCapture(
-                                            captureStrategy = MediaStoreCaptureStrategy()
-                                        )
+                                        chatViewModel.onInputSelectorChanged(newSelector = InputSelector.NONE)
+                                        val matisseCapture =
+                                            MatisseCapture(captureStrategy = MediaStoreCaptureStrategy())
                                         takePictureLauncher.launch(matisseCapture)
                                     }
                                 )
@@ -220,5 +205,4 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
             }
         }
     }
-
 }

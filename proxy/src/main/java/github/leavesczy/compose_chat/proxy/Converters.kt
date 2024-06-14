@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.proxy.utils
+package github.leavesczy.compose_chat.proxy
 
 import com.tencent.imsdk.v2.V2TIMCallback
 import com.tencent.imsdk.v2.V2TIMFriendCheckResult

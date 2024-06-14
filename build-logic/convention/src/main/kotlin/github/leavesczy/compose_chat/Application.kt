@@ -4,10 +4,9 @@ import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.Project
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-import java.util.TimeZone
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 /**
  * @Author: leavesCZY
@@ -96,10 +95,9 @@ internal fun Project.configureAndroidApplication(commonExtension: BaseAppModuleE
 }
 
 private fun getTime(pattern: String): String {
-    val simpleDateFormat = SimpleDateFormat(pattern, Locale.US)
-    simpleDateFormat.timeZone = TimeZone.getTimeZone("Asia/Shanghai")
-    val time = Calendar.getInstance().time
-    return simpleDateFormat.format(time)
+    val now = ZonedDateTime.now(ZoneId.of("Asia/Shanghai"))
+    val formatter = DateTimeFormatter.ofPattern(pattern)
+    return now.format(formatter)
 }
 
 private fun getApkBuildTime(): String {

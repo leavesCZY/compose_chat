@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -14,8 +13,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,8 +26,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.ui.base.BaseActivity
@@ -34,9 +38,7 @@ import github.leavesczy.compose_chat.ui.friend.logic.FriendProfileViewModel
 import github.leavesczy.compose_chat.ui.friend.logic.SetFriendRemarkDialogViewState
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
-import github.leavesczy.compose_chat.ui.widgets.ComposeBottomSheetDialog
 import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
-import github.leavesczy.compose_chat.ui.widgets.MessageDialog
 import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
 import kotlinx.coroutines.launch
 
@@ -176,50 +178,84 @@ private fun DeleteFriendDialog(
     deleteFriend: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
-    MessageDialog(
-        visible = visible,
-        dismissOnBackPress = true,
-        dismissOnClickOutside = true,
-        title = "确认删除好友吗？",
-        leftButtonText = "删除",
-        rightButtonText = "取消",
-        onDismissRequest = onDismissRequest,
-        onClickLeftButton = {
-            onDismissRequest()
-            deleteFriend()
-        },
-        onClickRightButton = onDismissRequest
-    )
+    if (visible) {
+        AlertDialog(
+            modifier = Modifier,
+            onDismissRequest = onDismissRequest,
+            text = {
+                Text(
+                    modifier = Modifier,
+                    text = "确认删除好友吗？",
+                    fontSize = 17.sp
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDismissRequest()
+                        deleteFriend()
+                    }
+                ) {
+                    Text(
+                        modifier = Modifier,
+                        text = "删除",
+                        fontSize = 15.sp
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = onDismissRequest
+                ) {
+                    Text(
+                        modifier = Modifier,
+                        text = "取消",
+                        fontSize = 15.sp
+                    )
+                }
+            }
+        )
+    }
 }
 
 @Composable
 private fun SetFriendRemarkDialog(viewState: SetFriendRemarkDialogViewState) {
-    ComposeBottomSheetDialog(
-        visible = viewState.visible.value,
-        onDismissRequest = viewState.dismissDialog
-    ) {
-        var remark by remember(key1 = viewState.visible.value) {
-            mutableStateOf(value = viewState.remark.value)
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxHeight(fraction = 0.8f)
-                .clip(shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                .background(color = MaterialTheme.colorScheme.background)
-                .padding(top = 20.dp)
+    if (viewState.visible.value) {
+        val sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+            confirmValueChange = {
+                true
+            }
+        )
+        ModalBottomSheet(
+            modifier = Modifier,
+            sheetMaxWidth = Dp.Unspecified,
+            sheetState = sheetState,
+            windowInsets = WindowInsets(left = 0.dp, right = 0.dp, top = 0.dp, bottom = 0.dp),
+            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+            onDismissRequest = viewState.dismissDialog
         ) {
-            CommonOutlinedTextField(
+            var remark by remember(key1 = viewState.visible.value) {
+                mutableStateOf(value = viewState.remark.value)
+            }
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 10.dp),
-                value = remark,
-                onValueChange = {
-                    remark = it
-                },
-                label = "输入备注",
-            )
-            CommonButton(text = "设置备注") {
-                viewState.setFriendRemark(remark)
+                    .fillMaxHeight(fraction = 0.8f)
+                    .padding(top = 20.dp)
+            ) {
+                CommonOutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 10.dp),
+                    value = remark,
+                    onValueChange = {
+                        remark = it
+                    },
+                    label = "输入备注",
+                )
+                CommonButton(text = "设置备注") {
+                    viewState.setFriendRemark(remark)
+                }
             }
         }
     }

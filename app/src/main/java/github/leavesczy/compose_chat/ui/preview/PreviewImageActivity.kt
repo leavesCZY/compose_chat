@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SaveAlt
@@ -27,19 +28,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
 import androidx.core.app.ActivityCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.ui.base.BaseActivity
-import github.leavesczy.compose_chat.ui.theme.backgroundColorDark
 import github.leavesczy.compose_chat.ui.widgets.ZoomableComponentImage
 import github.leavesczy.compose_chat.utils.AlbumUtils
 import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
 
 /**
  * @Author: leavesCZY
@@ -50,9 +52,9 @@ class PreviewImageActivity : BaseActivity() {
 
     companion object {
 
-        private const val keyImageUriList = "keyImageUriList"
+        private const val KEY_IMAGE_URI_LIST = "keyImageUriList"
 
-        private const val keyInitialPage = "keyInitialPage"
+        private const val KEY_INITIAL_PAGE = "keyInitialPage"
 
         fun navTo(context: Context, imageUri: String) {
             navTo(context = context, imageUriList = listOf(element = imageUri), initialPage = 0)
@@ -60,10 +62,10 @@ class PreviewImageActivity : BaseActivity() {
 
         fun navTo(context: Context, imageUriList: List<String>, initialPage: Int) {
             val intent = Intent(context, PreviewImageActivity::class.java)
-            intent.putStringArrayListExtra(keyImageUriList, arrayListOf<String>().apply {
+            intent.putStringArrayListExtra(KEY_IMAGE_URI_LIST, arrayListOf<String>().apply {
                 addAll(imageUriList)
             })
-            intent.putExtra(keyInitialPage, initialPage)
+            intent.putExtra(KEY_INITIAL_PAGE, initialPage)
             if (context !is Activity) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
@@ -73,11 +75,12 @@ class PreviewImageActivity : BaseActivity() {
     }
 
     private val imageUriList by lazy(mode = LazyThreadSafetyMode.NONE) {
-        intent.getStringArrayListExtra(keyImageUriList)?.filter { it.isNotBlank() } ?: emptyList()
+        intent.getStringArrayListExtra(KEY_IMAGE_URI_LIST)?.filter { it.isNotBlank() }
+            ?: emptyList()
     }
 
     private val initialPage by lazy(mode = LazyThreadSafetyMode.NONE) {
-        intent.getIntExtra(keyInitialPage, 0)
+        intent.getIntExtra(KEY_INITIAL_PAGE, 0)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -149,9 +152,9 @@ private fun PreviewImagePage(
     }
     Scaffold(
         modifier = Modifier
-            .background(color = backgroundColorDark)
+            .background(color = Color(color = 0xFF22202A))
             .fillMaxSize(),
-        containerColor = backgroundColorDark,
+        containerColor = Color(color = 0xFF22202A),
         contentWindowInsets = WindowInsets(left = 0.dp, top = 0.dp, right = 0.dp, bottom = 0.dp),
     ) { innerPadding ->
         Box(
@@ -166,7 +169,11 @@ private fun PreviewImagePage(
                 pageSpacing = 0.dp,
                 verticalAlignment = Alignment.CenterVertically
             ) { pageIndex ->
-                PreviewPage(imageUrl = imageUriList[pageIndex])
+                PreviewPage(
+                    pagerState = pagerState,
+                    pageIndex = pageIndex,
+                    imageUrl = imageUriList[pageIndex]
+                )
             }
             IconButton(
                 modifier = Modifier
@@ -195,18 +202,44 @@ private fun PreviewImagePage(
 }
 
 @Composable
-private fun PreviewPage(imageUrl: String) {
+private fun PreviewPage(
+    pagerState: PagerState,
+    pageIndex: Int,
+    imageUrl: String
+) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        ZoomableComponentImage(
+        Box(
             modifier = Modifier
-                .fillMaxSize(),
-            model = imageUrl,
-            contentScale = ContentScale.Fit
-        )
+                .graphicsLayer {
+                    val pageOffset =
+                        ((pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction).absoluteValue
+                    val fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                    lerp(
+                        start = 0.84f,
+                        stop = 1f,
+                        fraction = fraction
+                    ).also { scale ->
+                        scaleX = scale
+                        scaleY = scale
+                    }
+                    alpha = lerp(
+                        start = 0.5f,
+                        stop = 1f,
+                        fraction = fraction
+                    )
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            ZoomableComponentImage(
+                modifier = Modifier
+                    .fillMaxSize(),
+                model = imageUrl
+            )
+        }
     }
 }
 

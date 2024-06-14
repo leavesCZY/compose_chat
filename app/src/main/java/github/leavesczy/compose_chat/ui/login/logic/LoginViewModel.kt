@@ -2,6 +2,9 @@ package github.leavesczy.compose_chat.ui.login.logic
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.provider.AccountProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
@@ -15,33 +18,64 @@ import kotlinx.coroutines.delay
  */
 class LoginViewModel : BaseViewModel() {
 
-    val loginPageViewState by mutableStateOf(
+    var loginPageViewState by mutableStateOf(
         value = LoginPageViewState(
-            lastLoginUserId = mutableStateOf(value = ""),
-            showPanel = mutableStateOf(value = false),
-            loading = mutableStateOf(value = false)
+            userId = TextFieldValue(),
+            onUserIdInputChanged = ::onUserIdInputChanged,
+            showPanel = false,
+            loading = false
         )
     )
+        private set
 
-    suspend fun tryLogin(): Boolean {
-        val lastLoginUserId = AccountProvider.lastLoginUserId
-        return if (lastLoginUserId.isBlank() || !AccountProvider.canAutoLogin) {
-            loginPageViewState.lastLoginUserId.value = lastLoginUserId
-            loginPageViewState.showPanel.value = true
-            loginPageViewState.loading.value = false
-            false
-        } else {
-            loginPageViewState.lastLoginUserId.value = lastLoginUserId
-            loginPageViewState.showPanel.value = false
-            loginPageViewState.loading.value = true
-            login(userId = lastLoginUserId)
+    private fun onUserIdInputChanged(input: TextFieldValue) {
+        val trimText = input.text.trim()
+        if (trimText.length <= 12 && trimText.all {
+                it.isLowerCase() || it.isUpperCase()
+            }) {
+            loginPageViewState = loginPageViewState.copy(userId = input.copy(text = trimText))
         }
     }
 
-    suspend fun onClickLoginButton(userId: String): Boolean {
-        loginPageViewState.lastLoginUserId.value = userId
-        loginPageViewState.loading.value = true
-        return login(userId = userId)
+    suspend fun tryLogin(): Boolean {
+        val lastLoginUserId = AccountProvider.lastLoginUserId
+        val userId = TextFieldValue(
+            text = lastLoginUserId,
+            selection = TextRange(index = lastLoginUserId.length)
+        )
+        val canAutoLogin = lastLoginUserId.isNotBlank() && AccountProvider.canAutoLogin
+        val showPanel: Boolean
+        val loading: Boolean
+        if (canAutoLogin) {
+            showPanel = false
+            loading = true
+        } else {
+            showPanel = true
+            loading = false
+        }
+        loginPageViewState = loginPageViewState.copy(
+            userId = userId,
+            showPanel = showPanel,
+            loading = loading
+        )
+        return if (canAutoLogin) {
+            val isSuccess = login(userId = lastLoginUserId)
+            loginPageViewState = loginPageViewState.copy(
+                userId = userId,
+                showPanel = !isSuccess,
+                loading = false
+            )
+            isSuccess
+        } else {
+            false
+        }
+    }
+
+    suspend fun onClickLoginButton(): Boolean {
+        loginPageViewState = loginPageViewState.copy(loading = true)
+        val isSuccess = login(userId = loginPageViewState.userId.text)
+        loginPageViewState = loginPageViewState.copy(loading = false)
+        return isSuccess
     }
 
     private suspend fun login(userId: String): Boolean {
@@ -55,9 +89,6 @@ class LoginViewModel : BaseViewModel() {
 
             is ActionResult.Failed -> {
                 showToast(msg = loginResult.reason)
-                loginPageViewState.lastLoginUserId.value = formatUserId
-                loginPageViewState.showPanel.value = true
-                loginPageViewState.loading.value = false
                 false
             }
         }

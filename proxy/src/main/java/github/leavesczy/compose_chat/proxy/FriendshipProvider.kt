@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.proxy.logic
+package github.leavesczy.compose_chat.proxy
 
 import com.tencent.imsdk.v2.V2TIMCallback
 import com.tencent.imsdk.v2.V2TIMFriendAddApplication
@@ -11,8 +11,6 @@ import com.tencent.imsdk.v2.V2TIMValueCallback
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.PersonProfile
 import github.leavesczy.compose_chat.base.provider.IFriendshipProvider
-import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
-import github.leavesczy.compose_chat.proxy.utils.Converters
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine

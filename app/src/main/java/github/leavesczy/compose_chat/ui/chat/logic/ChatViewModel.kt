@@ -19,9 +19,9 @@ import github.leavesczy.compose_chat.base.models.TimeMessage
 import github.leavesczy.compose_chat.base.provider.IFriendshipProvider
 import github.leavesczy.compose_chat.base.provider.IGroupProvider
 import github.leavesczy.compose_chat.base.provider.IMessageProvider
-import github.leavesczy.compose_chat.proxy.logic.FriendshipProvider
-import github.leavesczy.compose_chat.proxy.logic.GroupProvider
-import github.leavesczy.compose_chat.proxy.logic.MessageProvider
+import github.leavesczy.compose_chat.proxy.FriendshipProvider
+import github.leavesczy.compose_chat.proxy.GroupProvider
+import github.leavesczy.compose_chat.proxy.MessageProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.chat.InputSelector
 import github.leavesczy.compose_chat.ui.logic.ComposeChat

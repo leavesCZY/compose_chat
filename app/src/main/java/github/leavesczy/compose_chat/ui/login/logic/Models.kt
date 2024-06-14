@@ -1,7 +1,7 @@
 package github.leavesczy.compose_chat.ui.login.logic
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.text.input.TextFieldValue
 
 /**
  * @Author: leavesCZY
@@ -10,7 +10,8 @@ import androidx.compose.runtime.Stable
  */
 @Stable
 data class LoginPageViewState(
-    val lastLoginUserId: MutableState<String>,
-    val showPanel: MutableState<Boolean>,
-    val loading: MutableState<Boolean>
+    val userId: TextFieldValue,
+    val onUserIdInputChanged: (TextFieldValue) -> Unit,
+    val showPanel: Boolean,
+    val loading: Boolean
 )

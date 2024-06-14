@@ -20,9 +20,9 @@ object AlbumUtils {
 
     private const val ALBUM_DIRECTORY_NAME = "compose_chat"
 
-    private const val jpeg = "jpeg"
+    private const val JPEG = "jpeg"
 
-    private const val jpegMime = "image/jpeg"
+    private const val JPEG_MIME_TYPE = "image/jpeg"
 
     suspend fun insertImageToAlbum(context: Context, imageUri: String): Boolean {
         return withContext(context = Dispatchers.IO) {
@@ -48,8 +48,9 @@ object AlbumUtils {
 
     private suspend fun insertImageToAlbum(context: Context, imageFile: File): Boolean {
         return withContext(context = Dispatchers.IO) {
-            val mimeType = FileUtils.getMimeType(filePath = imageFile.absolutePath) ?: jpegMime
-            val extension = FileUtils.getExtensionFromMimeType(mimeType = mimeType) ?: jpeg
+            val mimeType =
+                FileUtils.getMimeType(filePath = imageFile.absolutePath) ?: JPEG_MIME_TYPE
+            val extension = FileUtils.getExtensionFromMimeType(mimeType = mimeType) ?: JPEG
             val albumImageOutputStream = generateAlbumImageOutputStream(
                 context = context,
                 mimeType = mimeType,

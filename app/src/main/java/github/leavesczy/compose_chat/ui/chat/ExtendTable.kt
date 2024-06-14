@@ -29,7 +29,10 @@ import androidx.compose.ui.unit.sp
  * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun ExtendTable(launchImagePicker: () -> Unit, launchTakePicture: () -> Unit) {
+fun ExtendTable(
+    launchImagePicker: () -> Unit,
+    launchTakePicture: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -62,13 +65,15 @@ private fun Function(text: String, icon: ImageVector, onClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            modifier = Modifier.size(size = 42.dp),
+            modifier = Modifier
+                .size(size = 42.dp),
             imageVector = icon,
             tint = MaterialTheme.colorScheme.primary,
             contentDescription = null
         )
         Text(
-            modifier = Modifier.padding(top = 4.dp),
+            modifier = Modifier
+                .padding(top = 4.dp),
             text = text,
             textAlign = TextAlign.Center,
             fontSize = 14.sp

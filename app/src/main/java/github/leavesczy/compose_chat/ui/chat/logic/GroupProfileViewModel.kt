@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.provider.IGroupProvider
-import github.leavesczy.compose_chat.proxy.logic.GroupProvider
+import github.leavesczy.compose_chat.proxy.GroupProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch

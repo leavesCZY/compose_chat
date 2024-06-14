@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.proxy.logic
+package github.leavesczy.compose_chat.proxy
 
 import com.tencent.imsdk.v2.V2TIMCallback
 import com.tencent.imsdk.v2.V2TIMGroupChangeInfo
@@ -14,8 +14,6 @@ import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.GroupMemberProfile
 import github.leavesczy.compose_chat.base.models.GroupProfile
 import github.leavesczy.compose_chat.base.provider.IGroupProvider
-import github.leavesczy.compose_chat.proxy.coroutine.ChatCoroutineScope
-import github.leavesczy.compose_chat.proxy.utils.Converters
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -188,8 +186,7 @@ class GroupProvider : IGroupProvider {
             faceUrl = group.faceUrl ?: "",
             name = group.groupName ?: "",
             introduction = group.introduction ?: "",
-            createTime = group.createTime,
-            memberCount = group.memberCount
+            createTime = group.createTime
         )
     }
 

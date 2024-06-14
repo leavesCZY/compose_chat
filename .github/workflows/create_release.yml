@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: setup jdk
+      - name: set up jdk
         uses: actions/setup-java@v4
         with:
+          distribution: "zulu"
           java-version: "18"
-          distribution: "oracle"
           architecture: x64
 
       - name: checkout
@@ -34,14 +34,14 @@ jobs:
           format: YYYY.MM.DD
           utcOffset: "+08:00"
 
-      - name: create a release
+      - name: draft a new release
         uses: ncipollo/release-action@v1
         with:
+          token: ${{secrets.ACTION_TOKEN}}
+          allowUpdates: true
+          artifactErrorsFailBuild: false
+          generateReleaseNotes: false
           artifacts: "app/build/outputs/apk/release/*.apk"
           body: "create by workflows"
-          allowUpdates: true
-          artifactErrorsFailBuild: true
-          generateReleaseNotes: false
-          token: ${{ secrets.ACTION_TOKEN }}
           tag: ${{ steps.currentTime.outputs.formattedTime }}
           name: v${{ steps.currentTime.outputs.formattedTime }}

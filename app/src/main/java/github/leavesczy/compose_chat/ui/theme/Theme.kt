@@ -44,7 +44,7 @@ private val onPrimaryColorDark = Color(0xFFFFFFFF)
 private val primaryContainerColorDark = Color(0xFF3A3D4D)
 private val surfaceColorDark = Color(0xFF22202A)
 private val onSurfaceColorDark = Color(0xFFFFFFFF)
-val backgroundColorDark = Color(0xFF22202A)
+private val backgroundColorDark = Color(0xFF22202A)
 private val onSecondaryContainerDark = Color(0xFF3A3D4D)
 
 private val lightColorScheme = lightColorScheme(
