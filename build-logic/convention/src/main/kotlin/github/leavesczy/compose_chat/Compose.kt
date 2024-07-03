@@ -37,15 +37,15 @@ internal fun Project.configureCompose(commonExtension: CommonExtension<*, *, *, 
     }
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
-            freeCompilerArgs.value(
+            optIn.addAll(
                 setOf(
-                    "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
-                    "-opt-in=androidx.compose.ui.text.ExperimentalTextApi",
-                    "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
-                    "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-                    "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
-                    "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
-                    "-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi"
+                    "androidx.compose.ui.ExperimentalComposeUiApi",
+                    "androidx.compose.ui.text.ExperimentalTextApi",
+                    "androidx.compose.material.ExperimentalMaterialApi",
+                    "androidx.compose.material3.ExperimentalMaterial3Api",
+                    "androidx.compose.animation.ExperimentalAnimationApi",
+                    "androidx.compose.foundation.ExperimentalFoundationApi",
+                    "androidx.compose.foundation.layout.ExperimentalLayoutApi"
                 )
             )
         }

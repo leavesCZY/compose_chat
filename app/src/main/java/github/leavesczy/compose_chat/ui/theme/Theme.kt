@@ -1,6 +1,7 @@
 package github.leavesczy.compose_chat.ui.theme
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
@@ -18,6 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.provider.AppThemeProvider
 import github.leavesczy.compose_chat.ui.logic.AppTheme
@@ -103,6 +105,8 @@ private val typography = Typography(
         fontSize = 13.sp
     )
 )
+
+val WindowInsetsEmpty = WindowInsets(left = 0.dp, right = 0.dp, top = 0.dp, bottom = 0.dp)
 
 @Composable
 fun ComposeChatTheme(content: @Composable () -> Unit) {

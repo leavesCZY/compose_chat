@@ -36,6 +36,7 @@ import github.leavesczy.compose_chat.ui.chat.ChatActivity
 import github.leavesczy.compose_chat.ui.friend.logic.FriendProfilePageViewState
 import github.leavesczy.compose_chat.ui.friend.logic.FriendProfileViewModel
 import github.leavesczy.compose_chat.ui.friend.logic.SetFriendRemarkDialogViewState
+import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
@@ -51,11 +52,11 @@ class FriendProfileActivity : BaseActivity() {
 
     companion object {
 
-        private const val keyFriendId = "keyFriendId"
+        private const val KEY_FRIEND_ID = "keyFriendId"
 
         fun navTo(context: Context, friendId: String) {
             val intent = Intent(context, FriendProfileActivity::class.java)
-            intent.putExtra(keyFriendId, friendId)
+            intent.putExtra(KEY_FRIEND_ID, friendId)
             if (context !is Activity) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
@@ -65,7 +66,7 @@ class FriendProfileActivity : BaseActivity() {
     }
 
     private val friendId by lazy(mode = LazyThreadSafetyMode.NONE) {
-        intent.getStringExtra(keyFriendId) ?: ""
+        intent.getStringExtra(KEY_FRIEND_ID) ?: ""
     }
 
     private val friendProfileViewModel by viewModelsInstance {
@@ -231,7 +232,7 @@ private fun SetFriendRemarkDialog(viewState: SetFriendRemarkDialogViewState) {
             modifier = Modifier,
             sheetMaxWidth = Dp.Unspecified,
             sheetState = sheetState,
-            windowInsets = WindowInsets(left = 0.dp, right = 0.dp, top = 0.dp, bottom = 0.dp),
+            windowInsets = WindowInsetsEmpty,
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             onDismissRequest = viewState.dismissDialog
         ) {

@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
-import com.github.panpf.zoomimage.CoilZoomAsyncImage
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -85,7 +84,7 @@ fun ZoomableComponentImage(
     colorFilter: ColorFilter? = null,
     contentDescription: String? = null
 ) {
-    CoilZoomAsyncImage(
+    AsyncImage(
         modifier = modifier
             .fillMaxSize(),
         model = model,
@@ -99,15 +98,16 @@ fun ZoomableComponentImage(
 
 @Composable
 fun BezierImage(modifier: Modifier, model: Any) {
-    val animateFloat by rememberInfiniteTransition(label = "").animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 600, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = ""
-    )
+    val animateFloat by rememberInfiniteTransition(label = "")
+        .animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 600, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse,
+            ),
+            label = ""
+        )
     ComponentImage(
         modifier = Modifier
             .scale(scale = 1.0f + animateFloat * 0.1f)

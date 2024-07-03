@@ -66,7 +66,6 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
                 pageViewState.personProfile.value = profile
                 pageViewState.itIsMe.value = itIsMe
                 pageViewState.isFriend.value = isFriend
-
                 setFriendRemarkDialogViewState.visible.value = false
                 setFriendRemarkDialogViewState.remark.value = profile.remark
             }

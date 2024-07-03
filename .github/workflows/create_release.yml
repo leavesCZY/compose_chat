@@ -38,9 +38,9 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           token: ${{secrets.ACTION_TOKEN}}
-          allowUpdates: true
-          artifactErrorsFailBuild: false
-          generateReleaseNotes: false
+          allowUpdates: false
+          artifactErrorsFailBuild: true
+          generateReleaseNotes: true
           artifacts: "app/build/outputs/apk/release/*.apk"
           body: "create by workflows"
           tag: ${{ steps.currentTime.outputs.formattedTime }}

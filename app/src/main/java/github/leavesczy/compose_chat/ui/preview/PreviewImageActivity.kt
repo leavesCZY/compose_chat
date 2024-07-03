@@ -11,7 +11,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -29,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
@@ -38,6 +38,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.ui.base.BaseActivity
+import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 import github.leavesczy.compose_chat.ui.widgets.ZoomableComponentImage
 import github.leavesczy.compose_chat.utils.AlbumUtils
 import kotlinx.coroutines.launch
@@ -147,7 +148,7 @@ private fun PreviewImagePage(
         if (it) {
             insertImageToAlbum(imageUriList[pagerState.currentPage])
         } else {
-            ToastProvider.showToast(msg = "请先授予存储权限再保存图片")
+            ToastProvider.showToast(context = context, msg = "请先授予存储权限再保存图片")
         }
     }
     Scaffold(
@@ -155,7 +156,7 @@ private fun PreviewImagePage(
             .background(color = Color(color = 0xFF22202A))
             .fillMaxSize(),
         containerColor = Color(color = 0xFF22202A),
-        contentWindowInsets = WindowInsets(left = 0.dp, top = 0.dp, right = 0.dp, bottom = 0.dp),
+        contentWindowInsets = WindowInsetsEmpty
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -237,7 +238,8 @@ private fun PreviewPage(
             ZoomableComponentImage(
                 modifier = Modifier
                     .fillMaxSize(),
-                model = imageUrl
+                model = imageUrl,
+                contentScale = ContentScale.FillWidth
             )
         }
     }

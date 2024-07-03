@@ -82,11 +82,11 @@ class GroupProfileActivity : BaseActivity() {
 
     companion object {
 
-        private const val keyGroupId = "keyGroupId"
+        private const val KEY_GROUP_ID = "keyGroupId"
 
         fun navTo(context: Context, groupId: String) {
             val intent = Intent(context, GroupProfileActivity::class.java)
-            intent.putExtra(keyGroupId, groupId)
+            intent.putExtra(KEY_GROUP_ID, groupId)
             if (context !is Activity) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
@@ -96,7 +96,7 @@ class GroupProfileActivity : BaseActivity() {
     }
 
     private val groupId by lazy(mode = LazyThreadSafetyMode.NONE) {
-        intent.getStringExtra(keyGroupId) ?: ""
+        intent.getStringExtra(KEY_GROUP_ID) ?: ""
     }
 
     private val groupProfileViewModel by viewModelsInstance {

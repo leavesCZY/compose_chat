@@ -90,7 +90,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected fun showToast(msg: String) {
-        ToastProvider.showToast(msg = msg)
+        ToastProvider.showToast(context = this, msg = msg)
     }
 
     protected inline fun <reified T : Activity> startActivity() {

@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -37,6 +38,7 @@ import github.leavesczy.compose_chat.ui.MainActivity
 import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.login.logic.LoginPageViewState
 import github.leavesczy.compose_chat.ui.login.logic.LoginViewModel
+import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
 import kotlinx.coroutines.launch
 
@@ -89,14 +91,16 @@ private fun LoginPage(
 ) {
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        contentWindowInsets = WindowInsetsEmpty
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues = innerPadding),
+                .padding(paddingValues = innerPadding)
         ) {
             val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
+            val context = LocalContext.current
             BackHandler(enabled = viewState.loading) {
 
             }
@@ -157,7 +161,7 @@ private fun LoginPage(
                         onClick = {
                             val input = viewState.userId.text
                             if (input.isBlank()) {
-                                ToastProvider.showToast(msg = "请输入 UserID")
+                                ToastProvider.showToast(context = context, msg = "请输入 UserID")
                             } else {
                                 localSoftwareKeyboardController?.hide()
                                 onClickLoginButton()

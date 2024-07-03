@@ -1,17 +1,17 @@
 package github.leavesczy.compose_chat.ui.base
 
-import android.content.Context
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import github.leavesczy.compose_chat.provider.ContextProvider
 import github.leavesczy.compose_chat.provider.ToastProvider
 
 open class BaseViewModel : ViewModel() {
 
-    protected val context: Context
+    protected val context: Application
         get() = ContextProvider.context
 
     protected fun showToast(msg: String) {
-        ToastProvider.showToast(msg = msg)
+        ToastProvider.showToast(context = context, msg = msg)
     }
 
 }

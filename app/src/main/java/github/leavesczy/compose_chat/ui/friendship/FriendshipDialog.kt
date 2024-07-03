@@ -1,7 +1,6 @@
 package github.leavesczy.compose_chat.ui.friendship
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,11 +14,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.ui.friendship.logic.FriendshipDialogViewState
 import github.leavesczy.compose_chat.ui.logic.GroupIds
+import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 
@@ -37,11 +38,12 @@ fun FriendshipDialog(viewState: FriendshipDialogViewState) {
                 true
             }
         )
+        val context = LocalContext.current
         ModalBottomSheet(
             modifier = Modifier,
             sheetMaxWidth = Dp.Unspecified,
             sheetState = sheetState,
-            windowInsets = WindowInsets(left = 0.dp, right = 0.dp, top = 0.dp, bottom = 0.dp),
+            windowInsets = WindowInsetsEmpty,
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             onDismissRequest = viewState.dismissDialog
         ) {
@@ -71,7 +73,7 @@ fun FriendshipDialog(viewState: FriendshipDialogViewState) {
                 )
                 CommonButton(text = "添加好友") {
                     if (userId.isBlank()) {
-                        ToastProvider.showToast(msg = "请输入 UserID")
+                        ToastProvider.showToast(context = context, msg = "请输入 UserID")
                     } else {
                         viewState.addFriend(userId)
                     }
