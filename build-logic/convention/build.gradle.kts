@@ -20,7 +20,7 @@ tasks.withType<KotlinCompile>().configureEach {
 dependencies {
     implementation(libs.android.gradle)
     implementation(libs.kotlin.gradle)
-    implementation(libs.leavesczy.trace.gradle)
+    implementation(libs.leavesczy.track.gradle)
 }
 
 gradlePlugin {
@@ -41,9 +41,9 @@ gradlePlugin {
             id = "chat.kotlin.parcelize"
             implementationClass = "ParcelizeConventionPlugin"
         }
-        register("leavesczyTrace") {
-            id = "chat.leavesczy.trace"
-            implementationClass = "TraceConventionPlugin"
+        register("leavesczyTrack") {
+            id = "chat.leavesczy.track"
+            implementationClass = "TrackConventionPlugin"
         }
     }
 }

@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.chat.android.application)
     alias(libs.plugins.chat.android.compose)
     alias(libs.plugins.chat.kotlin.parcelize)
-    alias(libs.plugins.chat.leavesczy.trace)
+    alias(libs.plugins.chat.leavesczy.track)
 }
 
 android {

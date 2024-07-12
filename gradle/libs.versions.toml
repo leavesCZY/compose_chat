@@ -1,7 +1,7 @@
 [versions]
 android-plugin = "8.5.0"
 kotlin-plugin = "2.0.0"
-trace-plugin = "1.1.0"
+track-plugin = "1.0.0"
 
 androidx-junit = "1.2.1"
 androidx-espresso = "3.6.1"
@@ -12,7 +12,7 @@ androidx-lifecycle-viewmodel-compose = "2.8.3"
 androidx-compose-bom = "2024.06.00"
 
 junit = "4.13.2"
-coil = "3.0.0-alpha07"
+coil = "3.0.0-alpha08"
 leavesczy-matisse = "2.1.0"
 kotlinx-coroutines = "1.8.1"
 tencent-imsdk = "8.0.5895"
@@ -23,18 +23,18 @@ android-library = { id = "com.android.library", version.ref = "android-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-plugin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin-plugin" }
-leavesczy-trace = { id = "io.github.leavesczy.trace", version.ref = "trace-plugin" }
+leavesczy-track = { id = "io.github.leavesczy.track", version.ref = "track-plugin" }
 
 chat-android-application = { id = "chat.android.application", version = "unspecified" }
 chat-android-library = { id = "chat.android.library", version = "unspecified" }
 chat-android-compose = { id = "chat.android.compose", version = "unspecified" }
 chat-kotlin-parcelize = { id = "chat.kotlin.parcelize", version = "unspecified" }
-chat-leavesczy-trace = { id = "chat.leavesczy.trace", version = "unspecified" }
+chat-leavesczy-track = { id = "chat.leavesczy.track", version = "unspecified" }
 
 [libraries]
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-plugin" }
-leavesczy-trace-gradle = { module = "io.github.leavesczy:trace", version.ref = "trace-plugin" }
+leavesczy-track-gradle = { module = "io.github.leavesczy:track", version.ref = "track-plugin" }
 
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }
 androidx-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-espresso" }

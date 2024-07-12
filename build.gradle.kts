@@ -4,5 +4,5 @@ plugins {
     alias(libs.plugins.kotlin.android).apply(false)
     alias(libs.plugins.kotlin.compose).apply(false)
     alias(libs.plugins.kotlin.parcelize).apply(false)
-    alias(libs.plugins.leavesczy.trace).apply(false)
+    alias(libs.plugins.leavesczy.track).apply(false)
 }

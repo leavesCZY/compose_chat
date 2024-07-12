@@ -1,4 +1,4 @@
-import github.leavesczy.trace.click.compose.ComposeClickPluginParameter
+import github.leavesczy.track.click.compose.ComposeClickPluginParameter
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -8,12 +8,12 @@ import org.gradle.kotlin.dsl.configure
  * @Date: 2023/11/29 16:09
  * @Desc:
  */
-class TraceConventionPlugin : Plugin<Project> {
+class TrackConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                apply("io.github.leavesczy.trace")
+                apply("io.github.leavesczy.track")
             }
             extensions.configure<ComposeClickPluginParameter> {
                 onClickClass = "github.leavesczy.compose_chat.extend.ComposeOnClick"
