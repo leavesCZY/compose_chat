@@ -19,7 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -142,24 +142,20 @@ private class BezierShape(private val animateValue: Float) : Shape {
 @Composable
 fun BouncyImage(modifier: Modifier, data: Any) {
     val coroutineScope = rememberCoroutineScope()
-    var offsetX by remember {
-        mutableFloatStateOf(value = 0f)
-    }
-    var offsetY by remember {
-        mutableFloatStateOf(value = 0f)
+    var offset by remember {
+        mutableStateOf(value = Offset.Zero)
     }
 
     fun launchDragAnimate() {
         coroutineScope.launch {
             Animatable(
-                initialValue = Offset(x = offsetX, y = offsetY),
+                initialValue = Offset(x = offset.x, y = offset.y),
                 typeConverter = Offset.VectorConverter
             ).animateTo(
-                targetValue = Offset(x = 0f, y = 0f),
+                targetValue = Offset.Zero,
                 animationSpec = SpringSpec(dampingRatio = Spring.DampingRatioHighBouncy),
                 block = {
-                    offsetX = value.x
-                    offsetY = value.y
+                    offset = Offset(x = value.x, y = value.y)
                 }
             )
         }
@@ -167,10 +163,7 @@ fun BouncyImage(modifier: Modifier, data: Any) {
     ComponentImage(
         modifier = modifier
             .offset {
-                IntOffset(
-                    x = offsetX.roundToInt(),
-                    y = offsetY.roundToInt()
-                )
+                IntOffset(x = offset.x.roundToInt(), y = offset.y.roundToInt())
             }
             .pointerInput(key1 = Unit) {
                 detectDragGestures(
@@ -185,8 +178,10 @@ fun BouncyImage(modifier: Modifier, data: Any) {
                     },
                     onDrag = { change, dragAmount ->
                         change.consume()
-                        offsetX += dragAmount.x
-                        offsetY += dragAmount.y
+                        offset = Offset(
+                            x = offset.x + dragAmount.x,
+                            y = offset.y + dragAmount.y
+                        )
                     }
                 )
             }

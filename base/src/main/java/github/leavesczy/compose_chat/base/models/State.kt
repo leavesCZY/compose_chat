@@ -21,7 +21,8 @@ sealed class ActionResult {
 }
 
 @Stable
-enum class ServerState {
+enum class ServerConnectState {
+    Idle,
     Logout,
     Connecting,
     Connected,

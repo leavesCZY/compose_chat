@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
-import github.leavesczy.compose_chat.base.models.ServerState
+import github.leavesczy.compose_chat.base.models.ServerConnectState
 import github.leavesczy.compose_chat.provider.AccountProvider
 import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.conversation.logic.ConversationViewModel
@@ -46,13 +46,13 @@ class MainActivity : BaseActivity() {
         lifecycleScope.launch {
             mainViewModel.serverConnectState.collect {
                 when (it) {
-                    ServerState.KickedOffline -> {
+                    ServerConnectState.KickedOffline -> {
                         showToast(msg = "本账号已在其它客户端登陆，请重新登陆")
                         AccountProvider.onUserLogout()
                         navToLoginPage()
                     }
 
-                    ServerState.Logout, ServerState.UserSigExpired -> {
+                    ServerConnectState.Logout, ServerConnectState.UserSigExpired -> {
                         navToLoginPage()
                     }
 

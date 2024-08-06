@@ -1,6 +1,7 @@
 package github.leavesczy.compose_chat.ui.friendship
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -125,19 +127,20 @@ private fun LazyItemScope.GroupItem(
         modifier = Modifier
             .animateItemPlacement()
             .fillMaxWidth()
+            .height(height = 70.dp)
             .clickable(onClick = {
                 onClick(groupProfile)
             })
-            .padding(horizontal = 14.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
+                .weight(weight = 1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             ComponentImage(
                 modifier = Modifier
+                    .padding(horizontal = 14.dp)
                     .size(size = 50.dp)
                     .clip(shape = RoundedCornerShape(size = 6.dp)),
                 model = groupProfile.faceUrl
@@ -145,7 +148,7 @@ private fun LazyItemScope.GroupItem(
             Text(
                 modifier = Modifier
                     .weight(weight = 1f)
-                    .padding(start = 10.dp),
+                    .padding(end = 12.dp),
                 text = groupProfile.name,
                 fontSize = 18.sp,
                 overflow = TextOverflow.Ellipsis,
@@ -154,7 +157,7 @@ private fun LazyItemScope.GroupItem(
         }
         HorizontalDivider(
             modifier = Modifier
-                .padding(start = 60.dp, top = 8.dp),
+                .padding(start = 78.dp),
             thickness = 0.2.dp
         )
     }
@@ -169,27 +172,31 @@ private fun LazyItemScope.FriendItem(
         modifier = Modifier
             .animateItemPlacement()
             .fillMaxWidth()
+            .height(height = 70.dp)
             .clickable(onClick = {
                 onClick(personProfile)
             })
-            .padding(horizontal = 14.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
+                .weight(weight = 1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             ComponentImage(
                 modifier = Modifier
+                    .padding(horizontal = 14.dp)
                     .size(size = 50.dp)
                     .clip(shape = RoundedCornerShape(size = 6.dp)),
                 model = personProfile.faceUrl
             )
             Column(
                 modifier = Modifier
-                    .weight(weight = 1f)
-                    .padding(start = 10.dp)
+                    .weight(weight = 1f),
+                verticalArrangement = Arrangement.spacedBy(
+                    space = 4.dp,
+                    alignment = Alignment.CenterVertically
+                )
             ) {
                 Text(
                     modifier = Modifier,
@@ -209,7 +216,7 @@ private fun LazyItemScope.FriendItem(
         }
         HorizontalDivider(
             modifier = Modifier
-                .padding(start = 60.dp, top = 8.dp),
+                .padding(start = 78.dp),
             thickness = 0.2.dp
         )
     }

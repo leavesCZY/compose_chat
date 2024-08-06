@@ -28,7 +28,6 @@ internal object TimeUtil {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = timeStamp * 1000
         val date = calendar.time
-        // 今天凌晨
         val tempCalendar = Calendar.getInstance()
         tempCalendar[Calendar.HOUR_OF_DAY] = 0
         tempCalendar[Calendar.MINUTE] = 0
@@ -36,12 +35,10 @@ internal object TimeUtil {
         if (calendar.after(tempCalendar)) {
             return format_HH_mm.format(date)
         }
-        // 昨天凌晨
         tempCalendar.add(Calendar.DATE, -1)
         if (calendar.after(tempCalendar)) {
             return "昨天 " + format_HH_mm.format(date)
         }
-        // 前天凌晨
         tempCalendar.add(Calendar.DATE, -1)
         if (calendar.after(tempCalendar)) {
             return "前天"
@@ -53,7 +50,6 @@ internal object TimeUtil {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = timeStamp * 1000
         val date = calendar.time
-        // 今天凌晨
         val tempCalendar = Calendar.getInstance()
         tempCalendar[Calendar.HOUR_OF_DAY] = 0
         tempCalendar[Calendar.MINUTE] = 0
@@ -61,12 +57,10 @@ internal object TimeUtil {
         if (calendar.after(tempCalendar)) {
             return format_HH_mm.format(date)
         }
-        // 昨天凌晨
         tempCalendar.add(Calendar.DATE, -1)
         if (calendar.after(tempCalendar)) {
             return "昨天 " + format_HH_mm.format(date)
         }
-        // 前天凌晨
         tempCalendar.add(Calendar.DATE, -1)
         if (calendar.after(tempCalendar)) {
             return "前天 " + format_HH_mm.format(date)

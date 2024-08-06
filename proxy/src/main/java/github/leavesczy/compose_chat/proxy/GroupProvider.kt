@@ -207,15 +207,14 @@ class GroupProvider : IGroupProvider {
                 break
             }
         }
-        memberList.sortBy { it.joinTime }
-        val owner = memberList.find { it.isOwner }
-        if (owner != null) {
-            memberList.remove(owner)
-            memberList.add(
-                0, owner
-            )
+        val sorted = memberList.sortedByDescending {
+            if (it.isOwner) {
+                Long.MAX_VALUE
+            } else {
+                it.joinTime
+            }
         }
-        return memberList
+        return sorted
     }
 
     private suspend fun getGroupMemberList(

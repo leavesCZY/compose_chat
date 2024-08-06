@@ -157,13 +157,30 @@ class ConversationProvider : IConversationProvider {
     private fun convertConversation(convertersList: List<V2TIMConversation>?): List<Conversation> {
         return convertersList?.mapNotNull {
             convertConversation(conversation = it)
-        }?.sortedByDescending {
-            if (it.isPinned) {
-                it.lastMessage.detail.timestamp.toDouble() + Long.MAX_VALUE
-            } else {
-                it.lastMessage.detail.timestamp.toDouble()
+        }?.sortedWith(object : Comparator<Conversation> {
+            override fun compare(o1: Conversation, o2: Conversation): Int {
+                val o1Timestamp = o1.lastMessage.detail.timestamp
+                val o2Timestamp = o2.lastMessage.detail.timestamp
+                if (o1.isPinned) {
+                    if (o2.isPinned) {
+                        return if (o1Timestamp > o2Timestamp) {
+                            -1
+                        } else {
+                            1
+                        }
+                    }
+                    return -1
+                }
+                if (o2.isPinned) {
+                    return 1
+                }
+                return if (o1Timestamp > o2Timestamp) {
+                    -1
+                } else {
+                    1
+                }
             }
-        } ?: emptyList()
+        }) ?: emptyList()
     }
 
     private fun convertConversation(conversation: V2TIMConversation): Conversation? {

@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.base.models.Conversation
+import github.leavesczy.compose_chat.base.models.ServerConnectState
 import github.leavesczy.compose_chat.extend.scrim
 import github.leavesczy.compose_chat.ui.conversation.logic.ConversationPageViewState
 import github.leavesczy.compose_chat.ui.widgets.ComponentImage
@@ -52,22 +53,34 @@ import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 fun ConversationPage(pageViewState: ConversationPageViewState) {
     val conversationList by pageViewState.conversationList
     if (conversationList.isEmpty()) {
-        Text(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(fraction = 0.45f)
-                .wrapContentSize(align = Alignment.BottomCenter),
-            text = "Empty",
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            fontSize = 70.sp
-        )
+                .fillMaxSize()
+        ) {
+            ServerConnectState(serverConnectState = pageViewState.serverConnectState.value)
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(fraction = 0.45f)
+                    .wrapContentSize(align = Alignment.BottomCenter),
+                text = "Empty",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                fontSize = 70.sp
+            )
+        }
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            state = pageViewState.listState.value,
+            state = pageViewState.listState,
             contentPadding = PaddingValues(bottom = 30.dp),
         ) {
+            item(
+                key = "ServerState",
+                contentType = "ServerState"
+            ) {
+                ServerConnectState(serverConnectState = pageViewState.serverConnectState.value)
+            }
             items(
                 items = conversationList,
                 key = {
@@ -82,6 +95,31 @@ fun ConversationPage(pageViewState: ConversationPageViewState) {
                     onClickConversation = pageViewState.onClickConversation,
                     deleteConversation = pageViewState.deleteConversation,
                     pinConversation = pageViewState.pinConversation
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ServerConnectState(serverConnectState: ServerConnectState) {
+    when (serverConnectState) {
+        ServerConnectState.Idle, ServerConnectState.Connected -> {
+            return
+        }
+
+        ServerConnectState.Logout, ServerConnectState.Connecting, ServerConnectState.ConnectFailed,
+        ServerConnectState.UserSigExpired, ServerConnectState.KickedOffline -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color(0x26CCCCCC))
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp, vertical = 8.dp),
+                    text = "serverConnectState : $serverConnectState ...",
+                    fontSize = 14.sp
                 )
             }
         }
@@ -125,12 +163,13 @@ private fun ConversationItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier
+                    .fillMaxHeight()
             ) {
                 ComponentImage(
                     modifier = Modifier
                         .align(alignment = Alignment.Center)
-                        .padding(horizontal = 12.dp)
+                        .padding(horizontal = 14.dp)
                         .size(size = 50.dp)
                         .clip(shape = RoundedCornerShape(size = 6.dp)),
                     model = conversation.faceUrl

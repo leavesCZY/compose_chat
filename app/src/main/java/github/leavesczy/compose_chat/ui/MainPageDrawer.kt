@@ -2,6 +2,7 @@ package github.leavesczy.compose_chat.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,7 +66,8 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
         contentColor = contentColorFor(MaterialTheme.colorScheme.surface)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
         ) {
             val personProfile by viewState.personProfile
             val padding = 20.dp
@@ -74,6 +76,11 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
                     .padding(start = padding)
                     .size(size = 90.dp)
                     .clip(shape = CircleShape)
+                    .border(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                        shape = CircleShape
+                    )
                     .clickableNoRipple {
                         viewState.previewImage(personProfile.faceUrl)
                     },

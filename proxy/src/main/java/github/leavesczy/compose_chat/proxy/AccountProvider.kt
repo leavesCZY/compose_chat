@@ -8,7 +8,7 @@ import com.tencent.imsdk.v2.V2TIMSDKListener
 import com.tencent.imsdk.v2.V2TIMUserFullInfo
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.PersonProfile
-import github.leavesczy.compose_chat.base.models.ServerState
+import github.leavesczy.compose_chat.base.models.ServerConnectState
 import github.leavesczy.compose_chat.base.provider.IAccountProvider
 import github.leavesczy.compose_chat.proxy.Converters.getSelfProfile
 import github.leavesczy.compose_chat.proxy.Converters.getSelfProfileOrigin
@@ -27,31 +27,30 @@ class AccountProvider : IAccountProvider {
 
     override val personProfile = MutableStateFlow(value = PersonProfile.Empty)
 
-    override val serverConnectState = MutableSharedFlow<ServerState>()
+    override val serverConnectState = MutableSharedFlow<ServerConnectState>()
 
     override fun init(application: Application) {
         val config = V2TIMSDKConfig()
         config.logLevel = V2TIMSDKConfig.V2TIM_LOG_WARN
         V2TIMManager.getInstance().addIMSDKListener(object : V2TIMSDKListener() {
-
             override fun onConnecting() {
-                dispatchServerState(serverState = ServerState.Connecting)
+                dispatchServerConnectState(serverConnectState = ServerConnectState.Connecting)
             }
 
             override fun onConnectSuccess() {
-                dispatchServerState(serverState = ServerState.Connected)
+                dispatchServerConnectState(serverConnectState = ServerConnectState.Connected)
             }
 
             override fun onConnectFailed(code: Int, error: String) {
-                dispatchServerState(serverState = ServerState.ConnectFailed)
+                dispatchServerConnectState(serverConnectState = ServerConnectState.ConnectFailed)
             }
 
             override fun onUserSigExpired() {
-                dispatchServerState(serverState = ServerState.UserSigExpired)
+                dispatchServerConnectState(serverConnectState = ServerConnectState.UserSigExpired)
             }
 
             override fun onKickedOffline() {
-                dispatchServerState(serverState = ServerState.KickedOffline)
+                dispatchServerConnectState(serverConnectState = ServerConnectState.KickedOffline)
             }
 
             override fun onSelfInfoUpdated(info: V2TIMUserFullInfo) {
@@ -61,9 +60,9 @@ class AccountProvider : IAccountProvider {
         V2TIMManager.getInstance().initSDK(application, GenerateUserSig.APP_ID, config)
     }
 
-    private fun dispatchServerState(serverState: ServerState) {
+    private fun dispatchServerConnectState(serverConnectState: ServerConnectState) {
         ChatCoroutineScope.launch {
-            serverConnectState.emit(value = serverState)
+            this@AccountProvider.serverConnectState.emit(value = serverConnectState)
         }
     }
 
@@ -75,6 +74,7 @@ class AccountProvider : IAccountProvider {
                 GenerateUserSig.genUserSig(userId = formatUserId),
                 object : V2TIMCallback {
                     override fun onSuccess() {
+                        dispatchServerConnectState(serverConnectState = ServerConnectState.Connected)
                         continuation.resume(value = ActionResult.Success)
                     }
 
@@ -95,7 +95,7 @@ class AccountProvider : IAccountProvider {
             V2TIMManager.getInstance().logout(
                 object : V2TIMCallback {
                     override fun onSuccess() {
-                        dispatchServerState(serverState = ServerState.Logout)
+                        dispatchServerConnectState(serverConnectState = ServerConnectState.Logout)
                         continuation.resume(value = ActionResult.Success)
                     }
 

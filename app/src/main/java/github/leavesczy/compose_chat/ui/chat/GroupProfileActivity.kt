@@ -6,10 +6,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -174,7 +174,8 @@ private fun GroupProfilePage(
             }
         }
         Scaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize(),
             contentWindowInsets = WindowInsets.navigationBars
         ) { innerPadding ->
             Box(
@@ -183,7 +184,8 @@ private fun GroupProfilePage(
                     .padding(paddingValues = innerPadding)
             ) {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize(),
                     state = listState,
                     contentPadding = PaddingValues(bottom = 60.dp),
                 ) {
@@ -378,56 +380,52 @@ private fun GroupMemberItem(
     groupMemberProfile: GroupMemberProfile,
     groupProfilePageAction: GroupProfilePageAction
 ) {
-    Row(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(height = 70.dp)
             .clickable {
                 groupProfilePageAction.onClickMember(groupMemberProfile)
             }
-            .padding(horizontal = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
     ) {
         ComponentImage(
             modifier = Modifier
-                .size(size = 52.dp)
+                .align(alignment = Alignment.CenterStart)
+                .padding(horizontal = 14.dp)
+                .size(size = 50.dp)
                 .clip(shape = RoundedCornerShape(size = 6.dp)),
             model = groupMemberProfile.detail.faceUrl
         )
         Column(
             modifier = Modifier
-                .weight(weight = 1f)
-                .padding(start = 12.dp)
-                .fillMaxHeight()
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(weight = 1f)
+                .align(alignment = Alignment.CenterStart)
+                .padding(start = 78.dp, end = 12.dp)
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.spacedBy(
+                space = 4.dp,
+                alignment = Alignment.CenterVertically
             )
+        ) {
             Text(
-                modifier = Modifier.padding(bottom = 1.dp),
+                modifier = Modifier,
                 text = groupMemberProfile.detail.showName + "（${groupMemberProfile.detail.id}）",
                 fontSize = 17.sp,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
             Text(
-                modifier = Modifier.padding(top = 1.dp),
+                modifier = Modifier,
                 text = "joinTime: ${groupMemberProfile.joinTimeFormat}",
                 fontSize = 14.sp,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(weight = 1f)
-            )
-            HorizontalDivider(
-                modifier = Modifier,
-                thickness = 0.2.dp
-            )
         }
+        HorizontalDivider(
+            modifier = Modifier
+                .align(alignment = Alignment.BottomCenter)
+                .padding(start = 78.dp),
+            thickness = 0.2.dp
+        )
     }
 }

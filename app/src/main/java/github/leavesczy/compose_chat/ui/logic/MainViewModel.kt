@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.models.ActionResult
-import github.leavesczy.compose_chat.base.models.ServerState
+import github.leavesczy.compose_chat.base.models.ServerConnectState
 import github.leavesczy.compose_chat.base.provider.IConversationProvider
 import github.leavesczy.compose_chat.provider.AccountProvider
 import github.leavesczy.compose_chat.provider.AppThemeProvider
@@ -58,9 +58,9 @@ class MainViewModel : BaseViewModel() {
         )
     )
 
-    private val _serverConnectState = MutableStateFlow(value = ServerState.Connected)
+    private val _serverConnectState = MutableStateFlow(value = ServerConnectState.Connected)
 
-    val serverConnectState: SharedFlow<ServerState> = _serverConnectState
+    val serverConnectState: SharedFlow<ServerConnectState> = _serverConnectState
 
     init {
         viewModelScope.launch {
@@ -77,7 +77,7 @@ class MainViewModel : BaseViewModel() {
             launch {
                 ComposeChat.accountProvider.serverConnectState.collect {
                     _serverConnectState.emit(value = it)
-                    if (it == ServerState.Connected) {
+                    if (it == ServerConnectState.Connected) {
                         requestData()
                     }
                 }

@@ -8,10 +8,13 @@ import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.base.models.Conversation
 import github.leavesczy.compose_chat.base.models.ConversationType
+import github.leavesczy.compose_chat.base.models.ServerConnectState
+import github.leavesczy.compose_chat.base.provider.IAccountProvider
 import github.leavesczy.compose_chat.base.provider.IConversationProvider
 import github.leavesczy.compose_chat.proxy.ConversationProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.chat.ChatActivity
+import github.leavesczy.compose_chat.ui.logic.ComposeChat
 import kotlinx.coroutines.launch
 
 /**
@@ -23,14 +26,15 @@ class ConversationViewModel : BaseViewModel() {
 
     private val conversationProvider: IConversationProvider = ConversationProvider()
 
+    private val accountProvider: IAccountProvider = ComposeChat.accountProvider
+
     val pageViewState by mutableStateOf(
         value = ConversationPageViewState(
-            listState = mutableStateOf(
-                value = LazyListState(
-                    firstVisibleItemIndex = 0,
-                    firstVisibleItemScrollOffset = 0
-                )
+            listState = LazyListState(
+                firstVisibleItemIndex = 0,
+                firstVisibleItemScrollOffset = 0
             ),
+            serverConnectState = mutableStateOf(value = ServerConnectState.Idle),
             conversationList = mutableStateOf(value = emptyList()),
             onClickConversation = ::onClickConversation,
             deleteConversation = ::deleteConversation,
@@ -40,8 +44,15 @@ class ConversationViewModel : BaseViewModel() {
 
     init {
         viewModelScope.launch {
-            conversationProvider.conversationList.collect {
-                pageViewState.conversationList.value = it
+            launch {
+                conversationProvider.conversationList.collect {
+                    pageViewState.conversationList.value = it
+                }
+            }
+            launch {
+                accountProvider.serverConnectState.collect {
+                    pageViewState.serverConnectState.value = it
+                }
             }
         }
         conversationProvider.refreshConversationList()

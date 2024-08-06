@@ -109,15 +109,25 @@ class FriendshipProvider : IFriendshipProvider {
             return ActionResult.Failed(reason = "请输入 UserID")
         }
         if (formatUserId == (V2TIMManager.getInstance().loginUser ?: "")) {
-            return ActionResult.Failed(reason = "别玩啦~")
+            return ActionResult.Failed(reason = "不能添加自己为好友 ~")
         }
         return suspendCancellableCoroutine { continuation ->
             val requiresOpt = V2TIMFriendAddApplication(formatUserId)
             requiresOpt.setAddType(V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH)
             V2TIMManager.getFriendshipManager().addFriend(
                 requiresOpt, object : V2TIMValueCallback<V2TIMFriendOperationResult> {
-                    override fun onSuccess(t: V2TIMFriendOperationResult) {
-                        continuation.resume(value = ActionResult.Success)
+                    override fun onSuccess(result: V2TIMFriendOperationResult) {
+                        val resultCode = result.resultCode
+                        if (resultCode == 0) {
+                            continuation.resume(value = ActionResult.Success)
+                        } else {
+                            continuation.resume(
+                                value = ActionResult.Failed(
+                                    code = resultCode,
+                                    reason = result.resultInfo
+                                )
+                            )
+                        }
                     }
 
                     override fun onError(code: Int, desc: String?) {

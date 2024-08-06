@@ -75,7 +75,11 @@ internal fun Project.configureAndroidApplication(commonExtension: BaseAppModuleE
             buildConfig = true
         }
         packaging {
+            dex {
+                useLegacyPackaging = true
+            }
             jniLibs {
+                useLegacyPackaging = true
                 excludes += setOf("META-INF/{AL2.0,LGPL2.1}")
             }
             resources {
