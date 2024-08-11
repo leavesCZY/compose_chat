@@ -1,6 +1,6 @@
 [versions]
-android-plugin = "8.5.1"
-kotlin-plugin = "2.0.0"
+android-plugin = "8.5.2"
+kotlin-plugin = "2.0.10"
 track-plugin = "1.0.0"
 
 androidx-junit = "1.2.1"
@@ -12,7 +12,7 @@ androidx-lifecycle-viewmodel-compose = "2.8.4"
 androidx-compose-bom = "2024.06.00"
 
 junit = "4.13.2"
-coil = "3.0.0-alpha09"
+coil = "3.0.0-alpha10"
 leavesczy-matisse = "2.1.0"
 kotlinx-coroutines = "1.8.1"
 tencent-imsdk = "8.1.6103"

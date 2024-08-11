@@ -192,6 +192,17 @@ private fun DeleteFriendDialog(
             },
             confirmButton = {
                 TextButton(
+                    onClick = onDismissRequest
+                ) {
+                    Text(
+                        modifier = Modifier,
+                        text = "取消",
+                        fontSize = 15.sp
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
                     onClick = {
                         onDismissRequest()
                         deleteFriend()
@@ -200,17 +211,6 @@ private fun DeleteFriendDialog(
                     Text(
                         modifier = Modifier,
                         text = "删除",
-                        fontSize = 15.sp
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = onDismissRequest
-                ) {
-                    Text(
-                        modifier = Modifier,
-                        text = "取消",
                         fontSize = 15.sp
                     )
                 }
@@ -241,8 +241,7 @@ private fun SetFriendRemarkDialog(viewState: SetFriendRemarkDialogViewState) {
             }
             Column(
                 modifier = Modifier
-                    .fillMaxHeight(fraction = 0.8f)
-                    .padding(top = 20.dp)
+                    .fillMaxHeight(fraction = 0.75f)
             ) {
                 CommonOutlinedTextField(
                     modifier = Modifier

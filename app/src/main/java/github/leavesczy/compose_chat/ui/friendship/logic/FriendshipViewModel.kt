@@ -110,7 +110,7 @@ class FriendshipViewModel : BaseViewModel() {
                 }
 
                 is ActionResult.Failed -> {
-                    showToast(msg = result.reason)
+                    showToast(msg = result.desc)
                 }
             }
         }
@@ -127,7 +127,7 @@ class FriendshipViewModel : BaseViewModel() {
                 }
 
                 is ActionResult.Failed -> {
-                    showToast(msg = result.reason)
+                    showToast(msg = result.desc)
                 }
             }
         }

@@ -80,7 +80,7 @@ class LoginViewModel : BaseViewModel() {
 
     private suspend fun login(userId: String): Boolean {
         val formatUserId = userId.lowercase()
-        return when (val loginResult = ComposeChat.accountProvider.login(userId = formatUserId)) {
+        return when (val result = ComposeChat.accountProvider.login(userId = formatUserId)) {
             is ActionResult.Success -> {
                 AccountProvider.onUserLogin(userId = formatUserId)
                 delay(timeMillis = 250)
@@ -88,7 +88,7 @@ class LoginViewModel : BaseViewModel() {
             }
 
             is ActionResult.Failed -> {
-                showToast(msg = loginResult.reason)
+                showToast(msg = result.desc)
                 false
             }
         }

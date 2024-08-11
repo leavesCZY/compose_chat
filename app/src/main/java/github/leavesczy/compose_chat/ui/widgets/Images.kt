@@ -7,6 +7,8 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -18,6 +20,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,8 +46,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import kotlin.random.Random
 
 /**
  * @Author: leavesCZY
@@ -140,7 +145,51 @@ private class BezierShape(private val animateValue: Float) : Shape {
 }
 
 @Composable
-fun BouncyImage(modifier: Modifier, data: Any) {
+fun AnimateBouncyImage(
+    modifier: Modifier,
+    model: String,
+    key: Any = Unit
+) {
+    var animated by remember {
+        mutableStateOf(value = false)
+    }
+    val scale by animateFloatAsState(
+        label = "",
+        targetValue = if (animated) {
+            1.6f
+        } else {
+            1f
+        },
+        animationSpec = tween(durationMillis = 1000)
+    )
+    val offset by animateIntOffsetAsState(
+        label = "",
+        targetValue = if (animated) {
+            IntOffset(
+                x = Random.nextInt(-200, 200),
+                y = Random.nextInt(-200, 200)
+            )
+        } else {
+            IntOffset(x = 0, y = 0)
+        }
+    )
+    LaunchedEffect(key1 = key) {
+        animated = true
+        delay(timeMillis = 1000)
+        animated = false
+    }
+    BouncyImage(
+        modifier = modifier
+            .offset {
+                offset
+            }
+            .scale(scale = scale),
+        model = model
+    )
+}
+
+@Composable
+fun BouncyImage(modifier: Modifier, model: Any) {
     val coroutineScope = rememberCoroutineScope()
     var offset by remember {
         mutableStateOf(value = Offset.Zero)
@@ -192,6 +241,6 @@ fun BouncyImage(modifier: Modifier, data: Any) {
                 shape = CircleShape
             )
             .zIndex(zIndex = Float.MAX_VALUE),
-        model = data
+        model = model
     )
 }

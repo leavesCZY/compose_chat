@@ -85,14 +85,6 @@ data class ImageMessage(
     val previewImageUrl: String
         get() = previewImage.url
 
-    val widgetWidthDp = 230f
-
-    val widgetHeightDp = if (previewImage.width <= 0f || previewImage.height <= 0f) {
-        widgetWidthDp
-    } else {
-        1.0f * widgetWidthDp * (1.0f * previewImage.height / previewImage.width)
-    }
-
 }
 
 @Stable

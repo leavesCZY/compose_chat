@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -58,8 +58,14 @@ fun MessagePanel(pageViewState: ChatPageViewState, pageAction: ChatPageAction) {
             .fillMaxSize(),
         state = pageViewState.listState,
         reverseLayout = true,
-        contentPadding = PaddingValues(bottom = 60.dp),
-        verticalArrangement = Arrangement.Top,
+        contentPadding = PaddingValues(
+            start = 10.dp,
+            end = 10.dp,
+            top = 10.dp,
+            bottom = 60.dp
+        ),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(space = 30.dp, alignment = Alignment.Top),
     ) {
         items(
             items = pageViewState.messageList.value,
@@ -131,13 +137,14 @@ fun MessagePanel(pageViewState: ChatPageViewState, pageAction: ChatPageAction) {
                     if (message.detail.isOwnMessage) {
                         OwnMessageContainer(
                             message = message,
+                            onClickAvatar = pageAction.onClickAvatar,
                             messageContent = messageContent
                         )
                     } else {
                         FriendMessageContainer(
                             message = message,
                             onClickAvatar = pageAction.onClickAvatar,
-                            showPartDetail = pageViewState.chat is Chat.GroupChat,
+                            showPartName = pageViewState.chat is Chat.GroupChat,
                             messageContent = messageContent
                         )
                     }
@@ -150,34 +157,42 @@ fun MessagePanel(pageViewState: ChatPageViewState, pageAction: ChatPageAction) {
 @Composable
 private fun OwnMessageContainer(
     message: Message,
+    onClickAvatar: (Message) -> Unit,
     messageContent: @Composable () -> Unit
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 14.dp, vertical = 10.dp),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.End
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .align(alignment = Alignment.Top)
-                .weight(weight = 1f, fill = false)
-                .padding(end = 6.dp, top = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .weight(weight = 1f),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(space = 3.dp)
         ) {
-            StateMessage(messageState = message.detail.state)
-            messageContent()
-        }
-        ComponentImage(
-            modifier = Modifier
-                .size(size = 42.dp)
-                .clip(shape = CircleShape)
-                .border(
-                    width = 2.dp,
-                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
-                    shape = CircleShape
+            Nickname(
+                modifier = Modifier
+                    .padding(start = 6.dp),
+                nickname = ""
+            )
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.spacedBy(
+                    space = 20.dp,
+                    alignment = Alignment.End
                 ),
-            model = message.detail.sender.faceUrl
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MessageState(messageState = message.detail.state)
+                messageContent()
+            }
+        }
+        Avatar(
+            modifier = Modifier
+                .padding(start = 6.dp),
+            message = message,
+            onClickAvatar = onClickAvatar
         )
     }
 }
@@ -185,58 +200,94 @@ private fun OwnMessageContainer(
 @Composable
 private fun FriendMessageContainer(
     message: Message,
-    showPartDetail: Boolean,
+    showPartName: Boolean,
     onClickAvatar: (Message) -> Unit,
     messageContent: @Composable () -> Unit
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 10.dp, end = 0.dp, top = 10.dp, bottom = 10.dp),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.Start
     ) {
-        ComponentImage(
+        Avatar(
             modifier = Modifier
-                .padding(end = 6.dp)
-                .size(size = 42.dp)
-                .clip(shape = CircleShape)
-                .border(
-                    width = 2.dp,
-                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
-                    shape = CircleShape
-                )
-                .clickable(
-                    onClick = {
-                        onClickAvatar(message)
-                    }
-                ),
-            model = message.detail.sender.faceUrl
+                .padding(end = 6.dp),
+            message = message,
+            onClickAvatar = onClickAvatar
         )
         Column(
             modifier = Modifier
-                .padding(top = 8.dp)
+                .weight(weight = 1f),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(space = 3.dp)
         ) {
-            if (showPartDetail) {
-                Text(
-                    modifier = Modifier.padding(end = 30.dp),
-                    text = message.detail.sender.showName,
-                    fontSize = 13.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Start
-                )
-            }
-            Box(
+            Nickname(
                 modifier = Modifier
-                    .padding(top = 3.dp)
-                    .fillMaxWidth(fraction = 0.90f)
-                    .wrapContentWidth(align = Alignment.Start),
-                contentAlignment = Alignment.TopStart
+                    .padding(end = 6.dp),
+                nickname = if (showPartName) {
+                    message.detail.sender.showName
+                } else {
+                    ""
+                }
+            )
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.spacedBy(
+                    space = 20.dp,
+                    alignment = Alignment.Start
+                ),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                messageContent()
+                Box(
+                    modifier = Modifier
+                        .weight(weight = 1f, fill = false),
+                    contentAlignment = Alignment.TopStart
+                ) {
+                    messageContent()
+                }
+                MessageState(messageState = MessageState.Completed)
             }
         }
     }
+}
+
+@Composable
+private fun Avatar(
+    modifier: Modifier = Modifier,
+    message: Message,
+    onClickAvatar: (Message) -> Unit,
+) {
+    ComponentImage(
+        modifier = modifier
+            .size(size = 46.dp)
+            .clip(shape = CircleShape)
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            )
+            .clickable(
+                onClick = {
+                    onClickAvatar(message)
+                }
+            ),
+        model = message.detail.sender.faceUrl
+    )
+}
+
+@Composable
+private fun Nickname(
+    modifier: Modifier = Modifier,
+    nickname: String,
+) {
+    Text(
+        modifier = modifier,
+        text = nickname,
+        fontSize = 13.sp,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        textAlign = TextAlign.Start
+    )
 }
 
 @Composable
@@ -245,27 +296,37 @@ private fun TextMessage(
     onClickMessage: (Message) -> Unit,
     onLongClickMessage: (Message) -> Unit
 ) {
+    val isOwnMessage = message.detail.isOwnMessage
+    val baseRadius = 14.dp
+    val specialRadius = 4.dp
     Text(
         modifier = Modifier
             .clip(
-                shape = if (message.detail.isOwnMessage) {
+                shape = if (isOwnMessage) {
                     RoundedCornerShape(
-                        topStart = 20.dp,
-                        topEnd = 6.dp,
-                        bottomEnd = 20.dp,
-                        bottomStart = 20.dp
+                        topStart = baseRadius,
+                        topEnd = specialRadius,
+                        bottomEnd = baseRadius,
+                        bottomStart = baseRadius,
                     )
                 } else {
                     RoundedCornerShape(
-                        topStart = 6.dp,
-                        topEnd = 20.dp,
-                        bottomEnd = 20.dp,
-                        bottomStart = 20.dp
+                        topStart = specialRadius,
+                        topEnd = baseRadius,
+                        bottomEnd = baseRadius,
+                        bottomStart = baseRadius,
                     )
                 }
             )
+            .wrapContentWidth(
+                align = if (isOwnMessage) {
+                    Alignment.End
+                } else {
+                    Alignment.Start
+                },
+            )
             .background(
-                color = if (message.detail.isOwnMessage) {
+                color = if (isOwnMessage) {
                     MaterialTheme.colorScheme.primary
                 } else {
                     MaterialTheme.colorScheme.inverseSurface
@@ -279,14 +340,16 @@ private fun TextMessage(
                     onLongClickMessage(message)
                 }
             )
-            .padding(horizontal = 14.dp, vertical = 8.dp),
+            .padding(horizontal = 8.dp, vertical = 6.dp),
         text = message.formatMessage,
-        fontSize = 16.sp,
-        color = if (message.detail.isOwnMessage) {
+        color = if (isOwnMessage) {
             Color.White
         } else {
             MaterialTheme.colorScheme.inverseOnSurface
         },
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        softWrap = true,
         textAlign = TextAlign.Start
     )
 }
@@ -296,12 +359,25 @@ private fun ImageMessage(
     message: ImageMessage,
     onClickMessage: (Message) -> Unit
 ) {
+    val isOwnMessage = message.detail.isOwnMessage
+    val imageWidth = message.previewImage.width
+    val imageHeight = message.previewImage.height
+    val ratio = if (imageWidth <= 0 || imageHeight <= 0) {
+        1f
+    } else {
+        1.0f * imageWidth / imageHeight
+    }
     ComponentImage(
         modifier = Modifier
-            .size(
-                width = message.widgetWidthDp.dp,
-                height = message.widgetHeightDp.dp
+            .fillMaxWidth(fraction = 0.75f)
+            .wrapContentWidth(
+                align = if (isOwnMessage) {
+                    Alignment.End
+                } else {
+                    Alignment.Start
+                }
             )
+            .aspectRatio(ratio = ratio)
             .clip(shape = RoundedCornerShape(size = 10.dp))
             .clickable {
                 onClickMessage(message)
@@ -314,9 +390,7 @@ private fun ImageMessage(
 private fun TimeMessage(message: TimeMessage) {
     Text(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp, bottom = 20.dp)
-            .wrapContentWidth(align = Alignment.CenterHorizontally)
+            .padding(top = 20.dp)
             .background(
                 color = Color.LightGray.copy(alpha = 0.4f),
                 shape = RoundedCornerShape(size = 4.dp)
@@ -332,7 +406,7 @@ private fun SystemMessage(message: SystemMessage) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 20.dp, bottom = 20.dp)
+            .padding(top = 20.dp)
             .wrapContentWidth(align = Alignment.CenterHorizontally)
             .background(
                 color = Color.LightGray.copy(alpha = 0.4f),
@@ -345,17 +419,16 @@ private fun SystemMessage(message: SystemMessage) {
 }
 
 @Composable
-private fun RowScope.StateMessage(messageState: MessageState) {
+private fun MessageState(messageState: MessageState) {
     Box(
         modifier = Modifier
-            .align(alignment = Alignment.CenterVertically)
-            .padding(end = 8.dp)
             .size(size = 20.dp)
     ) {
         when (messageState) {
             MessageState.Sending -> {
                 CircularProgressIndicator(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize(),
                     color = MaterialTheme.colorScheme.primary,
                     strokeWidth = 2.dp
                 )
@@ -363,7 +436,8 @@ private fun RowScope.StateMessage(messageState: MessageState) {
 
             is MessageState.SendFailed -> {
                 Image(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize(),
                     imageVector = Icons.Outlined.Warning,
                     colorFilter = ColorFilter.tint(color = Color.Red),
                     contentDescription = null

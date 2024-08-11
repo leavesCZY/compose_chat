@@ -66,7 +66,7 @@ import github.leavesczy.compose_chat.ui.chat.logic.GroupProfilePageViewState
 import github.leavesczy.compose_chat.ui.chat.logic.GroupProfileViewModel
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
-import github.leavesczy.compose_chat.ui.widgets.BouncyImage
+import github.leavesczy.compose_chat.ui.widgets.AnimateBouncyImage
 import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
 import github.leavesczy.compose_chat.utils.randomFaceUrl
@@ -248,7 +248,7 @@ private fun GroupHeader(groupProfile: GroupProfile) {
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            BouncyImage(
+            AnimateBouncyImage(
                 modifier = Modifier
                     .statusBarsPadding()
                     .size(size = 100.dp)
@@ -257,7 +257,7 @@ private fun GroupHeader(groupProfile: GroupProfile) {
                             PreviewImageActivity.navTo(context = context, imageUri = avatarUrl)
                         }
                     },
-                data = avatarUrl
+                model = avatarUrl
             )
             Text(
                 modifier = Modifier

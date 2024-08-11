@@ -14,6 +14,8 @@ sealed class ActionResult {
 
     data class Failed(val code: Int, val reason: String) : ActionResult() {
 
+        val desc = "$code $reason"
+
         constructor(reason: String) : this(code = -1, reason = reason)
 
     }

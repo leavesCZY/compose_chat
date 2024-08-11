@@ -53,7 +53,7 @@ fun ProfilePanel(
                 .padding(top = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            BouncyImage(
+            AnimateBouncyImage(
                 modifier = Modifier
                     .size(size = 100.dp)
                     .clickableNoRipple {
@@ -61,7 +61,7 @@ fun ProfilePanel(
                             PreviewImageActivity.navTo(context = context, imageUri = avatarUrl)
                         }
                     },
-                data = avatarUrl
+                model = avatarUrl
             )
             Text(
                 modifier = Modifier

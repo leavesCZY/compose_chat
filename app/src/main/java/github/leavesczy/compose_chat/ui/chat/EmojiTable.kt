@@ -48,95 +48,91 @@ fun EmojiTable(appendEmoji: (String) -> Unit) {
 }
 
 private val emojis = listOf(
-    // 笑脸与情感 (Smileys & Emotion)
-    "\uD83D\uDE00", // 😀 U+1F600
-    "\uD83D\uDE03", // 😃 U+1F603
-    "\uD83D\uDE04", // 😄 U+1F604
-    "\uD83D\uDE01", // 😁 U+1F601
-    "\uD83D\uDE06", // 😆 U+1F606
-    "\uD83D\uDE05", // 😅 U+1F605
-    "\uD83D\uDE02", // 😂 U+1F602
-    "\uD83E\uDD23", // 🤣 U+1F923
-    "\uD83D\uDE0A", // 😊 U+1F60A
-    "\uD83D\uDE07", // 😇 U+1F607
-    "\uD83D\uDE42", // 🙂 U+1F642
-    "\uD83D\uDE43", // 🙃 U+1F643
-    "\uD83D\uDE09", // 😉 U+1F609
-    "\uD83D\uDE0C", // 😌 U+1F60C
-    "\uD83D\uDE0D", // 😍 U+1F60D
-    "\uD83E\uDD70", // 🥰 U+1F970
-    "\uD83D\uDE18", // 😘 U+1F618
-    "\uD83D\uDE17", // 😗 U+1F617
-    "\uD83D\uDE19", // 😙 U+1F619
+    // Smileys & Emotion
+    "\uD83D\uDE00", // 😀 Grinning Face
+    "\uD83D\uDE01", // 😁 Beaming Face with Smiling Eyes
+    "\uD83D\uDE02", // 😂 Face with Tears of Joy
+    "\uD83D\uDE03", // 😃 Grinning Face with Big Eyes
+    "\uD83D\uDE04", // 😄 Grinning Face with Smiling Eyes
+    "\uD83D\uDE05", // 😅 Grinning Face with Sweat
+    "\uD83D\uDE06", // 😆 Grinning Squinting Face
+    "\uD83D\uDE07", // 😇 Smiling Face with Halo
+    "\uD83D\uDE08", // 😈 Smiling Face with Horns
+    "\uD83D\uDE09", // 😉 Winking Face
+    "\uD83D\uDE0A", // 😊 Smiling Face with Smiling Eyes
+    "\uD83D\uDE0B", // 😋 Face Savoring Food
+    "\uD83D\uDE0C", // 😌 Relieved Face
+    "\uD83D\uDE0D", // 😍 Smiling Face with Heart-Eyes
+    "\uD83D\uDE0E", // 😎 Smiling Face with Sunglasses
+    "\uD83D\uDE0F", // 😏 Smirking Face
+    "\uD83D\uDE12", // 😒 Unamused Face
+    "\uD83D\uDE14", // 😔 Pensive Face
+    "\uD83D\uDE16", // 😖 Confounded Face
+    "\uD83D\uDE18", // 😘 Face Blowing a Kiss
+    "\uD83D\uDE1A", // 😚 Kissing Face with Closed Eyes
+    "\uD83D\uDE1C", // 😜 Winking Face with Tongue
+    "\uD83D\uDE1D", // 😝 Squinting Face with Tongue
+    "\uD83D\uDE1E", // 😞 Disappointed Face
+    "\uD83D\uDE20", // 😠 Angry Face
+    "\uD83D\uDE21", // 😡 Pouting Face
+    "\uD83D\uDE22", // 😢 Crying Face
+    "\uD83D\uDE23", // 😣 Persevering Face
+    "\uD83D\uDE24", // 😤 Face with Steam From Nose
+    "\uD83D\uDE25", // 😥 Sad but Relieved Face
+    "\uD83D\uDE28", // 😨 Fearful Face
+    "\uD83D\uDE29", // 😩 Weary Face
+    "\uD83D\uDE2A", // 😪 Sleepy Face
+    "\uD83D\uDE2B", // 😫 Tired Face
+    "\uD83D\uDE2D", // 😭 Loudly Crying Face
+    "\uD83D\uDE30", // 😰 Anxious Face with Sweat
+    "\uD83D\uDE31", // 😱 Face Screaming in Fear
+    "\uD83D\uDE32", // 😲 Astonished Face
+    "\uD83D\uDE33", // 😳 Flushed Face
+    "\uD83D\uDE35", // 😵 Dizzy Face
+    "\uD83D\uDE37", // 😷 Face with Medical Mask
+    "\uD83D\uDE38", // 😸 Grinning Cat with Smiling Eyes
+    "\uD83D\uDE39", // 😹 Cat with Tears of Joy
+    "\uD83D\uDE3A", // 😺 Smiling Cat with Open Mouth
+    "\uD83D\uDE3B", // 😻 Smiling Cat with Heart-Eyes
+    "\uD83D\uDE3C", // 😼 Cat with Wry Smile
+    "\uD83D\uDE3D", // 😽 Kissing Cat
+    "\uD83D\uDE3E", // 😾 Pouting Cat
+    "\uD83D\uDE3F", // 😿 Crying Cat
+    "\uD83D\uDE40", // 🙀 Weary Cat
 
-    // 人物 (People & Body)
-    "\uD83D\uDC68", // 👨 U+1F468
-    "\uD83D\uDC69", // 👩 U+1F469
-    "\uD83D\uDC66", // 👦 U+1F466
-    "\uD83D\uDC67", // 👧 U+1F467
-    "\uD83D\uDC76", // 👶 U+1F476
-    "\uD83E\uDDD1", // 🧑 U+1F9D1
-    "\uD83E\uDD34", // 🤴 U+1F934
-    "\uD83E\uDD35", // 👸 U+1F935
-    "\uD83E\uDDD3", // 🧓 U+1F9D3
-
-    // 动物与自然 (Animals & Nature)
-    "\uD83D\uDC36", // 🐶 U+1F436
-    "\uD83D\uDC31", // 🐱 U+1F431
-    "\uD83D\uDC2D", // 🐭 U+1F42D
-    "\uD83D\uDC39", // 🐹 U+1F439
-    "\uD83D\uDC30", // 🐰 U+1F430
-    "\uD83D\uDC3B", // 🐻 U+1F43B
-    "\uD83D\uDC2F", // 🐯 U+1F42F
-    "\uD83D\uDC28", // 🐨 U+1F428
-    "\uD83D\uDC35", // 🐵 U+1F435
-    "\uD83D\uDC3D", // 🐽 U+1F43D
-
-    // 食物与饮料 (Food & Drink)
-    "\uD83C\uDF47", // 🍇 U+1F347
-    "\uD83C\uDF48", // 🍈 U+1F348
-    "\uD83C\uDF49", // 🍉 U+1F349
-    "\uD83C\uDF4A", // 🍊 U+1F34A
-    "\uD83C\uDF4B", // 🍋 U+1F34B
-    "\uD83C\uDF4C", // 🍌 U+1F34C
-    "\uD83C\uDF4D", // 🍍 U+1F34D
-    "\uD83C\uDF4E", // 🍎 U+1F34E
-    "\uD83C\uDF4F", // 🍏 U+1F34F
-    "\uD83C\uDF50", // 🍐 U+1F350
-
-    // 活动 (Activities)
-    "\uD83C\uDF89", // 🎉 U+1F389
-    "\uD83C\uDFC6", // 🏆 U+1F3C6
-    "\uD83C\uDFBE", // 🎾 U+1F3BE
-    "\uD83C\uDFC8", // 🏈 U+1F3C8
-    "\uD83C\uDFC0", // 🏀 U+1F3C0
-    "\uD83C\uDFB1", // 🎱 U+1F3B1
-    "\uD83C\uDFAE", // 🎮 U+1F3AE
-    "\uD83C\uDFAF", // 🎯 U+1F3AF
-    "\uD83C\uDF7E", // 🍾 U+1F37E
-    "\uD83C\uDF7F", // 🍿 U+1F37F
-
-    // 旅行与地点 (Travel & Places)
-    "\uD83D\uDE95", // 🚕 U+1F695
-    "\uD83D\uDE97", // 🚗 U+1F697
-    "\uD83D\uDE99", // 🚙 U+1F699
-    "\uD83D\uDE9A", // 🚚 U+1F69A
-    "\uD83D\uDE9B", // 🚛 U+1F69B
-    "\uD83D\uDEA2", // 🚢 U+1F6A2
-    "\uD83D\uDEA4", // 🚤 U+1F6A4
-    "\uD83D\uDEA5", // 🚥 U+1F6A5
-    "\uD83D\uDEA7", // 🚧 U+1F6A7
-    "\uD83D\uDE82", // 🚂 U+1F682
-
-    // 物品 (Objects)
-    "\uD83D\uDCBB", // 💻 U+1F4BB
-    "\uD83D\uDCFA", // 📺 U+1F4FA
-    "\uD83D\uDCF1", // 📱 U+1F4F1
-    "\uD83D\uDCF2", // 📲 U+1F4F2
-    "\uD83D\uDCF7", // 📷 U+1F4F7
-    "\uD83D\uDCFB", // 📻 U+1F4FB
-    "\uD83D\uDCE0", // 📠 U+1F4E0
-    "\uD83D\uDCEA", // 📪 U+1F4EA
-    "\uD83D\uDCF3", // 📳 U+1F4F3
-    "\uD83D\uDCE1" // 📡 U+1F4E1
+    // People & Body
+    "\uD83D\uDC66", // 👦 Boy
+    "\uD83D\uDC67", // 👧 Girl
+    "\uD83D\uDC68", // 👨 Man
+    "\uD83D\uDC69", // 👩 Woman
+    "\uD83D\uDC6A", // 👪 Family
+    "\uD83D\uDC6B", // 👫 Man and Woman Holding Hands
+    "\uD83D\uDC6C", // 👬 Two Men Holding Hands
+    "\uD83D\uDC6D", // 👭 Two Women Holding Hands
+    "\uD83D\uDC6E", // 👮 Police Officer
+    "\uD83D\uDC6F", // 👯 People with Bunny Ears
+    "\uD83D\uDC70", // 👰 Bride with Veil
+    "\uD83D\uDC71", // 👱 Person with Blond Hair
+    "\uD83D\uDC72", // 👲 Man with Chinese Cap
+    "\uD83D\uDC73", // 👳 Person Wearing Turban
+    "\uD83D\uDC74", // 👴 Old Man
+    "\uD83D\uDC75", // 👵 Old Woman
+    "\uD83D\uDC76", // 👶 Baby
+    "\uD83D\uDC77", // 👷 Construction Worker
+    "\uD83D\uDC78", // 👸 Princess
+    "\uD83D\uDC7C", // 👼 Baby Angel
+    "\uD83D\uDC7D", // 👽 Alien
+    "\uD83D\uDC7E", // 👾 Alien Monster
+    "\uD83D\uDC7F", // 👿 Imp
+    "\uD83D\uDC80", // 💀 Skull
+    "\uD83D\uDC81", // 💁 Information Desk Person
+    "\uD83D\uDC82", // 💂 Guardsman
+    "\uD83D\uDC83", // 💃 Dancer
+    "\uD83D\uDC84", // 💄 Lipstick
+    "\uD83D\uDC85", // 💅 Nail Polish
+    "\uD83D\uDC86", // 💆 Person Getting Massage
+    "\uD83D\uDC87", // 💇 Person Getting Haircut
+    "\uD83D\uDC88", // 💈 Barber Pole
+    "\uD83D\uDC89", // 💉 Syringe
+    "\uD83D\uDC8A", // 💊 Pill
 )
