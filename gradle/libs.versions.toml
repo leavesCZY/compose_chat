@@ -15,7 +15,7 @@ junit = "4.13.2"
 coil = "3.0.0-alpha10"
 leavesczy-matisse = "2.1.0"
 kotlinx-coroutines = "1.8.1"
-tencent-imsdk = "8.1.6103"
+tencent-imsdk = "8.1.6116"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }

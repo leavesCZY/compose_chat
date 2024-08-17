@@ -1,8 +1,6 @@
 package github.leavesczy.compose_chat.ui.chat
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -18,10 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.base.models.ImageMessage
+import github.leavesczy.compose_chat.base.models.SystemMessage
 import github.leavesczy.compose_chat.base.models.TextMessage
+import github.leavesczy.compose_chat.base.models.TimeMessage
 import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.chat.logic.ChatPageAction
 import github.leavesczy.compose_chat.ui.chat.logic.ChatViewModel
@@ -82,25 +81,13 @@ class ChatActivity : BaseActivity() {
                     }
                 }
 
-                else -> {
+                is TextMessage, is SystemMessage, is TimeMessage -> {
 
                 }
             }
         },
         onLongClickMessage = {
-            when (it) {
-                is TextMessage -> {
-                    val msg = it.formatMessage
-                    if (msg.isNotEmpty()) {
-                        copyText(context = this, text = msg)
-                        showToast(msg = "已复制")
-                    }
-                }
 
-                else -> {
-
-                }
-            }
         }
     )
 
@@ -111,15 +98,6 @@ class ChatActivity : BaseActivity() {
                 chatViewModel = chatViewModel,
                 chatPageAction = chatPageAction
             )
-        }
-    }
-
-    private fun copyText(context: Context, text: String) {
-        val clipboardManager =
-            context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
-        if (clipboardManager != null) {
-            val clipData = ClipData.newPlainText(context.getString(R.string.app_name), text)
-            clipboardManager.setPrimaryClip(clipData)
         }
     }
 
@@ -159,7 +137,7 @@ private fun ChatPage(chatViewModel: ChatViewModel, chatPageAction: ChatPageActio
         ) {
             MessagePanel(
                 pageViewState = chatPageViewState,
-                pageAction = chatPageAction
+                chatPageAction = chatPageAction
             )
             PullRefreshIndicator(
                 modifier = Modifier

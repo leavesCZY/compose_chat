@@ -30,6 +30,7 @@ import github.leavesczy.compose_chat.ui.logic.AppTheme
  * @Github：https://github.com/leavesCZY
  */
 private val primaryColorLight = Color(0xFF42A5F5)
+private val inversePrimaryColorLight = Color(0XFF5775A8)
 private val inverseSurfaceColorLight = Color(0xFFE2E1EC)
 private val inverseOnSurfaceColorLight = Color(0xFF3A3D4D)
 private val onPrimaryColorLight = Color(0xFF22202A)
@@ -40,6 +41,7 @@ private val backgroundColorLight = Color(0xFFFFFFFF)
 private val onSecondaryContainerLight = Color(0xFFF4F4F4)
 
 private val primaryColorDark = Color(0xFF26A69A)
+private val inversePrimaryColorDark = Color(0xFF45464F)
 private val inverseSurfaceColorDark = Color(0xFF45464F)
 private val inverseOnSurfaceColorDark = Color(0xFFFFFFFF)
 private val onPrimaryColorDark = Color(0xFFFFFFFF)
@@ -51,6 +53,7 @@ private val onSecondaryContainerDark = Color(0xFF3A3D4D)
 
 private val lightColorScheme = lightColorScheme(
     primary = primaryColorLight,
+    inversePrimary = inversePrimaryColorLight,
     onPrimary = onPrimaryColorLight,
     primaryContainer = primaryContainerColorLight,
     surface = surfaceColorLight,
@@ -63,6 +66,7 @@ private val lightColorScheme = lightColorScheme(
 
 private val darkColorScheme = darkColorScheme(
     primary = primaryColorDark,
+    inversePrimary = inversePrimaryColorDark,
     onPrimary = onPrimaryColorDark,
     primaryContainer = primaryContainerColorDark,
     surface = surfaceColorDark,

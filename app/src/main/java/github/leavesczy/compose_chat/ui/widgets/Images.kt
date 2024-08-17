@@ -15,6 +15,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.CircleShape
@@ -45,7 +46,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -67,15 +68,28 @@ fun ComponentImage(
     contentDescription: String? = null,
     backgroundColor: Color = Color(0x66888888)
 ) {
-    AsyncImage(
-        modifier = modifier
-            .background(color = backgroundColor),
+    SubcomposeAsyncImage(
+        modifier = modifier,
         model = model,
         alignment = alignment,
         contentScale = contentScale,
         alpha = alpha,
         colorFilter = colorFilter,
-        contentDescription = contentDescription
+        contentDescription = contentDescription,
+        loading = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = backgroundColor)
+            )
+        },
+        error = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = backgroundColor)
+            )
+        }
     )
 }
 
@@ -89,9 +103,8 @@ fun ZoomableComponentImage(
     colorFilter: ColorFilter? = null,
     contentDescription: String? = null
 ) {
-    AsyncImage(
-        modifier = modifier
-            .fillMaxSize(),
+    ComponentImage(
+        modifier = modifier,
         model = model,
         alignment = alignment,
         contentScale = contentScale,
@@ -189,7 +202,7 @@ fun AnimateBouncyImage(
 }
 
 @Composable
-fun BouncyImage(modifier: Modifier, model: Any) {
+private fun BouncyImage(modifier: Modifier, model: Any) {
     val coroutineScope = rememberCoroutineScope()
     var offset by remember {
         mutableStateOf(value = Offset.Zero)
