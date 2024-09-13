@@ -35,6 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.BuildConfig
 import github.leavesczy.compose_chat.extend.clickableNoRipple
+import github.leavesczy.compose_chat.ui.logic.AppTheme.Dark
+import github.leavesczy.compose_chat.ui.logic.AppTheme.Gray
+import github.leavesczy.compose_chat.ui.logic.AppTheme.Light
 import github.leavesczy.compose_chat.ui.logic.MainPageDrawerViewState
 import github.leavesczy.compose_chat.ui.widgets.AnimateBouncyImage
 import kotlinx.coroutines.launch
@@ -106,8 +109,22 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
                 icon = Icons.Filled.Cabin,
                 onClick = viewState.updateProfile
             )
+            val appTheme = viewState.appTheme.value
+            val themeName = when (appTheme) {
+                Light -> {
+                    "日间主题"
+                }
+
+                Dark -> {
+                    "夜间主题"
+                }
+
+                Gray -> {
+                    "黑白主题"
+                }
+            }
             SelectableItem(
-                text = "切换主题",
+                text = themeName,
                 icon = Icons.Filled.Sailing,
                 onClick = viewState.switchTheme
             )

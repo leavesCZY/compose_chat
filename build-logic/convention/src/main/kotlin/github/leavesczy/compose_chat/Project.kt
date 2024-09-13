@@ -18,7 +18,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  */
 internal fun Project.configureAndroidProject(commonExtension: CommonExtension<*, *, *, *, *, *>) {
     commonExtension.apply {
-        compileSdk = 34
+        compileSdk = 35
         buildToolsVersion = "35.0.0"
         defaultConfig {
             minSdk = 23

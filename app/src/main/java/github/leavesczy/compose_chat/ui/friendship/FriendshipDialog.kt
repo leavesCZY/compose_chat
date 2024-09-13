@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.ui.friendship.logic.FriendshipDialogViewState
 import github.leavesczy.compose_chat.ui.logic.GroupIds
-import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 
 /**
@@ -51,7 +50,6 @@ fun FriendshipDialog(viewState: FriendshipDialogViewState) {
             modifier = Modifier,
             sheetMaxWidth = Dp.Unspecified,
             sheetState = sheetState,
-            windowInsets = WindowInsetsEmpty,
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             onDismissRequest = viewState.dismissDialog
         ) {

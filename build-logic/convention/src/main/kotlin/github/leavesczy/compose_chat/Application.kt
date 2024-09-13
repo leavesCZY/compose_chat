@@ -17,7 +17,7 @@ internal fun Project.configureAndroidApplication(commonExtension: BaseAppModuleE
     commonExtension.apply {
         defaultConfig {
             applicationId = "github.leavesczy.compose_chat"
-            targetSdk = 34
+            targetSdk = 35
             versionCode = 1
             versionName = "1.0.0"
             resourceConfigurations.add("zh")

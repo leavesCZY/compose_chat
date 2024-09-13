@@ -50,6 +50,7 @@ class MainViewModel : BaseViewModel() {
     val drawerViewState by mutableStateOf(
         value = MainPageDrawerViewState(
             drawerState = DrawerState(initialValue = DrawerValue.Closed),
+            appTheme = mutableStateOf(value = AppThemeProvider.appTheme),
             personProfile = mutableStateOf(value = ComposeChat.accountProvider.personProfile.value),
             previewImage = ::previewImage,
             switchTheme = ::switchTheme,
@@ -131,6 +132,7 @@ class MainViewModel : BaseViewModel() {
 
     private fun switchTheme() {
         val nextTheme = AppThemeProvider.appTheme.nextTheme()
+        drawerViewState.appTheme.value = nextTheme
         AppThemeProvider.onAppThemeChanged(appTheme = nextTheme)
     }
 

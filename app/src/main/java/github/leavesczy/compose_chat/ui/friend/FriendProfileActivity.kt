@@ -36,7 +36,6 @@ import github.leavesczy.compose_chat.ui.chat.ChatActivity
 import github.leavesczy.compose_chat.ui.friend.logic.FriendProfilePageViewState
 import github.leavesczy.compose_chat.ui.friend.logic.FriendProfileViewModel
 import github.leavesczy.compose_chat.ui.friend.logic.SetFriendRemarkDialogViewState
-import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
@@ -232,7 +231,6 @@ private fun SetFriendRemarkDialog(viewState: SetFriendRemarkDialogViewState) {
             modifier = Modifier,
             sheetMaxWidth = Dp.Unspecified,
             sheetState = sheetState,
-            windowInsets = WindowInsetsEmpty,
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             onDismissRequest = viewState.dismissDialog
         ) {

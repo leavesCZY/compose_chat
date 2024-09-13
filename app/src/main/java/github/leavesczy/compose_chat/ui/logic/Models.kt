@@ -21,6 +21,7 @@ enum class MainPageTab {
 data class MainPageDrawerViewState(
     val drawerState: DrawerState,
     val personProfile: MutableState<PersonProfile>,
+    val appTheme: MutableState<AppTheme>,
     val previewImage: (String) -> Unit,
     val switchTheme: () -> Unit,
     val updateProfile: () -> Unit,
