@@ -147,7 +147,7 @@ private class BezierShape(private val animateValue: Float) : Shape {
         val height = size.height
         val progress = height / 7 * 5 + height / 7 * 2 * animateValue
         path.lineTo(0f, progress / 7 * 5)
-        path.quadraticBezierTo(width / 2 + width / 4 * animateValue, height, width, progress)
+        path.quadraticTo(width / 2 + width / 4 * animateValue, height, width, progress)
         path.lineTo(width, 0f)
         path.lineTo(0f, 0f)
         return Outline.Generic(path = path)

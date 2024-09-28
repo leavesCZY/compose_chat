@@ -125,7 +125,7 @@ private fun LazyItemScope.GroupItem(
 ) {
     Column(
         modifier = Modifier
-            .animateItemPlacement()
+            .animateItem()
             .fillMaxWidth()
             .height(height = 70.dp)
             .clickable(onClick = {
@@ -170,7 +170,7 @@ private fun LazyItemScope.FriendItem(
 ) {
     Column(
         modifier = Modifier
-            .animateItemPlacement()
+            .animateItem()
             .fillMaxWidth()
             .height(height = 70.dp)
             .clickable(onClick = {
