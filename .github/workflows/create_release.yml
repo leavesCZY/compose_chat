@@ -37,11 +37,11 @@ jobs:
       - name: draft a new release
         uses: ncipollo/release-action@v1
         with:
-          token: ${{secrets.ACTION_TOKEN}}
           allowUpdates: false
+          generateReleaseNotes: false
           artifactErrorsFailBuild: true
-          generateReleaseNotes: true
-          artifacts: "app/build/outputs/apk/release/*.apk"
           body: "create by workflows"
+          artifacts: "app/build/outputs/apk/release/*.apk"
           tag: ${{ steps.currentTime.outputs.formattedTime }}
           name: v${{ steps.currentTime.outputs.formattedTime }}
+          token: ${{secrets.ACTION_TOKEN}}
