@@ -40,7 +40,6 @@ jobs:
           allowUpdates: false
           generateReleaseNotes: false
           artifactErrorsFailBuild: true
-          body: "create by workflows"
           artifacts: "app/build/outputs/apk/release/*.apk"
           tag: ${{ steps.currentTime.outputs.formattedTime }}
           name: v${{ steps.currentTime.outputs.formattedTime }}

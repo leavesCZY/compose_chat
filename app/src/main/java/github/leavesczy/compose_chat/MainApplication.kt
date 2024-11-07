@@ -17,10 +17,10 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         ContextProvider.init(application = this)
-        CoilUtils.init(application = this)
         AppThemeProvider.init(application = this)
         AccountProvider.init(application = this)
         ComposeChat.accountProvider.init(application = this)
+        CoilUtils.init()
     }
 
 }

@@ -1,9 +1,11 @@
 package github.leavesczy.compose_chat.utils
 
 import android.content.Context
+import android.os.Build
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
-import coil3.annotation.DelicateCoilApi
+import coil3.gif.AnimatedImageDecoder
+import coil3.gif.GifDecoder
 import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
@@ -20,14 +22,21 @@ import java.io.File
  */
 object CoilUtils {
 
-    @OptIn(DelicateCoilApi::class)
-    fun init(application: Context) {
-        val imageLoader = ImageLoader
-            .Builder(context = application)
-            .crossfade(enable = false)
-            .allowHardware(enable = true)
-            .build()
-        SingletonImageLoader.setUnsafe(imageLoader = imageLoader)
+    fun init() {
+        SingletonImageLoader.setSafe(factory = { context ->
+            ImageLoader
+                .Builder(context = context)
+                .crossfade(enable = false)
+                .allowHardware(enable = true)
+                .components {
+                    if (Build.VERSION.SDK_INT >= 28) {
+                        add(AnimatedImageDecoder.Factory())
+                    } else {
+                        add(GifDecoder.Factory())
+                    }
+                }
+                .build()
+        })
     }
 
     suspend fun getCachedFileOrDownload(context: Context, imageUrl: String): File? {
