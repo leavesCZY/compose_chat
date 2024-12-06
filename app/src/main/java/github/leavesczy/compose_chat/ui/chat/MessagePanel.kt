@@ -1,5 +1,6 @@
 package github.leavesczy.compose_chat.ui.chat
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -347,6 +349,7 @@ private fun TextMessage(message: TextMessage) {
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun ImageMessage(
     message: ImageMessage,
@@ -393,6 +396,7 @@ private fun ImageMessage(
                     onClickMessage(message)
                 },
             model = message.previewImage.url,
+            contentScale = ContentScale.Crop,
             alignment = Alignment.TopCenter
         )
     }
