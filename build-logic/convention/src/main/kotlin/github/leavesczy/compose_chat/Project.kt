@@ -28,8 +28,8 @@ internal fun Project.configureAndroidProject(commonExtension: CommonExtension<*,
             }
         }
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_11
-            targetCompatibility = JavaVersion.VERSION_11
+            sourceCompatibility = JavaVersion.VERSION_18
+            targetCompatibility = JavaVersion.VERSION_18
         }
         lint {
             checkDependencies = true
@@ -37,7 +37,7 @@ internal fun Project.configureAndroidProject(commonExtension: CommonExtension<*,
     }
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
+            jvmTarget = JvmTarget.JVM_18
         }
     }
     val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")

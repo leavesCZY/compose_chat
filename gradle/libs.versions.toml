@@ -9,7 +9,7 @@ androidx-appcompat = "1.7.0"
 androidx-activity = "1.9.3"
 androidx-lifecycle-viewmodel = "2.8.7"
 androidx-exifinterface = "1.3.7"
-androidx-compose-bom = "2024.11.00"
+androidx-compose-bom = "2024.12.01"
 
 junit = "4.13.2"
 kotlinx-coroutines = "1.9.0"
@@ -25,11 +25,11 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin-plugin" }
 leavesczy-track = { id = "io.github.leavesczy.track", version.ref = "track-plugin" }
 
-chat-android-application = { id = "chat.android.application", version = "unspecified" }
-chat-android-library = { id = "chat.android.library", version = "unspecified" }
-chat-android-compose = { id = "chat.android.compose", version = "unspecified" }
-chat-kotlin-parcelize = { id = "chat.kotlin.parcelize", version = "unspecified" }
-chat-leavesczy-track = { id = "chat.leavesczy.track", version = "unspecified" }
+chat-android-application = { id = "chat.android.application" }
+chat-android-library = { id = "chat.android.library" }
+chat-android-compose = { id = "chat.android.compose" }
+chat-kotlin-parcelize = { id = "chat.kotlin.parcelize" }
+chat-leavesczy-track = { id = "chat.leavesczy.track" }
 
 [libraries]
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
