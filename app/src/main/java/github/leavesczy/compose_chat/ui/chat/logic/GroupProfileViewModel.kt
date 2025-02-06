@@ -8,6 +8,8 @@ import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.provider.IGroupProvider
 import github.leavesczy.compose_chat.proxy.GroupProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -20,12 +22,13 @@ class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
 
     private val groupProvider: IGroupProvider = GroupProvider()
 
-    val pageViewState by mutableStateOf(
+    var pageViewState by mutableStateOf(
         value = GroupProfilePageViewState(
-            groupProfile = mutableStateOf(value = null),
-            memberList = mutableStateOf(value = emptyList())
+            groupProfile = null,
+            memberList = persistentListOf()
         )
     )
+        private set
 
     var loadingDialogVisible by mutableStateOf(value = false)
         private set
@@ -42,8 +45,10 @@ class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
             val groupProfile = groupProfileAsync.await()
             val memberList = memberListAsync.await()
             if (groupProfile != null) {
-                pageViewState.groupProfile.value = groupProfile
-                pageViewState.memberList.value = memberList
+                pageViewState = pageViewState.copy(
+                    groupProfile = groupProfile,
+                    memberList = memberList.toPersistentList()
+                )
             }
             loadingDialog(visible = false)
         }
@@ -52,7 +57,7 @@ class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
     private fun getGroupProfile() {
         viewModelScope.launch {
             groupProvider.getGroupInfo(groupId = groupId)?.let {
-                pageViewState.groupProfile.value = it
+                pageViewState = pageViewState.copy(groupProfile = it)
             }
         }
     }

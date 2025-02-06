@@ -51,13 +51,13 @@ import github.leavesczy.compose_chat.ui.widgets.ComponentImage
  */
 @Composable
 fun ConversationPage(pageViewState: ConversationPageViewState) {
-    val conversationList by pageViewState.conversationList
+    val conversationList = pageViewState.conversationList
     if (conversationList.isEmpty()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            ServerConnectState(serverConnectState = pageViewState.serverConnectState.value)
+            ServerConnectState(serverConnectState = pageViewState.serverConnectState)
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -79,7 +79,7 @@ fun ConversationPage(pageViewState: ConversationPageViewState) {
                 key = "ServerState",
                 contentType = "ServerState"
             ) {
-                ServerConnectState(serverConnectState = pageViewState.serverConnectState.value)
+                ServerConnectState(serverConnectState = pageViewState.serverConnectState)
             }
             items(
                 items = conversationList,

@@ -2,6 +2,7 @@ package github.leavesczy.compose_chat.ui.profile.logic
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
@@ -15,48 +16,54 @@ import kotlinx.coroutines.launch
  */
 class ProfileUpdateViewModel : BaseViewModel() {
 
-    val profileUpdatePageViewStata by mutableStateOf(
+    var profileUpdatePageViewStata by mutableStateOf(
         value = ProfileUpdatePageViewStata(
-            personProfile = mutableStateOf(value = null),
+            personProfile = null,
             onNicknameChanged = ::onNicknameChanged,
             onSignatureChanged = ::onSignatureChanged,
             onAvatarUrlChanged = ::onAvatarUrlChanged,
             confirmUpdate = ::confirmUpdate
         )
     )
+        private set
 
     init {
         viewModelScope.launch {
             val profile = ComposeChat.accountProvider.getPersonProfile()
-            profileUpdatePageViewStata.personProfile.value = profile
+            profileUpdatePageViewStata = profileUpdatePageViewStata.copy(personProfile = profile)
         }
     }
 
     private fun onNicknameChanged(nickname: String) {
-        val personProfile = profileUpdatePageViewStata.personProfile.value
+        val viewStata = profileUpdatePageViewStata
+        val personProfile = viewStata.personProfile
         if (personProfile != null) {
-            profileUpdatePageViewStata.personProfile.value = personProfile.copy(nickname = nickname)
+            profileUpdatePageViewStata =
+                viewStata.copy(personProfile = personProfile.copy(nickname = nickname))
         }
     }
 
     private fun onSignatureChanged(signature: String) {
-        val personProfile = profileUpdatePageViewStata.personProfile.value
+        val viewStata = profileUpdatePageViewStata
+        val personProfile = viewStata.personProfile
         if (personProfile != null) {
-            profileUpdatePageViewStata.personProfile.value =
-                personProfile.copy(signature = signature)
+            profileUpdatePageViewStata =
+                viewStata.copy(personProfile = personProfile.copy(signature = signature))
         }
     }
 
     private fun onAvatarUrlChanged(imageUrl: String) {
-        val personProfile = profileUpdatePageViewStata.personProfile.value
+        val viewStata = profileUpdatePageViewStata
+        val personProfile = viewStata.personProfile
         if (personProfile != null) {
-            profileUpdatePageViewStata.personProfile.value = personProfile.copy(faceUrl = imageUrl)
+            profileUpdatePageViewStata =
+                viewStata.copy(personProfile = personProfile.copy(faceUrl = imageUrl))
         }
     }
 
     private fun confirmUpdate() {
         viewModelScope.launch {
-            val personProfile = profileUpdatePageViewStata.personProfile.value
+            val personProfile = profileUpdatePageViewStata.personProfile
             if (personProfile != null) {
                 val result = ComposeChat.accountProvider.updatePersonProfile(
                     faceUrl = personProfile.faceUrl,

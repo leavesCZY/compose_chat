@@ -3,6 +3,7 @@ package github.leavesczy.compose_chat.ui.conversation.logic
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.Chat
@@ -15,6 +16,8 @@ import github.leavesczy.compose_chat.proxy.ConversationProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.chat.ChatActivity
 import github.leavesczy.compose_chat.ui.logic.ComposeChat
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 
 /**
@@ -28,30 +31,31 @@ class ConversationViewModel : BaseViewModel() {
 
     private val accountProvider: IAccountProvider = ComposeChat.accountProvider
 
-    val pageViewState by mutableStateOf(
+    var pageViewState by mutableStateOf(
         value = ConversationPageViewState(
             listState = LazyListState(
                 firstVisibleItemIndex = 0,
                 firstVisibleItemScrollOffset = 0
             ),
-            serverConnectState = mutableStateOf(value = ServerConnectState.Idle),
-            conversationList = mutableStateOf(value = emptyList()),
+            serverConnectState = ServerConnectState.Idle,
+            conversationList = persistentListOf(),
             onClickConversation = ::onClickConversation,
             deleteConversation = ::deleteConversation,
             pinConversation = ::pinConversation
         )
     )
+        private set
 
     init {
         viewModelScope.launch {
             launch {
                 conversationProvider.conversationList.collect {
-                    pageViewState.conversationList.value = it
+                    pageViewState = pageViewState.copy(conversationList = it.toPersistentList())
                 }
             }
             launch {
                 accountProvider.serverConnectState.collect {
-                    pageViewState.serverConnectState.value = it
+                    pageViewState = pageViewState.copy(serverConnectState = it)
                 }
             }
         }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,7 +29,7 @@ import github.leavesczy.compose_chat.ui.widgets.BezierImage
  */
 @Composable
 fun PersonProfilePage(pageViewState: PersonProfilePageViewState) {
-    val personProfile by pageViewState.personProfile
+    val personProfile = pageViewState.personProfile
     val faceUrl = personProfile.faceUrl
     val title = personProfile.showName
     val subtitle = personProfile.signature

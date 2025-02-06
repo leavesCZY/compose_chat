@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,7 +39,6 @@ import github.leavesczy.compose_chat.ui.MainActivity
 import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.login.logic.LoginPageViewState
 import github.leavesczy.compose_chat.ui.login.logic.LoginViewModel
-import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
 import kotlinx.coroutines.launch
 
@@ -92,7 +92,12 @@ private fun LoginPage(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        contentWindowInsets = WindowInsetsEmpty
+        contentWindowInsets = WindowInsets(
+            left = 0.dp,
+            right = 0.dp,
+            top = 0.dp,
+            bottom = 0.dp
+        )
     ) { innerPadding ->
         Box(
             modifier = Modifier

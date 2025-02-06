@@ -124,7 +124,7 @@ private fun FriendProfilePage(
                 .fillMaxSize()
                 .padding(paddingValues = innerPadding)
         ) {
-            val personProfile = pageViewState.personProfile.value
+            val personProfile = pageViewState.personProfile
             if (personProfile != null) {
                 ProfilePanel(
                     title = personProfile.nickname,
@@ -137,13 +137,13 @@ private fun FriendProfilePage(
                     avatarUrl = personProfile.faceUrl,
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        if (!pageViewState.itIsMe.value) {
+                        if (!pageViewState.itIsMe) {
                             CommonButton(
                                 text = "去聊天吧",
                                 onClick = navToChatPage
                             )
                         }
-                        if (pageViewState.isFriend.value) {
+                        if (pageViewState.isFriend) {
                             CommonButton(
                                 text = "设置备注",
                                 onClick = pageViewState.showSetFriendRemarkPanel
@@ -151,7 +151,7 @@ private fun FriendProfilePage(
                             CommonButton(text = "删除好友") {
                                 openDeleteFriendDialog = true
                             }
-                        } else if (!pageViewState.itIsMe.value) {
+                        } else if (!pageViewState.itIsMe) {
                             CommonButton(
                                 text = "加为好友",
                                 onClick = pageViewState.addFriend
@@ -220,7 +220,7 @@ private fun DeleteFriendDialog(
 
 @Composable
 private fun SetFriendRemarkDialog(viewState: SetFriendRemarkDialogViewState) {
-    if (viewState.visible.value) {
+    if (viewState.visible) {
         val sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = true,
             confirmValueChange = {
@@ -234,8 +234,8 @@ private fun SetFriendRemarkDialog(viewState: SetFriendRemarkDialogViewState) {
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             onDismissRequest = viewState.dismissDialog
         ) {
-            var remark by remember(key1 = viewState.visible.value) {
-                mutableStateOf(value = viewState.remark.value)
+            var remark by remember(key1 = viewState.visible) {
+                mutableStateOf(value = viewState.remark)
             }
             Column(
                 modifier = Modifier

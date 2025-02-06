@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package github.leavesczy.compose_chat
 
 import com.android.build.gradle.internal.api.ApkVariantOutputImpl
@@ -20,7 +22,6 @@ internal fun Project.configureAndroidApplication(commonExtension: BaseAppModuleE
             targetSdk = 35
             versionCode = 1
             versionName = "1.0.0"
-            resourceConfigurations.add("zh")
             applicationVariants.all {
                 val variant = this
                 outputs.all {
@@ -32,6 +33,9 @@ internal fun Project.configureAndroidApplication(commonExtension: BaseAppModuleE
             }
             buildConfigField("String", "VERSION_NAME", "\"$versionName\"")
             buildConfigField("String", "BUILD_TIME", "\"${getBuildConfigTime()}\"")
+        }
+        androidResources {
+            localeFilters += setOf("zh")
         }
         signingConfigs {
             create("release") {

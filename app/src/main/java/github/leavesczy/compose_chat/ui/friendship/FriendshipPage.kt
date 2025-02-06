@@ -25,7 +25,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,8 +47,8 @@ import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 @Composable
 fun FriendshipPage(pageViewState: FriendshipPageViewState) {
     Box(modifier = Modifier.fillMaxSize()) {
-        val joinedGroupList by pageViewState.joinedGroupList
-        val friendList by pageViewState.friendList
+        val joinedGroupList = pageViewState.joinedGroupList
+        val friendList = pageViewState.friendList
         if (joinedGroupList.isEmpty() && friendList.isEmpty()) {
             Text(
                 modifier = Modifier
@@ -64,7 +63,7 @@ fun FriendshipPage(pageViewState: FriendshipPageViewState) {
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                state = pageViewState.listState.value,
+                state = pageViewState.listState,
                 contentPadding = PaddingValues(bottom = 100.dp)
             ) {
                 items(

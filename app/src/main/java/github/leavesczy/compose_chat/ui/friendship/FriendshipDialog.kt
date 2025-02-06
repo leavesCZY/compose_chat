@@ -38,7 +38,7 @@ import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
  */
 @Composable
 fun FriendshipDialog(viewState: FriendshipDialogViewState) {
-    if (viewState.visible.value) {
+    if (viewState.visible) {
         val sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = true,
             confirmValueChange = {

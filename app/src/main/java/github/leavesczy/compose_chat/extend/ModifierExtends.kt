@@ -13,19 +13,19 @@ import androidx.compose.ui.graphics.Color
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-fun Modifier.scrim(color: Color): Modifier = drawWithContent {
-    drawContent()
-    drawRect(color = color)
+fun Modifier.scrim(color: Color): Modifier {
+    return drawWithContent {
+        drawContent()
+        drawRect(color = color)
+    }
 }
 
 @Composable
 fun Modifier.clickableNoRipple(onClick: () -> Unit): Modifier {
-    return then(
-        other = Modifier.clickable(
-            onClickLabel = null,
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() },
-            onClick = onClick
-        )
+    return clickable(
+        onClickLabel = null,
+        indication = null,
+        interactionSource = remember { MutableInteractionSource() },
+        onClick = onClick
     )
 }

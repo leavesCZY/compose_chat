@@ -33,7 +33,7 @@ fun LoadingDialog(visible: Boolean) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .align(alignment = Alignment.Center)
-                    .size(size = 36.dp),
+                    .size(size = 40.dp),
                 color = MaterialTheme.colorScheme.primary,
                 strokeWidth = 3.dp
             )

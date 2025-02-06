@@ -2,6 +2,7 @@ package github.leavesczy.compose_chat.ui.person.logic
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.models.PersonProfile
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
@@ -16,17 +17,18 @@ import kotlinx.coroutines.launch
  */
 class PersonProfileViewModel : BaseViewModel() {
 
-    val pageViewState by mutableStateOf(
+    var pageViewState by mutableStateOf(
         value = PersonProfilePageViewState(
-            personProfile = mutableStateOf(value = PersonProfile.Empty),
+            personProfile = PersonProfile.Empty,
             previewImage = ::previewImage
         )
     )
+        private set
 
     init {
         viewModelScope.launch {
             ComposeChat.accountProvider.personProfile.collect {
-                pageViewState.personProfile.value = it
+                pageViewState = pageViewState.copy(personProfile = it)
             }
         }
     }

@@ -21,24 +21,26 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
 
     private val friendshipProvider: IFriendshipProvider = FriendshipProvider()
 
-    val pageViewState by mutableStateOf(
+    var pageViewState by mutableStateOf(
         value = FriendProfilePageViewState(
-            personProfile = mutableStateOf(value = null),
-            itIsMe = mutableStateOf(value = false),
-            isFriend = mutableStateOf(value = false),
+            personProfile = null,
+            itIsMe = false,
+            isFriend = false,
             showSetFriendRemarkPanel = ::showSetFriendRemarkPanel,
             addFriend = ::addFriend
         )
     )
+        private set
 
-    val setFriendRemarkDialogViewState by mutableStateOf(
+    var setFriendRemarkDialogViewState by mutableStateOf(
         value = SetFriendRemarkDialogViewState(
-            visible = mutableStateOf(value = false),
-            remark = mutableStateOf(value = ""),
+            visible = false,
+            remark = "",
             dismissDialog = ::dismissSetFriendRemarkDialog,
             setFriendRemark = ::setFriendRemark
         )
     )
+        private set
 
     var loadingDialogVisible by mutableStateOf(value = false)
         private set
@@ -52,7 +54,7 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
             loadingDialog(visible = true)
             val profile = friendshipProvider.getFriendProfile(friendId = friendId)
             if (profile == null) {
-                pageViewState.personProfile.value = null
+                pageViewState = pageViewState.copy(personProfile = null)
             } else {
                 val itIsMe = kotlin.run {
                     val selfId = ComposeChat.accountProvider.personProfile.value.id
@@ -63,11 +65,15 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
                 } else {
                     profile.isFriend
                 }
-                pageViewState.personProfile.value = profile
-                pageViewState.itIsMe.value = itIsMe
-                pageViewState.isFriend.value = isFriend
-                setFriendRemarkDialogViewState.visible.value = false
-                setFriendRemarkDialogViewState.remark.value = profile.remark
+                pageViewState = pageViewState.copy(
+                    personProfile = profile,
+                    itIsMe = itIsMe,
+                    isFriend = isFriend
+                )
+                setFriendRemarkDialogViewState = setFriendRemarkDialogViewState.copy(
+                    visible = false,
+                    remark = profile.remark
+                )
             }
             loadingDialog(visible = false)
         }
@@ -105,11 +111,11 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
     }
 
     private fun showSetFriendRemarkPanel() {
-        setFriendRemarkDialogViewState.visible.value = true
+        setFriendRemarkDialogViewState = setFriendRemarkDialogViewState.copy(visible = true)
     }
 
     private fun dismissSetFriendRemarkDialog() {
-        setFriendRemarkDialogViewState.visible.value = false
+        setFriendRemarkDialogViewState = setFriendRemarkDialogViewState.copy(visible = false)
     }
 
     private fun setFriendRemark(remark: String) {
@@ -117,7 +123,8 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
             when (val result =
                 friendshipProvider.setFriendRemark(friendId = friendId, remark = remark)) {
                 is ActionResult.Success -> {
-                    setFriendRemarkDialogViewState.remark.value = remark
+                    setFriendRemarkDialogViewState =
+                        setFriendRemarkDialogViewState.copy(remark = remark)
                     delay(timeMillis = 300)
                     getFriendProfile()
                     dismissSetFriendRemarkDialog()

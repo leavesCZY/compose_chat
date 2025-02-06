@@ -1,6 +1,5 @@
 package github.leavesczy.compose_chat.ui.friend.logic
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import github.leavesczy.compose_chat.base.models.PersonProfile
 
@@ -11,17 +10,17 @@ import github.leavesczy.compose_chat.base.models.PersonProfile
  */
 @Stable
 data class FriendProfilePageViewState(
-    val personProfile: MutableState<PersonProfile?>,
-    val itIsMe: MutableState<Boolean>,
-    val isFriend: MutableState<Boolean>,
+    val personProfile: PersonProfile?,
+    val itIsMe: Boolean,
+    val isFriend: Boolean,
     val showSetFriendRemarkPanel: () -> Unit,
     val addFriend: () -> Unit
 )
 
 @Stable
 data class SetFriendRemarkDialogViewState(
-    val visible: MutableState<Boolean>,
-    val remark: MutableState<String>,
+    val visible: Boolean,
+    val remark: String,
     val setFriendRemark: (String) -> Unit,
     val dismissDialog: () -> Unit
 )

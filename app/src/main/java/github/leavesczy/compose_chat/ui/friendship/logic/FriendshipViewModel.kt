@@ -16,6 +16,8 @@ import github.leavesczy.compose_chat.proxy.GroupProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.chat.ChatActivity
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -30,25 +32,24 @@ class FriendshipViewModel : BaseViewModel() {
 
     private val groupProvider: IGroupProvider = GroupProvider()
 
-    val pageViewState by mutableStateOf(
+    var pageViewState by mutableStateOf(
         value = FriendshipPageViewState(
-            listState = mutableStateOf(
-                value = LazyListState(
-                    firstVisibleItemIndex = 0,
-                    firstVisibleItemScrollOffset = 0
-                )
+            listState = LazyListState(
+                firstVisibleItemIndex = 0,
+                firstVisibleItemScrollOffset = 0
             ),
-            joinedGroupList = mutableStateOf(value = emptyList()),
-            friendList = mutableStateOf(value = emptyList()),
+            joinedGroupList = persistentListOf(),
+            friendList = persistentListOf(),
             onClickGroupItem = ::onClickGroupItem,
             onClickFriendItem = ::onClickFriendItem,
             showFriendshipDialog = ::showFriendshipDialog
         )
     )
+        private set
 
     var friendshipDialogViewState by mutableStateOf(
         FriendshipDialogViewState(
-            visible = mutableStateOf(value = false),
+            visible = false,
             dismissDialog = ::dismissFriendshipDialog,
             joinGroup = ::joinGroup,
             addFriend = ::addFriend
@@ -60,12 +61,12 @@ class FriendshipViewModel : BaseViewModel() {
         viewModelScope.launch {
             launch {
                 groupProvider.joinedGroupList.collect {
-                    pageViewState.joinedGroupList.value = it
+                    pageViewState = pageViewState.copy(joinedGroupList = it.toPersistentList())
                 }
             }
             launch {
                 friendshipProvider.friendList.collect {
-                    pageViewState.friendList.value = it
+                    pageViewState = pageViewState.copy(friendList = it.toPersistentList())
                 }
             }
         }
@@ -88,11 +89,11 @@ class FriendshipViewModel : BaseViewModel() {
     }
 
     fun showFriendshipDialog() {
-        friendshipDialogViewState.visible.value = true
+        friendshipDialogViewState = friendshipDialogViewState.copy(visible = true)
     }
 
     private fun dismissFriendshipDialog() {
-        friendshipDialogViewState.visible.value = false
+        friendshipDialogViewState = friendshipDialogViewState.copy(visible = false)
     }
 
     private fun addFriend(userId: String) {

@@ -11,6 +11,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -38,7 +39,6 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.ui.base.BaseActivity
-import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 import github.leavesczy.compose_chat.ui.widgets.ZoomableComponentImage
 import github.leavesczy.compose_chat.utils.AlbumUtils
 import kotlinx.coroutines.launch
@@ -98,11 +98,9 @@ class PreviewImageActivity : BaseActivity() {
     @Composable
     override fun SetSystemBarUi() {
         val context = LocalContext.current
-        LaunchedEffect(key1 = null) {
+        LaunchedEffect(key1 = Unit) {
             if (context is Activity) {
                 val window = context.window
-                window.statusBarColor = android.graphics.Color.TRANSPARENT
-                window.navigationBarColor = android.graphics.Color.TRANSPARENT
                 WindowInsetsControllerCompat(window, window.decorView).apply {
                     hide(WindowInsetsCompat.Type.statusBars())
                     systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
@@ -156,7 +154,12 @@ private fun PreviewImagePage(
             .background(color = Color(color = 0xFF22202A))
             .fillMaxSize(),
         containerColor = Color(color = 0xFF22202A),
-        contentWindowInsets = WindowInsetsEmpty
+        contentWindowInsets = WindowInsets(
+            left = 0.dp,
+            right = 0.dp,
+            top = 0.dp,
+            bottom = 0.dp
+        )
     ) { innerPadding ->
         Box(
             modifier = Modifier

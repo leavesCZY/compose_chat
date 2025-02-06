@@ -78,8 +78,6 @@ open class BaseActivity : AppCompatActivity() {
                     }
                 }
                 val window = context.window
-                window.statusBarColor = android.graphics.Color.TRANSPARENT
-                window.navigationBarColor = android.graphics.Color.TRANSPARENT
                 WindowInsetsControllerCompat(window, window.decorView).apply {
                     systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
                     isAppearanceLightStatusBars = systemBarsDarkIcon

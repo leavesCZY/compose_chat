@@ -53,7 +53,7 @@ private fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
                 .padding(paddingValues = innerPadding)
                 .verticalScroll(state = rememberScrollState())
         ) {
-            val personProfile = pageViewStata.personProfile.value
+            val personProfile = pageViewStata.personProfile
             if (personProfile != null) {
                 ProfilePanel(
                     title = personProfile.nickname,

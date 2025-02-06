@@ -26,6 +26,8 @@ import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.chat.InputSelector
 import github.leavesczy.compose_chat.ui.logic.ComposeChat
 import github.leavesczy.compose_chat.utils.CompressImageUtils
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -57,21 +59,23 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
         }
     }
 
-    val chatPageViewState by mutableStateOf(
+    var chatPageViewState by mutableStateOf(
         value = ChatPageViewState(
             chat = chat,
-            topBarTitle = mutableStateOf(value = ""),
+            topBarTitle = "",
             listState = LazyListState(firstVisibleItemIndex = 0, firstVisibleItemScrollOffset = 0),
-            messageList = mutableStateOf(value = emptyList())
+            messageList = persistentListOf()
         )
     )
+        private set
 
-    val loadMessageViewState by mutableStateOf(
+    var loadMessageViewState by mutableStateOf(
         value = LoadMessageViewState(
-            refreshing = mutableStateOf(value = false),
-            loadFinish = mutableStateOf(value = false)
+            refreshing = false,
+            loadFinish = false
         )
     )
+        private set
 
     var textMessageInputted by mutableStateOf(value = TextFieldValue(text = ""))
         private set
@@ -99,14 +103,14 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                     groupProvider.getGroupInfo(groupId = chat.id)?.name
                 }
             } ?: ""
-            chatPageViewState.topBarTitle.value = name
+            chatPageViewState = chatPageViewState.copy(topBarTitle = name)
         }
         loadMoreMessage()
     }
 
     fun loadMoreMessage() {
         viewModelScope.launch {
-            loadMessageViewState.refreshing.value = true
+            loadMessageViewState = loadMessageViewState.copy(refreshing = true)
             val loadResult = messageProvider.getHistoryMessage(
                 chat = chat,
                 lastMessage = lastMessage
@@ -121,8 +125,10 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                     false
                 }
             }
-            loadMessageViewState.refreshing.value = false
-            loadMessageViewState.loadFinish.value = loadFinish
+            loadMessageViewState = loadMessageViewState.copy(
+                refreshing = false,
+                loadFinish = loadFinish
+            )
         }
     }
 
@@ -240,7 +246,7 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                 }
             }
             allMessage[index] = newMessage
-            chatPageViewState.messageList.value = allMessage.toList()
+            chatPageViewState = chatPageViewState.copy(messageList = allMessage.toPersistentList())
         }
     }
 
@@ -250,7 +256,7 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
             allMessage.add(0, TimeMessage(targetMessage = newMessage))
         }
         allMessage.add(0, newMessage)
-        chatPageViewState.messageList.value = allMessage.toList()
+        chatPageViewState = chatPageViewState.copy(messageList = allMessage.toPersistentList())
         viewModelScope.launch {
             delay(timeMillis = 80)
             chatPageViewState.listState.scrollToItem(index = 0)
@@ -276,7 +282,7 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                     filteredMsg++
                 }
             }
-            chatPageViewState.messageList.value = allMessage.toList()
+            chatPageViewState = chatPageViewState.copy(messageList = allMessage.toPersistentList())
         }
     }
 

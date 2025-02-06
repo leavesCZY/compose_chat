@@ -151,7 +151,7 @@ private fun GroupProfilePage(
     viewState: GroupProfilePageViewState,
     action: GroupProfilePageAction
 ) {
-    val groupProfile = viewState.groupProfile.value
+    val groupProfile = viewState.groupProfile
     if (groupProfile != null) {
         val listState = rememberLazyListState()
         val maxOffsetHeightPx = with(LocalDensity.current) {
@@ -198,7 +198,7 @@ private fun GroupProfilePage(
                         GroupHeader(groupProfile = groupProfile)
                     }
                     items(
-                        items = viewState.memberList.value,
+                        items = viewState.memberList,
                         key = {
                             it.detail.id
                         },
