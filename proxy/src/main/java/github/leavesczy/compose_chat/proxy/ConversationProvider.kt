@@ -130,7 +130,8 @@ class ConversationProvider : IConversationProvider {
 
     private suspend fun getConversationList(nextStep: Long): Pair<List<Conversation>, Long> {
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getConversationManager().getConversationList(nextStep,
+            V2TIMManager.getConversationManager().getConversationList(
+                nextStep,
                 100,
                 object : V2TIMValueCallback<V2TIMConversationResult> {
                     override fun onSuccess(result: V2TIMConversationResult) {

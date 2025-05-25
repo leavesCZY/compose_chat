@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package github.leavesczy.compose_chat
 
 import com.android.build.gradle.internal.api.ApkVariantOutputImpl
@@ -19,7 +17,7 @@ internal fun Project.configureAndroidApplication(commonExtension: BaseAppModuleE
     commonExtension.apply {
         defaultConfig {
             applicationId = "github.leavesczy.compose_chat"
-            targetSdk = 35
+            targetSdk = 36
             versionCode = 1
             versionName = "1.0.0"
             applicationVariants.all {
@@ -27,7 +25,7 @@ internal fun Project.configureAndroidApplication(commonExtension: BaseAppModuleE
                 outputs.all {
                     if (this is ApkVariantOutputImpl) {
                         this.outputFileName =
-                            "compose_chat_${variant.name}_${variant.versionCode}_${variant.versionName}_${getApkBuildTime()}.apk"
+                            "compose_chat_${variant.name}_v${variant.versionName}_${variant.versionCode}_${getApkBuildTime()}.apk"
                     }
                 }
             }
@@ -90,11 +88,16 @@ internal fun Project.configureAndroidApplication(commonExtension: BaseAppModuleE
                     "**/*.md",
                     "**/*.version",
                     "**/*.properties",
-                    "**/**/*.properties",
-                    "META-INF/{AL2.0,LGPL2.1}",
+                    "**/LICENSE.txt",
+                    "**/DebugProbesKt.bin",
+                    "**/app-metadata.properties",
+                    "**/kotlin-tooling-metadata.json",
+                    "**/version-control-info.textproto",
+                    "**/androidsupportmultidexversion.txt",
                     "META-INF/CHANGES",
-                    "DebugProbesKt.bin",
-                    "kotlin-tooling-metadata.json"
+                    "META-INF/{AL2.0,LGPL2.1}",
+                    "META-INF/**/*.kotlin_module",
+                    "META-INF/version-control-info.textproto",
                 )
             }
         }
@@ -108,7 +111,7 @@ private fun getTime(pattern: String): String {
 }
 
 private fun getApkBuildTime(): String {
-    return getTime(pattern = "yyyy_MM_dd_HH_mm_ss")
+    return getTime(pattern = "yyyyMMdd_HHmmss")
 }
 
 private fun getBuildConfigTime(): String {

@@ -180,6 +180,7 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                                         chatViewModel.onInputSelectorChanged(newSelector = InputSelector.NONE)
                                         val matisse = Matisse(
                                             maxSelectable = 1,
+                                            gridColumns = 4,
                                             fastSelect = false,
                                             mediaType = MediaType.ImageOnly,
                                             imageEngine = MatisseImageEngine(),

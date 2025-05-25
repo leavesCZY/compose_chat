@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
+    android:layout_gravity="center"
     android:layout_marginHorizontal="50dp">
 
     <TextView
@@ -12,10 +12,13 @@
         android:layout_height="wrap_content"
         android:background="@drawable/shape_b3001018_ff8996a2_12"
         android:gravity="center"
+        android:includeFontPadding="false"
+        android:lineHeight="17sp"
         android:maxLines="30"
-        android:padding="8dp"
+        android:padding="10dp"
         android:textColor="@android:color/white"
         android:textSize="16sp"
+        tools:ignore="UnusedAttribute"
         tools:text="Toast should be short." />
 
 </FrameLayout>

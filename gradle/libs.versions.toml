@@ -1,25 +1,25 @@
 [versions]
-android-plugin = "8.9.0"
-kotlin-plugin = "2.1.10"
-track-plugin = "1.1.1"
+android-plugin = "8.10.0"
+kotlin-plugin = "2.1.21"
+track-plugin = "1.1.2"
 
 androidx-junit = "1.2.1"
 androidx-espresso = "3.6.1"
 androidx-appcompat = "1.7.0"
 androidx-activity = "1.10.1"
-androidx-lifecycle-viewmodel = "2.8.7"
-androidx-exifinterface = "1.4.0"
-androidx-compose-bom = "2025.02.00"
+androidx-lifecycle-viewmodel = "2.9.0"
+androidx-exifinterface = "1.4.1"
+androidx-compose-bom = "2025.05.01"
 
 junit = "4.13.2"
 
-kotlinx-coroutines = "1.10.1"
-kotlinx-collections-immutable = "0.3.8"
+kotlinx-coroutines = "1.10.2"
+kotlinx-collections-immutable = "0.4.0"
 
-matisse = "2.1.4"
-coil = "3.1.0"
+matisse = "2.2.0"
+coil = "3.2.0"
 
-tencent-imsdk = "8.4.6675"
+tencent-imsdk = "8.5.6864"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }

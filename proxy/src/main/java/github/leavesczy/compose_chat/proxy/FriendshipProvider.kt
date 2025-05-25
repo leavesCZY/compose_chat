@@ -89,7 +89,8 @@ class FriendshipProvider : IFriendshipProvider {
 
     private suspend fun getFriendInfo(friendId: String): V2TIMFriendInfoResult? {
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getFriendshipManager().getFriendsInfo(listOf(friendId),
+            V2TIMManager.getFriendshipManager().getFriendsInfo(
+                listOf(friendId),
                 object : V2TIMValueCallback<List<V2TIMFriendInfoResult>> {
                     override fun onSuccess(t: List<V2TIMFriendInfoResult>?) {
                         continuation.resume(value = t?.getOrNull(0))
@@ -146,7 +147,8 @@ class FriendshipProvider : IFriendshipProvider {
     override suspend fun deleteFriend(friendId: String): ActionResult {
         return suspendCancellableCoroutine { continuation ->
             V2TIMManager.getFriendshipManager()
-                .deleteFromFriendList(listOf(friendId), V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH,
+                .deleteFromFriendList(
+                    listOf(friendId), V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH,
                     object : V2TIMValueCallback<List<V2TIMFriendOperationResult>> {
                         override fun onSuccess(t: List<V2TIMFriendOperationResult>) {
                             continuation.resume(value = ActionResult.Success)

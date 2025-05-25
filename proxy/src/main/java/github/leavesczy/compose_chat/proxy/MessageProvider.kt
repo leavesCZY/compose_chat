@@ -147,7 +147,8 @@ class MessageProvider : IMessageProvider {
             }
         }
         messageChannel.send(localTempMessage)
-        V2TIMManager.getMessageManager().sendMessage(timMessage,
+        V2TIMManager.getMessageManager().sendMessage(
+            timMessage,
             c2cId,
             groupId,
             V2TIMMessage.V2TIM_PRIORITY_HIGH,

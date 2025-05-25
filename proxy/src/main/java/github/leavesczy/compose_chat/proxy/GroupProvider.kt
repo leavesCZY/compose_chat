@@ -141,7 +141,8 @@ class GroupProvider : IGroupProvider {
 
     override suspend fun getGroupInfo(groupId: String): GroupProfile? {
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getGroupManager().getGroupsInfo(listOf(groupId),
+            V2TIMManager.getGroupManager().getGroupsInfo(
+                listOf(groupId),
                 object : V2TIMValueCallback<List<V2TIMGroupInfoResult>> {
                     override fun onSuccess(t: List<V2TIMGroupInfoResult>) {
                         continuation.resume(value = convertGroup(t[0].groupInfo))
@@ -222,7 +223,8 @@ class GroupProvider : IGroupProvider {
         nextStep: Long
     ): Pair<List<GroupMemberProfile>, Long> {
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getGroupManager().getGroupMemberList(groupId,
+            V2TIMManager.getGroupManager().getGroupMemberList(
+                groupId,
                 V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_FILTER_ALL,
                 nextStep,
                 object : V2TIMValueCallback<V2TIMGroupMemberInfoResult> {

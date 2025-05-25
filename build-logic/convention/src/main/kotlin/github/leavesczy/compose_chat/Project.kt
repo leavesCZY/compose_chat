@@ -18,8 +18,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  */
 internal fun Project.configureAndroidProject(commonExtension: CommonExtension<*, *, *, *, *, *>) {
     commonExtension.apply {
-        compileSdk = 35
-        buildToolsVersion = "35.0.1"
+        compileSdk = 36
+        buildToolsVersion = "36.0.0"
         defaultConfig {
             minSdk = 23
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

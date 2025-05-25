@@ -37,7 +37,8 @@ internal object Converters {
 
     suspend fun getSelfProfileOrigin(): V2TIMUserFullInfo? {
         return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getInstance().getUsersInfo(listOf(V2TIMManager.getInstance().loginUser),
+            V2TIMManager.getInstance().getUsersInfo(
+                listOf(V2TIMManager.getInstance().loginUser),
                 object : V2TIMValueCallback<List<V2TIMUserFullInfo>> {
                     override fun onSuccess(t: List<V2TIMUserFullInfo>) {
                         continuation.resume(value = t[0])
