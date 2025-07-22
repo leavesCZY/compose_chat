@@ -1,6 +1,7 @@
 import github.leavesczy.track.click.compose.ComposeClickPluginParameter
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 
 /**
@@ -11,10 +12,8 @@ import org.gradle.kotlin.dsl.configure
 class TrackConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
-        with(target) {
-            with(pluginManager) {
-                apply("io.github.leavesczy.track")
-            }
+        with(receiver = target) {
+            apply(plugin = "io.github.leavesczy.track")
             extensions.configure<ComposeClickPluginParameter> {
                 onClickClass = "github.leavesczy.compose_chat.extend.ComposeOnClick"
                 onClickWhiteList = "notCheck"

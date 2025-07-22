@@ -18,7 +18,7 @@ dependencies {
     implementation(libs.androidx.exifinterface)
     implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlinx.collections.immutable)
-    implementation(libs.matisse)
+    implementation(libs.leavesczy.matisse)
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
     implementation(libs.coil.network.okhttp)

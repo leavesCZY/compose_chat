@@ -1,25 +1,23 @@
 [versions]
-android-plugin = "8.10.0"
-kotlin-plugin = "2.1.21"
+android-plugin = "8.11.1"
+kotlin-plugin = "2.2.0"
 track-plugin = "1.1.2"
 
 androidx-junit = "1.2.1"
 androidx-espresso = "3.6.1"
-androidx-appcompat = "1.7.0"
+androidx-appcompat = "1.7.1"
 androidx-activity = "1.10.1"
-androidx-lifecycle-viewmodel = "2.9.0"
+androidx-lifecycle-viewmodel = "2.9.2"
 androidx-exifinterface = "1.4.1"
-androidx-compose-bom = "2025.05.01"
-
-junit = "4.13.2"
+androidx-compose-bom = "2025.07.00"
 
 kotlinx-coroutines = "1.10.2"
 kotlinx-collections-immutable = "0.4.0"
 
-matisse = "2.2.0"
-coil = "3.2.0"
-
-tencent-imsdk = "8.5.6864"
+junit = "4.13.2"
+coil = "3.3.0"
+leavesczy-matisse = "2.2.0"
+tencent-imsdk = "8.6.7040"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
@@ -61,12 +59,10 @@ androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable" }
 
-matisse = { module = "io.github.leavesczy:matisse", version.ref = "matisse" }
-
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coil" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
-
+leavesczy-matisse = { module = "io.github.leavesczy:matisse", version.ref = "leavesczy-matisse" }
 tencent-imsdk = { module = "com.tencent.imsdk:imsdk-plus", version.ref = "tencent-imsdk" }

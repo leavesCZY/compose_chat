@@ -54,8 +54,6 @@ private val faceUrlList = listOf(
     "https://p26-passport.byteacctimg.com/img/user-avatar/394b7db3c7a66687eac9145cdb583c50~600x600.awebp",
     "https://p26-passport.byteacctimg.com/img/user-avatar/bec3afb275d080c11c5949e69009a508~600x600.awebp",
     "https://p26-passport.byteacctimg.com/img/user-avatar/2186c1344f7f44a7275c8b32931029b5~600x600.awebp",
-    "https://p26-passport.byteacctimg.com/img/user-avatar/0bfdbdf3c9b16a33dcbdf4863e804c09~600x600.awebp",
-    "https://p26-passport.byteacctimg.com/img/user-avatar/346b7ada79a91f3277dc09c652767682~600x600.awebp",
     "https://p26-passport.byteacctimg.com/img/user-avatar/3f12bea19793c777968408577222836f~600x600.awebp",
     "https://p26-passport.byteacctimg.com/img/user-avatar/d9b8ab8097610ea914625205baed82c7~600x600.awebp",
     "https://p26-passport.byteacctimg.com/img/user-avatar/b0df93af51b4fb6e2a2f37be5a8f7175~600x600.awebp",
