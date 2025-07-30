@@ -3,19 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_marginHorizontal="50dp">
+    android:layout_gravity="center">
 
     <TextView
         android:id="@+id/tvToastMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_b3001018_ff8996a2_12"
+        android:layout_margin="20dp"
+        android:background="@drawable/shape_toast_background"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:lineHeight="17sp"
+        android:lineHeight="18sp"
         android:maxLines="30"
         android:padding="10dp"
+        android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         tools:ignore="UnusedAttribute"

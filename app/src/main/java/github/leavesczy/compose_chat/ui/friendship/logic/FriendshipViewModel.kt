@@ -17,6 +17,7 @@ import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.chat.ChatActivity
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -48,8 +49,9 @@ class FriendshipViewModel : BaseViewModel() {
         private set
 
     var friendshipDialogViewState by mutableStateOf(
-        FriendshipDialogViewState(
+        value = FriendshipDialogViewState(
             visible = false,
+            groupIds = persistentListOf(),
             dismissDialog = ::dismissFriendshipDialog,
             joinGroup = ::joinGroup,
             addFriend = ::addFriend
@@ -89,7 +91,23 @@ class FriendshipViewModel : BaseViewModel() {
     }
 
     fun showFriendshipDialog() {
-        friendshipDialogViewState = friendshipDialogViewState.copy(visible = true)
+        val ids = listOf(
+            "@TGS#3SSMB3WHI",
+            "@TGS#3VOZA3WHT",
+            "@TGS#3W42A3WHP",
+            "@TGS#3DMJIK6MS",
+            "@TGS#3YCNIK6MC"
+        )
+        val groupIds = ids.mapIndexed { index, id ->
+            GroupId(
+                id = id,
+                name = "加入交流群 0x0" + (index + 1)
+            )
+        }.toImmutableList()
+        friendshipDialogViewState = friendshipDialogViewState.copy(
+            visible = true,
+            groupIds = groupIds
+        )
     }
 
     private fun dismissFriendshipDialog() {

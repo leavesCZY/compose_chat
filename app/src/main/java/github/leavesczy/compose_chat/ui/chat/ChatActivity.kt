@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.core.content.IntentCompat
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.base.models.ImageMessage
 import github.leavesczy.compose_chat.base.models.SystemMessage
@@ -49,8 +50,8 @@ class ChatActivity : BaseActivity() {
 
     }
 
-    private val chat: Chat by lazy(mode = LazyThreadSafetyMode.NONE) {
-        intent.getParcelableExtra(KEY_CHAT)!!
+    private val chat by lazy(mode = LazyThreadSafetyMode.NONE) {
+        IntentCompat.getParcelableExtra(intent, KEY_CHAT, Chat::class.java)!!
     }
 
     private val chatViewModel by viewModelsInstance {

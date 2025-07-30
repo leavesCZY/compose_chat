@@ -23,11 +23,9 @@ object ToastProvider {
     }
 
     private fun buildCustomToast(context: Context, msg: String): Toast {
-        val layout =
-            (context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(
-                R.layout.layout_toast,
-                null
-            )
+        val layoutInflater =
+            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val layout = layoutInflater.inflate(R.layout.layout_toast, null)
         val text = layout.findViewById<TextView>(R.id.tvToastMessage)
         text.text = msg
         val toast = Toast(context)

@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.ui.friendship.logic.FriendshipDialogViewState
-import github.leavesczy.compose_chat.ui.logic.GroupIds
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 
 /**
@@ -86,23 +85,10 @@ fun FriendshipDialog(viewState: FriendshipDialogViewState) {
                         viewState.addFriend(userId)
                     }
                 }
-                FriendshipButton(text = "加入交流群 0x01") {
-                    viewState.joinGroup(GroupIds.meetingGroupId01)
-                }
-                FriendshipButton(text = "加入交流群 0x02") {
-                    viewState.joinGroup(GroupIds.meetingGroupId02)
-                }
-                FriendshipButton(text = "加入交流群 0x03") {
-                    viewState.joinGroup(GroupIds.meetingGroupId03)
-                }
-                FriendshipButton(text = "加入交流群 0x04") {
-                    viewState.joinGroup(GroupIds.meetingGroupId04)
-                }
-                FriendshipButton(text = "加入交流群 0x05") {
-                    viewState.joinGroup(GroupIds.meetingGroupId05)
-                }
-                FriendshipButton(text = "加入交流群 0x06") {
-                    viewState.joinGroup(GroupIds.meetingGroupId06)
+                for (groupId in viewState.groupIds) {
+                    FriendshipButton(text = groupId.name) {
+                        viewState.joinGroup(groupId.id)
+                    }
                 }
                 Box(
                     modifier = Modifier
