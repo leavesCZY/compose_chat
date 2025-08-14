@@ -3,6 +3,7 @@ package github.leavesczy.compose_chat
 import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
 import java.io.File
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -13,8 +14,8 @@ import java.time.format.DateTimeFormatter
  * @Date: 2023/11/29 16:10
  * @Desc:
  */
-internal fun Project.configureAndroidApplication(commonExtension: BaseAppModuleExtension) {
-    commonExtension.apply {
+internal fun Project.configureAndroidApplication() {
+    configure<BaseAppModuleExtension> {
         defaultConfig {
             applicationId = "github.leavesczy.compose_chat"
             targetSdk = 36

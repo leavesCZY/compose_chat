@@ -1,10 +1,10 @@
 package github.leavesczy.compose_chat
 
-import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -13,8 +13,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  * @Date: 2023/11/29 16:10
  * @Desc:
  */
-internal fun Project.configureCompose(commonExtension: CommonExtension<*, *, *, *, *, *>) {
-    val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+internal fun Project.configureCompose() {
+    val commonExtension =
+        extensions.findByType<ApplicationExtension>() ?: extensions.findByType<LibraryExtension>()!!
     commonExtension.apply {
         buildFeatures {
             compose = true
