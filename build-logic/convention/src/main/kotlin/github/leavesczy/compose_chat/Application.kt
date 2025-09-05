@@ -26,7 +26,7 @@ internal fun Project.configureAndroidApplication() {
                 outputs.all {
                     if (this is ApkVariantOutputImpl) {
                         this.outputFileName =
-                            "compose_chat_${variant.name}_v${variant.versionName}_${variant.versionCode}_${getApkBuildTime()}.apk"
+                            "compose_chat_${variant.name}_${getApkBuildTime()}.apk"
                     }
                 }
             }

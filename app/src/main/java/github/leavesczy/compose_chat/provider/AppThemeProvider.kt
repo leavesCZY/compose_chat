@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.edit
 import github.leavesczy.compose_chat.ui.logic.AppTheme
 
 /**
@@ -39,7 +40,7 @@ object AppThemeProvider {
     }
 
     fun onAppThemeChanged(appTheme: AppTheme) {
-        preferences.edit().putInt(KEY_APP_THEME, appTheme.ordinal).apply()
+        preferences.edit { putInt(KEY_APP_THEME, appTheme.ordinal) }
         initThemeDelegate(appTheme = appTheme)
         this.appTheme = appTheme
     }

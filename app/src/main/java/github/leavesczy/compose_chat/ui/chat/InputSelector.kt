@@ -60,22 +60,28 @@ fun InputSelector(
             }
         )
         InputSelectorButton(
-            modifier = Modifier.padding(start = 16.dp),
+            modifier = Modifier
+                .padding(start = 16.dp),
             icon = Icons.Outlined.Topic,
             selected = currentInputSelector == InputSelector.Picture,
             onClick = {
                 onInputSelectorChange(InputSelector.Picture)
             }
         )
-        Spacer(modifier = Modifier.weight(weight = 1f))
+        Spacer(
+            modifier = Modifier
+                .weight(weight = 1f)
+        )
         Text(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(size = 20.dp))
                 .then(
                     other = if (sendMessageEnabled) {
-                        Modifier.background(color = MaterialTheme.colorScheme.primary)
+                        Modifier
+                            .background(color = MaterialTheme.colorScheme.primary)
                     } else {
-                        Modifier.background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.46f))
+                        Modifier
+                            .background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.46f))
                     }
                 )
                 .clickable(onClick = onClickSend)

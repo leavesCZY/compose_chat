@@ -3,6 +3,7 @@ package github.leavesczy.compose_chat.ui.friendship
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -46,7 +46,10 @@ import github.leavesczy.compose_chat.ui.widgets.ComponentImage
  */
 @Composable
 fun FriendshipPage(pageViewState: FriendshipPageViewState) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         val joinedGroupList = pageViewState.joinedGroupList
         val friendList = pageViewState.friendList
         if (joinedGroupList.isEmpty() && friendList.isEmpty()) {
@@ -62,9 +65,10 @@ fun FriendshipPage(pageViewState: FriendshipPageViewState) {
             )
         } else {
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize(),
                 state = pageViewState.listState,
-                contentPadding = PaddingValues(bottom = 100.dp)
+                contentPadding = PaddingValues(bottom = 30.dp)
             ) {
                 items(
                     items = joinedGroupList,
@@ -76,6 +80,8 @@ fun FriendshipPage(pageViewState: FriendshipPageViewState) {
                     },
                     itemContent = {
                         GroupItem(
+                            modifier = Modifier
+                                .animateItem(),
                             groupProfile = it,
                             onClick = pageViewState.onClickGroupItem
                         )
@@ -91,6 +97,8 @@ fun FriendshipPage(pageViewState: FriendshipPageViewState) {
                     },
                     itemContent = {
                         FriendItem(
+                            modifier = Modifier
+                                .animateItem(),
                             personProfile = it,
                             onClick = pageViewState.onClickFriendItem
                         )
@@ -118,105 +126,115 @@ fun FriendshipPage(pageViewState: FriendshipPageViewState) {
 }
 
 @Composable
-private fun LazyItemScope.GroupItem(
+private fun GroupItem(
+    modifier: Modifier,
     groupProfile: GroupProfile,
     onClick: (GroupProfile) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .animateItem()
+    Box(
+        modifier = modifier
             .fillMaxWidth()
             .height(height = 70.dp)
-            .clickable(onClick = {
+            .clickable {
                 onClick(groupProfile)
-            })
+            }
+            .padding(horizontal = 14.dp)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(weight = 1f),
+                .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ComponentImage(
-                modifier = Modifier
-                    .padding(horizontal = 14.dp)
-                    .size(size = 50.dp)
-                    .clip(shape = RoundedCornerShape(size = 6.dp)),
-                model = groupProfile.faceUrl
+            Avatar(
+                modifier = Modifier,
+                imageUrl = groupProfile.faceUrl
             )
             Text(
                 modifier = Modifier
                     .weight(weight = 1f)
-                    .padding(end = 12.dp),
+                    .padding(start = 12.dp),
                 text = groupProfile.name,
                 fontSize = 18.sp,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
-        HorizontalDivider(
-            modifier = Modifier
-                .padding(start = 78.dp),
-            thickness = 0.2.dp
-        )
+        HorizontalDivider()
     }
 }
 
 @Composable
-private fun LazyItemScope.FriendItem(
+private fun FriendItem(
+    modifier: Modifier,
     personProfile: PersonProfile,
     onClick: (PersonProfile) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .animateItem()
+    Box(
+        modifier = modifier
             .fillMaxWidth()
             .height(height = 70.dp)
-            .clickable(onClick = {
+            .clickable {
                 onClick(personProfile)
-            })
+            }
+            .padding(horizontal = 14.dp)
     ) {
-        Row(
+        Avatar(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(weight = 1f),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            ComponentImage(
-                modifier = Modifier
-                    .padding(horizontal = 14.dp)
-                    .size(size = 50.dp)
-                    .clip(shape = RoundedCornerShape(size = 6.dp)),
-                model = personProfile.faceUrl
+                .align(alignment = Alignment.CenterStart),
+            imageUrl = personProfile.faceUrl
+        )
+        Column(
+            modifier = Modifier
+                .padding(start = 66.dp)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(
+                space = 4.dp,
+                alignment = Alignment.CenterVertically
             )
-            Column(
-                modifier = Modifier
-                    .weight(weight = 1f),
-                verticalArrangement = Arrangement.spacedBy(
-                    space = 4.dp,
-                    alignment = Alignment.CenterVertically
-                )
-            ) {
+        ) {
+            val showName = personProfile.showName
+            val signature = personProfile.signature
+            if (showName.isNotBlank()) {
                 Text(
                     modifier = Modifier,
-                    text = personProfile.showName,
+                    text = showName,
                     fontSize = 18.sp,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
+            }
+            if (signature.isNotBlank()) {
                 Text(
                     modifier = Modifier,
-                    text = personProfile.signature,
-                    fontSize = 15.sp,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
+                    text = signature,
+                    fontSize = 14.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
-        HorizontalDivider(
-            modifier = Modifier
-                .padding(start = 78.dp),
-            thickness = 0.2.dp
-        )
+        HorizontalDivider()
     }
+}
+
+@Composable
+private fun Avatar(
+    modifier: Modifier,
+    imageUrl: String
+) {
+    ComponentImage(
+        modifier = modifier
+            .size(size = 54.dp)
+            .clip(shape = RoundedCornerShape(size = 6.dp)),
+        model = imageUrl
+    )
+}
+
+@Composable
+private fun BoxScope.HorizontalDivider() {
+    HorizontalDivider(
+        modifier = Modifier
+            .align(alignment = Alignment.BottomEnd),
+        thickness = 0.2.dp
+    )
 }

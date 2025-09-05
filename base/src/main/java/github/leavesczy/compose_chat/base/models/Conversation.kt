@@ -12,7 +12,7 @@ data class Conversation(
     val id: String,
     val name: String,
     val faceUrl: String,
-    val unreadMessageCount: Int,
+    val unreadMessageCount: Long,
     val lastMessage: Message,
     val isPinned: Boolean,
     val type: ConversationType

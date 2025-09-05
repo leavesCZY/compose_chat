@@ -33,14 +33,16 @@ fun MainPage(
     personProfileViewModel: PersonProfileViewModel
 ) {
     ModalNavigationDrawer(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         drawerState = mainViewModel.drawerViewState.drawerState,
         drawerContent = {
             MainPageDrawer(viewState = mainViewModel.drawerViewState)
         },
         content = {
             Scaffold(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize(),
                 contentWindowInsets = WindowInsets(
                     left = 0.dp,
                     top = 0.dp,
@@ -48,7 +50,7 @@ fun MainPage(
                     bottom = 0.dp
                 ),
                 topBar = {
-                    if (mainViewModel.bottomBarViewState.selectedTab.value != MainPageTab.Person) {
+                    if (mainViewModel.bottomBarViewState.selectedTab != MainPageTab.Person) {
                         MainPageTopBar(
                             viewState = mainViewModel.topBarViewState,
                             showFriendshipDialog = {
@@ -66,7 +68,7 @@ fun MainPage(
                         .fillMaxSize()
                         .padding(paddingValues = innerPadding)
                 ) {
-                    when (mainViewModel.bottomBarViewState.selectedTab.value) {
+                    when (mainViewModel.bottomBarViewState.selectedTab) {
                         MainPageTab.Conversation -> {
                             ConversationPage(pageViewState = conversationViewModel.pageViewState)
                         }

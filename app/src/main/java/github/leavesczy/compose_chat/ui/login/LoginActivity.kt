@@ -157,7 +157,8 @@ private fun LoginPage(
                             .padding(start = 30.dp, end = 30.dp, top = 40.dp),
                         content = {
                             Text(
-                                modifier = Modifier.padding(vertical = 2.dp),
+                                modifier = Modifier
+                                    .padding(vertical = 2.dp),
                                 text = "Login",
                                 fontSize = 16.sp,
                                 color = Color.White

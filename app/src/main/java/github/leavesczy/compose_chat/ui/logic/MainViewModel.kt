@@ -4,11 +4,11 @@ import android.content.Intent
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.models.PersonProfile
 import github.leavesczy.compose_chat.base.models.ServerConnectState
 import github.leavesczy.compose_chat.base.provider.IConversationProvider
 import github.leavesczy.compose_chat.provider.AccountProvider
@@ -33,31 +33,31 @@ class MainViewModel : BaseViewModel() {
     var loadingDialogVisible by mutableStateOf(value = false)
         private set
 
-    val topBarViewState by mutableStateOf(
-        value = MainPageTopBarViewState(
-            openDrawer = ::openDrawer
-        )
+    val topBarViewState = MainPageTopBarViewState(
+        openDrawer = ::openDrawer
     )
 
-    val bottomBarViewState by mutableStateOf(
+    var bottomBarViewState by mutableStateOf(
         value = MainPageBottomBarViewState(
-            selectedTab = mutableStateOf(value = MainPageTab.Conversation),
-            unreadMessageCount = mutableLongStateOf(value = 0),
+            selectedTab = MainPageTab.Conversation,
+            unreadMessageCount = 0L,
             onClickTab = ::onClickTab
         )
     )
+        private set
 
-    val drawerViewState by mutableStateOf(
+    var drawerViewState by mutableStateOf(
         value = MainPageDrawerViewState(
             drawerState = DrawerState(initialValue = DrawerValue.Closed),
-            appTheme = mutableStateOf(value = AppThemeProvider.appTheme),
-            personProfile = mutableStateOf(value = ComposeChat.accountProvider.personProfile.value),
+            appTheme = AppThemeProvider.appTheme,
+            personProfile = ComposeChat.accountProvider.personProfile.value,
             previewImage = ::previewImage,
             switchTheme = ::switchTheme,
             logout = ::logout,
             updateProfile = ::updateProfile
         )
     )
+        private set
 
     private val _serverConnectState = MutableStateFlow(value = ServerConnectState.Connected)
 
@@ -67,12 +67,12 @@ class MainViewModel : BaseViewModel() {
         viewModelScope.launch {
             launch {
                 conversationProvider.totalUnreadMessageCount.collect {
-                    bottomBarViewState.unreadMessageCount.value = it
+                    onUnreadMessageCountChanged(unreadMessageCount = it)
                 }
             }
             launch {
                 ComposeChat.accountProvider.personProfile.collect {
-                    drawerViewState.personProfile.value = it
+                    onPersonProfileChanged(personProfile = it)
                 }
             }
             launch {
@@ -95,7 +95,24 @@ class MainViewModel : BaseViewModel() {
     }
 
     private fun onClickTab(mainPageTab: MainPageTab) {
-        bottomBarViewState.selectedTab.value = mainPageTab
+        val viewState = bottomBarViewState
+        if (viewState.selectedTab != mainPageTab) {
+            bottomBarViewState = viewState.copy(selectedTab = mainPageTab)
+        }
+    }
+
+    private fun onUnreadMessageCountChanged(unreadMessageCount: Long) {
+        val viewState = bottomBarViewState
+        if (viewState.unreadMessageCount != unreadMessageCount) {
+            bottomBarViewState = viewState.copy(unreadMessageCount = unreadMessageCount)
+        }
+    }
+
+    private fun onPersonProfileChanged(personProfile: PersonProfile) {
+        val viewState = drawerViewState
+        if (drawerViewState.personProfile != personProfile) {
+            drawerViewState = viewState.copy(personProfile = personProfile)
+        }
     }
 
     private fun logout() {
@@ -132,7 +149,7 @@ class MainViewModel : BaseViewModel() {
 
     private fun switchTheme() {
         val nextTheme = AppThemeProvider.appTheme.nextTheme()
-        drawerViewState.appTheme.value = nextTheme
+        drawerViewState = drawerViewState.copy(appTheme = nextTheme)
         AppThemeProvider.onAppThemeChanged(appTheme = nextTheme)
     }
 

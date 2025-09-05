@@ -37,7 +37,10 @@ fun ProfilePanel(
     content: @Composable BoxScope.() -> Unit
 ) {
     val context = LocalContext.current
-    Box(modifier = Modifier.fillMaxHeight()) {
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+    ) {
         BezierImage(
             modifier = Modifier
                 .fillMaxWidth()

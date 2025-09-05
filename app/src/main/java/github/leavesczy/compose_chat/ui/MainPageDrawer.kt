@@ -24,7 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,17 +57,16 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
     }
     Surface(
         modifier = Modifier
-            .fillMaxWidth(fraction = 0.85f)
+            .fillMaxWidth(fraction = 0.80f)
             .background(color = MaterialTheme.colorScheme.surface)
             .navigationBarsPadding(),
         color = Color.Transparent,
-        contentColor = contentColorFor(MaterialTheme.colorScheme.surface)
+        contentColor = contentColorFor(backgroundColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            val personProfile by viewState.personProfile
             val padding = 20.dp
             AnimateBouncyImage(
                 modifier = Modifier
@@ -75,28 +74,31 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
                     .padding(start = padding, top = padding)
                     .size(size = 90.dp)
                     .clickableNoRipple {
-                        viewState.previewImage(personProfile.faceUrl)
+                        viewState.previewImage(viewState.personProfile.faceUrl)
                     },
                 key = viewState.drawerState.isOpen,
-                model = personProfile.faceUrl
+                model = viewState.personProfile.faceUrl
             )
             Text(
-                modifier = Modifier.padding(
-                    start = padding,
-                    end = padding,
-                    top = padding
-                ),
-                text = personProfile.id,
+                modifier = Modifier
+                    .padding(
+                        start = padding,
+                        end = padding,
+                        top = padding
+                    ),
+                text = viewState.personProfile.id,
                 fontSize = 20.sp
             )
             Text(
-                modifier = Modifier.padding(horizontal = padding),
-                text = personProfile.nickname,
+                modifier = Modifier
+                    .padding(horizontal = padding),
+                text = viewState.personProfile.nickname,
                 fontSize = 18.sp
             )
             Text(
-                modifier = Modifier.padding(horizontal = padding),
-                text = personProfile.signature,
+                modifier = Modifier
+                    .padding(horizontal = padding),
+                text = viewState.personProfile.signature,
                 fontSize = 18.sp
             )
             Spacer(
@@ -109,8 +111,7 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
                 icon = Icons.Filled.Cabin,
                 onClick = viewState.updateProfile
             )
-            val appTheme = viewState.appTheme.value
-            val themeName = when (appTheme) {
+            val themeName = when (viewState.appTheme) {
                 Light -> {
                     "日间主题"
                 }
@@ -138,25 +139,10 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
                     .fillMaxWidth()
                     .weight(weight = 1f, fill = true)
             )
-            Text(
+            Copyright(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = padding),
-                text = buildString {
-                    append("公众号: 字节数组")
-                    append("\n")
-                    append("VersionCode: ")
-                    append(BuildConfig.VERSION_CODE)
-                    append("\n")
-                    append("VersionName: ")
-                    append(BuildConfig.VERSION_NAME)
-                    append("\n")
-                    append("BuildTime: ")
-                    append(BuildConfig.BUILD_TIME)
-                },
-                textAlign = TextAlign.Center,
-                fontSize = 15.sp,
-                lineHeight = 22.sp
+                    .padding(all = padding)
             )
         }
     }
@@ -173,15 +159,42 @@ private fun SelectableItem(text: String, icon: ImageVector, onClick: () -> Unit)
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier.size(size = 22.dp),
+            modifier = Modifier
+                .size(size = 22.dp),
             imageVector = icon,
             tint = MaterialTheme.colorScheme.onSurface,
             contentDescription = null
         )
         Text(
-            modifier = Modifier.padding(start = 10.dp),
+            modifier = Modifier
+                .padding(start = 10.dp),
             text = text,
             fontSize = 17.sp
         )
     }
+}
+
+@Composable
+private fun Copyright(modifier: Modifier) {
+    val copyright = remember {
+        buildString {
+            append("公众号: 字节数组")
+            append("\n")
+            append("versionCode: ")
+            append(BuildConfig.VERSION_CODE)
+            append("\n")
+            append("versionName: ")
+            append(BuildConfig.VERSION_NAME)
+            append("\n")
+            append("buildTime: ")
+            append(BuildConfig.BUILD_TIME)
+        }
+    }
+    Text(
+        modifier = modifier,
+        text = copyright,
+        fontSize = 14.sp,
+        lineHeight = 16.sp,
+        textAlign = TextAlign.Center
+    )
 }

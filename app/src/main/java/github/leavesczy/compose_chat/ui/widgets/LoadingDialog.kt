@@ -26,9 +26,7 @@ fun LoadingDialog(visible: Boolean) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .clickableNoRipple {
-
-                }
+                .clickableNoRipple {}
         ) {
             CircularProgressIndicator(
                 modifier = Modifier

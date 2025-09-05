@@ -44,7 +44,8 @@ class ProfileUpdateActivity : BaseActivity() {
 @Composable
 private fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
         Box(
@@ -62,7 +63,8 @@ private fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
                     avatarUrl = personProfile.faceUrl
                 ) {
                     Column(
-                        modifier = Modifier.padding(bottom = 30.dp),
+                        modifier = Modifier
+                            .padding(bottom = 30.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         CommonOutlinedTextField(

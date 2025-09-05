@@ -48,13 +48,13 @@ fun MainPageBottomBar(viewState: MainPageBottomBarViewState) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         for (tab in MainPageTab.entries) {
-            val selected = viewState.selectedTab.value == tab
+            val selected = viewState.selectedTab == tab
             val icon: ImageVector
             val unreadMessageCount: Long
             when (tab) {
                 MainPageTab.Conversation -> {
                     icon = Icons.Rounded.WbSunny
-                    unreadMessageCount = viewState.unreadMessageCount.value
+                    unreadMessageCount = viewState.unreadMessageCount
                 }
 
                 MainPageTab.Friendship -> {
@@ -89,7 +89,8 @@ private fun RowScope.NavigationBarItem(
     NavigationBarItem(
         icon = {
             Icon(
-                modifier = Modifier.size(size = 22.dp),
+                modifier = Modifier
+                    .size(size = 22.dp),
                 imageVector = icon,
                 contentDescription = null
             )

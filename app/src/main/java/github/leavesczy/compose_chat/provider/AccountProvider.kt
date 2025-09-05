@@ -3,6 +3,7 @@ package github.leavesczy.compose_chat.provider
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 /**
  * @Author: leavesCZY
@@ -38,7 +39,7 @@ object AccountProvider {
     }
 
     fun onUserLogout() {
-        preferences.edit().putBoolean(KEY_AUTO_LOGIN, false).apply()
+        preferences.edit { putBoolean(KEY_AUTO_LOGIN, false) }
     }
 
 }

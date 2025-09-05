@@ -107,7 +107,8 @@ class ChatActivity : BaseActivity() {
 private fun ChatPage(chatViewModel: ChatViewModel, chatPageAction: ChatPageAction) {
     val chatPageViewState = chatViewModel.chatPageViewState
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         topBar = {
             ChatPageTopBar(
                 title = chatPageViewState.topBarTitle,
