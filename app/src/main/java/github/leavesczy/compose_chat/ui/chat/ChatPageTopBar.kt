@@ -9,6 +9,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
+import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 
 /**
  * @Author: leavesCZY
@@ -30,13 +32,16 @@ fun ChatPageTopBar(title: String, chat: Chat) {
     CenterAlignedTopAppBar(
         modifier = Modifier
             .shadow(elevation = 0.8.dp),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color),
         title = {
             Text(
                 modifier = Modifier,
                 text = title,
                 fontSize = 19.sp,
+                lineHeight = 20.sp,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
             )
         },
         navigationIcon = {

@@ -5,7 +5,6 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,14 +13,16 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -39,6 +40,8 @@ import github.leavesczy.compose_chat.ui.MainActivity
 import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.login.logic.LoginPageViewState
 import github.leavesczy.compose_chat.ui.login.logic.LoginViewModel
+import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
 import kotlinx.coroutines.launch
 
@@ -92,12 +95,8 @@ private fun LoginPage(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        contentWindowInsets = WindowInsets(
-            left = 0.dp,
-            right = 0.dp,
-            top = 0.dp,
-            bottom = 0.dp
-        )
+        containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
+        contentWindowInsets = WindowInsetsEmpty
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -122,19 +121,20 @@ private fun LoginPage(
                             .wrapContentSize(align = Alignment.BottomCenter),
                         text = stringResource(id = R.string.app_name),
                         style = TextStyle(
-                            fontSize = 64.sp,
+                            fontSize = 62.sp,
                             fontFamily = FontFamily.Cursive,
                             textAlign = TextAlign.Center,
                             shadow = Shadow(
                                 offset = Offset(5.4f, 12f),
                                 blurRadius = 3f
-                            )
+                            ),
+                            color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
                         )
                     )
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 60.dp, start = 40.dp, end = 40.dp),
+                            .padding(top = 60.dp, start = 30.dp, end = 30.dp),
                         value = viewState.userId,
                         onValueChange = viewState.onUserIdInputChanged,
                         maxLines = 1,
@@ -143,9 +143,21 @@ private fun LoginPage(
                             Text(
                                 modifier = Modifier,
                                 text = "UserId",
-                                fontSize = 14.sp
+                                fontSize = 14.sp,
+                                lineHeight = 16.sp,
+                                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
                             )
                         },
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(color = ComposeChatTheme.colorScheme.c_FF1C1B1F_FFFFFFFF.color),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            cursorColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
+                            focusedBorderColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(
+                                alpha = 0.7f
+                            ),
+                            unfocusedBorderColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(
+                                alpha = 0.5f
+                            )
+                        ),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
                         keyboardActions = KeyboardActions(onGo = {
                             onClickLoginButton()
@@ -155,12 +167,15 @@ private fun LoginPage(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 30.dp, end = 30.dp, top = 40.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color),
                         content = {
                             Text(
-                                modifier = Modifier.padding(vertical = 2.dp),
+                                modifier = Modifier
+                                    .padding(vertical = 2.dp),
                                 text = "Login",
                                 fontSize = 16.sp,
-                                color = Color.White
+                                lineHeight = 16.sp,
+                                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
                             )
                         },
                         onClick = {

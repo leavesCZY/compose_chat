@@ -1,5 +1,6 @@
 package github.leavesczy.compose_chat.ui.chat
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -12,6 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.extend.clickableNoRipple
+import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 
 /**
  * @Author: leavesCZY
@@ -21,8 +23,10 @@ import github.leavesczy.compose_chat.extend.clickableNoRipple
 @Composable
 fun EmojiTable(appendEmoji: (String) -> Unit) {
     LazyVerticalGrid(
+        modifier = Modifier,
+        horizontalArrangement = Arrangement.Center,
         columns = GridCells.Fixed(count = 6),
-        contentPadding = PaddingValues(start = 8.dp, end = 8.dp, bottom = 14.dp)
+        contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp)
     ) {
         items(
             items = emojis,
@@ -41,7 +45,9 @@ fun EmojiTable(appendEmoji: (String) -> Unit) {
                     .padding(vertical = 10.dp),
                 text = it,
                 fontSize = 20.sp,
-                textAlign = TextAlign.Center
+                lineHeight = 21.sp,
+                textAlign = TextAlign.Center,
+                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
             )
         }
     }

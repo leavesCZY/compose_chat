@@ -188,7 +188,7 @@ class ConversationProvider : IConversationProvider {
         val lastConversationMessage = conversation.lastMessage ?: return null
         val name = conversation.showName ?: ""
         val faceUrl = conversation.faceUrl ?: ""
-        val unreadMessageCount = conversation.unreadCount
+        val unreadMessageCount = conversation.unreadCount.toLong()
         val lastMessage = Converters.convertMessage(timMessage = lastConversationMessage)
         val isPinned = conversation.isPinned
         return when (conversation.type) {

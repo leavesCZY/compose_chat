@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,6 +46,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil3.compose.SubcomposeAsyncImage
+import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -169,18 +169,18 @@ fun AnimateBouncyImage(
     val scale by animateFloatAsState(
         label = "",
         targetValue = if (animated) {
-            1.6f
+            1.5f
         } else {
             1f
         },
-        animationSpec = tween(durationMillis = 1000)
+        animationSpec = tween(durationMillis = 1200)
     )
     val offset by animateIntOffsetAsState(
         label = "",
         targetValue = if (animated) {
             IntOffset(
-                x = Random.nextInt(-200, 200),
-                y = Random.nextInt(-200, 200)
+                x = Random.nextInt(-500, 500),
+                y = Random.nextInt(-200, 300)
             )
         } else {
             IntOffset(x = 0, y = 0)
@@ -225,8 +225,18 @@ private fun BouncyImage(modifier: Modifier, model: Any) {
     ComponentImage(
         modifier = modifier
             .offset {
-                IntOffset(x = offset.x.roundToInt(), y = offset.y.roundToInt())
+                IntOffset(
+                    x = offset.x.roundToInt(),
+                    y = offset.y.roundToInt()
+                )
             }
+            .clip(shape = CircleShape)
+            .border(
+                width = 2.dp,
+                color = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(alpha = 0.8f),
+                shape = CircleShape
+            )
+            .zIndex(zIndex = Float.MAX_VALUE)
             .pointerInput(key1 = Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -246,14 +256,7 @@ private fun BouncyImage(modifier: Modifier, model: Any) {
                         )
                     }
                 )
-            }
-            .clip(shape = CircleShape)
-            .border(
-                width = 2.dp,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
-                shape = CircleShape
-            )
-            .zIndex(zIndex = Float.MAX_VALUE),
+            },
         model = model
     )
 }

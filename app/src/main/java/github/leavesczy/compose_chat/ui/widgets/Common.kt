@@ -3,15 +3,16 @@ package github.leavesczy.compose_chat.ui.widgets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 
 /**
  * @Author: leavesCZY
@@ -37,14 +38,16 @@ fun CommonOutlinedTextField(
             Text(
                 modifier = Modifier,
                 text = label,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                lineHeight = 16.sp,
+                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
             )
         },
-        textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
+        textStyle = MaterialTheme.typography.bodyMedium.copy(color = ComposeChatTheme.colorScheme.c_FF1C1B1F_FFFFFFFF.color),
         colors = OutlinedTextFieldDefaults.colors(
-            cursorColor = MaterialTheme.colorScheme.primary,
-            focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
-            unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+            cursorColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
+            focusedBorderColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(alpha = 0.7f),
+            unfocusedBorderColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(alpha = 0.5f)
         )
     )
 }
@@ -54,15 +57,14 @@ fun CommonButton(text: String, onClick: () -> Unit) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                horizontal = 20.dp,
-                vertical = 8.dp
-            ),
+            .padding(horizontal = 20.dp, vertical = 8.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color),
         content = {
             Text(
                 text = text,
                 fontSize = 15.sp,
-                color = Color.White
+                lineHeight = 16.sp,
+                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             )
         },
         onClick = onClick

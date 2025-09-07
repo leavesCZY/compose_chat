@@ -64,7 +64,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     @Composable
-    protected fun SetSystemBarUi(appTheme: AppTheme) {
+    private fun SetSystemBarUi(appTheme: AppTheme) {
         val context = LocalContext.current
         LaunchedEffect(key1 = appTheme == AppTheme.Dark) {
             if (context is Activity) {

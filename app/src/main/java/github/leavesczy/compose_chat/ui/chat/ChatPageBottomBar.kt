@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.ui.chat.logic.ChatViewModel
+import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 import github.leavesczy.compose_chat.ui.widgets.MatisseImageEngine
 import github.leavesczy.matisse.Matisse
 import github.leavesczy.matisse.MatisseCapture
@@ -98,16 +99,16 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
     }
     Column(
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.onSecondaryContainer)
-            .navigationBarsPadding(),
+            .background(color = ComposeChatTheme.colorScheme.c_FFEFF1F3_FF22202A.color)
+            .navigationBarsPadding()
     ) {
         BasicTextField(
             modifier = Modifier
                 .focusRequester(focusRequester = focusRequester)
+                .padding(horizontal = 12.dp, vertical = 12.dp)
                 .fillMaxWidth()
-                .padding(start = 10.dp, end = 10.dp, top = 12.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.background,
+                    color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
                     shape = RoundedCornerShape(size = 10.dp)
                 )
                 .padding(horizontal = 8.dp, vertical = 12.dp),
@@ -116,8 +117,8 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                 chatViewModel.onUserInputChanged(input = it)
             },
             maxLines = 6,
-            textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
-            cursorBrush = SolidColor(value = MaterialTheme.colorScheme.primary),
+            textStyle = MaterialTheme.typography.bodyMedium.copy(color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color),
+            cursorBrush = SolidColor(value = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(
                 onSend = {

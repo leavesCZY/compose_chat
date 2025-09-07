@@ -26,13 +26,11 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -50,6 +48,7 @@ import github.leavesczy.compose_chat.base.models.TextMessage
 import github.leavesczy.compose_chat.base.models.TimeMessage
 import github.leavesczy.compose_chat.ui.chat.logic.ChatPageAction
 import github.leavesczy.compose_chat.ui.chat.logic.ChatPageViewState
+import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 
 /**
@@ -268,7 +267,7 @@ private fun Avatar(
             .clip(shape = CircleShape)
             .border(
                 width = 2.dp,
-                color = MaterialTheme.colorScheme.primary,
+                color = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
                 shape = CircleShape
             )
             .clickable(
@@ -289,9 +288,11 @@ private fun Nickname(
         modifier = modifier,
         text = nickname,
         fontSize = 13.sp,
+        lineHeight = 14.sp,
+        textAlign = TextAlign.Start,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        textAlign = TextAlign.Start
+        color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
     )
 }
 
@@ -329,22 +330,22 @@ private fun TextMessage(message: TextMessage) {
                 )
                 .background(
                     color = if (isOwnMessage) {
-                        MaterialTheme.colorScheme.inversePrimary
+                        ComposeChatTheme.colorScheme.c_FF5775A8_FF45464F.color
                     } else {
-                        MaterialTheme.colorScheme.inverseSurface
+                        ComposeChatTheme.colorScheme.c_FFE2E1EC_FF45464F.color
                     }
                 )
                 .padding(horizontal = 8.dp, vertical = 6.dp),
             text = message.formatMessage,
-            color = if (isOwnMessage) {
-                Color.White
-            } else {
-                MaterialTheme.colorScheme.inverseOnSurface
-            },
             fontSize = 16.sp,
             lineHeight = 24.sp,
+            textAlign = TextAlign.Start,
             softWrap = true,
-            textAlign = TextAlign.Start
+            color = if (isOwnMessage) {
+                ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+            } else {
+                ComposeChatTheme.colorScheme.c_FF3A3D4D_FFFFFFFF.color
+            }
         )
     }
 }
@@ -408,12 +409,14 @@ private fun TimeMessage(message: TimeMessage) {
         modifier = Modifier
             .padding(top = 20.dp)
             .background(
-                color = Color.LightGray.copy(alpha = 0.4f),
+                color = ComposeChatTheme.colorScheme.c_66CCCCCC_66CCCCCC.color,
                 shape = RoundedCornerShape(size = 4.dp)
             )
             .padding(horizontal = 6.dp, vertical = 4.dp),
         text = message.formatMessage,
-        fontSize = 11.sp
+        fontSize = 11.sp,
+        lineHeight = 12.sp,
+        color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
     )
 }
 
@@ -422,12 +425,14 @@ private fun SystemMessage(message: SystemMessage) {
     Text(
         modifier = Modifier
             .background(
-                color = Color.LightGray.copy(alpha = 0.4f),
+                color = ComposeChatTheme.colorScheme.c_66CCCCCC_66CCCCCC.color,
                 shape = RoundedCornerShape(size = 4.dp)
             )
             .padding(horizontal = 6.dp, vertical = 4.dp),
         text = message.formatMessage,
-        fontSize = 12.sp
+        fontSize = 12.sp,
+        lineHeight = 14.sp,
+        color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
     )
 }
 
@@ -442,7 +447,7 @@ private fun MessageState(modifier: Modifier, messageState: MessageState) {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .fillMaxSize(),
-                    color = MaterialTheme.colorScheme.primary,
+                    color = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
                     strokeWidth = 2.dp
                 )
             }
@@ -452,7 +457,7 @@ private fun MessageState(modifier: Modifier, messageState: MessageState) {
                     modifier = Modifier
                         .fillMaxSize(),
                     imageVector = Icons.Outlined.Warning,
-                    colorFilter = ColorFilter.tint(color = Color.Red),
+                    colorFilter = ColorFilter.tint(color = ComposeChatTheme.colorScheme.c_FFFF545C_FFFA525A.color),
                     contentDescription = null
                 )
             }

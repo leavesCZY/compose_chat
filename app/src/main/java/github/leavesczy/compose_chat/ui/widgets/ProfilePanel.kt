@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -22,6 +21,7 @@ import androidx.compose.ui.zIndex
 import github.leavesczy.compose_chat.extend.clickableNoRipple
 import github.leavesczy.compose_chat.extend.scrim
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
+import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 
 /**
  * @Author: leavesCZY
@@ -37,13 +37,16 @@ fun ProfilePanel(
     content: @Composable BoxScope.() -> Unit
 ) {
     val context = LocalContext.current
-    Box(modifier = Modifier.fillMaxHeight()) {
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+    ) {
         BezierImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(ratio = 5f / 4.2f)
                 .zIndex(zIndex = -100f)
-                .scrim(color = Color(0x4D000000)),
+                .scrim(color = ComposeChatTheme.colorScheme.c_4D000000_4D000000.color),
             model = avatarUrl
         )
         Column(
@@ -68,24 +71,27 @@ fun ProfilePanel(
                     .padding(start = 10.dp, end = 10.dp, top = 10.dp),
                 text = title,
                 fontSize = 18.sp,
+                lineHeight = 21.sp,
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             )
             Text(
                 modifier = Modifier
                     .padding(start = 10.dp, end = 10.dp, top = 10.dp),
                 text = subtitle,
                 fontSize = 15.sp,
+                lineHeight = 16.sp,
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             )
             Text(
                 modifier = Modifier
                     .padding(start = 10.dp, end = 10.dp, top = 10.dp),
                 text = introduction,
                 fontSize = 15.sp,
+                lineHeight = 16.sp,
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             )
             Box(
                 modifier = Modifier

@@ -9,9 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -27,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -39,6 +36,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.ui.base.BaseActivity
+import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 import github.leavesczy.compose_chat.ui.widgets.ZoomableComponentImage
 import github.leavesczy.compose_chat.utils.AlbumUtils
 import kotlinx.coroutines.launch
@@ -151,15 +150,9 @@ private fun PreviewImagePage(
     }
     Scaffold(
         modifier = Modifier
-            .background(color = Color(color = 0xFF22202A))
             .fillMaxSize(),
-        containerColor = Color(color = 0xFF22202A),
-        contentWindowInsets = WindowInsets(
-            left = 0.dp,
-            right = 0.dp,
-            top = 0.dp,
-            bottom = 0.dp
-        )
+        containerColor = ComposeChatTheme.colorScheme.c_FF22202A_FF22202A.color,
+        contentWindowInsets = WindowInsetsEmpty
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -188,7 +181,7 @@ private fun PreviewImagePage(
                     Icon(
                         modifier = Modifier,
                         imageVector = Icons.Filled.SaveAlt,
-                        tint = Color.White,
+                        tint = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color,
                         contentDescription = null
                     )
                 },

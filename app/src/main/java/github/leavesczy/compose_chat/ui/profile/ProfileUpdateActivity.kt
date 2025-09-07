@@ -19,6 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.profile.logic.ProfileUpdatePageViewStata
 import github.leavesczy.compose_chat.ui.profile.logic.ProfileUpdateViewModel
+import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
@@ -44,7 +45,9 @@ class ProfileUpdateActivity : BaseActivity() {
 @Composable
 private fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
+        containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
         contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
         Box(
@@ -62,7 +65,8 @@ private fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
                     avatarUrl = personProfile.faceUrl
                 ) {
                     Column(
-                        modifier = Modifier.padding(bottom = 30.dp),
+                        modifier = Modifier
+                            .padding(bottom = 30.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         CommonOutlinedTextField(

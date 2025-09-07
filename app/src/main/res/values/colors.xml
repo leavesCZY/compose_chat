@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="color_ffffffff_ff101010">#FFFFFFFF</color>
     <bool name="matisse_status_bar_dark_icons">false</bool>
     <bool name="matisse_navigation_bar_dark_icons">true</bool>
     <color name="matisse_status_bar_color">#FF03A9F4</color>
@@ -31,5 +32,4 @@
     <color name="matisse_circular_loading_color">#FF03A9F4</color>
     <color name="matisse_video_icon_color">#FFFFFFFF</color>
     <color name="matisse_video_view_page_background_color">#FF22202A</color>
-    <color name="color_toast_background">#CC001018</color>
 </resources>

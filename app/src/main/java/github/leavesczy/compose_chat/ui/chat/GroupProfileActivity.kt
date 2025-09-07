@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,7 +31,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,10 +43,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -66,6 +62,7 @@ import github.leavesczy.compose_chat.ui.chat.logic.GroupProfilePageViewState
 import github.leavesczy.compose_chat.ui.chat.logic.GroupProfileViewModel
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
+import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 import github.leavesczy.compose_chat.ui.widgets.AnimateBouncyImage
 import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
@@ -176,6 +173,7 @@ private fun GroupProfilePage(
         Scaffold(
             modifier = Modifier
                 .fillMaxSize(),
+            containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
             contentWindowInsets = WindowInsets.navigationBars
         ) { innerPadding ->
             Box(
@@ -187,7 +185,7 @@ private fun GroupProfilePage(
                     modifier = Modifier
                         .fillMaxSize(),
                     state = listState,
-                    contentPadding = PaddingValues(bottom = 60.dp),
+                    contentPadding = PaddingValues(bottom = 30.dp),
                 ) {
                     item(
                         key = "header",
@@ -237,7 +235,7 @@ private fun GroupHeader(groupProfile: GroupProfile) {
         ComponentImage(
             modifier = Modifier
                 .fillMaxSize()
-                .scrim(color = Color(0x4D000000)),
+                .scrim(color = ComposeChatTheme.colorScheme.c_4D000000_4D000000.color),
             model = avatarUrl
         )
         Column(
@@ -264,8 +262,9 @@ private fun GroupHeader(groupProfile: GroupProfile) {
                     .padding(all = 14.dp),
                 text = introduction,
                 fontSize = 15.sp,
+                lineHeight = 16.sp,
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             )
         }
     }
@@ -288,7 +287,7 @@ private fun PageTopBar(
             modifier = Modifier
                 .alpha(alpha = alpha)
                 .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.background)
+                .background(color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF161616.color)
                 .statusBarsPadding()
                 .height(height = groupTopBarHeight)
         ) {
@@ -296,8 +295,9 @@ private fun PageTopBar(
                 modifier = Modifier
                     .align(alignment = Alignment.Center),
                 text = title,
-                color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 20.sp,
+                lineHeight = 21.sp,
+                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
             )
         }
         IconButton(
@@ -340,8 +340,8 @@ private fun PageTopBar(
             .padding(end = 20.dp)
     ) {
         DropdownMenu(
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.background),
+            modifier = Modifier,
+            containerColor = ComposeChatTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
             expanded = menuExpanded,
             onDismissRequest = {
                 menuExpanded = false
@@ -351,7 +351,9 @@ private fun PageTopBar(
                 text = {
                     Text(
                         text = "修改头像",
-                        style = TextStyle(fontSize = 18.sp)
+                        fontSize = 18.sp,
+                        lineHeight = 18.sp,
+                        color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
                     )
                 },
                 onClick = {
@@ -363,7 +365,9 @@ private fun PageTopBar(
                 text = {
                     Text(
                         text = "退出群聊",
-                        style = TextStyle(fontSize = 18.sp)
+                        fontSize = 18.sp,
+                        lineHeight = 18.sp,
+                        color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
                     )
                 },
                 onClick = {
@@ -380,51 +384,74 @@ private fun GroupMemberItem(
     groupMemberProfile: GroupMemberProfile,
     groupProfilePageAction: GroupProfilePageAction
 ) {
+    GroupMemberItem(
+        modifier = Modifier,
+        imageUrl = groupMemberProfile.detail.faceUrl,
+        title = groupMemberProfile.detail.showName + "（${groupMemberProfile.detail.id}）",
+        subtitle = "joinTime: ${groupMemberProfile.joinTimeFormat}",
+        onClick = {
+            groupProfilePageAction.onClickMember(groupMemberProfile)
+        }
+    )
+}
+
+@Composable
+private fun GroupMemberItem(
+    modifier: Modifier,
+    imageUrl: String,
+    title: String,
+    subtitle: String?,
+    onClick: () -> Unit
+) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(height = 70.dp)
-            .clickable {
-                groupProfilePageAction.onClickMember(groupMemberProfile)
-            }
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp)
     ) {
         ComponentImage(
             modifier = Modifier
-                .align(alignment = Alignment.CenterStart)
-                .padding(horizontal = 14.dp)
-                .size(size = 50.dp)
-                .clip(shape = RoundedCornerShape(size = 6.dp)),
-            model = groupMemberProfile.detail.faceUrl
+                .size(size = 54.dp)
+                .clip(shape = RoundedCornerShape(size = 6.dp))
+                .align(alignment = Alignment.CenterStart),
+            model = imageUrl
         )
         Column(
             modifier = Modifier
-                .align(alignment = Alignment.CenterStart)
-                .padding(start = 78.dp, end = 12.dp)
-                .fillMaxHeight(),
+                .padding(start = 66.dp)
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(
-                space = 4.dp,
+                space = 3.dp,
                 alignment = Alignment.CenterVertically
             )
         ) {
-            Text(
-                modifier = Modifier,
-                text = groupMemberProfile.detail.showName + "（${groupMemberProfile.detail.id}）",
-                fontSize = 17.sp,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1
-            )
-            Text(
-                modifier = Modifier,
-                text = "joinTime: ${groupMemberProfile.joinTimeFormat}",
-                fontSize = 14.sp,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1
-            )
+            if (title.isNotBlank()) {
+                Text(
+                    modifier = Modifier,
+                    text = title,
+                    fontSize = 18.sp,
+                    lineHeight = 18.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                )
+            }
+            if (!subtitle.isNullOrBlank()) {
+                Text(
+                    modifier = Modifier,
+                    text = subtitle,
+                    fontSize = 14.sp,
+                    lineHeight = 14.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = ComposeChatTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                )
+            }
         }
         HorizontalDivider(
             modifier = Modifier
-                .align(alignment = Alignment.BottomCenter)
-                .padding(start = 78.dp),
+                .align(alignment = Alignment.BottomEnd),
             thickness = 0.2.dp
         )
     }

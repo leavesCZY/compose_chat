@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.InsertPhoto
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,6 +21,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 
 /**
  * @Author: leavesCZY
@@ -36,7 +36,7 @@ fun ExtendTable(
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 20.dp)
+            .padding(start = 12.dp)
     ) {
         Function(
             text = "拍照",
@@ -68,15 +68,17 @@ private fun Function(text: String, icon: ImageVector, onClick: () -> Unit) {
             modifier = Modifier
                 .size(size = 42.dp),
             imageVector = icon,
-            tint = MaterialTheme.colorScheme.primary,
+            tint = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
             contentDescription = null
         )
         Text(
             modifier = Modifier
                 .padding(top = 4.dp),
             text = text,
+            fontSize = 14.sp,
+            lineHeight = 16.sp,
             textAlign = TextAlign.Center,
-            fontSize = 14.sp
+            color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
         )
     }
 }

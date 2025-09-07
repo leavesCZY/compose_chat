@@ -19,7 +19,8 @@ class MatisseImageEngine : ImageEngine {
     @Composable
     override fun Thumbnail(mediaResource: MediaResource) {
         ComponentImage(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize(),
             model = mediaResource.uri,
             contentScale = ContentScale.Crop,
             contentDescription = mediaResource.name
