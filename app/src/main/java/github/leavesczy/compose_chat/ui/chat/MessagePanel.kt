@@ -65,7 +65,7 @@ fun MessagePanel(pageViewState: ChatPageViewState, chatPageAction: ChatPageActio
         reverseLayout = true,
         contentPadding = PaddingValues(top = 10.dp, bottom = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(space = 30.dp),
+        verticalArrangement = Arrangement.spacedBy(space = 30.dp)
     ) {
         items(
             items = pageViewState.messageList,

@@ -46,7 +46,7 @@ fun ProfilePanel(
                 .fillMaxWidth()
                 .aspectRatio(ratio = 5f / 4.2f)
                 .zIndex(zIndex = -100f)
-                .scrim(color = ComposeChatTheme.colorScheme.c_4D000000_4D000000.color),
+                .scrim(color = ComposeChatTheme.colorScheme.c_33000000_33000000.color),
             model = avatarUrl
         )
         Column(

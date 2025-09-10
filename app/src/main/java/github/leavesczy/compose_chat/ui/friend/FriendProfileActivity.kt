@@ -237,7 +237,7 @@ private fun SetFriendRemarkDialog(viewState: SetFriendRemarkDialogViewState) {
         }
         Column(
             modifier = Modifier
-                .fillMaxHeight(fraction = 0.75f)
+                .fillMaxHeight(fraction = 0.70f)
         ) {
             CommonOutlinedTextField(
                 modifier = Modifier

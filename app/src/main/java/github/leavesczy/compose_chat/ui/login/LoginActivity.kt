@@ -14,7 +14,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -148,7 +147,10 @@ private fun LoginPage(
                                 color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
                             )
                         },
-                        textStyle = MaterialTheme.typography.bodyMedium.copy(color = ComposeChatTheme.colorScheme.c_FF1C1B1F_FFFFFFFF.color),
+                        textStyle = TextStyle(
+                            fontSize = 17.sp,
+                            color = ComposeChatTheme.colorScheme.c_FF1C1B1F_FFFFFFFF.color
+                        ),
                         colors = OutlinedTextFieldDefaults.colors(
                             cursorColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
                             focusedBorderColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(

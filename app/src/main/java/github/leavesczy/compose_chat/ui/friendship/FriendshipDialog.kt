@@ -44,7 +44,7 @@ fun FriendshipDialog(viewState: FriendshipDialogViewState) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(fraction = 0.85f),
+                .fillMaxHeight(fraction = 0.80f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(space = 8.dp)
         ) {

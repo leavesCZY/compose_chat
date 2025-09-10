@@ -3,10 +3,10 @@ package github.leavesczy.compose_chat.ui
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -66,11 +66,10 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            val padding = 20.dp
             AnimateBouncyImage(
                 modifier = Modifier
                     .statusBarsPadding()
-                    .padding(start = padding, top = padding)
+                    .padding(start = 20.dp, top = 20.dp)
                     .size(size = 90.dp)
                     .clickableNoRipple {
                         viewState.previewImage(viewState.personProfile.faceUrl)
@@ -78,67 +77,70 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
                 key = viewState.drawerState.isOpen,
                 model = viewState.personProfile.faceUrl
             )
-            Text(
-                modifier = Modifier
-                    .padding(
-                        start = padding,
-                        end = padding,
-                        top = padding
-                    ),
-                text = viewState.personProfile.id,
-                fontSize = 20.sp,
-                lineHeight = 21.sp,
-                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
-            )
-            Text(
-                modifier = Modifier
-                    .padding(horizontal = padding),
-                text = viewState.personProfile.nickname,
-                fontSize = 18.sp,
-                lineHeight = 19.sp,
-                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
-            )
-            Text(
-                modifier = Modifier
-                    .padding(horizontal = padding),
-                text = viewState.personProfile.signature,
-                fontSize = 18.sp,
-                lineHeight = 19.sp,
-                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
-            )
-            Spacer(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(height = 30.dp)
-            )
-            SelectableItem(
-                text = "个人资料",
-                icon = Icons.Filled.Cabin,
-                onClick = viewState.updateProfile
-            )
-            val themeName = when (viewState.appTheme) {
-                Light -> {
-                    "日间主题"
-                }
-
-                Dark -> {
-                    "夜间主题"
-                }
-
-                Gray -> {
-                    "黑白主题"
-                }
+                    .padding(start = 20.dp, top = 10.dp, end = 20.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    modifier = Modifier,
+                    text = viewState.personProfile.id,
+                    fontSize = 20.sp,
+                    lineHeight = 20.sp,
+                    color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                )
+                Text(
+                    modifier = Modifier,
+                    text = viewState.personProfile.nickname,
+                    fontSize = 16.sp,
+                    lineHeight = 16.sp,
+                    color = ComposeChatTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                )
+                Text(
+                    modifier = Modifier,
+                    text = viewState.personProfile.signature,
+                    fontSize = 16.sp,
+                    lineHeight = 16.sp,
+                    color = ComposeChatTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                )
             }
-            SelectableItem(
-                text = themeName,
-                icon = Icons.Filled.Sailing,
-                onClick = viewState.switchTheme
-            )
-            SelectableItem(
-                text = "切换账号",
-                icon = Icons.Filled.ColorLens,
-                onClick = viewState.logout
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp, bottom = 10.dp),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(space = 10.dp)
+            ) {
+                SelectableItem(
+                    text = "个人资料",
+                    icon = Icons.Filled.Cabin,
+                    onClick = viewState.updateProfile
+                )
+                val themeName = when (viewState.appTheme) {
+                    Light -> {
+                        "日间主题"
+                    }
+
+                    Dark -> {
+                        "夜间主题"
+                    }
+
+                    Gray -> {
+                        "黑白主题"
+                    }
+                }
+                SelectableItem(
+                    text = themeName,
+                    icon = Icons.Filled.Sailing,
+                    onClick = viewState.switchTheme
+                )
+                SelectableItem(
+                    text = "切换账号",
+                    icon = Icons.Filled.ColorLens,
+                    onClick = viewState.logout
+                )
+            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -147,7 +149,7 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
             Copyright(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = padding)
+                    .padding(bottom = 10.dp)
             )
         }
     }
@@ -159,7 +161,7 @@ private fun SelectableItem(text: String, icon: ImageVector, onClick: () -> Unit)
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .height(height = 60.dp)
+            .height(height = 55.dp)
             .padding(start = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

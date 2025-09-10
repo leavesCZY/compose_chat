@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,8 +31,10 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.ui.chat.logic.ChatViewModel
 import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 import github.leavesczy.compose_chat.ui.widgets.MatisseImageEngine
@@ -117,7 +118,10 @@ fun ChatPageBottomBar(chatViewModel: ChatViewModel) {
                 chatViewModel.onUserInputChanged(input = it)
             },
             maxLines = 6,
-            textStyle = MaterialTheme.typography.bodyMedium.copy(color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color),
+            textStyle = TextStyle(
+                fontSize = 18.sp,
+                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+            ),
             cursorBrush = SolidColor(value = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(

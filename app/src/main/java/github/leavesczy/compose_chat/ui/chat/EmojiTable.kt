@@ -1,18 +1,20 @@
 package github.leavesczy.compose_chat.ui.chat
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import github.leavesczy.compose_chat.extend.clickableNoRipple
+import github.leavesczy.compose_chat.extend.clickableNoRippleNotCheck
 import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 
 /**
@@ -25,8 +27,9 @@ fun EmojiTable(appendEmoji: (String) -> Unit) {
     LazyVerticalGrid(
         modifier = Modifier,
         horizontalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(space = 20.dp, alignment = Alignment.Top),
         columns = GridCells.Fixed(count = 6),
-        contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp)
+        contentPadding = PaddingValues(bottom = 12.dp)
     ) {
         items(
             items = emojis,
@@ -37,18 +40,23 @@ fun EmojiTable(appendEmoji: (String) -> Unit) {
                 it
             }
         ) {
-            Text(
+            Box(
                 modifier = Modifier
-                    .clickableNoRipple {
+                    .fillMaxWidth()
+                    .clickableNoRippleNotCheck {
                         appendEmoji(it)
-                    }
-                    .padding(vertical = 10.dp),
-                text = it,
-                fontSize = 20.sp,
-                lineHeight = 21.sp,
-                textAlign = TextAlign.Center,
-                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
-            )
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    modifier = Modifier,
+                    text = it,
+                    fontSize = 21.sp,
+                    lineHeight = 21.sp,
+                    textAlign = TextAlign.Center,
+                    color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                )
+            }
         }
     }
 }

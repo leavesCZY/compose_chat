@@ -74,18 +74,18 @@ fun ComposeChatTheme(content: @Composable () -> Unit) {
                 LocalDensity provides density,
                 LocalComposeChatColorScheme provides composeChatColorScheme,
                 content = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        content()
-                        when (AppThemeProvider.appTheme) {
-                            AppTheme.Light,
-                            AppTheme.Dark -> {
+                    when (AppThemeProvider.appTheme) {
+                        AppTheme.Light,
+                        AppTheme.Dark -> {
+                            content()
+                        }
 
-                            }
-
-                            AppTheme.Gray -> {
+                        AppTheme.Gray -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            ) {
+                                content()
                                 Canvas(
                                     modifier = Modifier
                                         .fillMaxSize()

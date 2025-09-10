@@ -225,9 +225,7 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
         }
     }
 
-    private fun resetMessageState(
-        msgId: String, messageState: MessageState
-    ) {
+    private fun resetMessageState(msgId: String, messageState: MessageState) {
         val index = allMessage.indexOfFirst { it.detail.msgId == msgId }
         if (index >= 0) {
             val targetMessage = allMessage[index]

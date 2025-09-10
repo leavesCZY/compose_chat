@@ -238,7 +238,7 @@ private fun DragHandle() {
                 .padding(top = 12.dp)
                 .size(width = 60.dp, height = 4.dp)
                 .clip(shape = RoundedCornerShape(size = 3.dp))
-                .background(color = ComposeChatTheme.colorScheme.c_B33A3D4D_B3FFFFFF.color)
+                .background(color = ComposeChatTheme.colorScheme.c_803A3D4D_B3FFFFFF.color)
         )
     }
 }

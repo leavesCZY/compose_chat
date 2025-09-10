@@ -42,7 +42,7 @@ fun PersonProfilePage(pageViewState: PersonProfilePageViewState) {
         BezierImage(
             modifier = Modifier
                 .aspectRatio(ratio = 1f)
-                .scrim(color = ComposeChatTheme.colorScheme.c_80000000_99000000.color),
+                .scrim(color = ComposeChatTheme.colorScheme.c_33000000_33000000.color),
             model = faceUrl
         )
         Column(

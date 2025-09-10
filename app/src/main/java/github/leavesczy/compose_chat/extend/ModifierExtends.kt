@@ -25,3 +25,12 @@ fun Modifier.clickableNoRipple(onClick: () -> Unit): Modifier {
         onClick = onClick
     )
 }
+
+fun Modifier.clickableNoRippleNotCheck(onClick: () -> Unit): Modifier {
+    return clickable(
+        onClickLabel = "notCheck",
+        indication = null,
+        interactionSource = null,
+        onClick = onClick
+    )
+}
