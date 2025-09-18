@@ -300,8 +300,8 @@ private fun Nickname(
 private fun TextMessage(message: TextMessage) {
     SelectionContainer {
         val isOwnMessage = message.detail.isOwnMessage
-        val baseRadius = 16.dp
-        val specialRadius = 4.dp
+        val baseRadius = 14.dp
+        val specialRadius = 2.dp
         Text(
             modifier = Modifier
                 .clip(
@@ -330,9 +330,9 @@ private fun TextMessage(message: TextMessage) {
                 )
                 .background(
                     color = if (isOwnMessage) {
-                        ComposeChatTheme.colorScheme.c_FF5775A8_FF45464F.color
-                    } else {
                         ComposeChatTheme.colorScheme.c_FFE2E1EC_FF45464F.color
+                    } else {
+                        ComposeChatTheme.colorScheme.c_FF5386E5_FF5386E5.color
                     }
                 )
                 .padding(horizontal = 8.dp, vertical = 6.dp),
@@ -342,9 +342,9 @@ private fun TextMessage(message: TextMessage) {
             textAlign = TextAlign.Start,
             softWrap = true,
             color = if (isOwnMessage) {
-                ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
-            } else {
                 ComposeChatTheme.colorScheme.c_FF3A3D4D_FFFFFFFF.color
+            } else {
+                ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             }
         )
     }

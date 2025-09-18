@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -73,14 +74,24 @@ class FriendProfileActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val pageViewState = friendProfileViewModel.pageViewState
-            val friendRemarkDialogViewState = friendProfileViewModel.setFriendRemarkDialogViewState
+            var deleteFriendDialogVisible by remember {
+                mutableStateOf(value = false)
+            }
             FriendProfilePage(
-                pageViewState = pageViewState,
-                friendRemarkDialogViewState = friendRemarkDialogViewState,
-                navToChatPage = ::navToChatPage,
-                deleteFriend = ::deleteFriend
+                pageViewState = friendProfileViewModel.pageViewState,
+                openDeleteFriendDialog = {
+                    deleteFriendDialogVisible = true
+                },
+                onClickChat = ::navToChatPage
             )
+            DeleteFriendDialog(
+                visible = deleteFriendDialogVisible,
+                deleteFriend = ::deleteFriend,
+                onDismissRequest = {
+                    deleteFriendDialogVisible = false
+                }
+            )
+            SetFriendRemarkDialog(viewState = friendProfileViewModel.setFriendRemarkDialogViewState)
             LoadingDialog(visible = friendProfileViewModel.loadingDialogVisible)
         }
     }
@@ -106,9 +117,8 @@ class FriendProfileActivity : BaseActivity() {
 @Composable
 private fun FriendProfilePage(
     pageViewState: FriendProfilePageViewState,
-    friendRemarkDialogViewState: SetFriendRemarkDialogViewState,
-    navToChatPage: () -> Unit,
-    deleteFriend: () -> Unit
+    openDeleteFriendDialog: () -> Unit,
+    onClickChat: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier
@@ -116,9 +126,6 @@ private fun FriendProfilePage(
         containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
         contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
-        var openDeleteFriendDialog by remember {
-            mutableStateOf(value = false)
-        }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -136,39 +143,37 @@ private fun FriendProfilePage(
                     },
                     avatarUrl = personProfile.faceUrl,
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(space = 16.dp)
+                    ) {
                         if (!pageViewState.itIsMe) {
                             CommonButton(
                                 text = "去聊天吧",
-                                onClick = navToChatPage
+                                onClick = onClickChat
                             )
-                        }
-                        if (pageViewState.isFriend) {
-                            CommonButton(
-                                text = "设置备注",
-                                onClick = pageViewState.showSetFriendRemarkPanel
-                            )
-                            CommonButton(text = "删除好友") {
-                                openDeleteFriendDialog = true
+                            if (pageViewState.isFriend) {
+                                CommonButton(
+                                    text = "设置备注",
+                                    onClick = pageViewState.showSetFriendRemarkPanel
+                                )
+                                CommonButton(
+                                    text = "删除好友",
+                                    onClick = openDeleteFriendDialog
+                                )
+                            } else {
+                                CommonButton(
+                                    text = "加为好友",
+                                    onClick = pageViewState.addFriend
+                                )
                             }
-                        } else if (!pageViewState.itIsMe) {
-                            CommonButton(
-                                text = "加为好友",
-                                onClick = pageViewState.addFriend
-                            )
                         }
                     }
                 }
-                SetFriendRemarkDialog(viewState = friendRemarkDialogViewState)
             }
         }
-        DeleteFriendDialog(
-            visible = openDeleteFriendDialog,
-            deleteFriend = deleteFriend,
-            onDismissRequest = {
-                openDeleteFriendDialog = false
-            }
-        )
     }
 }
 
@@ -237,12 +242,14 @@ private fun SetFriendRemarkDialog(viewState: SetFriendRemarkDialogViewState) {
         }
         Column(
             modifier = Modifier
-                .fillMaxHeight(fraction = 0.70f)
+                .fillMaxHeight(fraction = 0.80f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(space = 24.dp)
         ) {
             CommonOutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                    .padding(start = 20.dp, end = 20.dp, top = 12.dp),
                 value = remark,
                 onValueChange = {
                     remark = it

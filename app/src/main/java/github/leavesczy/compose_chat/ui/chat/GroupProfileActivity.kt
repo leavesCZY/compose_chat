@@ -66,7 +66,7 @@ import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 import github.leavesczy.compose_chat.ui.widgets.AnimateBouncyImage
 import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
-import github.leavesczy.compose_chat.utils.randomFaceUrl
+import github.leavesczy.compose_chat.utils.randomImage
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -358,7 +358,7 @@ private fun PageTopBar(
                 },
                 onClick = {
                     menuExpanded = false
-                    action.setAvatar(randomFaceUrl())
+                    action.setAvatar(randomImage())
                 }
             )
             DropdownMenuItem(

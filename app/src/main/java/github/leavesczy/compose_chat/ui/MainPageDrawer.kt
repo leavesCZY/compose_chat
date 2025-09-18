@@ -110,7 +110,7 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
                     .fillMaxWidth()
                     .padding(top = 10.dp, bottom = 10.dp),
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(space = 10.dp)
+                verticalArrangement = Arrangement.spacedBy(space = 6.dp)
             ) {
                 SelectableItem(
                     text = "个人资料",

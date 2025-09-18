@@ -26,18 +26,18 @@ import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 fun EmojiTable(appendEmoji: (String) -> Unit) {
     LazyVerticalGrid(
         modifier = Modifier,
+        columns = GridCells.Fixed(count = 6),
         horizontalArrangement = Arrangement.Center,
         verticalArrangement = Arrangement.spacedBy(space = 20.dp, alignment = Alignment.Top),
-        columns = GridCells.Fixed(count = 6),
-        contentPadding = PaddingValues(bottom = 12.dp)
+        contentPadding = PaddingValues(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 12.dp)
     ) {
         items(
             items = emojis,
-            contentType = {
-                "emojis"
-            },
             key = {
                 it
+            },
+            contentType = {
+                "emojis"
             }
         ) {
             Box(
@@ -51,10 +51,10 @@ fun EmojiTable(appendEmoji: (String) -> Unit) {
                 Text(
                     modifier = Modifier,
                     text = it,
-                    fontSize = 21.sp,
-                    lineHeight = 21.sp,
+                    fontSize = 22.sp,
+                    lineHeight = 22.sp,
                     textAlign = TextAlign.Center,
-                    color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                    color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
                 )
             }
         }
@@ -62,91 +62,109 @@ fun EmojiTable(appendEmoji: (String) -> Unit) {
 }
 
 private val emojis = listOf(
-    // Smileys & Emotion
-    "\uD83D\uDE00", // 😀 Grinning Face
-    "\uD83D\uDE01", // 😁 Beaming Face with Smiling Eyes
-    "\uD83D\uDE02", // 😂 Face with Tears of Joy
-    "\uD83D\uDE03", // 😃 Grinning Face with Big Eyes
-    "\uD83D\uDE04", // 😄 Grinning Face with Smiling Eyes
-    "\uD83D\uDE05", // 😅 Grinning Face with Sweat
-    "\uD83D\uDE06", // 😆 Grinning Squinting Face
-    "\uD83D\uDE07", // 😇 Smiling Face with Halo
-    "\uD83D\uDE08", // 😈 Smiling Face with Horns
-    "\uD83D\uDE09", // 😉 Winking Face
-    "\uD83D\uDE0A", // 😊 Smiling Face with Smiling Eyes
-    "\uD83D\uDE0B", // 😋 Face Savoring Food
-    "\uD83D\uDE0C", // 😌 Relieved Face
-    "\uD83D\uDE0D", // 😍 Smiling Face with Heart-Eyes
-    "\uD83D\uDE0E", // 😎 Smiling Face with Sunglasses
-    "\uD83D\uDE0F", // 😏 Smirking Face
-    "\uD83D\uDE12", // 😒 Unamused Face
-    "\uD83D\uDE14", // 😔 Pensive Face
-    "\uD83D\uDE16", // 😖 Confounded Face
-    "\uD83D\uDE18", // 😘 Face Blowing a Kiss
-    "\uD83D\uDE1A", // 😚 Kissing Face with Closed Eyes
-    "\uD83D\uDE1C", // 😜 Winking Face with Tongue
-    "\uD83D\uDE1D", // 😝 Squinting Face with Tongue
-    "\uD83D\uDE1E", // 😞 Disappointed Face
-    "\uD83D\uDE20", // 😠 Angry Face
-    "\uD83D\uDE21", // 😡 Pouting Face
-    "\uD83D\uDE22", // 😢 Crying Face
-    "\uD83D\uDE23", // 😣 Persevering Face
-    "\uD83D\uDE24", // 😤 Face with Steam From Nose
-    "\uD83D\uDE25", // 😥 Sad but Relieved Face
-    "\uD83D\uDE28", // 😨 Fearful Face
-    "\uD83D\uDE29", // 😩 Weary Face
-    "\uD83D\uDE2A", // 😪 Sleepy Face
-    "\uD83D\uDE2B", // 😫 Tired Face
-    "\uD83D\uDE2D", // 😭 Loudly Crying Face
-    "\uD83D\uDE30", // 😰 Anxious Face with Sweat
-    "\uD83D\uDE31", // 😱 Face Screaming in Fear
-    "\uD83D\uDE32", // 😲 Astonished Face
-    "\uD83D\uDE33", // 😳 Flushed Face
-    "\uD83D\uDE35", // 😵 Dizzy Face
-    "\uD83D\uDE37", // 😷 Face with Medical Mask
-    "\uD83D\uDE38", // 😸 Grinning Cat with Smiling Eyes
-    "\uD83D\uDE39", // 😹 Cat with Tears of Joy
-    "\uD83D\uDE3A", // 😺 Smiling Cat with Open Mouth
-    "\uD83D\uDE3B", // 😻 Smiling Cat with Heart-Eyes
-    "\uD83D\uDE3C", // 😼 Cat with Wry Smile
-    "\uD83D\uDE3D", // 😽 Kissing Cat
-    "\uD83D\uDE3E", // 😾 Pouting Cat
-    "\uD83D\uDE3F", // 😿 Crying Cat
-    "\uD83D\uDE40", // 🙀 Weary Cat
-
-    // People & Body
-    "\uD83D\uDC66", // 👦 Boy
-    "\uD83D\uDC67", // 👧 Girl
-    "\uD83D\uDC68", // 👨 Man
-    "\uD83D\uDC69", // 👩 Woman
-    "\uD83D\uDC6A", // 👪 Family
-    "\uD83D\uDC6B", // 👫 Man and Woman Holding Hands
-    "\uD83D\uDC6C", // 👬 Two Men Holding Hands
-    "\uD83D\uDC6D", // 👭 Two Women Holding Hands
-    "\uD83D\uDC6E", // 👮 Police Officer
-    "\uD83D\uDC6F", // 👯 People with Bunny Ears
-    "\uD83D\uDC70", // 👰 Bride with Veil
-    "\uD83D\uDC71", // 👱 Person with Blond Hair
-    "\uD83D\uDC72", // 👲 Man with Chinese Cap
-    "\uD83D\uDC73", // 👳 Person Wearing Turban
-    "\uD83D\uDC74", // 👴 Old Man
-    "\uD83D\uDC75", // 👵 Old Woman
-    "\uD83D\uDC76", // 👶 Baby
-    "\uD83D\uDC77", // 👷 Construction Worker
-    "\uD83D\uDC78", // 👸 Princess
-    "\uD83D\uDC7C", // 👼 Baby Angel
-    "\uD83D\uDC7D", // 👽 Alien
-    "\uD83D\uDC7E", // 👾 Alien Monster
-    "\uD83D\uDC7F", // 👿 Imp
-    "\uD83D\uDC80", // 💀 Skull
-    "\uD83D\uDC81", // 💁 Information Desk Person
-    "\uD83D\uDC82", // 💂 Guardsman
-    "\uD83D\uDC83", // 💃 Dancer
-    "\uD83D\uDC84", // 💄 Lipstick
-    "\uD83D\uDC85", // 💅 Nail Polish
-    "\uD83D\uDC86", // 💆 Person Getting Massage
-    "\uD83D\uDC87", // 💇 Person Getting Haircut
-    "\uD83D\uDC88", // 💈 Barber Pole
-    "\uD83D\uDC89", // 💉 Syringe
-    "\uD83D\uDC8A", // 💊 Pill
+    // 笑脸与表情
+    "😀", // 哈哈大笑
+    "😃", // 大笑
+    "😄", // 喜悦
+    "😁", // 露齿笑
+    "😆", // 眯眼大笑
+    "😅", // 笑着流汗
+    "😂", // 喜极而泣
+    "🤣", // 倒地大笑
+    "😊", // 微笑
+    "😇", // 天使微笑
+    // 友好的表情
+    "😉", // 眨眼
+    "😌", // 轻松
+    "😍", // 喜爱
+    "😘", // 飞吻
+    "😗", // 亲吻
+    "😙", // 亲吻，闭眼
+    "😚", // 亲吻，脸红
+    "😋", // 享用美食
+    "😜", // 吐舌头，眨眼
+    "😝", // 吐舌头，眯眼
+    // 搞怪与有趣
+    "🤑", // 钱脸
+    "🤗", // 拥抱
+    "🤓", // 书呆子
+    "😎", // 戴墨镜
+    "🤡", // 小丑
+    "🤠", // 牛仔
+    // 负面与不舒服
+    "😏", // 邪魅一笑
+    "😒", // 无语
+    "😞", // 失望
+    "😔", // 沮丧
+    "😟", // 担忧
+    "😕", // 困惑
+    "🙁", // 难过
+    "☹️", // 皱眉
+    "😣", // 痛苦
+    "😖", // 困扰
+    // 生气与愤怒
+    "😫", // 疲惫
+    "😩", // 累
+    "😤", // 气愤
+    "😠", // 生气
+    "😡", // 愤怒
+    "😈", // 微笑的恶魔
+    "👿", // 愤怒的恶魔
+    // 特殊符号与角色
+    "💀", // 骷髅头
+    "💩", // 便便
+    "👹", // 鬼
+    "👺", // 天狗
+    "👻", // 幽灵
+    "👽", // 外星人
+    "👾", // 怪物
+    "🤖", // 机器人
+    // 动物
+    "😺", // 咧嘴笑的猫
+    "😸", // 喜极而泣的猫
+    "😹", // 哭笑不得的猫
+    "😻", // 恋爱的猫
+    "😼", // 邪魅的猫
+    "😽", // 亲吻的猫
+    "😿", // 哭泣的猫
+    "😾", // 生气的猫
+    // 手势
+    "🤲", // 掌心向上
+    "🙌", // 举起双手
+    "👏", // 鼓掌
+    "🤝", // 握手
+    "👍", // 竖起大拇指
+    "👎", // 倒竖大拇指
+    "👊", // 拳头
+    "✊", // 举起拳头
+    "🤛", // 左向拳头
+    "🤜", // 右向拳头
+    "🤞", // 交叉手指
+    "✌️", // 胜利手势
+    "🤟", // 爱你手势
+    "🤘", // 摇滚手势
+    "🤙", // 叫我手势
+    "🤚", // 举手
+    "🖐️", // 摊开手掌
+    "✋", // 举起手
+    "👌", // OK手势
+    "👈", // 指向左
+    "👉", // 指向右
+    "👆", // 指向上
+    "👇", // 指向下
+    "☝️", // 食指向上
+    // 人体与服装
+    "💪", // 肌肉
+    "🙏", // 合掌
+    "💍", // 戒指
+    "👑", // 皇冠
+    "🎩", // 礼帽
+    "👒", // 女士帽子
+    "🎓", // 毕业帽
+    "⛑️", // 安全帽
+    "📿", // 念珠
+    "💄", // 口红
+    "💋", // 嘴唇印
+    "👄", // 嘴巴
+    "👅", // 舌头
 )

@@ -1,6 +1,7 @@
 package github.leavesczy.compose_chat.ui.profile
 
 import android.os.Bundle
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -23,7 +24,7 @@ import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
-import github.leavesczy.compose_chat.utils.randomFaceUrl
+import github.leavesczy.compose_chat.utils.randomImage
 
 /**
  * @Author: leavesCZY
@@ -67,12 +68,13 @@ private fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
                     Column(
                         modifier = Modifier
                             .padding(bottom = 30.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(space = 16.dp)
                     ) {
                         CommonOutlinedTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 20.dp, vertical = 5.dp),
+                                .padding(horizontal = 20.dp),
                             value = personProfile.nickname,
                             onValueChange = {
                                 if (it.length > 16) {
@@ -85,7 +87,7 @@ private fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
                         CommonOutlinedTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 20.dp, vertical = 5.dp),
+                                .padding(horizontal = 20.dp),
                             value = personProfile.signature,
                             onValueChange = {
                                 if (it.length > 40) {
@@ -96,7 +98,7 @@ private fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
                             label = "signature"
                         )
                         CommonButton(text = "随机头像") {
-                            pageViewStata.onAvatarUrlChanged(randomFaceUrl())
+                            pageViewStata.onAvatarUrlChanged(randomImage())
                         }
                         CommonButton(text = "确认修改") {
                             pageViewStata.confirmUpdate()
