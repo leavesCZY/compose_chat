@@ -21,7 +21,7 @@ internal fun Project.configureAndroidProject() {
         extensions.findByType<ApplicationExtension>() ?: extensions.findByType<LibraryExtension>()!!
     commonExtension.apply {
         compileSdk = 36
-        buildToolsVersion = "36.0.0"
+        buildToolsVersion = "36.1.0"
         defaultConfig {
             minSdk = 23
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -38,7 +38,7 @@ import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
-import github.leavesczy.compose_chat.ui.widgets.ZoomableComponentImage
+import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 import github.leavesczy.compose_chat.utils.AlbumUtils
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -231,7 +231,7 @@ private fun PreviewPage(
                 },
             contentAlignment = Alignment.Center
         ) {
-            ZoomableComponentImage(
+            ComponentImage(
                 modifier = Modifier
                     .fillMaxSize(),
                 model = imageUrl,

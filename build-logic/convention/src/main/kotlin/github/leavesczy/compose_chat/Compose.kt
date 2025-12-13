@@ -31,7 +31,6 @@ internal fun Project.configureCompose() {
             add("implementation", libs.findLibrary("androidx-compose-ui-tooling-preview").get())
             add("androidTestImplementation", libs.findLibrary("androidx-compose-ui-test").get())
             add("debugImplementation", libs.findLibrary("androidx-compose-ui-test-manifest").get())
-            add("implementation", libs.findLibrary("androidx-compose-material").get())
             add("implementation", libs.findLibrary("androidx-compose-material-icons").get())
             add("implementation", libs.findLibrary("androidx-compose-material3").get())
         }

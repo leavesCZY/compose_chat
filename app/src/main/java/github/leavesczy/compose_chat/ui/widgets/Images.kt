@@ -1,7 +1,7 @@
 package github.leavesczy.compose_chat.ui.widgets
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
@@ -50,6 +50,7 @@ import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import kotlin.math.sin
 import kotlin.random.Random
 
 /**
@@ -94,41 +95,19 @@ fun ComponentImage(
 }
 
 @Composable
-fun ZoomableComponentImage(
-    modifier: Modifier = Modifier,
-    model: Any?,
-    alignment: Alignment = Alignment.Center,
-    contentScale: ContentScale = ContentScale.FillWidth,
-    alpha: Float = DefaultAlpha,
-    colorFilter: ColorFilter? = null,
-    contentDescription: String? = null
-) {
-    ComponentImage(
-        modifier = modifier,
-        model = model,
-        alignment = alignment,
-        contentScale = contentScale,
-        alpha = alpha,
-        colorFilter = colorFilter,
-        contentDescription = contentDescription
-    )
-}
-
-@Composable
 fun BezierImage(modifier: Modifier, model: Any) {
     val animateFloat by rememberInfiniteTransition(label = "")
         .animateFloat(
             initialValue = 0f,
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
-                animation = tween(durationMillis = 600, easing = FastOutSlowInEasing),
-                repeatMode = RepeatMode.Reverse,
+                animation = tween(durationMillis = 1000, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse
             ),
             label = ""
         )
     ComponentImage(
         modifier = Modifier
-            .scale(scale = 1.0f + animateFloat * 0.1f)
             .clip(shape = BezierShape(animateValue = animateFloat))
             .then(other = modifier),
         model = model
@@ -137,19 +116,26 @@ fun BezierImage(modifier: Modifier, model: Any) {
 
 private class BezierShape(private val animateValue: Float) : Shape {
 
-    private val path = Path()
-
     override fun createOutline(
         size: Size, layoutDirection: LayoutDirection, density: Density
     ): Outline {
+        val waveHeight = 20
+        val waveFrequency = 0.2
+        val path = Path()
         path.reset()
-        val width = size.width
-        val height = size.height
-        val progress = height / 7 * 5 + height / 7 * 2 * animateValue
-        path.lineTo(0f, progress / 7 * 5)
-        path.quadraticTo(width / 2 + width / 4 * animateValue, height, width, progress)
-        path.lineTo(width, 0f)
+        path.moveTo(size.width, size.height)
+        path.lineTo(size.width, 0f)
         path.lineTo(0f, 0f)
+        path.lineTo(0f, size.height)
+        var i = 0f
+        while (i < size.width) {
+            val y =
+                size.height - (waveHeight * sin((i / size.width * 2 * Math.PI * waveFrequency) + (animateValue * 2 * Math.PI)))
+            path.lineTo(i, y.toFloat())
+            i++
+        }
+        path.lineTo(size.width, size.height)
+        path.close()
         return Outline.Generic(path = path)
     }
 
