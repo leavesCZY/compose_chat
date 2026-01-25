@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.logic
+package github.leavesczy.compose_chat.ui.chat.group.logic
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

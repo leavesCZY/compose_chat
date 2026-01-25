@@ -61,7 +61,7 @@ class AccountProvider : IAccountProvider {
     }
 
     private fun dispatchServerConnectState(serverConnectState: ServerConnectState) {
-        ChatCoroutineScope.launch {
+        AppCoroutineScope.launch {
             this@AccountProvider.serverConnectState.emit(value = serverConnectState)
         }
     }
@@ -117,7 +117,7 @@ class AccountProvider : IAccountProvider {
     }
 
     override fun refreshPersonProfile() {
-        ChatCoroutineScope.launch {
+        AppCoroutineScope.launch {
             personProfile.emit(value = getSelfProfile() ?: PersonProfile.Empty)
         }
     }

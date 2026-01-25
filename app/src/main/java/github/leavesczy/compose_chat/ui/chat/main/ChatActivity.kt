@@ -1,19 +1,9 @@
-package github.leavesczy.compose_chat.ui.chat
+package github.leavesczy.compose_chat.ui.chat.main
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
-import androidx.compose.material3.pulltorefresh.pullToRefresh
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.core.content.IntentCompat
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.base.models.ImageMessage
@@ -21,12 +11,10 @@ import github.leavesczy.compose_chat.base.models.SystemMessage
 import github.leavesczy.compose_chat.base.models.TextMessage
 import github.leavesczy.compose_chat.base.models.TimeMessage
 import github.leavesczy.compose_chat.ui.base.BaseActivity
-import github.leavesczy.compose_chat.ui.chat.logic.ChatPageAction
-import github.leavesczy.compose_chat.ui.chat.logic.ChatViewModel
+import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageAction
+import github.leavesczy.compose_chat.ui.chat.main.logic.ChatViewModel
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
-import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
 
 /**
  * @Author: leavesCZY
@@ -102,51 +90,4 @@ class ChatActivity : BaseActivity() {
         }
     }
 
-}
-
-@Composable
-private fun ChatPage(chatViewModel: ChatViewModel, chatPageAction: ChatPageAction) {
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
-        containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
-        contentWindowInsets = WindowInsetsEmpty,
-        topBar = {
-            ChatPageTopBar(
-                title = chatViewModel.chatPageViewState.topBarTitle,
-                chat = chatViewModel.chatPageViewState.chat
-            )
-        },
-        bottomBar = {
-            ChatPageBottomBar(chatViewModel = chatViewModel)
-        }
-    ) { innerPadding ->
-        val pullRefreshState = rememberPullToRefreshState()
-        Box(
-            modifier = Modifier
-                .padding(paddingValues = innerPadding)
-                .fillMaxSize()
-                .pullToRefresh(
-                    state = pullRefreshState,
-                    enabled = !chatViewModel.loadMessageViewState.loadFinish,
-                    isRefreshing = chatViewModel.loadMessageViewState.refreshing,
-                    onRefresh = {
-                        chatViewModel.loadMoreMessage()
-                    }
-                )
-        ) {
-            MessagePanel(
-                pageViewState = chatViewModel.chatPageViewState,
-                chatPageAction = chatPageAction
-            )
-            PullToRefreshDefaults.Indicator(
-                modifier = Modifier
-                    .align(alignment = Alignment.TopCenter),
-                isRefreshing = chatViewModel.loadMessageViewState.refreshing,
-                state = pullRefreshState,
-                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
-                containerColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color
-            )
-        }
-    }
 }

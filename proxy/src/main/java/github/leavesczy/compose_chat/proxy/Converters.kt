@@ -340,11 +340,11 @@ internal object Converters {
 
     fun getConversationKey(chat: Chat): String {
         return when (chat) {
-            is Chat.PrivateChat -> {
+            is Chat.C2C -> {
                 getC2CConversationKey(userId = chat.id)
             }
 
-            is Chat.GroupChat -> {
+            is Chat.Group -> {
                 getGroupConversationKey(groupId = chat.id)
             }
         }

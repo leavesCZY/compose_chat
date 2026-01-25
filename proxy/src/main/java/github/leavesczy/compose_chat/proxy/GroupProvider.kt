@@ -43,7 +43,7 @@ class GroupProvider : IGroupProvider {
 
             override fun onQuitFromGroup(groupId: String) {
                 refreshJoinedGroupList()
-                ChatCoroutineScope.launch {
+                AppCoroutineScope.launch {
                     Converters.deleteGroupConversation(groupId = groupId)
                 }
             }
@@ -156,7 +156,7 @@ class GroupProvider : IGroupProvider {
     }
 
     override fun refreshJoinedGroupList() {
-        ChatCoroutineScope.launch {
+        AppCoroutineScope.launch {
             joinedGroupList.emit(value = getJoinedGroupListOrigin().sortedBy { it.name })
         }
     }

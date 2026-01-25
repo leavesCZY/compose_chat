@@ -83,7 +83,7 @@ class LoginViewModel : BaseViewModel() {
         return when (val result = ComposeChat.accountProvider.login(userId = formatUserId)) {
             is ActionResult.Success -> {
                 AccountProvider.onUserLogin(userId = formatUserId)
-                delay(timeMillis = 250)
+                delay(timeMillis = 250L)
                 true
             }
 

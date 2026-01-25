@@ -11,10 +11,13 @@ import github.leavesczy.compose_chat.base.utils.TimeUtil
 @Stable
 sealed class MessageState {
 
+    @Stable
     data object Sending : MessageState()
 
+    @Stable
     data class SendFailed(val reason: String) : MessageState()
 
+    @Stable
     data object Completed : MessageState()
 
 }
@@ -113,9 +116,11 @@ class TimeMessage(targetMessage: Message) : Message(
 @Stable
 sealed class LoadMessageResult {
 
+    @Stable
     data class Success(val messageList: List<Message>, val loadFinish: Boolean) :
         LoadMessageResult()
 
+    @Stable
     data class Failed(val reason: String) : LoadMessageResult()
 
 }

@@ -33,7 +33,7 @@ fun PersonProfilePage(pageViewState: PersonProfilePageViewState) {
     val faceUrl = personProfile.faceUrl
     val title = personProfile.showName
     val subtitle = personProfile.signature
-    val introduction = "ID: ${personProfile.id}"
+    val introduction = "Id: ${personProfile.id}"
     Box(
         modifier = Modifier
             .fillMaxSize()

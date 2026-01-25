@@ -11,15 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: set up jdk
+      - name: setup jdk
         uses: actions/setup-java@v5
         with:
-          distribution: "zulu"
           java-version: "21"
-          architecture: x64
+          distribution: "zulu"
 
       - name: checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: grant execute permission for gradlew
         run: chmod +x gradlew
@@ -34,14 +33,14 @@ jobs:
           format: YYYY.MM.DD
           utcOffset: "+08:00"
 
-      - name: draft a new release
+      - name: create a release
         uses: ncipollo/release-action@v1
         with:
           artifacts: "app/build/outputs/apk/release/*.apk"
           body: "create by workflows"
           allowUpdates: true
           artifactErrorsFailBuild: true
-          generateReleaseNotes: true
+          generateReleaseNotes: false
           token: ${{secrets.ACTION_TOKEN}}
           name: ${{steps.currentTime.outputs.formattedTime}}
           tag: ${{steps.currentTime.outputs.formattedTime}}
