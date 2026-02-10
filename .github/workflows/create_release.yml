@@ -47,4 +47,4 @@ jobs:
           artifacts: "app/build/outputs/apk/release/*.apk"
           tag: ${{steps.time.outputs.formattedTime}}
           name: ${{steps.time.outputs.formattedTime}}
-          token: ${{secrets.ACTION_TOKEN}}
+          token: ${{secrets.GITHUB_TOKEN}}
