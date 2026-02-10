@@ -9,13 +9,14 @@ import kotlinx.parcelize.Parcelize
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
+@Parcelize
 @Stable
 sealed class Chat(open val id: String) : Parcelable {
 
-    @Parcelize
-    class PrivateChat(override val id: String) : Chat(id = id)
+    @Stable
+    data class C2C(override val id: String) : Chat(id = id)
 
-    @Parcelize
-    class GroupChat(override val id: String) : Chat(id = id)
+    @Stable
+    data class Group(override val id: String) : Chat(id = id)
 
 }

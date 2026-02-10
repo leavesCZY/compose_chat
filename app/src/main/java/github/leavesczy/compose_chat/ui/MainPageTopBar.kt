@@ -8,10 +8,8 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,9 +20,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.ui.logic.MainPageTopBarViewState
 import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.widgets.ComposeDropdownMenuItem
 import kotlinx.coroutines.launch
 
 /**
@@ -94,31 +92,17 @@ fun MainPageTopBar(
                             menuExpanded = false
                         }
                     ) {
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    modifier = Modifier,
-                                    text = "添加好友",
-                                    fontSize = 18.sp,
-                                    lineHeight = 19.sp,
-                                    color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
-                                )
-                            },
+                        ComposeDropdownMenuItem(
+                            modifier = Modifier,
+                            text = "添加好友",
                             onClick = {
                                 menuExpanded = false
                                 showFriendshipDialog()
                             }
                         )
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    modifier = Modifier,
-                                    text = "加入群聊",
-                                    fontSize = 18.sp,
-                                    lineHeight = 19.sp,
-                                    color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
-                                )
-                            },
+                        ComposeDropdownMenuItem(
+                            modifier = Modifier,
+                            text = "加入群聊",
                             onClick = {
                                 menuExpanded = false
                                 showFriendshipDialog()

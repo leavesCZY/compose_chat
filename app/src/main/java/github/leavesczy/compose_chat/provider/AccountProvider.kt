@@ -20,15 +20,15 @@ object AccountProvider {
 
     private lateinit var preferences: SharedPreferences
 
-    fun init(application: Application) {
-        preferences = application.getSharedPreferences(KEY_GROUP, Context.MODE_PRIVATE)
-    }
-
     val lastLoginUserId: String
         get() = preferences.getString(KEY_LAST_LOGIN_USER_ID, "") ?: ""
 
     val canAutoLogin: Boolean
         get() = preferences.getBoolean(KEY_AUTO_LOGIN, true)
+
+    fun init(application: Application) {
+        preferences = application.getSharedPreferences(KEY_GROUP, Context.MODE_PRIVATE)
+    }
 
     fun onUserLogin(userId: String) {
         preferences.edit().apply {

@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat
+package github.leavesczy.compose_chat.ui.chat.main
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

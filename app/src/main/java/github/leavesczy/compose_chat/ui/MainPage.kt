@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import github.leavesczy.compose_chat.ui.conversation.ConversationPage
 import github.leavesczy.compose_chat.ui.conversation.logic.ConversationViewModel
@@ -43,8 +44,8 @@ fun MainPage(
             Scaffold(
                 modifier = Modifier
                     .fillMaxSize(),
-                containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
                 contentWindowInsets = WindowInsetsEmpty,
+                containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
                 topBar = {
                     if (mainViewModel.bottomBarViewState.selectedTab != MainPageTab.Person) {
                         MainPageTopBar(
@@ -61,8 +62,9 @@ fun MainPage(
             ) { innerPadding ->
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
                         .padding(paddingValues = innerPadding)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.TopCenter
                 ) {
                     when (mainViewModel.bottomBarViewState.selectedTab) {
                         MainPageTab.Conversation -> {

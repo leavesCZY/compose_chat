@@ -1,4 +1,4 @@
-name: create release
+name: Build & Release Android
 
 on:
   push:
@@ -6,20 +6,23 @@ on:
     paths:
       - "**/workflows-trigger.properties"
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: set up jdk
+      - name: checkout code
+        uses: actions/checkout@v6
+
+      - name: setup jdk
         uses: actions/setup-java@v5
         with:
-          distribution: "zulu"
           java-version: "21"
-          architecture: x64
-
-      - name: checkout
-        uses: actions/checkout@v5
+          distribution: "zulu"
+          cache: "gradle"
 
       - name: grant execute permission for gradlew
         run: chmod +x gradlew
@@ -28,20 +31,20 @@ jobs:
         run: ./gradlew assembleRelease
 
       - name: get current time
-        id: currentTime
         uses: josStorer/get-current-time@v2
+        id: time
         with:
           format: YYYY.MM.DD
           utcOffset: "+08:00"
 
-      - name: draft a new release
+      - name: create github release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "app/build/outputs/apk/release/*.apk"
-          body: "create by workflows"
           allowUpdates: true
+          generateReleaseNotes: false
           artifactErrorsFailBuild: true
-          generateReleaseNotes: true
+          body: "Auto-generated release from GitHub Actions."
+          artifacts: "app/build/outputs/apk/release/*.apk"
+          tag: ${{steps.time.outputs.formattedTime}}
+          name: ${{steps.time.outputs.formattedTime}}
           token: ${{secrets.ACTION_TOKEN}}
-          name: ${{steps.currentTime.outputs.formattedTime}}
-          tag: ${{steps.currentTime.outputs.formattedTime}}

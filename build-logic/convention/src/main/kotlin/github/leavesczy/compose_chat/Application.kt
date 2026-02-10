@@ -1,9 +1,8 @@
 package github.leavesczy.compose_chat
 
-import com.android.build.gradle.internal.api.ApkVariantOutputImpl
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
+import org.gradle.api.plugins.BasePluginExtension
 import java.io.File
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -14,24 +13,19 @@ import java.time.format.DateTimeFormatter
  * @Date: 2023/11/29 16:10
  * @Desc:
  */
-internal fun Project.configureAndroidApplication() {
-    configure<BaseAppModuleExtension> {
+internal fun Project.configureAndroidApplication(commonExtension: ApplicationExtension) {
+    commonExtension.apply {
         defaultConfig {
             applicationId = "github.leavesczy.compose_chat"
             targetSdk = 36
             versionCode = 1
             versionName = "1.0.0"
-            applicationVariants.all {
-                val variant = this
-                outputs.all {
-                    if (this is ApkVariantOutputImpl) {
-                        this.outputFileName =
-                            "compose_chat_${variant.name}_${getApkBuildTime()}.apk"
-                    }
-                }
-            }
             buildConfigField("String", "VERSION_NAME", "\"$versionName\"")
-            buildConfigField("String", "BUILD_TIME", "\"${getBuildConfigTime()}\"")
+            buildConfigField("String", "BUILD_TIME", "\"${getAppBuildTime()}\"")
+        }
+        val basePluginExtension = project.extensions.getByType(BasePluginExtension::class.java)
+        basePluginExtension.apply {
+            archivesName.set("compose_chat_v${defaultConfig.versionName}_${defaultConfig.versionCode}_${getApkBuildTime()}")
         }
         androidResources {
             localeFilters += setOf("zh")
@@ -111,6 +105,6 @@ private fun getApkBuildTime(): String {
     return getTime(pattern = "yyyyMMdd_HHmmss")
 }
 
-private fun getBuildConfigTime(): String {
+private fun getAppBuildTime(): String {
     return getTime(pattern = "yyyy-MM-dd HH:mm:ss")
 }

@@ -19,8 +19,8 @@ dependencies {
     implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.leavesczy.matisse)
-    implementation(libs.coil.compose)
     implementation(libs.coil.gif)
+    implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.squareup.okHttp)
 }

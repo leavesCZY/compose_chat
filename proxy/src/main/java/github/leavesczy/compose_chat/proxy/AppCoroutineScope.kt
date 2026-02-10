@@ -9,7 +9,7 @@ import kotlinx.coroutines.SupervisorJob
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-internal object ChatCoroutineScope : CoroutineScope {
+internal object AppCoroutineScope : CoroutineScope {
 
     override val coroutineContext = SupervisorJob() + Dispatchers.Main.immediate
 

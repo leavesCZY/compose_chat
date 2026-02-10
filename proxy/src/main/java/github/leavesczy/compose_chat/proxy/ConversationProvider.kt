@@ -39,7 +39,7 @@ class ConversationProvider : IConversationProvider {
                 }
 
                 override fun onTotalUnreadMessageCountChanged(totalUnreadCount: Long) {
-                    ChatCoroutineScope.launch {
+                    AppCoroutineScope.launch {
                         totalUnreadMessageCount.emit(value = totalUnreadCount)
                     }
                 }
@@ -48,7 +48,7 @@ class ConversationProvider : IConversationProvider {
     }
 
     override fun refreshConversationList() {
-        ChatCoroutineScope.launch {
+        AppCoroutineScope.launch {
             dispatchConversationList(conversationList = getConversationListOrigin())
         }
     }
@@ -57,13 +57,13 @@ class ConversationProvider : IConversationProvider {
         V2TIMManager.getConversationManager()
             .getTotalUnreadMessageCount(object : V2TIMValueCallback<Long> {
                 override fun onSuccess(totalUnreadCount: Long) {
-                    ChatCoroutineScope.launch {
+                    AppCoroutineScope.launch {
                         totalUnreadMessageCount.emit(value = totalUnreadCount)
                     }
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    ChatCoroutineScope.launch {
+                    AppCoroutineScope.launch {
                         totalUnreadMessageCount.emit(value = 0)
                     }
                 }

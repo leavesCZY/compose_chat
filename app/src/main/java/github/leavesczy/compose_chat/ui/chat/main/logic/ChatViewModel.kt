@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.logic
+package github.leavesczy.compose_chat.ui.chat.main.logic
 
 import android.net.Uri
 import androidx.compose.foundation.lazy.LazyListState
@@ -23,7 +23,7 @@ import github.leavesczy.compose_chat.proxy.FriendshipProvider
 import github.leavesczy.compose_chat.proxy.GroupProvider
 import github.leavesczy.compose_chat.proxy.MessageProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
-import github.leavesczy.compose_chat.ui.chat.InputSelector
+import github.leavesczy.compose_chat.ui.chat.main.InputSelector
 import github.leavesczy.compose_chat.ui.logic.ComposeChat
 import github.leavesczy.compose_chat.utils.CompressImageUtils
 import kotlinx.collections.immutable.persistentListOf
@@ -93,12 +93,12 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
         ComposeChat.accountProvider.refreshPersonProfile()
         viewModelScope.launch {
             val name = when (chat) {
-                is Chat.PrivateChat -> {
+                is Chat.C2C -> {
                     val friendshipProvider: IFriendshipProvider = FriendshipProvider()
                     friendshipProvider.getFriendProfile(friendId = chat.id)?.showName
                 }
 
-                is Chat.GroupChat -> {
+                is Chat.Group -> {
                     val groupProvider: IGroupProvider = GroupProvider()
                     groupProvider.getGroupInfo(groupId = chat.id)?.name
                 }
@@ -154,9 +154,7 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
         }
         val currentText = textMessageInputted.text
         val currentSelection = textMessageInputted.selection.end
-        val currentSelectedText = currentText.substring(
-            0, currentSelection
-        )
+        val currentSelectedText = currentText.take(n = currentSelection)
         val messageAppend = currentSelectedText + emoji
         val selectedAppend = messageAppend.length
         textMessageInputted = TextFieldValue(
@@ -249,14 +247,14 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
     }
 
     private fun attachNewMessage(newMessage: Message) {
-        val firstMessage = allMessage.getOrNull(0)
+        val firstMessage = allMessage.getOrNull(index = 0)
         if (firstMessage == null || newMessage.detail.timestamp - firstMessage.detail.timestamp > 60) {
-            allMessage.add(0, TimeMessage(targetMessage = newMessage))
+            allMessage.add(index = 0, element = TimeMessage(targetMessage = newMessage))
         }
-        allMessage.add(0, newMessage)
+        allMessage.add(index = 0, element = newMessage)
         chatPageViewState = chatPageViewState.copy(messageList = allMessage.toPersistentList())
         viewModelScope.launch {
-            delay(timeMillis = 80)
+            delay(timeMillis = 80L)
             chatPageViewState.listState.scrollToItem(index = 0)
         }
     }

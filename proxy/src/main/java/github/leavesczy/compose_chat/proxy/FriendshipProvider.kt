@@ -37,7 +37,7 @@ class FriendshipProvider : IFriendshipProvider {
 
             override fun onFriendListDeleted(userList: MutableList<String>) {
                 refreshFriendList()
-                ChatCoroutineScope.launch {
+                AppCoroutineScope.launch {
                     userList.forEach {
                         Converters.deleteC2CConversation(it)
                     }
@@ -47,7 +47,7 @@ class FriendshipProvider : IFriendshipProvider {
     }
 
     override fun refreshFriendList() {
-        ChatCoroutineScope.launch {
+        AppCoroutineScope.launch {
             friendList.emit(value = getFriendListOrigin()?.sortedByDescending {
                 it.addTime
             }?.toList() ?: emptyList())

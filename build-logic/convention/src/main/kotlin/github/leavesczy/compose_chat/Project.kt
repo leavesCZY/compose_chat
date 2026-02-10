@@ -1,12 +1,9 @@
 package github.leavesczy.compose_chat
 
-import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -16,30 +13,28 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  * @Date: 2023/11/29 16:10
  * @Desc:
  */
-internal fun Project.configureAndroidProject() {
-    val commonExtension =
-        extensions.findByType<ApplicationExtension>() ?: extensions.findByType<LibraryExtension>()!!
+internal fun Project.configureAndroidProject(commonExtension: CommonExtension) {
     commonExtension.apply {
         compileSdk = 36
         buildToolsVersion = "36.1.0"
-        defaultConfig {
+        defaultConfig.apply {
             minSdk = 23
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
             vectorDrawables {
                 useSupportLibrary = true
             }
         }
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_18
-            targetCompatibility = JavaVersion.VERSION_18
+        compileOptions.apply {
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
         }
-        lint {
+        lint.apply {
             checkDependencies = true
         }
     }
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_18
+            jvmTarget.value(JvmTarget.JVM_21)
         }
     }
     dependencies {

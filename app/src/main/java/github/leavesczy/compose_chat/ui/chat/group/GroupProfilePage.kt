@@ -1,9 +1,6 @@
-package github.leavesczy.compose_chat.ui.chat
+package github.leavesczy.compose_chat.ui.chat.group
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +24,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,107 +43,37 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.lifecycleScope
-import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.GroupMemberProfile
 import github.leavesczy.compose_chat.base.models.GroupProfile
 import github.leavesczy.compose_chat.extend.clickableNoRipple
 import github.leavesczy.compose_chat.extend.scrim
-import github.leavesczy.compose_chat.ui.MainActivity
-import github.leavesczy.compose_chat.ui.base.BaseActivity
-import github.leavesczy.compose_chat.ui.chat.logic.GroupProfilePageAction
-import github.leavesczy.compose_chat.ui.chat.logic.GroupProfilePageViewState
-import github.leavesczy.compose_chat.ui.chat.logic.GroupProfileViewModel
-import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
+import github.leavesczy.compose_chat.ui.chat.group.logic.GroupProfilePageAction
+import github.leavesczy.compose_chat.ui.chat.group.logic.GroupProfilePageViewState
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
 import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 import github.leavesczy.compose_chat.ui.widgets.AnimateBouncyImage
+import github.leavesczy.compose_chat.ui.widgets.BezierImage
 import github.leavesczy.compose_chat.ui.widgets.ComponentImage
-import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
+import github.leavesczy.compose_chat.ui.widgets.ComposeDropdownMenuItem
 import github.leavesczy.compose_chat.utils.randomImage
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/1/23 21:20
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
-class GroupProfileActivity : BaseActivity() {
-
-    companion object {
-
-        private const val KEY_GROUP_ID = "keyGroupId"
-
-        fun navTo(context: Context, groupId: String) {
-            val intent = Intent(context, GroupProfileActivity::class.java)
-            intent.putExtra(KEY_GROUP_ID, groupId)
-            if (context !is Activity) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            context.startActivity(intent)
-        }
-
-    }
-
-    private val groupId by lazy(mode = LazyThreadSafetyMode.NONE) {
-        intent.getStringExtra(KEY_GROUP_ID) ?: ""
-    }
-
-    private val groupProfileViewModel by viewModelsInstance {
-        GroupProfileViewModel(groupId = groupId)
-    }
-
-    private val groupProfilePageAction = GroupProfilePageAction(
-        setAvatar = {
-            groupProfileViewModel.setAvatar(avatarUrl = it)
-        },
-        quitGroup = {
-            lifecycleScope.launch {
-                when (val result = groupProfileViewModel.quitGroup()) {
-                    ActionResult.Success -> {
-                        showToast(msg = "已退出群聊")
-                        startActivity(Intent(this@GroupProfileActivity, MainActivity::class.java))
-                    }
-
-                    is ActionResult.Failed -> {
-                        showToast(msg = result.reason)
-                    }
-                }
-            }
-        },
-        onClickMember = {
-            FriendProfileActivity.navTo(
-                context = this,
-                friendId = it.detail.id
-            )
-        }
-    )
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            GroupProfilePage(
-                viewState = groupProfileViewModel.pageViewState,
-                action = groupProfilePageAction
-            )
-            LoadingDialog(visible = groupProfileViewModel.loadingDialogVisible)
-        }
-    }
-
-}
-
-private val groupHeaderHeight = 280.dp
-
-private val groupTopBarHeight = 44.dp
 
 @Composable
-private fun GroupProfilePage(
+internal fun GroupProfilePage(
     viewState: GroupProfilePageViewState,
     action: GroupProfilePageAction
 ) {
+    val groupHeaderHeight = 280.dp
+    val groupTopBarHeight = 44.dp
     val groupProfile = viewState.groupProfile
     if (groupProfile != null) {
         val listState = rememberLazyListState()
@@ -178,14 +104,14 @@ private fun GroupProfilePage(
         ) { innerPadding ->
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
                     .padding(paddingValues = innerPadding)
+                    .fillMaxSize()
             ) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize(),
                     state = listState,
-                    contentPadding = PaddingValues(bottom = 30.dp),
+                    contentPadding = PaddingValues(bottom = 30.dp)
                 ) {
                     item(
                         key = "header",
@@ -193,7 +119,10 @@ private fun GroupProfilePage(
                             "header"
                         }
                     ) {
-                        GroupHeader(groupProfile = groupProfile)
+                        GroupHeader(
+                            groupProfile = groupProfile,
+                            groupHeaderHeight = groupHeaderHeight
+                        )
                     }
                     items(
                         items = viewState.memberList,
@@ -214,6 +143,7 @@ private fun GroupProfilePage(
                 PageTopBar(
                     title = groupProfile.name,
                     alpha = topBarAlpha,
+                    groupTopBarHeight = groupTopBarHeight,
                     action = action
                 )
             }
@@ -222,7 +152,10 @@ private fun GroupProfilePage(
 }
 
 @Composable
-private fun GroupHeader(groupProfile: GroupProfile) {
+private fun GroupHeader(
+    groupProfile: GroupProfile,
+    groupHeaderHeight: Dp
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -231,8 +164,8 @@ private fun GroupHeader(groupProfile: GroupProfile) {
         val context = LocalContext.current
         val avatarUrl = groupProfile.faceUrl
         val introduction =
-            "groupID: ${groupProfile.id}\ncreateTime: ${groupProfile.createTimeFormat}\n${groupProfile.introduction}"
-        ComponentImage(
+            "groupId: ${groupProfile.id}\ncreateTime: ${groupProfile.createTimeFormat}\n${groupProfile.introduction}"
+        BezierImage(
             modifier = Modifier
                 .fillMaxSize()
                 .scrim(color = ComposeChatTheme.colorScheme.c_33000000_33000000.color),
@@ -244,7 +177,8 @@ private fun GroupHeader(groupProfile: GroupProfile) {
                 .statusBarsPadding()
                 .padding(top = 40.dp)
                 .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
             AnimateBouncyImage(
                 modifier = Modifier
@@ -274,6 +208,7 @@ private fun GroupHeader(groupProfile: GroupProfile) {
 private fun PageTopBar(
     title: String,
     alpha: Float,
+    groupTopBarHeight: Dp,
     action: GroupProfilePageAction
 ) {
     var menuExpanded by remember {
@@ -347,29 +282,17 @@ private fun PageTopBar(
                 menuExpanded = false
             }
         ) {
-            DropdownMenuItem(
-                text = {
-                    Text(
-                        text = "修改头像",
-                        fontSize = 18.sp,
-                        lineHeight = 18.sp,
-                        color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
-                    )
-                },
+            ComposeDropdownMenuItem(
+                modifier = Modifier,
+                text = "修改头像",
                 onClick = {
                     menuExpanded = false
                     action.setAvatar(randomImage())
                 }
             )
-            DropdownMenuItem(
-                text = {
-                    Text(
-                        text = "退出群聊",
-                        fontSize = 18.sp,
-                        lineHeight = 18.sp,
-                        color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
-                    )
-                },
+            ComposeDropdownMenuItem(
+                modifier = Modifier,
+                text = "退出群聊",
                 onClick = {
                     menuExpanded = false
                     action.quitGroup()

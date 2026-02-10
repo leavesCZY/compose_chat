@@ -83,7 +83,7 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
         viewModelScope.launch {
             when (val result = friendshipProvider.addFriend(friendId = friendId)) {
                 is ActionResult.Success -> {
-                    delay(timeMillis = 400)
+                    delay(timeMillis = 400L)
                     getFriendProfile()
                     showToast(msg = "添加成功")
                 }
@@ -125,7 +125,7 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
                 is ActionResult.Success -> {
                     setFriendRemarkDialogViewState =
                         setFriendRemarkDialogViewState.copy(remark = remark)
-                    delay(timeMillis = 300)
+                    delay(timeMillis = 300L)
                     getFriendProfile()
                     dismissSetFriendRemarkDialog()
                 }

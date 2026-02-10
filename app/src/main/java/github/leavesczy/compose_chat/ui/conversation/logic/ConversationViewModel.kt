@@ -14,7 +14,7 @@ import github.leavesczy.compose_chat.base.provider.IAccountProvider
 import github.leavesczy.compose_chat.base.provider.IConversationProvider
 import github.leavesczy.compose_chat.proxy.ConversationProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
-import github.leavesczy.compose_chat.ui.chat.ChatActivity
+import github.leavesczy.compose_chat.ui.chat.main.ChatActivity
 import github.leavesczy.compose_chat.ui.logic.ComposeChat
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -33,10 +33,7 @@ class ConversationViewModel : BaseViewModel() {
 
     var pageViewState by mutableStateOf(
         value = ConversationPageViewState(
-            listState = LazyListState(
-                firstVisibleItemIndex = 0,
-                firstVisibleItemScrollOffset = 0
-            ),
+            listState = LazyListState(),
             serverConnectState = ServerConnectState.Idle,
             conversationList = persistentListOf(),
             onClickConversation = ::onClickConversation,
@@ -67,14 +64,14 @@ class ConversationViewModel : BaseViewModel() {
             ConversationType.C2C -> {
                 ChatActivity.navTo(
                     context = context,
-                    chat = Chat.PrivateChat(id = conversation.id)
+                    chat = Chat.C2C(id = conversation.id)
                 )
             }
 
             ConversationType.Group -> {
                 ChatActivity.navTo(
                     context = context,
-                    chat = Chat.GroupChat(id = conversation.id)
+                    chat = Chat.Group(id = conversation.id)
                 )
             }
         }

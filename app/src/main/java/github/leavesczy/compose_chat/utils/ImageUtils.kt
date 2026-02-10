@@ -22,7 +22,7 @@ import java.io.File
  * @Date: 2024/4/1 15:55
  * @Desc:
  */
-object CoilUtils {
+object ImageUtils {
 
     fun init() {
         SingletonImageLoader.setSafe(factory = { context ->

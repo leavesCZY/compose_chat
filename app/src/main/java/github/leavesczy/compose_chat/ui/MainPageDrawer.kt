@@ -19,14 +19,12 @@ import androidx.compose.material.icons.filled.Cabin
 import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.Sailing
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,13 +52,11 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
             viewState.drawerState.close()
         }
     }
-    Surface(
+    Box(
         modifier = Modifier
             .fillMaxWidth(fraction = 0.80f)
             .background(color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF161616.color)
-            .navigationBarsPadding(),
-        color = Color.Transparent,
-        contentColor = Color.Transparent
+            .navigationBarsPadding()
     ) {
         Column(
             modifier = Modifier

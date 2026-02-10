@@ -14,7 +14,7 @@ import github.leavesczy.compose_chat.base.provider.IGroupProvider
 import github.leavesczy.compose_chat.proxy.FriendshipProvider
 import github.leavesczy.compose_chat.proxy.GroupProvider
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
-import github.leavesczy.compose_chat.ui.chat.ChatActivity
+import github.leavesczy.compose_chat.ui.chat.main.ChatActivity
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -79,7 +79,7 @@ class FriendshipViewModel : BaseViewModel() {
     private fun onClickGroupItem(groupProfile: GroupProfile) {
         ChatActivity.navTo(
             context = context,
-            chat = Chat.GroupChat(id = groupProfile.id)
+            chat = Chat.Group(id = groupProfile.id)
         )
     }
 
@@ -119,11 +119,11 @@ class FriendshipViewModel : BaseViewModel() {
             val formatUserId = userId.lowercase()
             when (val result = friendshipProvider.addFriend(friendId = formatUserId)) {
                 is ActionResult.Success -> {
-                    delay(timeMillis = 400)
+                    delay(timeMillis = 400L)
                     showToast(msg = "添加成功")
                     ChatActivity.navTo(
                         context = context,
-                        chat = Chat.PrivateChat(id = formatUserId)
+                        chat = Chat.C2C(id = formatUserId)
                     )
                     dismissFriendshipDialog()
                 }
@@ -139,7 +139,7 @@ class FriendshipViewModel : BaseViewModel() {
         viewModelScope.launch {
             when (val result = groupProvider.joinGroup(groupId = groupId)) {
                 is ActionResult.Success -> {
-                    delay(timeMillis = 800)
+                    delay(timeMillis = 800L)
                     showToast(msg = "加入成功")
                     groupProvider.refreshJoinedGroupList()
                     dismissFriendshipDialog()

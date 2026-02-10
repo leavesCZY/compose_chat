@@ -96,15 +96,14 @@ fun ComponentImage(
 
 @Composable
 fun BezierImage(modifier: Modifier, model: Any) {
-    val animateFloat by rememberInfiniteTransition(label = "")
+    val animateFloat by rememberInfiniteTransition()
         .animateFloat(
             initialValue = 0f,
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
                 animation = tween(durationMillis = 1000, easing = LinearEasing),
                 repeatMode = RepeatMode.Reverse
-            ),
-            label = ""
+            )
         )
     ComponentImage(
         modifier = Modifier
@@ -153,7 +152,6 @@ fun AnimateBouncyImage(
         mutableStateOf(value = false)
     }
     val scale by animateFloatAsState(
-        label = "",
         targetValue = if (animated) {
             1.5f
         } else {
@@ -162,7 +160,6 @@ fun AnimateBouncyImage(
         animationSpec = tween(durationMillis = 1200)
     )
     val offset by animateIntOffsetAsState(
-        label = "",
         targetValue = if (animated) {
             IntOffset(
                 x = Random.nextInt(-500, 500),
@@ -174,7 +171,7 @@ fun AnimateBouncyImage(
     )
     LaunchedEffect(key1 = key) {
         animated = true
-        delay(timeMillis = 1000)
+        delay(timeMillis = 1000L)
         animated = false
     }
     BouncyImage(

@@ -23,7 +23,7 @@ import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
  * @Desc:
  * @Github：https://github.com/leavesCZY
  */
-open class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity() {
 
     protected inline fun <reified T : ViewModel> viewModelsInstance(crossinline create: () -> T): Lazy<T> {
         return viewModels(factoryProducer = {

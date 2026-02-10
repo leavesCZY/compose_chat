@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import github.leavesczy.compose_chat.provider.ContextProvider
 import github.leavesczy.compose_chat.provider.ToastProvider
 
-open class BaseViewModel : ViewModel() {
+abstract class BaseViewModel : ViewModel() {
 
     protected val context: Application
         get() = ContextProvider.context
