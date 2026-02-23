@@ -1,15 +1,15 @@
 [versions]
-android-plugin = "9.0.0"
+android-plugin = "9.1.0-rc01"
 kotlin-plugin = "2.3.10"
 track-plugin = "1.1.5"
 
 androidx-junit = "1.3.0"
 androidx-espresso = "3.7.0"
 androidx-appcompat = "1.7.1"
-androidx-activity = "1.12.3"
+androidx-activity = "1.12.4"
 androidx-lifecycle = "2.10.0"
 androidx-exifinterface = "1.4.2"
-androidx-compose-bom = "2026.01.01"
+androidx-compose-bom = "2026.02.00"
 
 kotlinx-coroutines = "1.10.2"
 kotlinx-collections-immutable = "0.4.0"
