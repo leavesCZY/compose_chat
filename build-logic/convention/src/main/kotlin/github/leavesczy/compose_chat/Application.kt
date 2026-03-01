@@ -79,16 +79,15 @@ internal fun Project.configureAndroidApplication(commonExtension: ApplicationExt
                     "**/*.md",
                     "**/*.version",
                     "**/*.properties",
+                    "**/*.kotlin_module",
+                    "**/CHANGES",
                     "**/LICENSE.txt",
+                    "**/{AL2.0,LGPL2.1}",
                     "**/DebugProbesKt.bin",
                     "**/app-metadata.properties",
                     "**/kotlin-tooling-metadata.json",
                     "**/version-control-info.textproto",
                     "**/androidsupportmultidexversion.txt",
-                    "META-INF/CHANGES",
-                    "META-INF/{AL2.0,LGPL2.1}",
-                    "META-INF/**/*.kotlin_module",
-                    "META-INF/version-control-info.textproto",
                 )
             }
         }
