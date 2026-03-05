@@ -1,4 +1,4 @@
-name: Build & Release Android
+name: Build & Release
 
 on:
   push:
@@ -22,7 +22,6 @@ jobs:
         with:
           java-version: "21"
           distribution: "zulu"
-          cache: "gradle"
 
       - name: grant execute permission for gradlew
         run: chmod +x gradlew
