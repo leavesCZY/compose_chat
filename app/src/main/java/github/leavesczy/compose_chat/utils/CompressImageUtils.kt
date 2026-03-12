@@ -59,9 +59,8 @@ object CompressImageUtils {
                     result = tempFile
                 } else {
                     result = if (isAndroidQ()) {
-                        val imageMimeType =
-                            FileUtils.getMimeType(context = context, uri = imageUri)
-                                ?: JPEG_MIME_TYPE
+                        val imageMimeType = FileUtils.getMimeType(context = context, uri = imageUri)
+                            ?: JPEG_MIME_TYPE
                         val imageExtension =
                             FileUtils.getExtensionFromMimeType(mimeType = imageMimeType) ?: JPEG
                         val tempFile = FileUtils.createTempFile(

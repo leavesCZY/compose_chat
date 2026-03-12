@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat
+package github.leavesczy.compose_chat.ui.chat.main
 
 import android.app.Activity
 import androidx.compose.foundation.layout.size
@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.base.models.Chat
+import github.leavesczy.compose_chat.ui.chat.group.GroupProfileActivity
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
 import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
 
@@ -71,11 +72,11 @@ fun ChatPageTopBar(title: String, chat: Chat) {
                 },
                 onClick = {
                     when (chat) {
-                        is Chat.PrivateChat -> {
+                        is Chat.C2C -> {
                             FriendProfileActivity.navTo(context = context, friendId = chat.id)
                         }
 
-                        is Chat.GroupChat -> {
+                        is Chat.Group -> {
                             GroupProfileActivity.navTo(context = context, groupId = chat.id)
                         }
                     }

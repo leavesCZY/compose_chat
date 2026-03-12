@@ -77,7 +77,7 @@ class MessageProvider : IMessageProvider {
                 }
             }
             when (chat) {
-                is Chat.PrivateChat -> {
+                is Chat.C2C -> {
                     V2TIMManager.getMessageManager().getC2CHistoryMessageList(
                         chatId,
                         count,
@@ -85,7 +85,7 @@ class MessageProvider : IMessageProvider {
                     )
                 }
 
-                is Chat.GroupChat -> {
+                is Chat.Group -> {
                     V2TIMManager.getMessageManager().getGroupHistoryMessageList(
                         chatId,
                         count,
@@ -136,12 +136,12 @@ class MessageProvider : IMessageProvider {
         val c2cId: String
         val groupId: String
         when (chat) {
-            is Chat.PrivateChat -> {
+            is Chat.C2C -> {
                 c2cId = chat.id
                 groupId = ""
             }
 
-            is Chat.GroupChat -> {
+            is Chat.Group -> {
                 c2cId = ""
                 groupId = chat.id
             }
@@ -156,7 +156,7 @@ class MessageProvider : IMessageProvider {
             null,
             object : V2TIMSendCallback<V2TIMMessage> {
                 override fun onSuccess(messsage: V2TIMMessage) {
-                    ChatCoroutineScope.launch {
+                    AppCoroutineScope.launch {
                         val convertMessage = Converters.convertMessage(messsage)
                         messageChannel.send(element = convertMessage)
                         messageChannel.close()
@@ -164,7 +164,7 @@ class MessageProvider : IMessageProvider {
                 }
 
                 override fun onError(code: Int, desc: String?) {
-                    ChatCoroutineScope.launch {
+                    AppCoroutineScope.launch {
                         messageChannel.send(element = localTempMessage.resetToFailed(failReason = "code: $code desc: $desc"))
                         messageChannel.close()
                     }
@@ -243,9 +243,7 @@ class MessageProvider : IMessageProvider {
     }
 
     private fun generateMessageId(): String {
-        return (System.currentTimeMillis() + Random.nextInt(
-            1024, 2048
-        )).toString()
+        return (System.currentTimeMillis() + Random.nextInt(1024, 2048)).toString()
     }
 
     private fun generateMessageTimestamp(): Long {

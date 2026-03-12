@@ -1,6 +1,7 @@
-package github.leavesczy.compose_chat.ui.chat
+package github.leavesczy.compose_chat.ui.chat.main
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -62,7 +63,8 @@ private fun Function(text: String, icon: ImageVector, onClick: () -> Unit) {
         modifier = Modifier
             .clickable(onClick = onClick)
             .padding(horizontal = 10.dp, vertical = 10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
         Icon(
             modifier = Modifier

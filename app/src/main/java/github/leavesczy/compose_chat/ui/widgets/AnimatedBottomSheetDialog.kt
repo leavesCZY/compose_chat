@@ -61,7 +61,9 @@ fun AnimatedBottomSheetDialog(
     backgroundColor: Color = ComposeChatTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
     navigationBarsColor: Color = backgroundColor,
     shadowElevation: Dp = 6.dp,
-    dragHandle: (@Composable () -> Unit)? = { DragHandle() },
+    dragHandle: (@Composable () -> Unit)? = {
+        DragHandle()
+    },
     backgroundMask: (@Composable AnimatedVisibilityScope.() -> Unit)? = {
         BackgroundMask(
             modifier = Modifier
@@ -237,8 +239,8 @@ private fun DragHandle() {
             modifier = Modifier
                 .padding(top = 12.dp)
                 .size(width = 60.dp, height = 4.dp)
-                .clip(shape = RoundedCornerShape(size = 3.dp))
-                .background(color = ComposeChatTheme.colorScheme.c_803A3D4D_B3FFFFFF.color)
+                .clip(shape = RoundedCornerShape(size = 6.dp))
+                .background(color = ComposeChatTheme.colorScheme.c_333A3D4D_B3FFFFFF.color)
         )
     }
 }

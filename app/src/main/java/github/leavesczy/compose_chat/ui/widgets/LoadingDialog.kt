@@ -26,14 +26,14 @@ fun LoadingDialog(visible: Boolean) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .clickableNoRipple {}
+                .clickableNoRipple {},
+            contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(
                 modifier = Modifier
-                    .align(alignment = Alignment.Center)
                     .size(size = 40.dp),
                 color = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
-                strokeWidth = 3.dp
+                strokeWidth = 2.dp
             )
         }
     }

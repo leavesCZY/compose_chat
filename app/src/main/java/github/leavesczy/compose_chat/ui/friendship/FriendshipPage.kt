@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -190,6 +191,7 @@ private fun FloatingActionButton(
     FloatingActionButton(
         modifier = modifier
             .size(size = 50.dp),
+        elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 3.dp),
         containerColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
         content = {
             Icon(

@@ -29,7 +29,7 @@ object AlbumUtils {
             try {
                 val isHttpUrl = imageUri.startsWith(prefix = "http")
                 val imageFile = if (isHttpUrl) {
-                    CoilUtils.getCachedFileOrDownload(
+                    ImageUtils.getCachedFileOrDownload(
                         context = context,
                         imageUrl = imageUri
                     )

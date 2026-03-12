@@ -1,4 +1,4 @@
-name: create release
+name: Build & Release
 
 on:
   push:
@@ -6,42 +6,53 @@ on:
     paths:
       - "**/workflows-trigger.properties"
 
+  workflow_dispatch:
+    inputs:
+      release_notes:
+        description: "Release Notes"
+        required: false
+        default: "Auto-generated release from GitHub Actions."
+
+env:
+  DEFAULT_RELEASE_NOTES: "Auto-generated release from GitHub Actions."
+
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: set up jdk
+      - name: checkout code
+        uses: actions/checkout@v6
+
+      - name: setup jdk
         uses: actions/setup-java@v5
         with:
-          distribution: "zulu"
           java-version: "21"
-          architecture: x64
-
-      - name: checkout
-        uses: actions/checkout@v5
+          distribution: "zulu"
 
       - name: grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: assembleRelease
-        run: ./gradlew assembleRelease
+        run: ./gradlew clean assembleRelease
 
       - name: get current time
-        id: currentTime
-        uses: josStorer/get-current-time@v2
-        with:
-          format: YYYY.MM.DD
-          utcOffset: "+08:00"
+        id: time_formats
+        run: |
+          export TZ='Asia/Shanghai'
+          echo "date_tag=$(date +'%Y.%m.%d')" >> $GITHUB_OUTPUT
 
-      - name: draft a new release
+      - name: create github release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "app/build/outputs/apk/release/*.apk"
-          body: "create by workflows"
           allowUpdates: true
+          generateReleaseNotes: false
           artifactErrorsFailBuild: true
-          generateReleaseNotes: true
-          token: ${{secrets.ACTION_TOKEN}}
-          name: ${{steps.currentTime.outputs.formattedTime}}
-          tag: ${{steps.currentTime.outputs.formattedTime}}
+          artifacts: "app/build/outputs/apk/release/*.apk"
+          body: ${{ github.event.inputs.release_notes || env.DEFAULT_RELEASE_NOTES }}
+          tag: ${{ steps.time_formats.outputs.date_tag }}
+          name: ${{ steps.time_formats.outputs.date_tag }}
+          token: ${{ secrets.GITHUB_TOKEN }}

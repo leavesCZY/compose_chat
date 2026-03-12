@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat
+package github.leavesczy.compose_chat.ui.chat.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

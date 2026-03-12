@@ -15,7 +15,7 @@ compose_chat 也使用到了我另外两个开源库
   图片视频选择框架：[Matisse](https://github.com/leavesCZY/Matisse)
 - 一个 Android 字节码插桩库：[Track](https://github.com/leavesCZY/Track)
 
-腾讯云 IM SDK 的免费版本最多只能注册一百个账号，目前数量已经超限了，开发者可以使用以下几个账号进行登录
+腾讯云 IM SDK 的免费版本最多只能注册一百个账号，开发者可以使用以下几个账号进行登录
 
 - Jetpack
 - Compose

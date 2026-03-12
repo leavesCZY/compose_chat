@@ -1,0 +1,95 @@
+package github.leavesczy.compose_chat.ui.profile
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import github.leavesczy.compose_chat.ui.profile.logic.ProfileUpdatePageViewStata
+import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.widgets.CommonButton
+import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
+import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
+import github.leavesczy.compose_chat.utils.randomImage
+
+/**
+ * @Author: leavesCZY
+ * @Date: 2026/1/23 21:19
+ * @Desc:
+ */
+@Composable
+internal fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize(),
+        containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
+        contentWindowInsets = WindowInsets.navigationBars
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .padding(paddingValues = innerPadding)
+                .fillMaxSize()
+                .verticalScroll(state = rememberScrollState())
+        ) {
+            val personProfile = pageViewStata.personProfile
+            if (personProfile != null) {
+                ProfilePanel(
+                    title = personProfile.nickname,
+                    subtitle = personProfile.signature,
+                    introduction = "",
+                    avatarUrl = personProfile.faceUrl
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(bottom = 30.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(space = 16.dp)
+                    ) {
+                        CommonOutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp),
+                            value = personProfile.nickname,
+                            onValueChange = {
+                                if (it.length > 16) {
+                                    return@CommonOutlinedTextField
+                                }
+                                pageViewStata.onNicknameChanged(it)
+                            },
+                            label = "nickname"
+                        )
+                        CommonOutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp),
+                            value = personProfile.signature,
+                            onValueChange = {
+                                if (it.length > 40) {
+                                    return@CommonOutlinedTextField
+                                }
+                                pageViewStata.onSignatureChanged(it)
+                            },
+                            label = "signature"
+                        )
+                        CommonButton(text = "随机头像") {
+                            pageViewStata.onAvatarUrlChanged(randomImage())
+                        }
+                        CommonButton(text = "确认修改") {
+                            pageViewStata.confirmUpdate()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
