@@ -17,7 +17,9 @@ internal fun Project.configureAndroidApplication(commonExtension: ApplicationExt
     commonExtension.apply {
         defaultConfig {
             applicationId = "github.leavesczy.compose_chat"
-            targetSdk = 36
+            targetSdk {
+                version = release(version = 36)
+            }
             versionCode = 1
             versionName = "1.0.0"
             buildConfigField("String", "VERSION_NAME", "\"$versionName\"")

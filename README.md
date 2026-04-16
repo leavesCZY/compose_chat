@@ -7,8 +7,6 @@ Jetpack Compose 最佳实践，用 Jetpack Compose 写一个 IM APP
 - [学不动也要学，用 Jetpack Compose 写一个 IM APP（一）](https://juejin.cn/post/6991429231821684773)
 - [学不动也要学，用 Jetpack Compose 写一个 IM APP（二）](https://juejin.cn/post/7028397244894330917)
 
-apk 下载：[releases](https://github.com/leavesCZY/compose_chat/releases)
-
 compose_chat 也使用到了我另外两个开源库
 
 - 一个用 Jetpack Compose 实现的 Android

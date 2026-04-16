@@ -67,8 +67,8 @@ class AccountProvider : IAccountProvider {
     }
 
     override suspend fun login(userId: String): ActionResult {
-        val formatUserId = userId.lowercase()
         return suspendCancellableCoroutine { continuation ->
+            val formatUserId = userId.lowercase()
             V2TIMManager.getInstance().login(
                 formatUserId,
                 GenerateUserSig.genUserSig(userId = formatUserId),

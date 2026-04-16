@@ -15,10 +15,16 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  */
 internal fun Project.configureAndroidProject(commonExtension: CommonExtension) {
     commonExtension.apply {
-        compileSdk = 36
-        buildToolsVersion = "36.1.0"
+        compileSdk {
+            version = release(version = 36) {
+                minorApiLevel = 1
+            }
+        }
+        buildToolsVersion = "37.0.0"
         defaultConfig.apply {
-            minSdk = 23
+            minSdk {
+                version = release(version = 23)
+            }
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
             vectorDrawables {
                 useSupportLibrary = true
