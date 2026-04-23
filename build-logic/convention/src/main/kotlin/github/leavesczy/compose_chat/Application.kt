@@ -18,7 +18,7 @@ internal fun Project.configureAndroidApplication(commonExtension: ApplicationExt
         defaultConfig {
             applicationId = "github.leavesczy.compose_chat"
             targetSdk {
-                version = release(version = 36)
+                version = release(version = 37)
             }
             versionCode = 1
             versionName = "1.0.0"
@@ -35,7 +35,7 @@ internal fun Project.configureAndroidApplication(commonExtension: ApplicationExt
         }
         signingConfigs {
             create("release") {
-                storeFile = File(rootDir.absolutePath, "key.jks")
+                storeFile = File(rootDir, "key.jks")
                 keyAlias = "leavesCZY"
                 keyPassword = "123456"
                 storePassword = "123456"

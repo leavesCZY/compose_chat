@@ -16,9 +16,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 internal fun Project.configureAndroidProject(commonExtension: CommonExtension) {
     commonExtension.apply {
         compileSdk {
-            version = release(version = 36) {
-                minorApiLevel = 1
-            }
+            version = release(version = 37)
         }
         buildToolsVersion = "37.0.0"
         defaultConfig.apply {
