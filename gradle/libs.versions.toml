@@ -1,7 +1,7 @@
 [versions]
 android-plugin = "9.2.0"
 kotlin-plugin = "2.3.21"
-track-plugin = "1.1.6"
+track-plugin = "1.1.7"
 
 androidx-junit = "1.3.0"
 androidx-espresso = "3.7.0"
@@ -11,14 +11,14 @@ androidx-lifecycle = "2.10.0"
 androidx-exifinterface = "1.4.2"
 androidx-compose-bom = "2026.04.01"
 
-kotlinx-coroutines = "1.11.0-rc01"
+kotlinx-coroutines = "1.11.0-rc02"
 kotlinx-collections-immutable = "0.4.0"
 
 junit = "4.13.2"
 coil = "3.4.0"
 tencent-imsdk = "8.9.7540"
 squareup-okHttp = "5.3.2"
-leavesczy-matisse = "2.3.1"
+leavesczy-matisse = "2.3.2"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
@@ -27,11 +27,11 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin-plugin" }
 leavesczy-track = { id = "io.github.leavesczy.track", version.ref = "track-plugin" }
 
-chat-android-application = { id = "chat.android.application" }
-chat-android-library = { id = "chat.android.library" }
-chat-android-compose = { id = "chat.android.compose" }
-chat-kotlin-parcelize = { id = "chat.kotlin.parcelize" }
-chat-leavesczy-track = { id = "chat.leavesczy.track" }
+app-android-application = { id = "app.android.application" }
+app-android-library = { id = "app.android.library" }
+app-android-compose = { id = "app.android.compose" }
+app-kotlin-parcelize = { id = "app.kotlin.parcelize" }
+app-leavesczy-track = { id = "app.leavesczy.track" }
 
 [libraries]
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }

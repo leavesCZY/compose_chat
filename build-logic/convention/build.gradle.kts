@@ -26,23 +26,23 @@ dependencies {
 gradlePlugin {
     plugins {
         register("androidApplication") {
-            id = libs.plugins.chat.android.application.get().pluginId
+            id = libs.plugins.app.android.application.get().pluginId
             implementationClass = "ApplicationConventionPlugin"
         }
         register("androidLibrary") {
-            id = libs.plugins.chat.android.library.get().pluginId
+            id = libs.plugins.app.android.library.get().pluginId
             implementationClass = "LibraryConventionPlugin"
         }
         register("androidCompose") {
-            id = libs.plugins.chat.android.compose.get().pluginId
+            id = libs.plugins.app.android.compose.get().pluginId
             implementationClass = "ComposeConventionPlugin"
         }
         register("kotlinParcelize") {
-            id = libs.plugins.chat.kotlin.parcelize.get().pluginId
+            id = libs.plugins.app.kotlin.parcelize.get().pluginId
             implementationClass = "ParcelizeConventionPlugin"
         }
         register("leavesczyTrack") {
-            id = libs.plugins.chat.leavesczy.track.get().pluginId
+            id = libs.plugins.app.leavesczy.track.get().pluginId
             implementationClass = "TrackConventionPlugin"
         }
     }

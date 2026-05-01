@@ -1,7 +1,7 @@
 plugins {
-    alias(libs.plugins.chat.android.library)
-    alias(libs.plugins.chat.android.compose)
-    alias(libs.plugins.chat.kotlin.parcelize)
+    alias(libs.plugins.app.android.library)
+    alias(libs.plugins.app.android.compose)
+    alias(libs.plugins.app.kotlin.parcelize)
 }
 
 android {
