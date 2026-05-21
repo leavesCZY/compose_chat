@@ -3,6 +3,7 @@ package github.leavesczy.compose_chat
 import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.Project
 import org.gradle.api.plugins.BasePluginExtension
+import org.gradle.kotlin.dsl.getByType
 import java.io.File
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -10,32 +11,38 @@ import java.time.format.DateTimeFormatter
 
 /**
  * @Author: leavesCZY
- * @Date: 2023/11/29 16:10
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
-internal fun Project.configureAndroidApplication(commonExtension: ApplicationExtension) {
-    commonExtension.apply {
+internal fun Project.configureAndroidApplication(applicationExtension: ApplicationExtension) {
+    val buildTimeProvider = providers.provider {
+        getFormattedTime(pattern = "yyyy-MM-dd HH:mm:ss")
+    }
+    val apkTimeProvider = providers.provider {
+        getFormattedTime(pattern = "yyyyMMdd_HHmmss")
+    }
+    applicationExtension.apply {
         defaultConfig {
             applicationId = "github.leavesczy.compose_chat"
             targetSdk {
-                version = release(version = 37)
+                version = release(version = 36)
             }
             versionCode = 1
             versionName = "1.0.0"
             buildConfigField("String", "VERSION_NAME", "\"$versionName\"")
-            buildConfigField("String", "BUILD_TIME", "\"${getAppBuildTime()}\"")
+            buildConfigField("String", "BUILD_TIME", "\"${buildTimeProvider.get()}\"")
         }
-        val basePluginExtension = project.extensions.getByType(BasePluginExtension::class.java)
+        val basePluginExtension = project.extensions.getByType<BasePluginExtension>()
         basePluginExtension.apply {
-            archivesName.set("compose_chat_v${defaultConfig.versionName}_${defaultConfig.versionCode}_${getApkBuildTime()}")
+            archivesName.set("compose_chat_v${defaultConfig.versionName}_${defaultConfig.versionCode}_${apkTimeProvider.get()}")
         }
         androidResources {
             localeFilters.clear()
-            localeFilters += setOf("zh")
+            localeFilters.add(element = "zh")
         }
         signingConfigs {
             create("release") {
-                storeFile = File(rootDir, "key.jks")
+                storeFile = File(File(rootDir, "doc"), "key.jks")
                 keyAlias = "leavesCZY"
                 keyPassword = "123456"
                 storePassword = "123456"
@@ -46,8 +53,9 @@ internal fun Project.configureAndroidApplication(commonExtension: ApplicationExt
             }
         }
         buildTypes {
+            val releaseSigning = signingConfigs.findByName("release")
             debug {
-                signingConfig = signingConfigs.getByName("release")
+                signingConfig = releaseSigning
                 isMinifyEnabled = false
                 isShrinkResources = false
                 isDebuggable = true
@@ -57,7 +65,7 @@ internal fun Project.configureAndroidApplication(commonExtension: ApplicationExt
                 )
             }
             release {
-                signingConfig = signingConfigs.getByName("release")
+                signingConfig = releaseSigning
                 isMinifyEnabled = true
                 isShrinkResources = true
                 isDebuggable = false
@@ -75,38 +83,32 @@ internal fun Project.configureAndroidApplication(commonExtension: ApplicationExt
         }
         packaging {
             jniLibs {
-                excludes += setOf("META-INF/{AL2.0,LGPL2.1}")
+                excludes.add(element = "META-INF/{AL2.0,LGPL2.1}")
             }
             resources {
-                excludes += setOf(
-                    "**/*.md",
-                    "**/*.version",
-                    "**/*.properties",
-                    "**/*.kotlin_module",
-                    "**/CHANGES",
-                    "**/LICENSE.txt",
-                    "**/{AL2.0,LGPL2.1}",
-                    "**/DebugProbesKt.bin",
-                    "**/app-metadata.properties",
-                    "**/kotlin-tooling-metadata.json",
-                    "**/version-control-info.textproto",
-                    "**/androidsupportmultidexversion.txt",
+                excludes.addAll(
+                    elements = listOf(
+                        "**/*.md",
+                        "**/*.version",
+                        "**/*.properties",
+                        "**/*.kotlin_module",
+                        "**/CHANGES",
+                        "**/LICENSE.txt",
+                        "**/{AL2.0,LGPL2.1}",
+                        "**/DebugProbesKt.bin",
+                        "**/app-metadata.properties",
+                        "**/kotlin-tooling-metadata.json",
+                        "**/version-control-info.textproto",
+                        "**/androidsupportmultidexversion.txt"
+                    )
                 )
             }
         }
     }
 }
 
-private fun getTime(pattern: String): String {
+private fun getFormattedTime(pattern: String): String {
     val now = ZonedDateTime.now(ZoneId.of("Asia/Shanghai"))
     val formatter = DateTimeFormatter.ofPattern(pattern)
     return now.format(formatter)
-}
-
-private fun getApkBuildTime(): String {
-    return getTime(pattern = "yyyyMMdd_HHmmss")
-}
-
-private fun getAppBuildTime(): String {
-    return getTime(pattern = "yyyy-MM-dd HH:mm:ss")
 }

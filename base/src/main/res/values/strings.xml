@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="time_pattern_hour_minute">HH:mm</string>
+    <string name="time_pattern_month_day">M月d日</string>
+    <string name="time_pattern_year_month_day">yyyy年M月d日</string>
+    <string name="time_pattern_month_day_hour_minute">M月d日 HH:mm</string>
+    <string name="time_pattern_year_month_day_hour_minute">yyyy年M月d日 HH:mm</string>
+    <string name="time_yesterday">昨天</string>
+    <string name="time_day_before_yesterday">前天</string>
+    <string name="time_monday">周一</string>
+    <string name="time_tuesday">周二</string>
+    <string name="time_wednesday">周三</string>
+    <string name="time_thursday">周四</string>
+    <string name="time_friday">周五</string>
+    <string name="time_saturday">周六</string>
+    <string name="time_sunday">周日</string>
+    <string name="time_yesterday_with_time">昨天 %1$s</string>
+    <string name="time_day_before_yesterday_with_time">前天 %1$s</string>
+    <string name="time_weekday_with_time">%1$s %2$s</string>
+    <string name="message_image">[图片]</string>
+    <string name="message_sending">[发送中]</string>
+    <string name="message_send_failed">[发送失败]</string>
+    <string name="message_unsupported_type">[不支持的消息类型] - %1$s</string>
+    <string name="message_unsupported_group_tip">[不支持的系统消息] - %1$s</string>
+    <string name="message_send_failed_unknown">unknown</string>
+    <string name="error_load_message">code: %1$d desc: %2$s</string>
+    <string name="group_tip_join">%1$s加入了群聊</string>
+    <string name="group_tip_quit">%1$s退出群聊</string>
+    <string name="group_tip_kicked">%1$s被踢出群聊</string>
+    <string name="group_tip_set_admin">%1$s成为管理员</string>
+    <string name="group_tip_cancel_admin">%1$s被取消管理员身份</string>
+    <string name="group_tip_group_info_change">%1$s修改了群资料</string>
+    <string name="group_tip_member_info_change">%1$s修改了群成员资料</string>
+    <string name="login_user_id_required">请输入 UserId</string>
+    <string name="error_cannot_add_self">不能添加自己为好友</string>
+    <string name="error_set_remark_failed">设置失败</string>
+    <string name="error_update_failed">更新失败</string>
+</resources>

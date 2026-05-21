@@ -1,9 +1,8 @@
 package github.leavesczy.compose_chat.ui.chat.main
 
-import android.annotation.SuppressLint
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
@@ -46,18 +44,18 @@ import github.leavesczy.compose_chat.base.models.MessageState
 import github.leavesczy.compose_chat.base.models.SystemMessage
 import github.leavesczy.compose_chat.base.models.TextMessage
 import github.leavesczy.compose_chat.base.models.TimeMessage
-import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageAction
 import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageViewState
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun MessagePanel(pageViewState: ChatPageViewState, chatPageAction: ChatPageAction) {
+fun MessagePanel(pageViewState: ChatPageViewState) {
+    val localActivity = LocalActivity.current
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
@@ -69,11 +67,11 @@ fun MessagePanel(pageViewState: ChatPageViewState, chatPageAction: ChatPageActio
     ) {
         items(
             items = pageViewState.messageList,
-            key = {
-                it.detail.msgId
+            key = { message ->
+                message.detail.msgId
             },
-            contentType = {
-                when (it) {
+            contentType = { message ->
+                when (message) {
                     is TimeMessage -> {
                         "TimeMessage"
                     }
@@ -83,7 +81,7 @@ fun MessagePanel(pageViewState: ChatPageViewState, chatPageAction: ChatPageActio
                     }
 
                     is TextMessage -> {
-                        if (it.detail.isOwnMessage) {
+                        if (message.detail.isOwnMessage) {
                             "ownTextMessage"
                         } else {
                             "fiendTextMessage"
@@ -91,7 +89,7 @@ fun MessagePanel(pageViewState: ChatPageViewState, chatPageAction: ChatPageActio
                     }
 
                     is ImageMessage -> {
-                        if (it.detail.isOwnMessage) {
+                        if (message.detail.isOwnMessage) {
                             "ownImageMessage"
                         } else {
                             "fiendImageMessage"
@@ -102,24 +100,36 @@ fun MessagePanel(pageViewState: ChatPageViewState, chatPageAction: ChatPageActio
         ) { message ->
             when (message) {
                 is TimeMessage -> {
-                    TimeMessage(message = message)
+                    TimeMessage(
+                        modifier = Modifier,
+                        message = message
+                    )
                 }
 
                 is SystemMessage -> {
-                    SystemMessage(message = message)
+                    SystemMessage(
+                        modifier = Modifier,
+                        message = message
+                    )
                 }
 
                 is TextMessage, is ImageMessage -> {
                     val messageContent = @Composable {
                         when (message) {
                             is TextMessage -> {
-                                TextMessage(message = message)
+                                TextMessage(
+                                    modifier = Modifier,
+                                    message = message
+                                )
                             }
 
                             is ImageMessage -> {
                                 ImageMessage(
+                                    modifier = Modifier,
                                     message = message,
-                                    onClickMessage = chatPageAction.onClickMessage
+                                    onClickMessage = {
+                                        pageViewState.onClickMessage(localActivity!!, message)
+                                    }
                                 )
                             }
 
@@ -130,14 +140,20 @@ fun MessagePanel(pageViewState: ChatPageViewState, chatPageAction: ChatPageActio
                     }
                     if (message.detail.isOwnMessage) {
                         OwnMessageContainer(
+                            modifier = Modifier,
                             message = message,
-                            onClickAvatar = chatPageAction.onClickAvatar,
+                            onClickAvatar = {
+                                pageViewState.onClickAvatar(localActivity!!, message)
+                            },
                             messageContent = messageContent
                         )
                     } else {
                         FriendMessageContainer(
+                            modifier = Modifier,
                             message = message,
-                            onClickAvatar = chatPageAction.onClickAvatar,
+                            onClickAvatar = {
+                                pageViewState.onClickAvatar(localActivity!!, message)
+                            },
                             showPartName = pageViewState.chat is Chat.Group,
                             messageContent = messageContent
                         )
@@ -150,12 +166,13 @@ fun MessagePanel(pageViewState: ChatPageViewState, chatPageAction: ChatPageActio
 
 @Composable
 private fun OwnMessageContainer(
+    modifier: Modifier,
     message: Message,
-    onClickAvatar: (Message) -> Unit,
+    onClickAvatar: (message: Message) -> Unit,
     messageContent: @Composable () -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(end = 10.dp),
         horizontalArrangement = Arrangement.End
@@ -198,13 +215,14 @@ private fun OwnMessageContainer(
 
 @Composable
 private fun FriendMessageContainer(
+    modifier: Modifier,
     message: Message,
     showPartName: Boolean,
-    onClickAvatar: (Message) -> Unit,
+    onClickAvatar: (message: Message) -> Unit,
     messageContent: @Composable () -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(start = 10.dp),
         horizontalArrangement = Arrangement.Start
@@ -248,7 +266,7 @@ private fun FriendMessageContainer(
                 }
                 MessageState(
                     modifier = Modifier,
-                    messageState = MessageState.Completed
+                    messageState = MessageState.Success
                 )
             }
         }
@@ -257,32 +275,27 @@ private fun FriendMessageContainer(
 
 @Composable
 private fun Avatar(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     message: Message,
-    onClickAvatar: (Message) -> Unit,
+    onClickAvatar: (message: Message) -> Unit
 ) {
     ComponentImage(
         modifier = modifier
-            .size(size = 46.dp)
-            .clip(shape = CircleShape)
-            .border(
-                width = 2.dp,
-                color = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
-                shape = CircleShape
-            )
+            .size(size = 40.dp)
+            .clip(shape = RoundedCornerShape(size = 6.dp))
             .clickable(
                 onClick = {
                     onClickAvatar(message)
                 }
             ),
-        model = message.detail.sender.faceUrl
+        model = message.detail.sender.avatarUrl
     )
 }
 
 @Composable
 private fun Nickname(
-    modifier: Modifier = Modifier,
-    nickname: String,
+    modifier: Modifier,
+    nickname: String
 ) {
     Text(
         modifier = modifier,
@@ -292,13 +305,18 @@ private fun Nickname(
         textAlign = TextAlign.Start,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+        color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
     )
 }
 
 @Composable
-private fun TextMessage(message: TextMessage) {
-    SelectionContainer {
+private fun TextMessage(
+    modifier: Modifier,
+    message: TextMessage
+) {
+    SelectionContainer(
+        modifier = modifier
+    ) {
         val isOwnMessage = message.detail.isOwnMessage
         val baseRadius = 14.dp
         val specialRadius = 2.dp
@@ -310,14 +328,14 @@ private fun TextMessage(message: TextMessage) {
                             topStart = baseRadius,
                             topEnd = specialRadius,
                             bottomEnd = baseRadius,
-                            bottomStart = baseRadius,
+                            bottomStart = baseRadius
                         )
                     } else {
                         RoundedCornerShape(
                             topStart = specialRadius,
                             topEnd = baseRadius,
                             bottomEnd = baseRadius,
-                            bottomStart = baseRadius,
+                            bottomStart = baseRadius
                         )
                     }
                 )
@@ -326,113 +344,119 @@ private fun TextMessage(message: TextMessage) {
                         Alignment.End
                     } else {
                         Alignment.Start
-                    },
+                    }
                 )
                 .background(
                     color = if (isOwnMessage) {
-                        ComposeChatTheme.colorScheme.c_FFE2E1EC_FF45464F.color
+                        AppTheme.colorScheme.c_FFE2E1EC_FF45464F.color
                     } else {
-                        ComposeChatTheme.colorScheme.c_FF5386E5_FF5386E5.color
+                        AppTheme.colorScheme.c_FF5386E5_FF5386E5.color
                     }
                 )
                 .padding(horizontal = 8.dp, vertical = 6.dp),
             text = message.formatMessage,
             fontSize = 16.sp,
             lineHeight = 24.sp,
-            textAlign = TextAlign.Start,
             softWrap = true,
+            textAlign = TextAlign.Start,
             color = if (isOwnMessage) {
-                ComposeChatTheme.colorScheme.c_FF3A3D4D_FFFFFFFF.color
+                AppTheme.colorScheme.c_FF3A3D4D_FFFFFFFF.color
             } else {
-                ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+                AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             }
         )
     }
 }
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun ImageMessage(
+    modifier: Modifier,
     message: ImageMessage,
-    onClickMessage: (Message) -> Unit
+    onClickMessage: (message: Message) -> Unit
 ) {
     val localDensity = LocalDensity.current
     BoxWithConstraints(
-        modifier = Modifier,
+        modifier = modifier,
         contentAlignment = if (message.detail.isOwnMessage) {
             Alignment.TopEnd
         } else {
             Alignment.TopStart
         }
     ) {
-        val ratio: Float
-        val imageWidgetWidth: Dp
         val imageWidth = message.previewImage.width
         val imageHeight = message.previewImage.height
-        val imageWidgetMinWidthDp = maxWidth / 10f * 4
+        val imageMinWidthDp = maxWidth / 10f * 4
         val isALegalWidthAndHeight = imageWidth > 0 && imageHeight > 0
+        val mRatio: Float
+        val mWidth: Dp
         if (isALegalWidthAndHeight) {
-            ratio = 1.0f * imageWidth / imageHeight
+            mRatio = 1.0f * imageWidth / imageHeight
             val imageWidthDp = with(localDensity) {
                 imageWidth.toDp()
             }
-            val imageWidgetMaxWidthDp = maxWidth / 10f * 9
-            imageWidgetWidth = if (imageWidthDp <= imageWidgetMinWidthDp) {
-                imageWidgetMinWidthDp
-            } else if (imageWidthDp < imageWidgetMaxWidthDp) {
+            val imageMaxWidthDp = maxWidth / 10f * 9
+            mWidth = if (imageWidthDp <= imageMinWidthDp) {
+                imageMinWidthDp
+            } else if (imageWidthDp < imageMaxWidthDp) {
                 imageWidthDp
             } else {
-                imageWidgetMaxWidthDp
+                imageMaxWidthDp
             }
         } else {
-            ratio = 1.0f
-            imageWidgetWidth = imageWidgetMinWidthDp
+            mRatio = 1.0f
+            mWidth = imageMinWidthDp
         }
         ComponentImage(
             modifier = Modifier
-                .width(width = imageWidgetWidth)
-                .aspectRatio(ratio = ratio)
-                .clip(shape = RoundedCornerShape(size = 12.dp))
+                .width(width = mWidth)
+                .aspectRatio(ratio = mRatio)
+                .clip(shape = RoundedCornerShape(size = 6.dp))
                 .clickable {
                     onClickMessage(message)
                 },
             model = message.previewImage.url,
             contentScale = ContentScale.Crop,
-            alignment = Alignment.TopCenter
+            alignment = Alignment.Center
         )
     }
 }
 
 @Composable
-private fun TimeMessage(message: TimeMessage) {
+private fun TimeMessage(
+    modifier: Modifier,
+    message: TimeMessage
+) {
     Text(
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 20.dp)
             .background(
-                color = ComposeChatTheme.colorScheme.c_66CCCCCC_66CCCCCC.color,
+                color = AppTheme.colorScheme.c_66CCCCCC_66CCCCCC.color,
                 shape = RoundedCornerShape(size = 4.dp)
             )
-            .padding(horizontal = 6.dp, vertical = 4.dp),
+            .padding(horizontal = 4.dp, vertical = 3.dp),
         text = message.formatMessage,
         fontSize = 11.sp,
         lineHeight = 12.sp,
-        color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+        color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
     )
 }
 
 @Composable
-private fun SystemMessage(message: SystemMessage) {
+private fun SystemMessage(
+    modifier: Modifier,
+    message: SystemMessage
+) {
     Text(
-        modifier = Modifier
+        modifier = modifier
             .background(
-                color = ComposeChatTheme.colorScheme.c_66CCCCCC_66CCCCCC.color,
+                color = AppTheme.colorScheme.c_66CCCCCC_66CCCCCC.color,
                 shape = RoundedCornerShape(size = 4.dp)
             )
             .padding(horizontal = 6.dp, vertical = 4.dp),
         text = message.formatMessage,
         fontSize = 12.sp,
         lineHeight = 14.sp,
-        color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+        color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
     )
 }
 
@@ -450,22 +474,22 @@ private fun MessageState(
                 CircularProgressIndicator(
                     modifier = Modifier
                         .fillMaxSize(),
-                    color = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
+                    color = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
                     strokeWidth = 2.dp
                 )
             }
 
-            is MessageState.SendFailed -> {
+            is MessageState.Failed -> {
                 Image(
                     modifier = Modifier
                         .fillMaxSize(),
                     imageVector = Icons.Outlined.Error,
-                    colorFilter = ColorFilter.tint(color = ComposeChatTheme.colorScheme.c_FFFF545C_FFFA525A.color),
+                    colorFilter = ColorFilter.tint(color = AppTheme.colorScheme.c_FFFF545C_FFFA525A.color),
                     contentDescription = null
                 )
             }
 
-            MessageState.Completed -> {
+            MessageState.Success -> {
 
             }
         }

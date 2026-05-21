@@ -12,38 +12,40 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.extend.clickableNoRipple
 import github.leavesczy.compose_chat.extend.scrim
 import github.leavesczy.compose_chat.ui.person.logic.PersonProfilePageViewState
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 import github.leavesczy.compose_chat.ui.widgets.AnimateBouncyImage
 import github.leavesczy.compose_chat.ui.widgets.BezierImage
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun PersonProfilePage(pageViewState: PersonProfilePageViewState) {
     val personProfile = pageViewState.personProfile
-    val faceUrl = personProfile.faceUrl
+    val avatarUrl = personProfile.avatarUrl
     val title = personProfile.showName
     val subtitle = personProfile.signature
-    val introduction = "Id: ${personProfile.id}"
+    val introduction = stringResource(id = R.string.person_profile_id, personProfile.id)
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color)
+            .background(color = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color)
     ) {
         BezierImage(
             modifier = Modifier
                 .aspectRatio(ratio = 1f)
-                .scrim(color = ComposeChatTheme.colorScheme.c_33000000_33000000.color),
-            model = faceUrl
+                .scrim(color = AppTheme.colorScheme.c_33000000_33000000.color),
+            model = avatarUrl
         )
         Column(
             modifier = Modifier
@@ -56,9 +58,9 @@ fun PersonProfilePage(pageViewState: PersonProfilePageViewState) {
                 modifier = Modifier
                     .size(size = 100.dp)
                     .clickableNoRipple {
-                        pageViewState.previewImage(faceUrl)
+                        pageViewState.previewImage(avatarUrl)
                     },
-                model = faceUrl,
+                model = avatarUrl
             )
             Text(
                 modifier = Modifier
@@ -67,7 +69,7 @@ fun PersonProfilePage(pageViewState: PersonProfilePageViewState) {
                 fontSize = 20.sp,
                 lineHeight = 21.sp,
                 textAlign = TextAlign.Center,
-                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+                color = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             )
             Text(
                 modifier = Modifier
@@ -76,7 +78,7 @@ fun PersonProfilePage(pageViewState: PersonProfilePageViewState) {
                 fontSize = 15.sp,
                 lineHeight = 16.sp,
                 textAlign = TextAlign.Center,
-                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+                color = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             )
             Text(
                 modifier = Modifier
@@ -85,7 +87,7 @@ fun PersonProfilePage(pageViewState: PersonProfilePageViewState) {
                 fontSize = 15.sp,
                 lineHeight = 16.sp,
                 textAlign = TextAlign.Center,
-                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+                color = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             )
         }
     }

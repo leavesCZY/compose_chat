@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.base.models.GroupProfile
@@ -24,8 +25,8 @@ import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class FriendshipViewModel : BaseViewModel() {
 
@@ -62,13 +63,14 @@ class FriendshipViewModel : BaseViewModel() {
     init {
         viewModelScope.launch {
             launch {
-                groupProvider.joinedGroupList.collect {
-                    pageViewState = pageViewState.copy(joinedGroupList = it.toPersistentList())
+                groupProvider.joinedGroupListFlow.collect { joinedGroupList ->
+                    pageViewState =
+                        pageViewState.copy(joinedGroupList = joinedGroupList.toPersistentList())
                 }
             }
             launch {
-                friendshipProvider.friendList.collect {
-                    pageViewState = pageViewState.copy(friendList = it.toPersistentList())
+                friendshipProvider.friendListFlow.collect { friendList ->
+                    pageViewState = pageViewState.copy(friendList = friendList.toPersistentList())
                 }
             }
         }
@@ -101,7 +103,7 @@ class FriendshipViewModel : BaseViewModel() {
         val groupIds = ids.mapIndexed { index, id ->
             GroupId(
                 id = id,
-                name = "加入交流群 0x0" + (index + 1)
+                name = getString(resId = R.string.join_group_template, index + 1)
             )
         }.toImmutableList()
         friendshipDialogViewState = friendshipDialogViewState.copy(
@@ -120,7 +122,7 @@ class FriendshipViewModel : BaseViewModel() {
             when (val result = friendshipProvider.addFriend(friendId = formatUserId)) {
                 is ActionResult.Success -> {
                     delay(timeMillis = 400L)
-                    showToast(msg = "添加成功")
+                    showToast(resId = R.string.toast_add_friend_success)
                     ChatActivity.navTo(
                         context = context,
                         chat = Chat.C2C(id = formatUserId)
@@ -137,10 +139,11 @@ class FriendshipViewModel : BaseViewModel() {
 
     private fun joinGroup(groupId: String) {
         viewModelScope.launch {
+            showLoadingDialog()
             when (val result = groupProvider.joinGroup(groupId = groupId)) {
                 is ActionResult.Success -> {
                     delay(timeMillis = 800L)
-                    showToast(msg = "加入成功")
+                    showToast(resId = R.string.toast_join_group_success)
                     groupProvider.refreshJoinedGroupList()
                     dismissFriendshipDialog()
                 }
@@ -149,6 +152,7 @@ class FriendshipViewModel : BaseViewModel() {
                     showToast(msg = result.desc)
                 }
             }
+            dismissLoadingDialog()
         }
     }
 

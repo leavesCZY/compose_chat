@@ -1,6 +1,5 @@
 package github.leavesczy.compose_chat.ui.logic
 
-import android.content.Intent
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.runtime.getValue
@@ -23,15 +22,16 @@ import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class MainViewModel : BaseViewModel() {
 
     private val conversationProvider: IConversationProvider = ConversationProvider()
 
-    var loadingDialogVisible by mutableStateOf(value = false)
-        private set
+    private val _serverConnectState = MutableStateFlow(value = ServerConnectState.Connected)
+
+    val serverConnectState: SharedFlow<ServerConnectState> = _serverConnectState
 
     val topBarViewState = MainPageTopBarViewState(
         openDrawer = ::openDrawer
@@ -50,7 +50,7 @@ class MainViewModel : BaseViewModel() {
         value = MainPageDrawerViewState(
             drawerState = DrawerState(initialValue = DrawerValue.Closed),
             appTheme = AppThemeProvider.appTheme,
-            personProfile = ComposeChat.accountProvider.personProfile.value,
+            personProfile = ComposeChat.accountProvider.personProfileFlow.value,
             previewImage = ::previewImage,
             switchTheme = ::switchTheme,
             logout = ::logout,
@@ -59,37 +59,33 @@ class MainViewModel : BaseViewModel() {
     )
         private set
 
-    private val _serverConnectState = MutableStateFlow(value = ServerConnectState.Connected)
-
-    val serverConnectState: SharedFlow<ServerConnectState> = _serverConnectState
-
     init {
         viewModelScope.launch {
             launch {
-                conversationProvider.totalUnreadMessageCount.collect {
-                    onUnreadMessageCountChanged(unreadMessageCount = it)
+                requestData()
+            }
+            launch {
+                conversationProvider.totalUnreadMessageCountFlow.collect { unreadMessageCount ->
+                    onUnreadMessageCountChanged(unreadMessageCount = unreadMessageCount)
                 }
             }
             launch {
-                ComposeChat.accountProvider.personProfile.collect {
-                    onPersonProfileChanged(personProfile = it)
+                ComposeChat.accountProvider.personProfileFlow.collect { personProfile ->
+                    onPersonProfileChanged(personProfile = personProfile)
                 }
             }
             launch {
-                ComposeChat.accountProvider.serverConnectState.collect {
-                    _serverConnectState.emit(value = it)
-                    if (it == ServerConnectState.Connected) {
+                ComposeChat.accountProvider.serverConnectStateFlow.collect { state ->
+                    _serverConnectState.emit(value = state)
+                    if (state == ServerConnectState.Connected) {
                         requestData()
                     }
                 }
             }
-            launch {
-                requestData()
-            }
         }
     }
 
-    private fun requestData() {
+    private suspend fun requestData() {
         conversationProvider.refreshTotalUnreadMessageCount()
         ComposeChat.accountProvider.refreshPersonProfile()
     }
@@ -117,17 +113,17 @@ class MainViewModel : BaseViewModel() {
 
     private fun logout() {
         viewModelScope.launch {
-            loadingDialog(visible = true)
+            showLoadingDialog()
             when (val result = ComposeChat.accountProvider.logout()) {
                 is ActionResult.Success -> {
                     AccountProvider.onUserLogout()
                 }
 
                 is ActionResult.Failed -> {
-                    showToast(msg = result.reason)
+                    showToast(msg = result.desc)
                 }
             }
-            loadingDialog(visible = false)
+            dismissLoadingDialog()
         }
     }
 
@@ -136,9 +132,7 @@ class MainViewModel : BaseViewModel() {
     }
 
     private fun updateProfile() {
-        val intent = Intent(context, ProfileUpdateActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(intent)
+        context.startActivity<ProfileUpdateActivity>()
     }
 
     private fun previewImage(imageUrl: String) {
@@ -158,10 +152,6 @@ class MainViewModel : BaseViewModel() {
         return values.getOrElse(ordinal + 1) {
             values[0]
         }
-    }
-
-    private fun loadingDialog(visible: Boolean) {
-        loadingDialogVisible = visible
     }
 
 }

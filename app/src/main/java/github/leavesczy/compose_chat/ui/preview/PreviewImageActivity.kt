@@ -10,14 +10,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.utils.AlbumUtils
 import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class PreviewImageActivity : BaseActivity() {
 
@@ -45,12 +46,13 @@ class PreviewImageActivity : BaseActivity() {
 
     }
 
-    private val imageUriList by lazy(mode = LazyThreadSafetyMode.NONE) {
-        intent.getStringArrayListExtra(KEY_IMAGE_URI_LIST)?.filter { it.isNotBlank() }
-            ?: emptyList()
+    private val imageUriList by lazy {
+        intent.getStringArrayListExtra(KEY_IMAGE_URI_LIST)?.filter { uri ->
+            uri.isNotBlank()
+        } ?: emptyList()
     }
 
-    private val initialPage by lazy(mode = LazyThreadSafetyMode.NONE) {
+    private val initialPage by lazy {
         intent.getIntExtra(KEY_INITIAL_PAGE, 0)
     }
 
@@ -67,10 +69,10 @@ class PreviewImageActivity : BaseActivity() {
 
     @Composable
     override fun SetSystemBarUi() {
-        val context = LocalContext.current
+        val localContext = LocalContext.current
         LaunchedEffect(key1 = Unit) {
-            if (context is Activity) {
-                val window = context.window
+            if (localContext is Activity) {
+                val window = localContext.window
                 WindowInsetsControllerCompat(window, window.decorView).apply {
                     hide(WindowInsetsCompat.Type.statusBars())
                     systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
@@ -88,9 +90,9 @@ class PreviewImageActivity : BaseActivity() {
                 imageUri = imageUri
             )
             if (result) {
-                showToast(msg = "已保存到相册")
+                showToast(resId = R.string.toast_saved_to_album)
             } else {
-                showToast(msg = "保存失败")
+                showToast(resId = R.string.toast_save_failed)
             }
         }
     }

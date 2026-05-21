@@ -8,7 +8,7 @@ import kotlinx.collections.immutable.PersistentList
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/1/23 21:27
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 @Stable
@@ -16,7 +16,7 @@ data class ConversationPageViewState(
     val listState: LazyListState,
     val serverConnectState: ServerConnectState,
     val conversationList: PersistentList<Conversation>,
-    val onClickConversation: (Conversation) -> Unit,
-    val deleteConversation: (Conversation) -> Unit,
-    val pinConversation: (Conversation, Boolean) -> Unit
+    val onClickConversation: (conversation: Conversation) -> Unit,
+    val deleteConversation: (conversation: Conversation) -> Unit,
+    val pinConversation: (conversation: Conversation, pin: Boolean) -> Unit
 )

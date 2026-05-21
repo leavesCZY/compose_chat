@@ -23,34 +23,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.ui.logic.MainPageBottomBarViewState
 import github.leavesczy.compose_chat.ui.logic.MainPageTab
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun MainPageBottomBar(viewState: MainPageBottomBarViewState) {
+    val unreadCountOverflow = stringResource(id = R.string.unread_count_overflow)
     Row(
         modifier = Modifier
             .shadow(elevation = 28.dp)
-            .background(color = ComposeChatTheme.colorScheme.c_FFEFF1F3_FF22202A.color)
+            .background(color = AppTheme.colorScheme.c_FFEFF1F3_FF22202A.color)
             .fillMaxWidth()
             .navigationBarsPadding()
             .height(height = 54.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        for (tab in MainPageTab.entries) {
-            val selected = viewState.selectedTab == tab
+        for (pageTab in MainPageTab.entries) {
             val icon: ImageVector
             val unreadMessageCount: Long
-            when (tab) {
+            when (pageTab) {
                 MainPageTab.Conversation -> {
                     icon = Icons.Rounded.WbSunny
                     unreadMessageCount = viewState.unreadMessageCount
@@ -68,10 +70,11 @@ fun MainPageBottomBar(viewState: MainPageBottomBarViewState) {
             }
             NavigationBarItem(
                 icon = icon,
-                selected = selected,
+                selected = viewState.selectedTab == pageTab,
                 unreadMessageCount = unreadMessageCount,
+                unreadCountOverflow = unreadCountOverflow,
                 onClick = {
-                    viewState.onClickTab(tab)
+                    viewState.onClickTab(pageTab)
                 }
             )
         }
@@ -83,6 +86,7 @@ private fun RowScope.NavigationBarItem(
     icon: ImageVector,
     selected: Boolean,
     unreadMessageCount: Long,
+    unreadCountOverflow: String,
     onClick: () -> Unit
 ) {
     NavigationBarItem(
@@ -99,26 +103,26 @@ private fun RowScope.NavigationBarItem(
                         .offset(x = 18.dp, y = (-10).dp)
                         .size(size = 22.dp)
                         .background(
-                            color = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
+                            color = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
                             shape = CircleShape
                         )
                         .wrapContentSize(align = Alignment.Center),
                     text = if (unreadMessageCount > 99) {
-                        "99+"
+                        unreadCountOverflow
                     } else {
                         unreadMessageCount.toString()
                     },
                     fontSize = 12.sp,
                     lineHeight = 12.sp,
                     textAlign = TextAlign.Center,
-                    color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+                    color = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
                 )
             }
         },
         selected = selected,
         colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
-            unselectedIconColor = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+            selectedIconColor = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
+            unselectedIconColor = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
         ),
         onClick = onClick
     )

@@ -4,19 +4,24 @@ import androidx.compose.runtime.Stable
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Stable
 sealed class ActionResult {
 
+    @Stable
     data object Success : ActionResult()
 
-    data class Failed(val code: Int, val reason: String) : ActionResult() {
+    @Stable
+    data class Failed(
+        private val code: Int,
+        private val reason: String?
+    ) : ActionResult() {
+
+        constructor(reason: String?) : this(code = -1, reason = reason)
 
         val desc = "$code $reason"
-
-        constructor(reason: String) : this(code = -1, reason = reason)
 
     }
 
@@ -30,5 +35,5 @@ enum class ServerConnectState {
     Connected,
     ConnectFailed,
     UserSigExpired,
-    KickedOffline
+    KickedOffline;
 }

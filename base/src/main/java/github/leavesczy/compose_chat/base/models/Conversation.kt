@@ -1,44 +1,64 @@
 package github.leavesczy.compose_chat.base.models
 
 import androidx.compose.runtime.Stable
+import github.leavesczy.compose_chat.base.R
+import github.leavesczy.compose_chat.base.utils.StringResources
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Stable
 data class Conversation(
     val id: String,
     val name: String,
-    val faceUrl: String,
+    val avatarUrl: String,
     val unreadMessageCount: Long,
     val lastMessage: Message,
     val isPinned: Boolean,
     val type: ConversationType
 ) {
 
-    val formatMsg by lazy(mode = LazyThreadSafetyMode.NONE) {
+    val formatMessage = run {
         val messageDetail = lastMessage.detail
-        val prefix =
-            if (type == ConversationType.Group && lastMessage !is SystemMessage && !messageDetail.isOwnMessage) {
-                messageDetail.sender.showName + "："
-            } else {
+        val senderName = when (type) {
+            ConversationType.C2C -> {
                 ""
             }
-        prefix + when (messageDetail.state) {
-            MessageState.Completed -> {
-                lastMessage.formatMessage
+
+            ConversationType.Group -> {
+                when (lastMessage) {
+                    is TextMessage,
+                    is ImageMessage -> {
+                        if (messageDetail.isOwnMessage) {
+                            ""
+                        } else {
+                            messageDetail.sender.showName + ": "
+                        }
+                    }
+
+                    is SystemMessage,
+                    is TimeMessage -> {
+                        ""
+                    }
+                }
+            }
+        }
+        val messageState = when (messageDetail.state) {
+            MessageState.Success -> {
+                ""
             }
 
             MessageState.Sending -> {
-                "[发送中] " + lastMessage.formatMessage
+                StringResources.getString(resId = R.string.message_sending) + " "
             }
 
-            is MessageState.SendFailed -> {
-                "[发送失败] " + lastMessage.formatMessage
+            is MessageState.Failed -> {
+                StringResources.getString(resId = R.string.message_send_failed) + " "
             }
         }
+        senderName + messageState + lastMessage.formatMessage
     }
 
 }
@@ -46,5 +66,5 @@ data class Conversation(
 @Stable
 enum class ConversationType {
     C2C,
-    Group
+    Group;
 }

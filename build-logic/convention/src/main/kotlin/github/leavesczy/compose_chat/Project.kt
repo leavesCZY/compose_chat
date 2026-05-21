@@ -10,13 +10,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
  * @Author: leavesCZY
- * @Date: 2023/11/29 16:10
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 internal fun Project.configureAndroidProject(commonExtension: CommonExtension) {
     commonExtension.apply {
         compileSdk {
-            version = release(version = 37)
+            version = release(version = 36)
         }
         buildToolsVersion = "37.0.0"
         defaultConfig.apply {

@@ -18,8 +18,8 @@ import java.util.Locale
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 object FileUtils {
 
@@ -81,7 +81,7 @@ object FileUtils {
                         uri.toString()
                     )
                     MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                        fileExtension.lowercase(Locale.getDefault())
+                        fileExtension.lowercase(Locale.ENGLISH)
                     )
                 }
 
@@ -123,7 +123,7 @@ object FileUtils {
 
     fun createFileName(): String {
         val date = Date()
-        val simpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmssSSS", Locale.getDefault())
+        val simpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmssSSS", Locale.ENGLISH)
         val time = simpleDateFormat.format(date)
         return "compose_chat_$time"
     }

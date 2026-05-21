@@ -20,20 +20,24 @@ import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.ui.chat.group.GroupProfileActivity
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun ChatPageTopBar(title: String, chat: Chat) {
-    val context = LocalContext.current
+fun ChatPageTopBar(
+    modifier: Modifier,
+    chat: Chat,
+    title: String
+) {
+    val localContext = LocalContext.current
     CenterAlignedTopAppBar(
-        modifier = Modifier
+        modifier = modifier
             .shadow(elevation = 0.8.dp),
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color),
         title = {
             Text(
                 modifier = Modifier,
@@ -42,7 +46,7 @@ fun ChatPageTopBar(title: String, chat: Chat) {
                 lineHeight = 20.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
             )
         },
         navigationIcon = {
@@ -56,7 +60,7 @@ fun ChatPageTopBar(title: String, chat: Chat) {
                     )
                 },
                 onClick = {
-                    (context as Activity).finish()
+                    (localContext as Activity).finish()
                 }
             )
         },
@@ -73,11 +77,11 @@ fun ChatPageTopBar(title: String, chat: Chat) {
                 onClick = {
                     when (chat) {
                         is Chat.C2C -> {
-                            FriendProfileActivity.navTo(context = context, friendId = chat.id)
+                            FriendProfileActivity.navTo(context = localContext, friendId = chat.id)
                         }
 
                         is Chat.Group -> {
-                            GroupProfileActivity.navTo(context = context, groupId = chat.id)
+                            GroupProfileActivity.navTo(context = localContext, groupId = chat.id)
                         }
                     }
                 }

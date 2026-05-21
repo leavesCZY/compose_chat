@@ -1,6 +1,7 @@
 package github.leavesczy.compose_chat.ui
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ModalNavigationDrawer
@@ -17,14 +18,12 @@ import github.leavesczy.compose_chat.ui.logic.MainPageTab
 import github.leavesczy.compose_chat.ui.logic.MainViewModel
 import github.leavesczy.compose_chat.ui.person.PersonProfilePage
 import github.leavesczy.compose_chat.ui.person.logic.PersonProfileViewModel
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
-import github.leavesczy.compose_chat.ui.theme.WindowInsetsEmpty
-import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun MainPage(
@@ -44,8 +43,8 @@ fun MainPage(
             Scaffold(
                 modifier = Modifier
                     .fillMaxSize(),
-                contentWindowInsets = WindowInsetsEmpty,
-                containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
+                contentWindowInsets = WindowInsets(),
+                containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color,
                 topBar = {
                     if (mainViewModel.bottomBarViewState.selectedTab != MainPageTab.Person) {
                         MainPageTopBar(
@@ -84,5 +83,4 @@ fun MainPage(
             FriendshipDialog(viewState = friendshipViewModel.friendshipDialogViewState)
         }
     )
-    LoadingDialog(visible = mainViewModel.loadingDialogVisible)
 }

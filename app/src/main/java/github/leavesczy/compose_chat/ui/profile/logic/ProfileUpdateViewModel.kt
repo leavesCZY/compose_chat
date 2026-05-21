@@ -4,15 +4,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.logic.ComposeChat
+import github.leavesczy.compose_chat.utils.randomImage
 import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class ProfileUpdateViewModel : BaseViewModel() {
 
@@ -21,8 +23,8 @@ class ProfileUpdateViewModel : BaseViewModel() {
             personProfile = null,
             onNicknameChanged = ::onNicknameChanged,
             onSignatureChanged = ::onSignatureChanged,
-            onAvatarUrlChanged = ::onAvatarUrlChanged,
-            confirmUpdate = ::confirmUpdate
+            setRandomAvatar = ::setRandomAvatar,
+            onConfirmUpdate = ::onConfirmUpdate
         )
     )
         private set
@@ -52,34 +54,36 @@ class ProfileUpdateViewModel : BaseViewModel() {
         }
     }
 
-    private fun onAvatarUrlChanged(imageUrl: String) {
+    private fun setRandomAvatar() {
         val viewStata = profileUpdatePageViewStata
         val personProfile = viewStata.personProfile
         if (personProfile != null) {
             profileUpdatePageViewStata =
-                viewStata.copy(personProfile = personProfile.copy(faceUrl = imageUrl))
+                viewStata.copy(personProfile = personProfile.copy(avatarUrl = randomImage()))
         }
     }
 
-    private fun confirmUpdate() {
+    private fun onConfirmUpdate() {
         viewModelScope.launch {
+            showLoadingDialog()
             val personProfile = profileUpdatePageViewStata.personProfile
             if (personProfile != null) {
-                val result = ComposeChat.accountProvider.updatePersonProfile(
-                    faceUrl = personProfile.faceUrl,
+                val result = ComposeChat.accountProvider.updateProfile(
+                    avatarUrl = personProfile.avatarUrl,
                     nickname = personProfile.nickname,
                     signature = personProfile.signature
                 )
                 when (result) {
                     is ActionResult.Success -> {
-                        showToast(msg = "更新成功")
+                        showToast(resId = R.string.toast_update_success)
                     }
 
                     is ActionResult.Failed -> {
-                        showToast(msg = result.reason)
+                        showToast(msg = result.desc)
                     }
                 }
             }
+            dismissLoadingDialog()
         }
     }
 

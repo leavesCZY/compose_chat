@@ -1,8 +1,8 @@
 plugins {
-    alias(libs.plugins.chat.android.application)
-    alias(libs.plugins.chat.android.compose)
-    alias(libs.plugins.chat.kotlin.parcelize)
-    alias(libs.plugins.chat.leavesczy.track)
+    alias(libs.plugins.app.android.application)
+    alias(libs.plugins.app.android.compose)
+    alias(libs.plugins.app.kotlin.parcelize)
+    alias(libs.plugins.app.leavesczy.track)
 }
 
 android {
@@ -18,9 +18,9 @@ dependencies {
     implementation(libs.androidx.exifinterface)
     implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlinx.collections.immutable)
-    implementation(libs.leavesczy.matisse)
     implementation(libs.coil.gif)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.squareup.okHttp)
+    implementation(libs.leavesczy.matisse)
 }

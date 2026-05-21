@@ -8,8 +8,8 @@ import javax.crypto.spec.SecretKeySpec
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 internal object GenerateUserSig {
 

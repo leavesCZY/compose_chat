@@ -4,7 +4,7 @@ import android.os.SystemClock
 
 /**
  * @Author: leavesCZY
- * @Github: https://github.com/leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 class ComposeOnClick(private val onClick: () -> Unit) : Function0<Unit> {
@@ -17,7 +17,7 @@ class ComposeOnClick(private val onClick: () -> Unit) : Function0<Unit> {
 
     override fun invoke() {
         val currentTime = SystemClock.elapsedRealtime()
-        val isEnabled = currentTime - lastClickTime > 250L
+        val isEnabled = currentTime - lastClickTime > 150L
         if (isEnabled) {
             lastClickTime = currentTime
             onClick()

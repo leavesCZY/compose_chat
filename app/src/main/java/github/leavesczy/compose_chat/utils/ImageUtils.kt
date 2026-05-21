@@ -10,16 +10,16 @@ import coil3.imageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
-import coil3.request.allowHardware
 import coil3.request.crossfade
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 /**
  * @Author: leavesCZY
- * @Date: 2024/4/1 15:55
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 object ImageUtils {
@@ -29,17 +29,25 @@ object ImageUtils {
             ImageLoader
                 .Builder(context = context)
                 .crossfade(enable = false)
-                .allowHardware(enable = true)
                 .components {
-                    if (Build.VERSION.SDK_INT >= 28) {
-                        add(AnimatedImageDecoder.Factory())
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        add(factory = AnimatedImageDecoder.Factory())
                     } else {
-                        add(GifDecoder.Factory())
+                        add(factory = GifDecoder.Factory())
                     }
                     add(
                         OkHttpNetworkFetcherFactory(
                             callFactory = {
-                                OkHttpClient.Builder().build()
+                                val timeoutSecond = 15L
+                                OkHttpClient.Builder()
+                                    .connectTimeout(
+                                        timeout = timeoutSecond,
+                                        unit = TimeUnit.SECONDS
+                                    )
+                                    .readTimeout(timeout = timeoutSecond, unit = TimeUnit.SECONDS)
+                                    .writeTimeout(timeout = timeoutSecond, unit = TimeUnit.SECONDS)
+                                    .retryOnConnectionFailure(retryOnConnectionFailure = true)
+                                    .build()
                             }
                         )
                     )

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.base.models.ServerConnectState
 import github.leavesczy.compose_chat.provider.AccountProvider
 import github.leavesczy.compose_chat.ui.base.BaseActivity
@@ -12,12 +13,13 @@ import github.leavesczy.compose_chat.ui.friendship.logic.FriendshipViewModel
 import github.leavesczy.compose_chat.ui.logic.MainViewModel
 import github.leavesczy.compose_chat.ui.login.LoginActivity
 import github.leavesczy.compose_chat.ui.person.logic.PersonProfileViewModel
+import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
 import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class MainActivity : BaseActivity() {
 
@@ -38,26 +40,30 @@ class MainActivity : BaseActivity() {
                 friendshipViewModel = friendshipViewModel,
                 personProfileViewModel = personProfileViewModel
             )
+            LoadingDialog(viewState = mainViewModel.loadingDialogViewState)
         }
         initEvent()
     }
 
     private fun initEvent() {
         lifecycleScope.launch {
-            mainViewModel.serverConnectState.collect {
-                when (it) {
+            mainViewModel.serverConnectState.collect { state ->
+                when (state) {
                     ServerConnectState.KickedOffline -> {
-                        showToast(msg = "本账号已在其它客户端登陆，请重新登陆")
+                        showToast(resId = R.string.toast_kicked_offline)
                         AccountProvider.onUserLogout()
                         navToLoginPage()
                     }
 
-                    ServerConnectState.Logout, ServerConnectState.UserSigExpired -> {
+                    ServerConnectState.Logout,
+                    ServerConnectState.UserSigExpired -> {
                         navToLoginPage()
                     }
 
-                    else -> {
-
+                    ServerConnectState.Idle,
+                    ServerConnectState.Connecting,
+                    ServerConnectState.Connected,
+                    ServerConnectState.ConnectFailed -> {
                     }
                 }
             }

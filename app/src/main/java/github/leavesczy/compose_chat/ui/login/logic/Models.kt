@@ -1,17 +1,18 @@
 package github.leavesczy.compose_chat.ui.login.logic
 
+import android.app.Activity
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.input.TextFieldValue
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Stable
 data class LoginPageViewState(
     val userId: TextFieldValue,
-    val onUserIdInputChanged: (TextFieldValue) -> Unit,
-    val showPanel: Boolean,
-    val loading: Boolean
+    val panelVisible: Boolean,
+    val onUserIdInputChanged: (userId: TextFieldValue) -> Unit,
+    val onClickLogin: (activity: Activity) -> Unit
 )

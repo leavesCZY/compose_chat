@@ -12,8 +12,8 @@ import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class PersonProfileViewModel : BaseViewModel() {
 
@@ -27,8 +27,8 @@ class PersonProfileViewModel : BaseViewModel() {
 
     init {
         viewModelScope.launch {
-            ComposeChat.accountProvider.personProfile.collect {
-                pageViewState = pageViewState.copy(personProfile = it)
+            ComposeChat.accountProvider.personProfileFlow.collect { personProfile ->
+                pageViewState = pageViewState.copy(personProfile = personProfile)
             }
         }
     }

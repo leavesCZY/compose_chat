@@ -3,6 +3,7 @@ package github.leavesczy.compose_chat.ui.chat.main
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -15,156 +16,110 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.extend.clickableNoRippleNotCheck
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Composable
-fun EmojiTable(appendEmoji: (String) -> Unit) {
+fun EmojiTable(
+    modifier: Modifier,
+    appendEmoji: (emoji: String) -> Unit
+) {
     LazyVerticalGrid(
-        modifier = Modifier,
-        columns = GridCells.Fixed(count = 6),
+        modifier = modifier,
+        columns = GridCells.Fixed(count = 7),
         horizontalArrangement = Arrangement.Center,
-        verticalArrangement = Arrangement.spacedBy(space = 20.dp, alignment = Alignment.Top),
-        contentPadding = PaddingValues(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 12.dp)
+        verticalArrangement = Arrangement.spacedBy(space = 6.dp, alignment = Alignment.Top),
+        contentPadding = PaddingValues(start = 8.dp, top = 10.dp, end = 8.dp, bottom = 20.dp)
     ) {
         items(
             items = emojis,
-            key = {
-                it
+            key = { emoji ->
+                emoji
             },
             contentType = {
                 "emojis"
             }
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickableNoRippleNotCheck {
-                        appendEmoji(it)
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    modifier = Modifier,
-                    text = it,
-                    fontSize = 22.sp,
-                    lineHeight = 22.sp,
-                    textAlign = TextAlign.Center,
-                    color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
-                )
-            }
+        ) { emoji ->
+            Emoji(
+                modifier = Modifier,
+                emoji = emoji,
+                onClick = {
+                    appendEmoji(emoji)
+                }
+            )
         }
     }
 }
 
+@Composable
+private fun Emoji(
+    modifier: Modifier,
+    emoji: String,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(ratio = 1f)
+            .clickableNoRippleNotCheck(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            modifier = Modifier,
+            text = emoji,
+            fontSize = 22.sp,
+            lineHeight = 22.sp,
+            textAlign = TextAlign.Center,
+            color = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+        )
+    }
+}
+
 private val emojis = listOf(
-    // 笑脸与表情
-    "😀", // 哈哈大笑
-    "😃", // 大笑
+    "🙂", // 微笑
+    "😊", // 愉快
+    "😁", // 呲牙
     "😄", // 喜悦
-    "😁", // 露齿笑
-    "😆", // 眯眼大笑
-    "😅", // 笑着流汗
-    "😂", // 喜极而泣
-    "🤣", // 倒地大笑
-    "😊", // 微笑
-    "😇", // 天使微笑
-    // 友好的表情
-    "😉", // 眨眼
-    "😌", // 轻松
-    "😍", // 喜爱
-    "😘", // 飞吻
-    "😗", // 亲吻
-    "😙", // 亲吻，闭眼
-    "😚", // 亲吻，脸红
-    "😋", // 享用美食
-    "😜", // 吐舌头，眨眼
-    "😝", // 吐舌头，眯眼
-    // 搞怪与有趣
-    "🤑", // 钱脸
-    "🤗", // 拥抱
-    "🤓", // 书呆子
-    "😎", // 戴墨镜
-    "🤡", // 小丑
-    "🤠", // 牛仔
-    // 负面与不舒服
-    "😏", // 邪魅一笑
-    "😒", // 无语
-    "😞", // 失望
-    "😔", // 沮丧
-    "😟", // 担忧
-    "😕", // 困惑
+    "🤭", // 偷笑
+    "🤩", // 憨笑
+    "😍", // 色
+    "😎", // 得意
+    "😜", // 调皮
+    "😂", // 破涕为笑
+    "🤤", // 流口水
+    "😳", // 发呆
+    "😔", // 闭嘴
     "🙁", // 难过
-    "☹️", // 皱眉
-    "😣", // 痛苦
-    "😖", // 困扰
-    // 生气与愤怒
-    "😫", // 疲惫
-    "😩", // 累
+    "😭", // 流泪
+    "😅", // 尴尬
+    "😓", // 流汗
+    "😰", // 惊恐
+    "🤢", // 吐
+    "😱", // 抓狂
     "😤", // 气愤
+    "🙄", // 白眼
+    "😏", // 冷笑
+    "😫", // 疲惫
+    "😡", // 发怒
     "😠", // 生气
-    "😡", // 愤怒
     "😈", // 微笑的恶魔
     "👿", // 愤怒的恶魔
-    // 特殊符号与角色
-    "💀", // 骷髅头
-    "💩", // 便便
     "👹", // 鬼
     "👺", // 天狗
-    "👻", // 幽灵
+    "🤡", // 小丑
+    "💀", // 骷髅头
     "👽", // 外星人
+    "👻", // 幽灵
     "👾", // 怪物
     "🤖", // 机器人
-    // 动物
-    "😺", // 咧嘴笑的猫
-    "😸", // 喜极而泣的猫
-    "😹", // 哭笑不得的猫
-    "😻", // 恋爱的猫
-    "😼", // 邪魅的猫
-    "😽", // 亲吻的猫
-    "😿", // 哭泣的猫
-    "😾", // 生气的猫
-    // 手势
-    "🤲", // 掌心向上
-    "🙌", // 举起双手
-    "👏", // 鼓掌
-    "🤝", // 握手
-    "👍", // 竖起大拇指
-    "👎", // 倒竖大拇指
-    "👊", // 拳头
-    "✊", // 举起拳头
-    "🤛", // 左向拳头
-    "🤜", // 右向拳头
-    "🤞", // 交叉手指
-    "✌️", // 胜利手势
-    "🤟", // 爱你手势
-    "🤘", // 摇滚手势
-    "🤙", // 叫我手势
-    "🤚", // 举手
-    "🖐️", // 摊开手掌
-    "✋", // 举起手
-    "👌", // OK手势
-    "👈", // 指向左
-    "👉", // 指向右
-    "👆", // 指向上
-    "👇", // 指向下
-    "☝️", // 食指向上
-    // 人体与服装
-    "💪", // 肌肉
-    "🙏", // 合掌
-    "💍", // 戒指
-    "👑", // 皇冠
-    "🎩", // 礼帽
-    "👒", // 女士帽子
-    "🎓", // 毕业帽
-    "⛑️", // 安全帽
-    "📿", // 念珠
-    "💄", // 口红
-    "💋", // 嘴唇印
-    "👄", // 嘴巴
-    "👅", // 舌头
+    "🎉", // 庆祝
+    "💣", // 炸弹
+    "💩", // 便便
+    "❤️", // 爱心
+    "💔", // 心碎
+    "🎂", // 蛋糕
 )

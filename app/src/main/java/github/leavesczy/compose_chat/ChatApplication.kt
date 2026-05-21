@@ -1,16 +1,16 @@
 package github.leavesczy.compose_chat
 
 import android.app.Application
+import github.leavesczy.compose_chat.base.utils.ContextProvider
 import github.leavesczy.compose_chat.provider.AccountProvider
 import github.leavesczy.compose_chat.provider.AppThemeProvider
-import github.leavesczy.compose_chat.provider.ContextProvider
 import github.leavesczy.compose_chat.ui.logic.ComposeChat
 import github.leavesczy.compose_chat.utils.ImageUtils
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class ChatApplication : Application() {
 

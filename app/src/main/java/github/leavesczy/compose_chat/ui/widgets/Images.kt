@@ -15,7 +15,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.CircleShape
@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil3.compose.SubcomposeAsyncImage
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -55,8 +55,8 @@ import kotlin.random.Random
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun ComponentImage(
@@ -67,7 +67,7 @@ fun ComponentImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     contentDescription: String? = null,
-    backgroundColor: Color = Color(0x66888888)
+    backgroundColor: Color = Color(color = 0x66888888)
 ) {
     SubcomposeAsyncImage(
         modifier = modifier,
@@ -78,14 +78,14 @@ fun ComponentImage(
         colorFilter = colorFilter,
         contentDescription = contentDescription,
         loading = {
-            Box(
+            Spacer(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(color = backgroundColor)
             )
         },
         error = {
-            Box(
+            Spacer(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(color = backgroundColor)
@@ -216,7 +216,7 @@ private fun BouncyImage(modifier: Modifier, model: Any) {
             .clip(shape = CircleShape)
             .border(
                 width = 2.dp,
-                color = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(alpha = 0.8f),
+                color = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(alpha = 0.8f),
                 shape = CircleShape
             )
             .zIndex(zIndex = Float.MAX_VALUE)

@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.SharedFlow
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 interface IGroupProvider {
 
-    val joinedGroupList: SharedFlow<List<GroupProfile>>
+    val joinedGroupListFlow: SharedFlow<List<GroupProfile>>
 
     fun refreshJoinedGroupList()
 
@@ -25,7 +25,5 @@ interface IGroupProvider {
     suspend fun getGroupMemberList(groupId: String): List<GroupMemberProfile>
 
     suspend fun setAvatar(groupId: String, avatarUrl: String): ActionResult
-
-    suspend fun transferGroupOwner(groupId: String, newOwnerUserID: String): ActionResult
 
 }

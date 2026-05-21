@@ -21,9 +21,11 @@
 #-renamesourcefileattribute SourceFile
 
 -optimizationpasses 20
--obfuscationdictionary dictionary.txt
--packageobfuscationdictionary dictionary.txt
--classobfuscationdictionary dictionary.txt
+-renamesourcefileattribute ''
+-dontusemixedcaseclassnames
 -processkotlinnullchecks remove
+-obfuscationdictionary dictionary.txt
+-classobfuscationdictionary dictionary.txt
+-packageobfuscationdictionary dictionary.txt
 
 -keep class com.tencent.imsdk.** { *; }

@@ -16,12 +16,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun CommonOutlinedTextField(
@@ -30,7 +30,7 @@ fun CommonOutlinedTextField(
     label: String,
     singleLine: Boolean = false,
     maxLines: Int = 4,
-    onValueChange: (String) -> Unit
+    onValueChange: (value: String) -> Unit
 ) {
     OutlinedTextField(
         modifier = modifier,
@@ -44,17 +44,17 @@ fun CommonOutlinedTextField(
                 text = label,
                 fontSize = 14.sp,
                 lineHeight = 16.sp,
-                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
             )
         },
         textStyle = TextStyle(
             fontSize = 17.sp,
-            color = ComposeChatTheme.colorScheme.c_FF1C1B1F_FFFFFFFF.color
+            color = AppTheme.colorScheme.c_FF1C1B1F_FFFFFFFF.color
         ),
         colors = OutlinedTextFieldDefaults.colors(
-            cursorColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
-            focusedBorderColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(alpha = 0.7f),
-            unfocusedBorderColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(alpha = 0.5f)
+            cursorColor = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
+            focusedBorderColor = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(alpha = 0.7f),
+            unfocusedBorderColor = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(alpha = 0.5f)
         )
     )
 }
@@ -70,7 +70,7 @@ fun CommonButton(
             .padding(horizontal = 20.dp)
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(size = 22.dp))
-            .background(color = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color)
+            .background(color = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
@@ -80,7 +80,7 @@ fun CommonButton(
             text = text,
             fontSize = 15.sp,
             lineHeight = 16.sp,
-            color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+            color = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
         )
     }
 }

@@ -6,8 +6,8 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.getByType
 
 /**
- * @Author: CZY
- * @Date: 2025/8/14 22:22
+ * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 internal val Project.libs: VersionCatalog

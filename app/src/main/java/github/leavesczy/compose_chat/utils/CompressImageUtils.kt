@@ -12,8 +12,8 @@ import java.io.File
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 object CompressImageUtils {
 

@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.ui.base.BaseActivity
@@ -18,8 +19,8 @@ import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class FriendProfileActivity : BaseActivity() {
 
@@ -38,7 +39,7 @@ class FriendProfileActivity : BaseActivity() {
 
     }
 
-    private val friendId by lazy(mode = LazyThreadSafetyMode.NONE) {
+    private val friendId by lazy {
         intent.getStringExtra(KEY_FRIEND_ID) ?: ""
     }
 
@@ -60,6 +61,7 @@ class FriendProfileActivity : BaseActivity() {
                 onClickChat = ::navToChatPage
             )
             DeleteFriendDialog(
+                modifier = Modifier,
                 visible = deleteFriendDialogVisible,
                 deleteFriend = ::deleteFriend,
                 onDismissRequest = {
@@ -67,7 +69,7 @@ class FriendProfileActivity : BaseActivity() {
                 }
             )
             SetFriendRemarkDialog(viewState = friendProfileViewModel.setFriendRemarkDialogViewState)
-            LoadingDialog(visible = friendProfileViewModel.loadingDialogVisible)
+            LoadingDialog(viewState = friendProfileViewModel.loadingDialogViewState)
         }
     }
 

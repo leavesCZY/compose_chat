@@ -9,7 +9,7 @@ import kotlinx.collections.immutable.PersistentList
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/1/23 21:27
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 @Stable
@@ -17,8 +17,8 @@ data class FriendshipPageViewState(
     val listState: LazyListState,
     val joinedGroupList: PersistentList<GroupProfile>,
     val friendList: PersistentList<PersonProfile>,
-    val onClickGroupItem: (GroupProfile) -> Unit,
-    val onClickFriendItem: (PersonProfile) -> Unit,
+    val onClickGroupItem: (group: GroupProfile) -> Unit,
+    val onClickFriendItem: (friend: PersonProfile) -> Unit,
     val showFriendshipDialog: () -> Unit
 )
 

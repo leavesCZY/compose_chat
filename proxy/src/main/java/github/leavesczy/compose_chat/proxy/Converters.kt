@@ -12,12 +12,12 @@ import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMMessage
 import com.tencent.imsdk.v2.V2TIMUserFullInfo
 import com.tencent.imsdk.v2.V2TIMValueCallback
+import github.leavesczy.compose_chat.base.R
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.base.models.Conversation
 import github.leavesczy.compose_chat.base.models.ConversationType
 import github.leavesczy.compose_chat.base.models.GroupMemberProfile
-import github.leavesczy.compose_chat.base.models.ImageElement
 import github.leavesczy.compose_chat.base.models.ImageMessage
 import github.leavesczy.compose_chat.base.models.Message
 import github.leavesczy.compose_chat.base.models.MessageDetail
@@ -25,55 +25,64 @@ import github.leavesczy.compose_chat.base.models.MessageState
 import github.leavesczy.compose_chat.base.models.PersonProfile
 import github.leavesczy.compose_chat.base.models.SystemMessage
 import github.leavesczy.compose_chat.base.models.TextMessage
+import github.leavesczy.compose_chat.base.utils.StringResources
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 internal object Converters {
 
     suspend fun getSelfProfileOrigin(): V2TIMUserFullInfo? {
-        return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getInstance().getUsersInfo(
-                listOf(V2TIMManager.getInstance().loginUser),
-                object : V2TIMValueCallback<List<V2TIMUserFullInfo>> {
-                    override fun onSuccess(t: List<V2TIMUserFullInfo>) {
-                        continuation.resume(value = t[0])
-                    }
+        return withContext(context = Dispatchers.Main.immediate) {
+            suspendCancellableCoroutine { continuation ->
+                V2TIMManager.getInstance().getUsersInfo(
+                    listOf(V2TIMManager.getInstance().loginUser),
+                    object : V2TIMValueCallback<List<V2TIMUserFullInfo>> {
+                        override fun onSuccess(t: List<V2TIMUserFullInfo>) {
+                            continuation.resume(value = t[0])
+                        }
 
-                    override fun onError(code: Int, desc: String?) {
-                        continuation.resume(value = null)
+                        override fun onError(code: Int, desc: String?) {
+                            continuation.resume(value = null)
+                        }
                     }
-                })
+                )
+            }
         }
     }
 
     suspend fun getSelfProfile(): PersonProfile? {
-        val profile = getSelfProfileOrigin()
-        return if (profile == null) {
-            null
-        } else {
-            PersonProfile(
-                id = profile.userID ?: "",
-                nickname = profile.nickName ?: "",
-                remark = profile.nickName ?: "",
-                faceUrl = profile.faceUrl ?: "",
-                addTime = 0,
-                signature = profile.selfSignature ?: ""
-            )
+        return withContext(context = Dispatchers.Main.immediate) {
+            val profile = getSelfProfileOrigin()
+            if (profile == null) {
+                null
+            } else {
+                PersonProfile(
+                    id = profile.userID ?: "",
+                    nickname = profile.nickName?.trim() ?: "",
+                    remark = profile.nickName?.trim() ?: "",
+                    avatarUrl = profile.faceUrl ?: "",
+                    addTime = 0,
+                    signature = profile.selfSignature?.trim() ?: "",
+                    isFriend = false
+                )
+            }
         }
     }
 
     fun convertFriendProfile(friendInfo: V2TIMFriendInfo): PersonProfile {
         return PersonProfile(
             id = friendInfo.userID ?: "",
-            nickname = friendInfo.userProfile.nickName ?: "",
-            remark = friendInfo.friendRemark ?: "",
-            faceUrl = friendInfo.userProfile.faceUrl ?: "",
-            signature = friendInfo.userProfile.selfSignature ?: "",
+            nickname = friendInfo.userProfile.nickName?.trim() ?: "",
+            remark = friendInfo.friendRemark?.trim() ?: "",
+            avatarUrl = friendInfo.userProfile.faceUrl ?: "",
+            signature = friendInfo.userProfile.selfSignature?.trim() ?: "",
             addTime = friendInfo.friendAddTime,
             isFriend = true
         )
@@ -82,71 +91,52 @@ internal object Converters {
     fun convertFriendProfile(friendInfo: V2TIMFriendInfoResult): PersonProfile {
         return PersonProfile(
             id = friendInfo.friendInfo.userID ?: "",
-            nickname = friendInfo.friendInfo.userProfile.nickName ?: "",
-            remark = friendInfo.friendInfo.friendRemark ?: "",
-            faceUrl = friendInfo.friendInfo.userProfile.faceUrl ?: "",
-            signature = friendInfo.friendInfo.userProfile.selfSignature ?: "",
+            nickname = friendInfo.friendInfo.userProfile.nickName?.trim() ?: "",
+            remark = friendInfo.friendInfo.friendRemark?.trim() ?: "",
+            avatarUrl = friendInfo.friendInfo.userProfile.faceUrl ?: "",
+            signature = friendInfo.friendInfo.userProfile.selfSignature?.trim() ?: "",
             addTime = friendInfo.friendInfo.friendAddTime,
             isFriend = friendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_BOTH_WAY || friendInfo.relation == V2TIMFriendCheckResult.V2TIM_FRIEND_RELATION_TYPE_IN_MY_FRIEND_LIST
         )
     }
 
-    fun convertGroupMember(memberFullInfo: V2TIMGroupMemberInfo): GroupMemberProfile {
-        val fullInfo = memberFullInfo as? V2TIMGroupMemberFullInfo
-        val role = fullInfo?.role ?: -11111
+    fun convertGroupMember(memberFullInfo: V2TIMGroupMemberFullInfo): GroupMemberProfile {
         val detail = PersonProfile(
             id = memberFullInfo.userID ?: "",
-            faceUrl = memberFullInfo.faceUrl ?: "",
-            nickname = memberFullInfo.nickName ?: "",
-            remark = memberFullInfo.friendRemark ?: "",
+            avatarUrl = memberFullInfo.faceUrl ?: "",
+            nickname = memberFullInfo.nickName?.trim() ?: "",
+            remark = memberFullInfo.friendRemark?.trim() ?: "",
             addTime = 0,
-            signature = ""
+            signature = "",
+            isFriend = false
         )
         return GroupMemberProfile(
             detail = detail,
-            role = convertRole(role),
-            isOwner = role == V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_OWNER,
-            joinTime = (memberFullInfo as? V2TIMGroupMemberFullInfo)?.joinTime ?: 0,
+            isOwner = memberFullInfo.role == V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_OWNER,
+            joinTime = memberFullInfo.joinTime * 1000L
         )
     }
 
-    private fun convertRole(roleType: Int): String {
-        return when (roleType) {
-            V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_MEMBER -> {
-                "群成员"
-            }
-
-            V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_ADMIN -> {
-                "群管理员"
-            }
-
-            V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_ROLE_OWNER -> {
-                "群主"
-            }
-
-            else -> {
-                "unknown"
-            }
-        }
-    }
-
     fun convertMessage(messageList: List<V2TIMMessage>?): List<Message> {
-        return messageList?.map { convertMessage(it) } ?: emptyList()
+        return messageList?.map { timMessage ->
+            convertMessage(timMessage = timMessage)
+        } ?: emptyList()
     }
 
     fun convertMessage(timMessage: V2TIMMessage): Message {
         val senderProfile = PersonProfile(
             id = timMessage.sender,
-            faceUrl = timMessage.faceUrl ?: "",
-            nickname = timMessage.nickName ?: "",
-            remark = timMessage.friendRemark ?: "",
+            avatarUrl = timMessage.faceUrl ?: "",
+            nickname = timMessage.nickName?.trim() ?: "",
+            remark = timMessage.friendRemark?.trim() ?: "",
             addTime = 0,
-            signature = ""
+            signature = "",
+            isFriend = false
         )
         val messageDetail = MessageDetail(
             msgId = timMessage.msgID ?: "",
-            state = convertMessageState(timMessage.status),
-            timestamp = timMessage.timestamp,
+            state = convertMessageState(state = timMessage.status),
+            milliseconds = timMessage.timestamp * 1000L,
             sender = senderProfile,
             isOwnMessage = timMessage.isSelf
         )
@@ -159,11 +149,13 @@ internal object Converters {
             }
 
             V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE -> {
-                val imageList = timMessage.imageElem?.imageList
+                val imageElem = timMessage.imageElem
+                val imageList = imageElem?.imageList
                 if (!imageList.isNullOrEmpty()) {
-                    val origin = imageList[0].toImageElement()
-                    val large = imageList.getOrNull(1).toImageElement()
-                    val thumb = imageList.getOrNull(2).toImageElement()
+                    val imagePath = imageElem.path
+                    val origin = imageList[0].toImageElement(imagePath = imagePath)
+                    val large = imageList.getOrNull(index = 1).toImageElement(imagePath = imagePath)
+                    val thumb = imageList.getOrNull(index = 2).toImageElement(imagePath = imagePath)
                     ImageMessage(
                         messageDetail = messageDetail,
                         original = origin!!,
@@ -184,7 +176,10 @@ internal object Converters {
             }
         } ?: TextMessage(
             messageDetail = messageDetail,
-            text = "[不支持的消息类型] - ${timMessage.elemType}"
+            text = StringResources.getString(
+                resId = R.string.message_unsupported_type,
+                timMessage.elemType
+            )
         )
         message.tag = timMessage
         return message
@@ -194,8 +189,8 @@ internal object Converters {
         val groupTipsElem = timMessage.groupTipsElem
         if (groupTipsElem != null) {
             fun V2TIMGroupMemberInfo.showName(): String {
-                val friendRemark = this.friendRemark
-                val nickname = this.nickName
+                val friendRemark = this.friendRemark?.trim()
+                val nickname = this.nickName?.trim()
                 val userId = this.userID
                 return if (friendRemark.isNullOrBlank()) {
                     if (nickname.isNullOrBlank()) {
@@ -210,15 +205,16 @@ internal object Converters {
 
             val messageDetail = MessageDetail(
                 msgId = timMessage.msgID ?: "",
-                state = MessageState.Completed,
-                timestamp = timMessage.timestamp,
+                state = MessageState.Success,
+                milliseconds = timMessage.timestamp * 1000L,
                 sender = PersonProfile(
                     id = timMessage.sender,
-                    faceUrl = "",
+                    avatarUrl = "",
                     nickname = "",
                     remark = "",
                     addTime = 0,
-                    signature = ""
+                    signature = "",
+                    isFriend = false
                 ),
                 isOwnMessage = false
             )
@@ -230,7 +226,7 @@ internal object Converters {
                     append += if (index == memberList.size - 1) {
                         info.showName()
                     } else {
-                        "${info.showName()}、"
+                        info.showName() + "、"
                     }
                 }
                 append
@@ -239,49 +235,73 @@ internal object Converters {
             val tips: String
             when (groupTipsElem.type) {
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_JOIN, V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_INVITE -> {
-                    tips = memberNames + "加入了群聊"
+                    tips = StringResources.getString(resId = R.string.group_tip_join, memberNames)
                 }
 
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_QUIT -> {
-                    tips = memberNames + "退出群聊"
+                    tips = StringResources.getString(resId = R.string.group_tip_quit, memberNames)
                 }
 
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_KICKED -> {
-                    tips = memberNames + "被踢出群聊"
+                    tips = StringResources.getString(resId = R.string.group_tip_kicked, memberNames)
                 }
 
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_SET_ADMIN -> {
-                    tips = memberNames + "成为管理员"
+                    tips =
+                        StringResources.getString(resId = R.string.group_tip_set_admin, memberNames)
                 }
 
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_CANCEL_ADMIN -> {
-                    tips = memberNames + "被取消管理员身份"
+                    tips = StringResources.getString(
+                        resId = R.string.group_tip_cancel_admin,
+                        memberNames
+                    )
                 }
 
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_GROUP_INFO_CHANGE -> {
-                    tips = opMemberName + "修改了群资料"
+                    tips = StringResources.getString(
+                        resId = R.string.group_tip_group_info_change,
+                        opMemberName
+                    )
                 }
 
                 V2TIMGroupTipsElem.V2TIM_GROUP_TIPS_TYPE_MEMBER_INFO_CHANGE -> {
-                    tips = opMemberName + "修改了群成员资料"
+                    tips = StringResources.getString(
+                        resId = R.string.group_tip_member_info_change,
+                        opMemberName
+                    )
                 }
 
                 else -> {
-                    tips = "[不支持的系统消息] - ${groupTipsElem.type}"
+                    tips = StringResources.getString(
+                        resId = R.string.message_unsupported_group_tip,
+                        groupTipsElem.type
+                    )
                 }
             }
             return SystemMessage(
-                messageDetail = messageDetail, tips = tips
+                messageDetail = messageDetail,
+                tips = tips
             )
         }
         return null
     }
 
-    private fun V2TIMImageElem.V2TIMImage?.toImageElement(): ImageElement? {
+    private fun V2TIMImageElem.V2TIMImage?.toImageElement(imagePath: String?): ImageMessage.ImageElement? {
         if (this == null) {
             return null
         }
-        return ImageElement(width = width, height = height, url = url)
+        val mUrl = url
+        val imageUrl = if (mUrl.isNullOrBlank()) {
+            imagePath
+        } else {
+            mUrl
+        } ?: ""
+        return ImageMessage.ImageElement(
+            width = width,
+            height = height,
+            url = imageUrl
+        )
     }
 
     private fun convertMessageState(state: Int): MessageState {
@@ -291,30 +311,40 @@ internal object Converters {
             }
 
             V2TIMMessage.V2TIM_MSG_STATUS_SEND_SUCC -> {
-                MessageState.Completed
+                MessageState.Success
             }
 
             V2TIMMessage.V2TIM_MSG_STATUS_SEND_FAIL -> {
-                MessageState.SendFailed(reason = "unknown")
+                MessageState.Failed(
+                    reason = StringResources.getString(resId = R.string.message_send_failed_unknown)
+                )
             }
 
             else -> {
-                MessageState.Completed
+                MessageState.Success
             }
         }
     }
 
     private suspend fun deleteConversation(key: String): ActionResult {
-        return suspendCancellableCoroutine { continuation ->
-            V2TIMManager.getConversationManager().deleteConversation(key, object : V2TIMCallback {
-                override fun onSuccess() {
-                    continuation.resume(ActionResult.Success)
-                }
+        return withContext(context = Dispatchers.Main.immediate) {
+            suspendCancellableCoroutine { continuation ->
+                V2TIMManager.getConversationManager()
+                    .deleteConversation(key, object : V2TIMCallback {
+                        override fun onSuccess() {
+                            continuation.resume(value = ActionResult.Success)
+                        }
 
-                override fun onError(code: Int, desc: String?) {
-                    continuation.resume(ActionResult.Failed(desc ?: ""))
-                }
-            })
+                        override fun onError(code: Int, desc: String?) {
+                            continuation.resume(
+                                value = ActionResult.Failed(
+                                    code = code,
+                                    reason = desc
+                                )
+                            )
+                        }
+                    })
+            }
         }
     }
 

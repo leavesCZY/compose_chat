@@ -7,7 +7,7 @@ import org.gradle.kotlin.dsl.getByType
 
 /**
  * @Author: leavesCZY
- * @Date: 2023/11/29 16:09
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 class ComposeConventionPlugin : Plugin<Project> {
@@ -15,7 +15,7 @@ class ComposeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(receiver = target) {
             apply(plugin = "org.jetbrains.kotlin.plugin.compose")
-            val commonExtension = extensions.getByType(type = CommonExtension::class)
+            val commonExtension = extensions.getByType<CommonExtension>()
             configureCompose(commonExtension = commonExtension)
         }
     }

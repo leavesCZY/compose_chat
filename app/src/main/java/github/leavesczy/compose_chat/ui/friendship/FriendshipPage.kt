@@ -29,13 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.ui.conversation.EmptyPage
 import github.leavesczy.compose_chat.ui.friendship.logic.FriendshipPageViewState
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun FriendshipPage(pageViewState: FriendshipPageViewState) {
@@ -79,41 +79,41 @@ private fun FriendshipPage(
         } else {
             items(
                 items = joinedGroupList,
-                key = {
-                    it.id
+                key = { group ->
+                    group.id
                 },
                 contentType = {
                     "FriendshipItem"
                 }
-            ) {
+            ) { group ->
                 FriendshipItem(
                     modifier = Modifier
                         .animateItem(),
-                    imageUrl = it.faceUrl,
-                    title = it.name,
+                    imageUrl = group.avatarUrl,
+                    title = group.name,
                     subtitle = null,
                     onClick = {
-                        pageViewState.onClickGroupItem(it)
+                        pageViewState.onClickGroupItem(group)
                     }
                 )
             }
             items(
                 items = pageViewState.friendList,
-                key = {
-                    it.id
+                key = { friend ->
+                    friend.id
                 },
                 contentType = {
                     "FriendshipItem"
                 }
-            ) {
+            ) { friend ->
                 FriendshipItem(
                     modifier = Modifier
                         .animateItem(),
-                    imageUrl = it.faceUrl,
-                    title = it.showName,
-                    subtitle = it.signature,
+                    imageUrl = friend.avatarUrl,
+                    title = friend.showName,
+                    subtitle = friend.signature,
                     onClick = {
-                        pageViewState.onClickFriendItem(it)
+                        pageViewState.onClickFriendItem(friend)
                     }
                 )
             }
@@ -160,7 +160,7 @@ private fun FriendshipItem(
                     lineHeight = 18.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                    color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
                 )
             }
             if (!subtitle.isNullOrBlank()) {
@@ -171,7 +171,7 @@ private fun FriendshipItem(
                     lineHeight = 14.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = ComposeChatTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                    color = AppTheme.colorScheme.c_FF384F60_99FFFFFF.color
                 )
             }
         }
@@ -192,12 +192,12 @@ private fun FloatingActionButton(
         modifier = modifier
             .size(size = 50.dp),
         elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 3.dp),
-        containerColor = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
+        containerColor = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
         content = {
             Icon(
                 modifier = Modifier,
                 imageVector = Icons.Filled.Favorite,
-                tint = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color,
+                tint = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color,
                 contentDescription = null
             )
         },

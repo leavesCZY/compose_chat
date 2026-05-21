@@ -12,8 +12,8 @@ import github.leavesczy.compose_chat.ui.logic.AppTheme
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 object AppThemeProvider {
 
@@ -36,11 +36,15 @@ object AppThemeProvider {
 
     private fun getAppThemeOfDefault(): AppTheme {
         val themeIndex = preferences.getInt(KEY_APP_THEME, defaultTheme.ordinal)
-        return AppTheme.entries.find { it.ordinal == themeIndex } ?: defaultTheme
+        return AppTheme.entries.find { theme ->
+            theme.ordinal == themeIndex
+        } ?: defaultTheme
     }
 
     fun onAppThemeChanged(appTheme: AppTheme) {
-        preferences.edit { putInt(KEY_APP_THEME, appTheme.ordinal) }
+        preferences.edit {
+            putInt(KEY_APP_THEME, appTheme.ordinal)
+        }
         initThemeDelegate(appTheme = appTheme)
         this.appTheme = appTheme
     }

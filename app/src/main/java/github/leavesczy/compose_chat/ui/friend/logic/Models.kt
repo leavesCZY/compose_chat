@@ -5,8 +5,8 @@ import github.leavesczy.compose_chat.base.models.PersonProfile
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Stable
 data class FriendProfilePageViewState(
@@ -21,6 +21,6 @@ data class FriendProfilePageViewState(
 data class SetFriendRemarkDialogViewState(
     val visible: Boolean,
     val remark: String,
-    val setFriendRemark: (String) -> Unit,
+    val setFriendRemark: (remark: String) -> Unit,
     val dismissDialog: () -> Unit
 )

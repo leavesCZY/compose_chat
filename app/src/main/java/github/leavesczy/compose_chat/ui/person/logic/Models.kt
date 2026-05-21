@@ -5,11 +5,11 @@ import github.leavesczy.compose_chat.base.models.PersonProfile
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/1/23 21:28
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 @Stable
 data class PersonProfilePageViewState(
     val personProfile: PersonProfile,
-    val previewImage: (String) -> Unit
+    val previewImage: (imageUrl: String) -> Unit
 )

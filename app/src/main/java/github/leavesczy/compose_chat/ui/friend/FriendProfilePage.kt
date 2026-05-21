@@ -20,11 +20,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.ui.friend.logic.FriendProfilePageViewState
 import github.leavesczy.compose_chat.ui.friend.logic.SetFriendRemarkDialogViewState
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 import github.leavesczy.compose_chat.ui.widgets.AnimatedBottomSheetDialog
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
@@ -32,7 +34,7 @@ import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/1/23 21:18
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 @Composable
@@ -44,7 +46,7 @@ internal fun FriendProfilePage(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
+        containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color,
         contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
         Box(
@@ -54,15 +56,22 @@ internal fun FriendProfilePage(
         ) {
             val personProfile = pageViewState.personProfile
             if (personProfile != null) {
+                val introduction = buildString {
+                    append(stringResource(id = R.string.friend_profile_id, personProfile.id))
+                    if (personProfile.remark.isNotBlank()) {
+                        append(
+                            stringResource(
+                                id = R.string.friend_profile_remark,
+                                personProfile.remark
+                            )
+                        )
+                    }
+                }
                 ProfilePanel(
                     title = personProfile.nickname,
                     subtitle = personProfile.signature,
-                    introduction = "ID: ${personProfile.id}" + if (personProfile.remark.isNotBlank()) {
-                        "\nRemark: ${personProfile.remark}"
-                    } else {
-                        ""
-                    },
-                    avatarUrl = personProfile.faceUrl,
+                    introduction = introduction,
+                    avatarUrl = personProfile.avatarUrl
                 ) {
                     Column(
                         modifier = Modifier
@@ -72,21 +81,21 @@ internal fun FriendProfilePage(
                     ) {
                         if (!pageViewState.itIsMe) {
                             CommonButton(
-                                text = "去聊天吧",
+                                text = stringResource(id = R.string.chat_now),
                                 onClick = onClickChat
                             )
                             if (pageViewState.isFriend) {
                                 CommonButton(
-                                    text = "设置备注",
+                                    text = stringResource(id = R.string.set_remark),
                                     onClick = pageViewState.showSetFriendRemarkPanel
                                 )
                                 CommonButton(
-                                    text = "删除好友",
+                                    text = stringResource(id = R.string.delete_friend),
                                     onClick = openDeleteFriendDialog
                                 )
                             } else {
                                 CommonButton(
-                                    text = "加为好友",
+                                    text = stringResource(id = R.string.add_as_friend),
                                     onClick = pageViewState.addFriend
                                 )
                             }
@@ -100,22 +109,23 @@ internal fun FriendProfilePage(
 
 @Composable
 internal fun DeleteFriendDialog(
+    modifier: Modifier,
     visible: Boolean,
     deleteFriend: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
     if (visible) {
         AlertDialog(
-            modifier = Modifier,
-            containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF22202A.color,
+            modifier = modifier,
+            containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF22202A.color,
             onDismissRequest = onDismissRequest,
             text = {
                 Text(
                     modifier = Modifier,
-                    text = "确认删除好友吗？",
+                    text = stringResource(id = R.string.confirm_delete_friend),
                     fontSize = 17.sp,
                     lineHeight = 18.sp,
-                    color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                    color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
                 )
             },
             confirmButton = {
@@ -124,10 +134,10 @@ internal fun DeleteFriendDialog(
                 ) {
                     Text(
                         modifier = Modifier,
-                        text = "取消",
+                        text = stringResource(id = R.string.cancel),
                         fontSize = 15.sp,
                         lineHeight = 16.sp,
-                        color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                        color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
                     )
                 }
             },
@@ -140,10 +150,10 @@ internal fun DeleteFriendDialog(
                 ) {
                     Text(
                         modifier = Modifier,
-                        text = "删除",
+                        text = stringResource(id = R.string.delete),
                         fontSize = 15.sp,
                         lineHeight = 16.sp,
-                        color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                        color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
                     )
                 }
             }
@@ -172,12 +182,12 @@ internal fun SetFriendRemarkDialog(viewState: SetFriendRemarkDialogViewState) {
                     .fillMaxWidth()
                     .padding(start = 20.dp, end = 20.dp, top = 12.dp),
                 value = remark,
-                onValueChange = {
-                    remark = it
+                onValueChange = { value ->
+                    remark = value
                 },
-                label = "输入备注",
+                label = stringResource(id = R.string.input_remark)
             )
-            CommonButton(text = "设置备注") {
+            CommonButton(text = stringResource(id = R.string.set_remark)) {
                 viewState.setFriendRemark(remark)
             }
         }

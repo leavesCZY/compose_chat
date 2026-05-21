@@ -19,16 +19,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.ui.logic.MainPageTopBarViewState
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 import github.leavesczy.compose_chat.ui.widgets.ComposeDropdownMenuItem
 import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun MainPageTopBar(
@@ -41,7 +43,7 @@ fun MainPageTopBar(
     val coroutineScope = rememberCoroutineScope()
     CenterAlignedTopAppBar(
         modifier = Modifier,
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color),
         title = {
 
         },
@@ -86,7 +88,7 @@ fun MainPageTopBar(
                 ) {
                     DropdownMenu(
                         modifier = Modifier,
-                        containerColor = ComposeChatTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
+                        containerColor = AppTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
                         expanded = menuExpanded,
                         onDismissRequest = {
                             menuExpanded = false
@@ -94,7 +96,7 @@ fun MainPageTopBar(
                     ) {
                         ComposeDropdownMenuItem(
                             modifier = Modifier,
-                            text = "添加好友",
+                            text = stringResource(id = R.string.add_friend),
                             onClick = {
                                 menuExpanded = false
                                 showFriendshipDialog()
@@ -102,7 +104,7 @@ fun MainPageTopBar(
                         )
                         ComposeDropdownMenuItem(
                             modifier = Modifier,
-                            text = "加入群聊",
+                            text = stringResource(id = R.string.join_group_chat),
                             onClick = {
                                 menuExpanded = false
                                 showFriendshipDialog()

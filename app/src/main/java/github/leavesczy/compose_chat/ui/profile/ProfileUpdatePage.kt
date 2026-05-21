@@ -14,17 +14,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.ui.profile.logic.ProfileUpdatePageViewStata
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 import github.leavesczy.compose_chat.ui.widgets.CommonButton
 import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
-import github.leavesczy.compose_chat.utils.randomImage
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/1/23 21:19
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 @Composable
@@ -32,7 +33,7 @@ internal fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
+        containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color,
         contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
         Box(
@@ -40,6 +41,7 @@ internal fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
                 .padding(paddingValues = innerPadding)
                 .fillMaxSize()
                 .verticalScroll(state = rememberScrollState())
+                .padding(bottom = 30.dp)
         ) {
             val personProfile = pageViewStata.personProfile
             if (personProfile != null) {
@@ -47,11 +49,10 @@ internal fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
                     title = personProfile.nickname,
                     subtitle = personProfile.signature,
                     introduction = "",
-                    avatarUrl = personProfile.faceUrl
+                    avatarUrl = personProfile.avatarUrl
                 ) {
                     Column(
-                        modifier = Modifier
-                            .padding(bottom = 30.dp),
+                        modifier = Modifier,
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(space = 16.dp)
                     ) {
@@ -59,34 +60,36 @@ internal fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 20.dp),
+                            label = stringResource(id = R.string.nickname_label),
                             value = personProfile.nickname,
-                            onValueChange = {
-                                if (it.length > 16) {
+                            onValueChange = { nickname ->
+                                if (nickname.length > 16) {
                                     return@CommonOutlinedTextField
                                 }
-                                pageViewStata.onNicknameChanged(it)
-                            },
-                            label = "nickname"
+                                pageViewStata.onNicknameChanged(nickname)
+                            }
                         )
                         CommonOutlinedTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 20.dp),
+                            label = stringResource(id = R.string.signature_label),
                             value = personProfile.signature,
-                            onValueChange = {
-                                if (it.length > 40) {
+                            onValueChange = { signature ->
+                                if (signature.length > 60) {
                                     return@CommonOutlinedTextField
                                 }
-                                pageViewStata.onSignatureChanged(it)
-                            },
-                            label = "signature"
+                                pageViewStata.onSignatureChanged(signature)
+                            }
                         )
-                        CommonButton(text = "随机头像") {
-                            pageViewStata.onAvatarUrlChanged(randomImage())
-                        }
-                        CommonButton(text = "确认修改") {
-                            pageViewStata.confirmUpdate()
-                        }
+                        CommonButton(
+                            text = stringResource(id = R.string.random_avatar),
+                            onClick = pageViewStata.setRandomAvatar
+                        )
+                        CommonButton(
+                            text = stringResource(id = R.string.confirm_update),
+                            onClick = pageViewStata.onConfirmUpdate
+                        )
                     }
                 }
             }

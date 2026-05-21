@@ -7,8 +7,8 @@ import github.leavesczy.compose_chat.ui.profile.logic.ProfileUpdateViewModel
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class ProfileUpdateActivity : BaseActivity() {
 

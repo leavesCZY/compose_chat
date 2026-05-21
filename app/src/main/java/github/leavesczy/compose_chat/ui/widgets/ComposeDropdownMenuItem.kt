@@ -8,11 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/1/5 12:14
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 @Composable
@@ -31,7 +31,7 @@ internal fun ComposeDropdownMenuItem(
                 fontSize = 18.sp,
                 lineHeight = 20.sp,
                 fontWeight = FontWeight.Normal,
-                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
             )
         },
         onClick = onClick

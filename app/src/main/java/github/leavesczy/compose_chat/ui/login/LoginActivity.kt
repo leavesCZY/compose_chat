@@ -2,16 +2,14 @@ package github.leavesczy.compose_chat.ui.login
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
-import github.leavesczy.compose_chat.ui.MainActivity
 import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.login.logic.LoginViewModel
-import kotlinx.coroutines.launch
+import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class LoginActivity : BaseActivity() {
 
@@ -20,32 +18,10 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LoginPage(
-                viewState = loginViewModel.loginPageViewState,
-                onClickLoginButton = ::onClickLoginButton
-            )
+            LoginPage(viewState = loginViewModel.loginPageViewState)
+            LoadingDialog(viewState = loginViewModel.loadingDialogViewState)
         }
-        tryLogin()
-    }
-
-    private fun tryLogin() {
-        lifecycleScope.launch {
-            val result = loginViewModel.tryLogin()
-            if (result) {
-                startActivity<MainActivity>()
-                finish()
-            }
-        }
-    }
-
-    private fun onClickLoginButton() {
-        lifecycleScope.launch {
-            val result = loginViewModel.onClickLoginButton()
-            if (result) {
-                startActivity<MainActivity>()
-                finish()
-            }
-        }
+        loginViewModel.tryAutoLogin(activity = this)
     }
 
 }

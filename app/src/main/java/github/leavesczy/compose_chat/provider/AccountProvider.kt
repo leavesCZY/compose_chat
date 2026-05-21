@@ -7,8 +7,8 @@ import androidx.core.content.edit
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 object AccountProvider {
 
@@ -23,7 +23,7 @@ object AccountProvider {
     val lastLoginUserId: String
         get() = preferences.getString(KEY_LAST_LOGIN_USER_ID, "") ?: ""
 
-    val canAutoLogin: Boolean
+    val autoLogin: Boolean
         get() = preferences.getBoolean(KEY_AUTO_LOGIN, true)
 
     fun init(application: Application) {
@@ -31,15 +31,16 @@ object AccountProvider {
     }
 
     fun onUserLogin(userId: String) {
-        preferences.edit().apply {
+        preferences.edit {
             putString(KEY_LAST_LOGIN_USER_ID, userId)
             putBoolean(KEY_AUTO_LOGIN, true)
-            apply()
         }
     }
 
     fun onUserLogout() {
-        preferences.edit { putBoolean(KEY_AUTO_LOGIN, false) }
+        preferences.edit {
+            putBoolean(KEY_AUTO_LOGIN, false)
+        }
     }
 
 }

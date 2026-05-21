@@ -21,12 +21,12 @@ import androidx.compose.ui.zIndex
 import github.leavesczy.compose_chat.extend.clickableNoRipple
 import github.leavesczy.compose_chat.extend.scrim
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun ProfilePanel(
@@ -36,7 +36,7 @@ fun ProfilePanel(
     avatarUrl: String,
     content: @Composable BoxScope.() -> Unit
 ) {
-    val context = LocalContext.current
+    val localContext = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxHeight()
@@ -46,7 +46,7 @@ fun ProfilePanel(
                 .fillMaxWidth()
                 .aspectRatio(ratio = 5f / 4.2f)
                 .zIndex(zIndex = -100f)
-                .scrim(color = ComposeChatTheme.colorScheme.c_33000000_33000000.color),
+                .scrim(color = AppTheme.colorScheme.c_33000000_33000000.color),
             model = avatarUrl
         )
         Column(
@@ -61,7 +61,7 @@ fun ProfilePanel(
                     .size(size = 100.dp)
                     .clickableNoRipple {
                         if (avatarUrl.isNotBlank()) {
-                            PreviewImageActivity.navTo(context = context, imageUri = avatarUrl)
+                            PreviewImageActivity.navTo(context = localContext, imageUri = avatarUrl)
                         }
                     },
                 model = avatarUrl
@@ -73,7 +73,7 @@ fun ProfilePanel(
                 fontSize = 18.sp,
                 lineHeight = 21.sp,
                 textAlign = TextAlign.Center,
-                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+                color = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             )
             Text(
                 modifier = Modifier
@@ -82,7 +82,7 @@ fun ProfilePanel(
                 fontSize = 15.sp,
                 lineHeight = 16.sp,
                 textAlign = TextAlign.Center,
-                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+                color = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             )
             Text(
                 modifier = Modifier
@@ -91,7 +91,7 @@ fun ProfilePanel(
                 fontSize = 15.sp,
                 lineHeight = 16.sp,
                 textAlign = TextAlign.Center,
-                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+                color = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             )
             Box(
                 modifier = Modifier

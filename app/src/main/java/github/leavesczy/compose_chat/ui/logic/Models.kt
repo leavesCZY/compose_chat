@@ -6,8 +6,8 @@ import github.leavesczy.compose_chat.base.models.PersonProfile
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Stable
 enum class MainPageTab {
@@ -21,7 +21,7 @@ data class MainPageDrawerViewState(
     val drawerState: DrawerState,
     val personProfile: PersonProfile,
     val appTheme: AppTheme,
-    val previewImage: (String) -> Unit,
+    val previewImage: (imageUrl: String) -> Unit,
     val switchTheme: () -> Unit,
     val updateProfile: () -> Unit,
     val logout: () -> Unit
@@ -36,7 +36,7 @@ data class MainPageTopBarViewState(
 data class MainPageBottomBarViewState(
     val selectedTab: MainPageTab,
     val unreadMessageCount: Long,
-    val onClickTab: (MainPageTab) -> Unit
+    val onClickTab: (tab: MainPageTab) -> Unit
 )
 
 @Stable

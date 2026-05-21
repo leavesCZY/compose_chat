@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
  * @Author: leavesCZY
- * @Date: 2023/11/29 16:10
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 internal fun Project.configureCompose(commonExtension: CommonExtension) {

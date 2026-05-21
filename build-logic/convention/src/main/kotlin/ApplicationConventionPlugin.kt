@@ -8,7 +8,7 @@ import org.gradle.kotlin.dsl.getByType
 
 /**
  * @Author: leavesCZY
- * @Date: 2023/11/29 16:09
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 class ApplicationConventionPlugin : Plugin<Project> {
@@ -16,9 +16,9 @@ class ApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(receiver = target) {
             apply(plugin = "com.android.application")
-            val commonExtension = extensions.getByType(type = ApplicationExtension::class)
-            configureAndroidApplication(commonExtension = commonExtension)
-            configureAndroidProject(commonExtension = commonExtension)
+            val applicationExtension = extensions.getByType<ApplicationExtension>()
+            configureAndroidApplication(applicationExtension = applicationExtension)
+            configureAndroidProject(commonExtension = applicationExtension)
         }
     }
 

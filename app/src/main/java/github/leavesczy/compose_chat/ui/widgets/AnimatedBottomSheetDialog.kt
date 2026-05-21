@@ -43,12 +43,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.extend.clickableNoRipple
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 import kotlin.math.roundToInt
 
 /**
  * @Author: leavesCZY
- * @Date: 2025/9/5 15:33
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 @Composable
@@ -58,7 +58,7 @@ fun AnimatedBottomSheetDialog(
     onDismissRequest: () -> Unit,
     cancelable: Boolean = true,
     shape: Shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-    backgroundColor: Color = ComposeChatTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
+    backgroundColor: Color = AppTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
     navigationBarsColor: Color = backgroundColor,
     shadowElevation: Dp = 6.dp,
     dragHandle: (@Composable () -> Unit)? = {
@@ -115,11 +115,15 @@ fun AnimatedBottomSheetDialog(
                             .animateEnterExit(
                                 enter = slideInVertically(
                                     animationSpec = tween(durationMillis = 350),
-                                    initialOffsetY = { it }
+                                    initialOffsetY = { fullHeight ->
+                                        fullHeight
+                                    }
                                 ),
                                 exit = slideOutVertically(
                                     animationSpec = tween(durationMillis = 350),
-                                    targetOffsetY = { it }
+                                    targetOffsetY = { fullHeight ->
+                                        fullHeight
+                                    }
                                 )
                             ),
                         shape = shape,
@@ -136,11 +140,11 @@ fun AnimatedBottomSheetDialog(
                         .animateEnterExit(
                             enter = slideInVertically(
                                 animationSpec = tween(durationMillis = 350),
-                                initialOffsetY = { it }
+                                initialOffsetY = { fullHeight -> fullHeight }
                             ),
                             exit = slideOutVertically(
                                 animationSpec = tween(durationMillis = 380),
-                                targetOffsetY = { it }
+                                targetOffsetY = { fullHeight -> fullHeight }
                             )
                         )
                         .background(color = navigationBarsColor)
@@ -174,16 +178,16 @@ private fun BottomSheetDialog(
     }
     Column(
         modifier = modifier
-            .onGloballyPositioned {
-                bottomSheetHeight = it.size.height.toFloat()
+            .onGloballyPositioned { coordinates ->
+                bottomSheetHeight = coordinates.size.height.toFloat()
             }
             .offset(offset = {
                 IntOffset(x = 0, y = offsetYAnimate.roundToInt())
             })
             .draggable(
                 state = rememberDraggableState(
-                    onDelta = {
-                        offsetY = (offsetY + it.toInt()).coerceAtLeast(minimumValue = 0f)
+                    onDelta = { delta ->
+                        offsetY = (offsetY + delta.toInt()).coerceAtLeast(minimumValue = 0f)
                     }
                 ),
                 orientation = Orientation.Vertical,
@@ -240,7 +244,7 @@ private fun DragHandle() {
                 .padding(top = 12.dp)
                 .size(width = 60.dp, height = 4.dp)
                 .clip(shape = RoundedCornerShape(size = 6.dp))
-                .background(color = ComposeChatTheme.colorScheme.c_333A3D4D_B3FFFFFF.color)
+                .background(color = AppTheme.colorScheme.c_333A3D4D_B3FFFFFF.color)
         )
     }
 }
@@ -251,10 +255,10 @@ private fun BackgroundMask(
     cancelable: Boolean,
     onDismissRequest: () -> Unit
 ) {
-    Box(
+    Spacer(
         modifier = modifier
             .fillMaxSize()
-            .background(color = ComposeChatTheme.colorScheme.c_80000000_99000000.color)
+            .background(color = AppTheme.colorScheme.c_80000000_99000000.color)
             .clickableNoRipple(
                 onClick = if (cancelable) {
                     onDismissRequest

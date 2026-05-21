@@ -22,8 +22,8 @@ import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class ConversationViewModel : BaseViewModel() {
 
@@ -46,13 +46,14 @@ class ConversationViewModel : BaseViewModel() {
     init {
         viewModelScope.launch {
             launch {
-                conversationProvider.conversationList.collect {
-                    pageViewState = pageViewState.copy(conversationList = it.toPersistentList())
+                conversationProvider.conversationListFlow.collect { conversationList ->
+                    pageViewState =
+                        pageViewState.copy(conversationList = conversationList.toPersistentList())
                 }
             }
             launch {
-                accountProvider.serverConnectState.collect {
-                    pageViewState = pageViewState.copy(serverConnectState = it)
+                accountProvider.serverConnectStateFlow.collect { serverConnectState ->
+                    pageViewState = pageViewState.copy(serverConnectState = serverConnectState)
                 }
             }
         }
@@ -94,7 +95,7 @@ class ConversationViewModel : BaseViewModel() {
                 }
 
                 is ActionResult.Failed -> {
-                    showToast(msg = result.reason)
+                    showToast(msg = result.desc)
                 }
             }
         }

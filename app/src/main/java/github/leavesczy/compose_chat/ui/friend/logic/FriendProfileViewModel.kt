@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.provider.IFriendshipProvider
 import github.leavesczy.compose_chat.proxy.FriendshipProvider
@@ -14,8 +15,8 @@ import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
 
@@ -42,22 +43,19 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
     )
         private set
 
-    var loadingDialogVisible by mutableStateOf(value = false)
-        private set
-
     init {
         getFriendProfile()
     }
 
     private fun getFriendProfile() {
         viewModelScope.launch {
-            loadingDialog(visible = true)
+            showLoadingDialog()
             val profile = friendshipProvider.getFriendProfile(friendId = friendId)
             if (profile == null) {
                 pageViewState = pageViewState.copy(personProfile = null)
             } else {
                 val itIsMe = kotlin.run {
-                    val selfId = ComposeChat.accountProvider.personProfile.value.id
+                    val selfId = ComposeChat.accountProvider.personProfileFlow.value.id
                     selfId.isBlank() || selfId == friendId
                 }
                 val isFriend = if (itIsMe) {
@@ -75,7 +73,7 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
                     remark = profile.remark
                 )
             }
-            loadingDialog(visible = false)
+            dismissLoadingDialog()
         }
     }
 
@@ -85,26 +83,25 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
                 is ActionResult.Success -> {
                     delay(timeMillis = 400L)
                     getFriendProfile()
-                    showToast(msg = "添加成功")
+                    showToast(resId = R.string.toast_add_friend_success)
                 }
 
                 is ActionResult.Failed -> {
-                    showToast(msg = result.reason)
+                    showToast(msg = result.desc)
                 }
             }
         }
     }
 
     suspend fun deleteFriend(): Boolean {
-        return when (val result =
-            friendshipProvider.deleteFriend(friendId = friendId)) {
+        return when (val result = friendshipProvider.deleteFriend(friendId = friendId)) {
             is ActionResult.Success -> {
-                showToast(msg = "已删除好友")
+                showToast(resId = R.string.toast_delete_friend_success)
                 true
             }
 
             is ActionResult.Failed -> {
-                showToast(msg = result.reason)
+                showToast(msg = result.desc)
                 false
             }
         }
@@ -120,8 +117,9 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
 
     private fun setFriendRemark(remark: String) {
         viewModelScope.launch {
-            when (val result =
-                friendshipProvider.setFriendRemark(friendId = friendId, remark = remark)) {
+            showLoadingDialog()
+            val result = friendshipProvider.setFriendRemark(friendId = friendId, remark = remark)
+            when (result) {
                 is ActionResult.Success -> {
                     setFriendRemarkDialogViewState =
                         setFriendRemarkDialogViewState.copy(remark = remark)
@@ -131,14 +129,11 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
                 }
 
                 is ActionResult.Failed -> {
-                    showToast(msg = result.reason)
+                    showToast(msg = result.desc)
                 }
             }
+            dismissLoadingDialog()
         }
-    }
-
-    private fun loadingDialog(visible: Boolean) {
-        loadingDialogVisible = visible
     }
 
 }

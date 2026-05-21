@@ -29,23 +29,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.base.models.Conversation
 import github.leavesczy.compose_chat.base.models.ServerConnectState
 import github.leavesczy.compose_chat.extend.scrim
 import github.leavesczy.compose_chat.ui.conversation.logic.ConversationPageViewState
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 import github.leavesczy.compose_chat.ui.widgets.ComposeDropdownMenuItem
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Composable
 fun ConversationPage(pageViewState: ConversationPageViewState) {
@@ -70,17 +72,17 @@ fun ConversationPage(pageViewState: ConversationPageViewState) {
         } else {
             items(
                 items = conversationList,
-                key = {
-                    it.id
+                key = { conversation ->
+                    conversation.id
                 },
                 contentType = {
                     "ConversationItem"
                 }
-            ) {
+            ) { conversation ->
                 ConversationItem(
                     modifier = Modifier
                         .animateItem(),
-                    conversation = it,
+                    conversation = conversation,
                     onClickConversation = pageViewState.onClickConversation,
                     deleteConversation = pageViewState.deleteConversation,
                     pinConversation = pageViewState.pinConversation
@@ -94,9 +96,9 @@ fun ConversationPage(pageViewState: ConversationPageViewState) {
 private fun ConversationItem(
     modifier: Modifier,
     conversation: Conversation,
-    onClickConversation: (Conversation) -> Unit,
-    deleteConversation: (Conversation) -> Unit,
-    pinConversation: (Conversation, Boolean) -> Unit
+    onClickConversation: (conversation: Conversation) -> Unit,
+    deleteConversation: (conversation: Conversation) -> Unit,
+    pinConversation: (conversation: Conversation, pin: Boolean) -> Unit
 ) {
     var menuExpanded by remember {
         mutableStateOf(value = false)
@@ -115,7 +117,7 @@ private fun ConversationItem(
             .then(
                 other = if (conversation.isPinned) {
                     Modifier
-                        .scrim(color = ComposeChatTheme.colorScheme.c_33CCCCCC_33CCCCCC.color)
+                        .scrim(color = AppTheme.colorScheme.c_33CCCCCC_33CCCCCC.color)
                 } else {
                     Modifier
                 }
@@ -129,7 +131,7 @@ private fun ConversationItem(
         ) {
             Avatar(
                 modifier = Modifier,
-                faceUrl = conversation.faceUrl,
+                avatarUrl = conversation.avatarUrl,
                 unreadMessageCount = conversation.unreadMessageCount
             )
             Column(
@@ -154,24 +156,24 @@ private fun ConversationItem(
                         lineHeight = 18.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                        color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
                     )
                     Text(
                         modifier = Modifier,
                         text = conversation.lastMessage.detail.conversationTime,
                         fontSize = 12.sp,
                         lineHeight = 12.sp,
-                        color = ComposeChatTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                        color = AppTheme.colorScheme.c_FF384F60_99FFFFFF.color
                     )
                 }
                 Text(
                     modifier = Modifier,
-                    text = conversation.formatMsg,
+                    text = conversation.formatMessage,
                     fontSize = 15.sp,
                     lineHeight = 15.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = ComposeChatTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                    color = AppTheme.colorScheme.c_FF384F60_99FFFFFF.color
                 )
             }
         }
@@ -197,7 +199,7 @@ private fun ConversationItem(
 @Composable
 private fun Avatar(
     modifier: Modifier,
-    faceUrl: String,
+    avatarUrl: String,
     unreadMessageCount: Long
 ) {
     Box(modifier = modifier) {
@@ -207,7 +209,7 @@ private fun Avatar(
                 .padding(end = 12.dp, top = 8.dp, bottom = 8.dp)
                 .size(size = 54.dp)
                 .clip(shape = RoundedCornerShape(size = 6.dp)),
-            model = faceUrl
+            model = avatarUrl
         )
         if (unreadMessageCount > 0) {
             UnreadMessageCount(
@@ -225,8 +227,9 @@ private fun UnreadMessageCount(
     modifier: Modifier,
     unreadMessageCount: Long
 ) {
+    val unreadCountOverflow = stringResource(id = R.string.unread_count_overflow)
     val count = if (unreadMessageCount > 99L) {
-        "99+"
+        unreadCountOverflow
     } else {
         unreadMessageCount.toString()
     }
@@ -234,7 +237,7 @@ private fun UnreadMessageCount(
         modifier = modifier
             .size(size = 20.dp)
             .background(
-                color = ComposeChatTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
+                color = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
                 shape = CircleShape
             )
             .wrapContentSize(align = Alignment.Center),
@@ -242,7 +245,7 @@ private fun UnreadMessageCount(
         fontSize = 12.sp,
         lineHeight = 12.sp,
         textAlign = TextAlign.Center,
-        color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+        color = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
     )
 }
 
@@ -252,22 +255,25 @@ private fun MoreActionDropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     conversation: Conversation,
-    deleteConversation: (Conversation) -> Unit,
-    pinConversation: (Conversation, Boolean) -> Unit
+    deleteConversation: (conversation: Conversation) -> Unit,
+    pinConversation: (conversation: Conversation, pin: Boolean) -> Unit
 ) {
+    val unpinConversation = stringResource(id = R.string.unpin_conversation)
+    val pinConversationText = stringResource(id = R.string.pin_conversation)
+    val deleteConversationText = stringResource(id = R.string.delete_conversation)
     Box(modifier = modifier) {
         DropdownMenu(
             modifier = Modifier,
-            containerColor = ComposeChatTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
+            containerColor = AppTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
             expanded = expanded,
             onDismissRequest = onDismissRequest
         ) {
             ComposeDropdownMenuItem(
                 modifier = Modifier,
                 text = if (conversation.isPinned) {
-                    "取消置顶"
+                    unpinConversation
                 } else {
-                    "置顶会话"
+                    pinConversationText
                 },
                 onClick = {
                     onDismissRequest()
@@ -276,7 +282,7 @@ private fun MoreActionDropdownMenu(
             )
             ComposeDropdownMenuItem(
                 modifier = Modifier,
-                text = "删除会话",
+                text = deleteConversationText,
                 onClick = {
                     onDismissRequest()
                     deleteConversation(conversation)
@@ -309,15 +315,18 @@ private fun LazyListScope.serverConnectState(
                     modifier = modifier
                         .animateItem()
                         .fillMaxWidth()
-                        .background(color = ComposeChatTheme.colorScheme.c_66CCCCCC_66CCCCCC.color)
+                        .background(color = AppTheme.colorScheme.c_66CCCCCC_66CCCCCC.color)
                 ) {
                     Text(
                         modifier = Modifier
                             .padding(horizontal = 8.dp, vertical = 8.dp),
-                        text = "serverConnectState : $serverConnectState ...",
+                        text = stringResource(
+                            id = R.string.server_connect_state,
+                            serverConnectState
+                        ),
                         fontSize = 12.sp,
                         lineHeight = 12.sp,
-                        color = ComposeChatTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                        color = AppTheme.colorScheme.c_FF384F60_99FFFFFF.color
                     )
                 }
             }
@@ -336,12 +345,12 @@ internal fun LazyItemScope.EmptyPage(modifier: Modifier) {
     ) {
         Text(
             modifier = Modifier,
-            text = "Empty",
+            text = stringResource(id = R.string.empty),
             fontSize = 68.sp,
             lineHeight = 70.sp,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
-            color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+            color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
         )
     }
 }

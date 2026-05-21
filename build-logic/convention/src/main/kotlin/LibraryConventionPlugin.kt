@@ -1,4 +1,3 @@
-import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.LibraryExtension
 import github.leavesczy.compose_chat.configureAndroidLibrary
 import github.leavesczy.compose_chat.configureAndroidProject
@@ -9,7 +8,7 @@ import org.gradle.kotlin.dsl.getByType
 
 /**
  * @Author: leavesCZY
- * @Date: 2023/11/29 16:09
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 class LibraryConventionPlugin : Plugin<Project> {
@@ -17,9 +16,9 @@ class LibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(receiver = target) {
             apply(plugin = "com.android.library")
-            val commonExtension = extensions.getByType(type = CommonExtension::class)
-            configureAndroidProject(commonExtension = commonExtension)
-            configureAndroidLibrary(libraryExtension = commonExtension as LibraryExtension)
+            val libraryExtension = extensions.getByType<LibraryExtension>()
+            configureAndroidProject(commonExtension = libraryExtension)
+            configureAndroidLibrary(libraryExtension = libraryExtension)
         }
     }
 

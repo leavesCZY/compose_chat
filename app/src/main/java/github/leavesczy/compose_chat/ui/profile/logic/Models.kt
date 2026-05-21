@@ -5,14 +5,14 @@ import github.leavesczy.compose_chat.base.models.PersonProfile
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/1/23 21:28
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
 @Stable
 data class ProfileUpdatePageViewStata(
     val personProfile: PersonProfile?,
-    val onNicknameChanged: (String) -> Unit,
-    val onSignatureChanged: (String) -> Unit,
-    val onAvatarUrlChanged: (String) -> Unit,
-    val confirmUpdate: () -> Unit
+    val onNicknameChanged: (nickname: String) -> Unit,
+    val onSignatureChanged: (signature: String) -> Unit,
+    val setRandomAvatar: () -> Unit,
+    val onConfirmUpdate: () -> Unit
 )

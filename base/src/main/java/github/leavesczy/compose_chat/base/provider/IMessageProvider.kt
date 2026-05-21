@@ -7,8 +7,8 @@ import kotlinx.coroutines.channels.Channel
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 interface IMessageProvider {
 
@@ -28,6 +28,6 @@ interface IMessageProvider {
 
     suspend fun getHistoryMessage(chat: Chat, lastMessage: Message?): LoadMessageResult
 
-    fun cleanConversationUnreadMessageCount(chat: Chat)
+    fun cleanUnreadMessageCount(chat: Chat)
 
 }

@@ -1,6 +1,7 @@
 package github.leavesczy.compose_chat.ui.chat.group
 
-import android.app.Activity
+import androidx.activity.compose.LocalActivity
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,65 +42,65 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.base.models.GroupMemberProfile
 import github.leavesczy.compose_chat.base.models.GroupProfile
 import github.leavesczy.compose_chat.extend.clickableNoRipple
 import github.leavesczy.compose_chat.extend.scrim
-import github.leavesczy.compose_chat.ui.chat.group.logic.GroupProfilePageAction
 import github.leavesczy.compose_chat.ui.chat.group.logic.GroupProfilePageViewState
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppTheme
 import github.leavesczy.compose_chat.ui.widgets.AnimateBouncyImage
 import github.leavesczy.compose_chat.ui.widgets.BezierImage
 import github.leavesczy.compose_chat.ui.widgets.ComponentImage
 import github.leavesczy.compose_chat.ui.widgets.ComposeDropdownMenuItem
-import github.leavesczy.compose_chat.utils.randomImage
 import kotlin.math.abs
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/1/23 21:20
+ * @Date: 2026/5/20 17:18
  * @Desc:
  */
-
 @Composable
-internal fun GroupProfilePage(
-    viewState: GroupProfilePageViewState,
-    action: GroupProfilePageAction
-) {
-    val groupHeaderHeight = 280.dp
-    val groupTopBarHeight = 44.dp
-    val groupProfile = viewState.groupProfile
-    if (groupProfile != null) {
-        val listState = rememberLazyListState()
-        val maxOffsetHeightPx = with(LocalDensity.current) {
-            (groupHeaderHeight - groupTopBarHeight - 30.dp).roundToPx()
+internal fun GroupProfilePage(viewState: GroupProfilePageViewState) {
+    val localDensity = LocalDensity.current
+    val localActivity = LocalActivity.current!!
+    val headerHeight = 280.dp
+    val topBarHeight = 44.dp
+    val listState = rememberLazyListState()
+    val maxOffsetHeightPx = remember {
+        with(receiver = localDensity) {
+            (headerHeight - topBarHeight - 30.dp).roundToPx()
         }
-        val topBarAlpha by remember {
-            derivedStateOf {
-                val visibleItemsInfo = listState.layoutInfo.visibleItemsInfo
-                if (visibleItemsInfo.isEmpty()) {
-                    0f
+    }
+    val topBarAlpha by remember {
+        derivedStateOf {
+            val visibleItemsInfo = listState.layoutInfo.visibleItemsInfo
+            if (visibleItemsInfo.isEmpty()) {
+                0f
+            } else {
+                val first = visibleItemsInfo.first()
+                if (first.index == 0) {
+                    val offset = abs(first.offset).coerceIn(0, maxOffsetHeightPx)
+                    1.0f * offset / maxOffsetHeightPx
                 } else {
-                    val first = visibleItemsInfo.first()
-                    if (first.index == 0) {
-                        val offset = abs(first.offset).coerceIn(0, maxOffsetHeightPx)
-                        1.0f * offset / maxOffsetHeightPx
-                    } else {
-                        1.0f
-                    }
+                    1.0f
                 }
             }
         }
+    }
+    val groupProfile = viewState.groupProfile
+    if (groupProfile != null) {
         Scaffold(
             modifier = Modifier
                 .fillMaxSize(),
-            containerColor = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF101010.color,
+            containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color,
             contentWindowInsets = WindowInsets.navigationBars
         ) { innerPadding ->
             Box(
@@ -121,21 +122,23 @@ internal fun GroupProfilePage(
                     ) {
                         GroupHeader(
                             groupProfile = groupProfile,
-                            groupHeaderHeight = groupHeaderHeight
+                            groupHeaderHeight = headerHeight
                         )
                     }
                     items(
                         items = viewState.memberList,
-                        key = {
-                            it.detail.id
+                        key = { member ->
+                            member.detail.id
                         },
                         contentType = {
                             "GroupMemberItem"
                         },
-                        itemContent = {
+                        itemContent = { member ->
                             GroupMemberItem(
-                                groupMemberProfile = it,
-                                groupProfilePageAction = action
+                                memberProfile = member,
+                                onClick = {
+                                    viewState.onClickMember(localActivity, member)
+                                }
                             )
                         }
                     )
@@ -143,8 +146,11 @@ internal fun GroupProfilePage(
                 PageTopBar(
                     title = groupProfile.name,
                     alpha = topBarAlpha,
-                    groupTopBarHeight = groupTopBarHeight,
-                    action = action
+                    topBarHeight = topBarHeight,
+                    onClickSwitchAvatar = viewState.onClickSwitchAvatar,
+                    onClickQuitGroup = {
+                        viewState.onClickQuitGroup(localActivity)
+                    }
                 )
             }
         }
@@ -161,14 +167,18 @@ private fun GroupHeader(
             .fillMaxWidth()
             .height(height = groupHeaderHeight)
     ) {
-        val context = LocalContext.current
-        val avatarUrl = groupProfile.faceUrl
-        val introduction =
-            "groupId: ${groupProfile.id}\ncreateTime: ${groupProfile.createTimeFormat}\n${groupProfile.introduction}"
+        val localContext = LocalContext.current
+        val avatarUrl = groupProfile.avatarUrl
+        val introduction = stringResource(
+            id = R.string.group_introduction,
+            groupProfile.id,
+            groupProfile.createTimeFormat,
+            groupProfile.introduction
+        )
         BezierImage(
             modifier = Modifier
                 .fillMaxSize()
-                .scrim(color = ComposeChatTheme.colorScheme.c_33000000_33000000.color),
+                .scrim(color = AppTheme.colorScheme.c_33000000_33000000.color),
             model = avatarUrl
         )
         Column(
@@ -186,7 +196,7 @@ private fun GroupHeader(
                     .size(size = 100.dp)
                     .clickableNoRipple {
                         if (avatarUrl.isNotBlank()) {
-                            PreviewImageActivity.navTo(context = context, imageUri = avatarUrl)
+                            PreviewImageActivity.navTo(context = localContext, imageUri = avatarUrl)
                         }
                     },
                 model = avatarUrl
@@ -198,7 +208,7 @@ private fun GroupHeader(
                 fontSize = 15.sp,
                 lineHeight = 16.sp,
                 textAlign = TextAlign.Center,
-                color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+                color = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             )
         }
     }
@@ -208,13 +218,14 @@ private fun GroupHeader(
 private fun PageTopBar(
     title: String,
     alpha: Float,
-    groupTopBarHeight: Dp,
-    action: GroupProfilePageAction
+    topBarHeight: Dp,
+    onClickSwitchAvatar: () -> Unit,
+    onClickQuitGroup: () -> Unit
 ) {
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     var menuExpanded by remember {
         mutableStateOf(false)
     }
-    val context = LocalContext.current
     Box(
         modifier = Modifier
     ) {
@@ -222,9 +233,9 @@ private fun PageTopBar(
             modifier = Modifier
                 .alpha(alpha = alpha)
                 .fillMaxWidth()
-                .background(color = ComposeChatTheme.colorScheme.c_FFFFFFFF_FF161616.color)
+                .background(color = AppTheme.colorScheme.c_FFFFFFFF_FF161616.color)
                 .statusBarsPadding()
-                .height(height = groupTopBarHeight)
+                .height(height = topBarHeight)
         ) {
             Text(
                 modifier = Modifier
@@ -232,7 +243,7 @@ private fun PageTopBar(
                 text = title,
                 fontSize = 20.sp,
                 lineHeight = 21.sp,
-                color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
             )
         }
         IconButton(
@@ -241,7 +252,7 @@ private fun PageTopBar(
                 .statusBarsPadding()
                 .padding(start = 8.dp),
             onClick = {
-                (context as Activity).finish()
+                onBackPressedDispatcher?.onBackPressed()
             }
         ) {
             Icon(
@@ -276,7 +287,7 @@ private fun PageTopBar(
     ) {
         DropdownMenu(
             modifier = Modifier,
-            containerColor = ComposeChatTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
+            containerColor = AppTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
             expanded = menuExpanded,
             onDismissRequest = {
                 menuExpanded = false
@@ -284,18 +295,18 @@ private fun PageTopBar(
         ) {
             ComposeDropdownMenuItem(
                 modifier = Modifier,
-                text = "修改头像",
+                text = stringResource(id = R.string.change_avatar),
                 onClick = {
                     menuExpanded = false
-                    action.setAvatar(randomImage())
+                    onClickSwitchAvatar()
                 }
             )
             ComposeDropdownMenuItem(
                 modifier = Modifier,
-                text = "退出群聊",
+                text = stringResource(id = R.string.quit_group),
                 onClick = {
                     menuExpanded = false
-                    action.quitGroup()
+                    onClickQuitGroup()
                 }
             )
         }
@@ -304,17 +315,19 @@ private fun PageTopBar(
 
 @Composable
 private fun GroupMemberItem(
-    groupMemberProfile: GroupMemberProfile,
-    groupProfilePageAction: GroupProfilePageAction
+    memberProfile: GroupMemberProfile,
+    onClick: () -> Unit
 ) {
     GroupMemberItem(
         modifier = Modifier,
-        imageUrl = groupMemberProfile.detail.faceUrl,
-        title = groupMemberProfile.detail.showName + "（${groupMemberProfile.detail.id}）",
-        subtitle = "joinTime: ${groupMemberProfile.joinTimeFormat}",
-        onClick = {
-            groupProfilePageAction.onClickMember(groupMemberProfile)
-        }
+        imageUrl = memberProfile.detail.avatarUrl,
+        title = stringResource(
+            id = R.string.group_member_title,
+            memberProfile.detail.showName,
+            memberProfile.detail.id
+        ),
+        subtitle = stringResource(id = R.string.join_time, memberProfile.joinTimeFormat),
+        onClick = onClick
     )
 }
 
@@ -357,7 +370,7 @@ private fun GroupMemberItem(
                     lineHeight = 18.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = ComposeChatTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                    color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
                 )
             }
             if (!subtitle.isNullOrBlank()) {
@@ -368,7 +381,7 @@ private fun GroupMemberItem(
                     lineHeight = 14.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = ComposeChatTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                    color = AppTheme.colorScheme.c_FF384F60_99FFFFFF.color
                 )
             }
         }

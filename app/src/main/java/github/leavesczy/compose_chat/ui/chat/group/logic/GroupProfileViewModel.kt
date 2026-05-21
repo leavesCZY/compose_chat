@@ -1,13 +1,19 @@
 package github.leavesczy.compose_chat.ui.chat.group.logic
 
+import android.app.Activity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.models.GroupMemberProfile
 import github.leavesczy.compose_chat.base.provider.IGroupProvider
 import github.leavesczy.compose_chat.proxy.GroupProvider
+import github.leavesczy.compose_chat.ui.MainActivity
 import github.leavesczy.compose_chat.ui.base.BaseViewModel
+import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
+import github.leavesczy.compose_chat.utils.randomImage
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.async
@@ -15,8 +21,8 @@ import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
 
@@ -25,17 +31,17 @@ class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
     var pageViewState by mutableStateOf(
         value = GroupProfilePageViewState(
             groupProfile = null,
-            memberList = persistentListOf()
+            memberList = persistentListOf(),
+            onClickMember = ::onClickMember,
+            onClickSwitchAvatar = ::onClickSwitchAvatar,
+            onClickQuitGroup = ::onClickQuitGroup
         )
     )
         private set
 
-    var loadingDialogVisible by mutableStateOf(value = false)
-        private set
-
     init {
         viewModelScope.launch {
-            loadingDialog(visible = true)
+            showLoadingDialog()
             val groupProfileAsync = async {
                 groupProvider.getGroupInfo(groupId = groupId)
             }
@@ -50,40 +56,65 @@ class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
                     memberList = memberList.toPersistentList()
                 )
             }
-            loadingDialog(visible = false)
+            dismissLoadingDialog()
         }
     }
 
     private fun getGroupProfile() {
         viewModelScope.launch {
-            groupProvider.getGroupInfo(groupId = groupId)?.let {
-                pageViewState = pageViewState.copy(groupProfile = it)
+            groupProvider.getGroupInfo(groupId = groupId)?.let { groupProfile ->
+                pageViewState = pageViewState.copy(groupProfile = groupProfile)
             }
         }
     }
 
-    suspend fun quitGroup(): ActionResult {
-        return groupProvider.quitGroup(groupId = groupId)
+    private fun onClickMember(
+        activity: Activity,
+        memberProfile: GroupMemberProfile
+    ) {
+        FriendProfileActivity.navTo(
+            context = activity,
+            friendId = memberProfile.detail.id
+        )
     }
 
-    fun setAvatar(avatarUrl: String) {
+    private fun onClickSwitchAvatar() {
         viewModelScope.launch {
-            when (val result =
-                groupProvider.setAvatar(groupId = groupId, avatarUrl = avatarUrl)) {
+            showLoadingDialog()
+            val avatarUrl = randomImage()
+            val result = groupProvider.setAvatar(
+                groupId = groupId,
+                avatarUrl = avatarUrl
+            )
+            when (result) {
                 ActionResult.Success -> {
                     getGroupProfile()
-                    showToast(msg = "修改成功")
+                    showToast(resId = R.string.toast_modify_success)
                 }
 
                 is ActionResult.Failed -> {
-                    showToast(msg = result.reason)
+                    showToast(msg = result.desc)
                 }
             }
+            dismissLoadingDialog()
         }
     }
 
-    private fun loadingDialog(visible: Boolean) {
-        loadingDialogVisible = visible
+    private fun onClickQuitGroup(activity: Activity) {
+        viewModelScope.launch {
+            showLoadingDialog()
+            when (val result = groupProvider.quitGroup(groupId = groupId)) {
+                ActionResult.Success -> {
+                    showToast(resId = R.string.toast_quit_group_success)
+                    activity.startActivity<MainActivity>()
+                }
+
+                is ActionResult.Failed -> {
+                    showToast(msg = result.desc)
+                }
+            }
+            dismissLoadingDialog()
+        }
     }
 
 }

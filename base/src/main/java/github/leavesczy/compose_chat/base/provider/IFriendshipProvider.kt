@@ -6,12 +6,12 @@ import kotlinx.coroutines.flow.SharedFlow
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 interface IFriendshipProvider {
 
-    val friendList: SharedFlow<List<PersonProfile>>
+    val friendListFlow: SharedFlow<List<PersonProfile>>
 
     fun refreshFriendList()
 

@@ -6,8 +6,8 @@ import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMMessage
 import com.tencent.imsdk.v2.V2TIMSendCallback
 import com.tencent.imsdk.v2.V2TIMValueCallback
+import github.leavesczy.compose_chat.base.R
 import github.leavesczy.compose_chat.base.models.Chat
-import github.leavesczy.compose_chat.base.models.ImageElement
 import github.leavesczy.compose_chat.base.models.ImageMessage
 import github.leavesczy.compose_chat.base.models.LoadMessageResult
 import github.leavesczy.compose_chat.base.models.Message
@@ -18,6 +18,7 @@ import github.leavesczy.compose_chat.base.models.SystemMessage
 import github.leavesczy.compose_chat.base.models.TextMessage
 import github.leavesczy.compose_chat.base.models.TimeMessage
 import github.leavesczy.compose_chat.base.provider.IMessageProvider
+import github.leavesczy.compose_chat.base.utils.StringResources
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -29,8 +30,8 @@ import kotlin.random.Random
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 class MessageProvider : IMessageProvider {
 
@@ -44,12 +45,10 @@ class MessageProvider : IMessageProvider {
                     val partId = msg.groupID ?: msg.userID ?: ""
                     val messageListener = messageListenerMap[partId]?.get()
                     if (messageListener != null) {
-                        val message = Converters.convertMessage(msg)
-                        messageListener.onReceiveMessage(
-                            message = message
-                        )
+                        val message = Converters.convertMessage(timMessage = msg)
+                        messageListener.onReceiveMessage(message = message)
                     } else {
-                        messageListenerMap.remove(partId)
+                        messageListenerMap.remove(key = partId)
                     }
                 }
             }
@@ -61,18 +60,24 @@ class MessageProvider : IMessageProvider {
         val count = 60
         return suspendCancellableCoroutine { continuation ->
             val callback = object : V2TIMValueCallback<List<V2TIMMessage>> {
-                override fun onSuccess(t: List<V2TIMMessage>) {
+                override fun onSuccess(list: List<V2TIMMessage>) {
                     continuation.resume(
                         value = LoadMessageResult.Success(
-                            messageList = Converters.convertMessage(t),
-                            loadFinish = t.size < count
+                            messageList = Converters.convertMessage(messageList = list),
+                            loadFinish = list.size < count
                         )
                     )
                 }
 
                 override fun onError(code: Int, desc: String?) {
                     continuation.resume(
-                        value = LoadMessageResult.Failed(reason = "code: $code desc: $desc")
+                        value = LoadMessageResult.Failed(
+                            reason = StringResources.getString(
+                                resId = R.string.error_load_message,
+                                code,
+                                desc ?: ""
+                            )
+                        )
                     )
                 }
             }
@@ -114,12 +119,16 @@ class MessageProvider : IMessageProvider {
             BitmapFactory.decodeFile(imagePath, options)
             val localTempMessage = ImageMessage(
                 messageDetail = generatePreSendMessageDetail(),
-                original = ImageElement(options.outWidth, options.outHeight, imagePath),
+                original = ImageMessage.ImageElement(
+                    options.outWidth,
+                    options.outHeight,
+                    imagePath
+                ),
                 large = null,
                 thumb = null
             )
             val createdMessage = V2TIMManager.getMessageManager().createImageMessage(imagePath)
-            return@withContext sendMessage(
+            sendMessage(
                 chat = chat,
                 timMessage = createdMessage,
                 localTempMessage = localTempMessage
@@ -157,7 +166,7 @@ class MessageProvider : IMessageProvider {
             object : V2TIMSendCallback<V2TIMMessage> {
                 override fun onSuccess(messsage: V2TIMMessage) {
                     AppCoroutineScope.launch {
-                        val convertMessage = Converters.convertMessage(messsage)
+                        val convertMessage = Converters.convertMessage(timMessage = messsage)
                         messageChannel.send(element = convertMessage)
                         messageChannel.close()
                     }
@@ -165,7 +174,15 @@ class MessageProvider : IMessageProvider {
 
                 override fun onError(code: Int, desc: String?) {
                     AppCoroutineScope.launch {
-                        messageChannel.send(element = localTempMessage.resetToFailed(failReason = "code: $code desc: $desc"))
+                        messageChannel.send(
+                            element = localTempMessage.resetToFailed(
+                                failReason = StringResources.getString(
+                                    resId = R.string.error_load_message,
+                                    code,
+                                    desc ?: ""
+                                )
+                            )
+                        )
                         messageChannel.close()
                     }
                 }
@@ -178,7 +195,7 @@ class MessageProvider : IMessageProvider {
     }
 
     private fun Message.resetToFailed(failReason: String): Message {
-        val failedState = MessageState.SendFailed(reason = failReason)
+        val failedState = MessageState.Failed(reason = failReason)
         return when (this) {
             is TextMessage -> {
                 this.copy(messageDetail = this.detail.copy(state = failedState))
@@ -200,7 +217,7 @@ class MessageProvider : IMessageProvider {
 
     override fun startReceive(chat: Chat, messageListener: IMessageProvider.MessageListener) {
         val id = chat.id
-        messageListenerMap.remove(id)
+        messageListenerMap.remove(key = id)
         messageListenerMap[id] = SoftReference(messageListener)
         checkListener()
     }
@@ -209,7 +226,7 @@ class MessageProvider : IMessageProvider {
         removeReduceListener(listener = messageListener, listenerMap = messageListenerMap)
     }
 
-    override fun cleanConversationUnreadMessageCount(chat: Chat) {
+    override fun cleanUnreadMessageCount(chat: Chat) {
         V2TIMManager.getConversationManager().cleanConversationUnreadMessageCount(
             Converters.getConversationKey(chat = chat),
             0,
@@ -226,7 +243,7 @@ class MessageProvider : IMessageProvider {
         listener: IMessageProvider.MessageListener?,
         listenerMap: MutableMap<String, SoftReference<IMessageProvider.MessageListener>>
     ) {
-        val filter = listenerMap.filter { it.value.get() == listener }
+        val filter = listenerMap.filter { entry -> entry.value.get() == listener }
         for (entry in filter) {
             listenerMap.remove(entry.key)
         }
@@ -235,7 +252,7 @@ class MessageProvider : IMessageProvider {
     private suspend fun generatePreSendMessageDetail(): MessageDetail {
         return MessageDetail(
             msgId = generateMessageId(),
-            timestamp = generateMessageTimestamp(),
+            milliseconds = generateMessageTimestamp(),
             state = MessageState.Sending,
             sender = Converters.getSelfProfile() ?: PersonProfile.Empty,
             isOwnMessage = true
@@ -243,11 +260,11 @@ class MessageProvider : IMessageProvider {
     }
 
     private fun generateMessageId(): String {
-        return (System.currentTimeMillis() + Random.nextInt(1024, 2048)).toString()
+        return (System.currentTimeMillis() + Random.nextInt(from = 1024, until = 2048)).toString()
     }
 
     private fun generateMessageTimestamp(): Long {
-        return V2TIMManager.getInstance().serverTime
+        return V2TIMManager.getInstance().serverTime * 1000L
     }
 
 }

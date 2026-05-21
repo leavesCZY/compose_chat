@@ -1,12 +1,14 @@
 package github.leavesczy.compose_chat.base.models
 
 import androidx.compose.runtime.Stable
+import github.leavesczy.compose_chat.base.R
+import github.leavesczy.compose_chat.base.utils.StringResources
 import github.leavesczy.compose_chat.base.utils.TimeUtil
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 @Stable
 sealed class MessageState {
@@ -15,29 +17,23 @@ sealed class MessageState {
     data object Sending : MessageState()
 
     @Stable
-    data class SendFailed(val reason: String) : MessageState()
+    data class Failed(val reason: String) : MessageState()
 
     @Stable
-    data object Completed : MessageState()
+    data object Success : MessageState()
 
 }
 
 @Stable
 data class MessageDetail(
     val msgId: String,
-    val timestamp: Long,
+    val milliseconds: Long,
     val state: MessageState,
     val sender: PersonProfile,
     val isOwnMessage: Boolean
 ) {
 
-    val conversationTime by lazy(mode = LazyThreadSafetyMode.NONE) {
-        TimeUtil.toConversationTime(timeStamp = timestamp)
-    }
-
-    val chatTime by lazy(mode = LazyThreadSafetyMode.NONE) {
-        TimeUtil.toChatTime(timeStamp = timestamp)
-    }
+    val conversationTime = TimeUtil.formatConversationTime(milliseconds = milliseconds)
 
 }
 
@@ -62,6 +58,32 @@ data class TextMessage(
 }
 
 @Stable
+data class ImageMessage(
+    private val messageDetail: MessageDetail,
+    private val original: ImageElement,
+    private val large: ImageElement?,
+    private val thumb: ImageElement?,
+) : Message(detail = messageDetail) {
+
+    @Stable
+    data class ImageElement(
+        val width: Int,
+        val height: Int,
+        val url: String
+    )
+
+    override val formatMessage: String
+        get() = StringResources.getString(resId = R.string.message_image)
+
+    val previewImage: ImageElement
+        get() = large ?: original
+
+    val previewImageUrl: String
+        get() = previewImage.url
+
+}
+
+@Stable
 data class SystemMessage(
     private val messageDetail: MessageDetail,
     private val tips: String
@@ -73,43 +95,17 @@ data class SystemMessage(
 }
 
 @Stable
-data class ImageMessage(
-    private val messageDetail: MessageDetail,
-    private val original: ImageElement,
-    private val large: ImageElement?,
-    private val thumb: ImageElement?,
-) : Message(detail = messageDetail) {
-
-    override val formatMessage = "[图片]"
-
-    val previewImage: ImageElement
-        get() = large ?: original
-
-    val previewImageUrl: String
-        get() = previewImage.url
-
-}
-
-@Stable
-class ImageElement(
-    val width: Int,
-    val height: Int,
-    val url: String
-)
-
-@Stable
-class TimeMessage(targetMessage: Message) : Message(
+data class TimeMessage(val targetMessage: Message) : Message(
     detail = MessageDetail(
-        msgId = (targetMessage.detail.timestamp + targetMessage.detail.msgId.hashCode()).toString(),
-        timestamp = targetMessage.detail.timestamp,
-        state = MessageState.Completed,
+        msgId = (targetMessage.detail.milliseconds + targetMessage.detail.msgId.hashCode()).toString(),
+        milliseconds = targetMessage.detail.milliseconds,
+        state = MessageState.Success,
         sender = PersonProfile.Empty,
         isOwnMessage = false
     )
 ) {
 
-    override val formatMessage: String
-        get() = detail.chatTime
+    override val formatMessage = TimeUtil.formatMessageTime(milliseconds = detail.milliseconds)
 
 }
 
@@ -117,8 +113,10 @@ class TimeMessage(targetMessage: Message) : Message(
 sealed class LoadMessageResult {
 
     @Stable
-    data class Success(val messageList: List<Message>, val loadFinish: Boolean) :
-        LoadMessageResult()
+    data class Success(
+        val messageList: List<Message>,
+        val loadFinish: Boolean
+    ) : LoadMessageResult()
 
     @Stable
     data class Failed(val reason: String) : LoadMessageResult()

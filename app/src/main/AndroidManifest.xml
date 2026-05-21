@@ -6,9 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission
-        android:name="android.permission.READ_MEDIA_IMAGES"
-        tools:ignore="PhotoAndVideoPolicy,SelectedPhotoAccess" />
-    <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission
@@ -27,7 +24,7 @@
         tools:ignore="DataExtractionRules">
         <activity
             android:name=".ui.login.LoginActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
+            android:configChanges="orientation|screenSize|screenLayout|layoutDirection|keyboard|keyboardHidden|locale|uiMode"
             android:exported="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
@@ -40,7 +37,7 @@
         </activity>
         <activity
             android:name=".ui.MainActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
+            android:configChanges="orientation|screenSize|screenLayout|layoutDirection|keyboard|keyboardHidden|locale|uiMode"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -48,14 +45,14 @@
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
             android:name=".ui.chat.group.GroupProfileActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
+            android:configChanges="orientation|screenSize|screenLayout|layoutDirection|keyboard|keyboardHidden|locale|uiMode"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
             android:name=".ui.friend.FriendProfileActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
+            android:configChanges="orientation|screenSize|screenLayout|layoutDirection|keyboard|keyboardHidden|locale|uiMode"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -63,7 +60,7 @@
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
             android:name=".ui.profile.ProfileUpdateActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
+            android:configChanges="orientation|screenSize|screenLayout|layoutDirection|keyboard|keyboardHidden|locale|uiMode"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -71,14 +68,14 @@
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
             android:name=".ui.chat.main.ChatActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
+            android:configChanges="orientation|screenSize|screenLayout|layoutDirection|keyboard|keyboardHidden|locale|uiMode"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
             android:name=".ui.preview.PreviewImageActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation|uiMode"
+            android:configChanges="orientation|screenSize|screenLayout|layoutDirection|keyboard|keyboardHidden|locale|uiMode"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

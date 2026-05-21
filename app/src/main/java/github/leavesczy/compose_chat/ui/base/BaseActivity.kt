@@ -1,14 +1,13 @@
 package github.leavesczy.compose_chat.ui.base
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModel
@@ -16,12 +15,12 @@ import androidx.lifecycle.ViewModelProvider
 import github.leavesczy.compose_chat.provider.AppThemeProvider
 import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.ui.logic.AppTheme
-import github.leavesczy.compose_chat.ui.theme.ComposeChatTheme
+import github.leavesczy.compose_chat.ui.theme.AppMaterialTheme
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -50,7 +49,7 @@ abstract class BaseActivity : AppCompatActivity() {
         setContent(
             parent = null,
             content = {
-                ComposeChatTheme {
+                AppMaterialTheme {
                     systemBarUi()
                     content()
                 }
@@ -65,35 +64,28 @@ abstract class BaseActivity : AppCompatActivity() {
 
     @Composable
     private fun SetSystemBarUi(appTheme: AppTheme) {
-        val context = LocalContext.current
+        val localActivity = LocalActivity.current
         LaunchedEffect(key1 = appTheme == AppTheme.Dark) {
-            if (context is Activity) {
-                val systemBarsDarkIcon = when (appTheme) {
-                    AppTheme.Light, AppTheme.Gray -> {
-                        true
-                    }
+            val systemBarsDarkIcon = when (appTheme) {
+                AppTheme.Light, AppTheme.Gray -> {
+                    true
+                }
 
-                    AppTheme.Dark -> {
-                        false
-                    }
+                AppTheme.Dark -> {
+                    false
                 }
-                val window = context.window
-                WindowInsetsControllerCompat(window, window.decorView).apply {
-                    systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
-                    isAppearanceLightStatusBars = systemBarsDarkIcon
-                    isAppearanceLightNavigationBars = systemBarsDarkIcon
-                }
+            }
+            val window = localActivity!!.window
+            WindowInsetsControllerCompat(window, window.decorView).apply {
+                systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+                isAppearanceLightStatusBars = systemBarsDarkIcon
+                isAppearanceLightNavigationBars = systemBarsDarkIcon
             }
         }
     }
 
-    protected fun showToast(msg: String) {
-        ToastProvider.showToast(context = this, msg = msg)
-    }
-
-    protected inline fun <reified T : Activity> startActivity() {
-        val intent = Intent(this, T::class.java)
-        startActivity(intent)
+    protected fun showToast(@StringRes resId: Int) {
+        ToastProvider.showToast(context = this, resId = resId)
     }
 
 }

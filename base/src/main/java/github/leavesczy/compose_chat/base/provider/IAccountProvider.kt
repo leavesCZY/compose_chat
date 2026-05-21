@@ -9,14 +9,14 @@ import kotlinx.coroutines.flow.StateFlow
 
 /**
  * @Author: leavesCZY
+ * @Date: 2026/5/20 17:18
  * @Desc:
- * @Github：https://github.com/leavesCZY
  */
 interface IAccountProvider {
 
-    val personProfile: StateFlow<PersonProfile>
+    val personProfileFlow: StateFlow<PersonProfile>
 
-    val serverConnectState: SharedFlow<ServerConnectState>
+    val serverConnectStateFlow: SharedFlow<ServerConnectState>
 
     fun init(application: Application)
 
@@ -26,10 +26,10 @@ interface IAccountProvider {
 
     suspend fun getPersonProfile(): PersonProfile?
 
-    fun refreshPersonProfile()
+    suspend fun refreshPersonProfile()
 
-    suspend fun updatePersonProfile(
-        faceUrl: String,
+    suspend fun updateProfile(
+        avatarUrl: String,
         nickname: String,
         signature: String
     ): ActionResult
