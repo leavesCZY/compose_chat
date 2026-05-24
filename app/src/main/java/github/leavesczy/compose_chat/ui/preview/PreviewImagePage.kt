@@ -94,7 +94,7 @@ internal fun PreviewImagePage(
                 onClick = {
                     val imageUrl = imageUriList[pagerState.currentPage]
                     if (mustRequestWriteExternalStoragePermission(context = localContext)) {
-                        requestPermissionLaunch.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        requestPermissionLaunch.launch(input = Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     } else {
                         insertImageToAlbum(imageUrl)
                     }

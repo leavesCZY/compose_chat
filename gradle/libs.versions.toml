@@ -1,4 +1,11 @@
 [versions]
+app-version-name = "1.0.0"
+app-version-code = "1"
+android-compile-sdk = "37"
+android-min-sdk = "23"
+android-target-sdk = "37"
+android-build-tools = "37.0.0"
+
 android-plugin = "9.2.1"
 kotlin-plugin = "2.3.21"
 track-plugin = "1.1.7"
@@ -16,7 +23,7 @@ kotlinx-collections-immutable = "0.5.0-beta01"
 
 junit = "4.13.2"
 coil = "3.5.0-beta01"
-tencent-imsdk = "8.9.7540"
+tencent-imsdk = "8.9.7545"
 squareup-okHttp = "5.3.2"
 leavesczy-matisse = "2.3.2"
 

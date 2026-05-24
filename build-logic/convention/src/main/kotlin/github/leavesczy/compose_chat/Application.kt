@@ -16,19 +16,19 @@ import java.time.format.DateTimeFormatter
  */
 internal fun Project.configureAndroidApplication(applicationExtension: ApplicationExtension) {
     val buildTimeProvider = providers.provider {
-        getFormattedTime(pattern = "yyyy-MM-dd HH:mm:ss")
+        formattedTime(pattern = "yyyy-MM-dd HH:mm:ss")
     }
     val apkTimeProvider = providers.provider {
-        getFormattedTime(pattern = "yyyyMMdd_HHmmss")
+        formattedTime(pattern = "yyyyMMdd_HHmmss")
     }
     applicationExtension.apply {
         defaultConfig {
             applicationId = "github.leavesczy.compose_chat"
             targetSdk {
-                version = release(version = 36)
+                version = release(version = androidTargetSdkVersion())
             }
-            versionCode = 1
-            versionName = "1.0.0"
+            versionCode = appVersionCode()
+            versionName = appVersionName()
             buildConfigField("String", "VERSION_NAME", "\"$versionName\"")
             buildConfigField("String", "BUILD_TIME", "\"${buildTimeProvider.get()}\"")
         }
@@ -107,8 +107,7 @@ internal fun Project.configureAndroidApplication(applicationExtension: Applicati
     }
 }
 
-private fun getFormattedTime(pattern: String): String {
-    val now = ZonedDateTime.now(ZoneId.of("Asia/Shanghai"))
+private fun formattedTime(pattern: String): String {
     val formatter = DateTimeFormatter.ofPattern(pattern)
-    return now.format(formatter)
+    return ZonedDateTime.now(ZoneId.of("Asia/Shanghai")).format(formatter)
 }
