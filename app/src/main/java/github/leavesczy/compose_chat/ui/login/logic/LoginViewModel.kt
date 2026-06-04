@@ -7,34 +7,34 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
+import github.leavesczy.compose_chat.base.BaseViewModel
 import github.leavesczy.compose_chat.base.models.ActionResult
-import github.leavesczy.compose_chat.provider.AccountProvider
-import github.leavesczy.compose_chat.ui.MainActivity
-import github.leavesczy.compose_chat.ui.base.BaseViewModel
-import github.leavesczy.compose_chat.ui.logic.ComposeChat
+import github.leavesczy.compose_chat.ui.main.MainActivity
+import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
+import github.leavesczy.compose_chat.ui.provider.LoginPreferences
 import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 class LoginViewModel : BaseViewModel() {
 
-    var loginPageViewState by mutableStateOf(
+    var pageViewState by mutableStateOf(
         value = buildLoginPageViewState()
     )
         private set
 
     private fun buildLoginPageViewState(): LoginPageViewState {
-        val lastLoginUserId = AccountProvider.lastLoginUserId
+        val lastLoginUserId = LoginPreferences.lastLoginUserId
         val userId = TextFieldValue(
             text = lastLoginUserId,
             selection = TextRange(index = lastLoginUserId.length)
         )
-        val autoLogin = lastLoginUserId.isNotBlank() && AccountProvider.autoLogin
+        val autoLogin = lastLoginUserId.isNotBlank() && LoginPreferences.isAutoLoginEnabled
         return LoginPageViewState(
-            panelVisible = !autoLogin,
+            isPanelVisible = !autoLogin,
             userId = userId,
             onUserIdInputChanged = ::onUserIdInputChanged,
             onClickLogin = ::onClickLogin
@@ -47,22 +47,22 @@ class LoginViewModel : BaseViewModel() {
             char.isLowerCase() || char.isUpperCase()
         }
         if (isAvailable) {
-            loginPageViewState = loginPageViewState.copy(userId = input.copy(text = trimText))
+            pageViewState = pageViewState.copy(userId = input.copy(text = trimText))
         }
     }
 
     fun tryAutoLogin(activity: Activity) {
         viewModelScope.launch {
-            val viewState = loginPageViewState
-            val panelVisible = viewState.panelVisible
+            val viewState = pageViewState
+            val isPanelVisible = viewState.isPanelVisible
             val userId = viewState.userId.text
-            if (!panelVisible && userId.isNotBlank()) {
+            if (!isPanelVisible && userId.isNotBlank()) {
                 showLoadingDialog()
                 val isSuccess = login(userId = userId)
                 if (isSuccess) {
                     navToMainActivityAndFinish(activity = activity)
                 } else {
-                    loginPageViewState = viewState.copy(panelVisible = true)
+                    pageViewState = viewState.copy(isPanelVisible = true)
                 }
                 dismissLoadingDialog()
             }
@@ -71,7 +71,7 @@ class LoginViewModel : BaseViewModel() {
 
     private fun onClickLogin(activity: Activity) {
         viewModelScope.launch {
-            val userId = loginPageViewState.userId.text
+            val userId = pageViewState.userId.text
             if (userId.isBlank()) {
                 return@launch
             }
@@ -88,7 +88,7 @@ class LoginViewModel : BaseViewModel() {
         val formatUserId = userId.trim().lowercase()
         return when (val result = ComposeChat.accountProvider.login(userId = formatUserId)) {
             is ActionResult.Success -> {
-                AccountProvider.onUserLogin(userId = formatUserId)
+                LoginPreferences.onUserLogin(userId = formatUserId)
                 true
             }
 

@@ -21,6 +21,6 @@ dependencies {
     implementation(libs.coil.gif)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
-    implementation(libs.squareup.okHttp)
+    implementation(libs.squareup.okhttp)
     implementation(libs.leavesczy.matisse)
 }

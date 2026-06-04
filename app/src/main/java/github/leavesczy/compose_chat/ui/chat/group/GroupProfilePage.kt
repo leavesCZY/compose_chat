@@ -51,26 +51,26 @@ import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.base.models.GroupMemberProfile
 import github.leavesczy.compose_chat.base.models.GroupProfile
-import github.leavesczy.compose_chat.extend.clickableNoRipple
-import github.leavesczy.compose_chat.extend.scrim
+import github.leavesczy.compose_chat.extensions.clickableNoRipple
+import github.leavesczy.compose_chat.extensions.scrim
+import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.chat.group.logic.GroupProfilePageViewState
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
-import github.leavesczy.compose_chat.ui.theme.AppTheme
-import github.leavesczy.compose_chat.ui.widgets.AnimateBouncyImage
-import github.leavesczy.compose_chat.ui.widgets.BezierImage
-import github.leavesczy.compose_chat.ui.widgets.ComponentImage
-import github.leavesczy.compose_chat.ui.widgets.ComposeDropdownMenuItem
+import github.leavesczy.compose_chat.widgets.AnimateBouncyImage
+import github.leavesczy.compose_chat.widgets.BezierImage
+import github.leavesczy.compose_chat.widgets.ComponentImage
+import github.leavesczy.compose_chat.widgets.ComposeDropdownMenuItem
 import kotlin.math.abs
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Composable
-internal fun GroupProfilePage(viewState: GroupProfilePageViewState) {
+internal fun GroupProfilePage(pageViewState: GroupProfilePageViewState) {
+    val localActivity = LocalActivity.current
     val localDensity = LocalDensity.current
-    val localActivity = LocalActivity.current!!
     val headerHeight = 280.dp
     val topBarHeight = 44.dp
     val listState = rememberLazyListState()
@@ -95,7 +95,7 @@ internal fun GroupProfilePage(viewState: GroupProfilePageViewState) {
             }
         }
     }
-    val groupProfile = viewState.groupProfile
+    val groupProfile = pageViewState.groupProfile
     if (groupProfile != null) {
         Scaffold(
             modifier = Modifier
@@ -126,7 +126,7 @@ internal fun GroupProfilePage(viewState: GroupProfilePageViewState) {
                         )
                     }
                     items(
-                        items = viewState.memberList,
+                        items = pageViewState.memberList,
                         key = { member ->
                             member.detail.id
                         },
@@ -137,7 +137,7 @@ internal fun GroupProfilePage(viewState: GroupProfilePageViewState) {
                             GroupMemberItem(
                                 memberProfile = member,
                                 onClick = {
-                                    viewState.onClickMember(localActivity, member)
+                                    pageViewState.onClickMember(localActivity!!, member)
                                 }
                             )
                         }
@@ -147,9 +147,9 @@ internal fun GroupProfilePage(viewState: GroupProfilePageViewState) {
                     title = groupProfile.name,
                     alpha = topBarAlpha,
                     topBarHeight = topBarHeight,
-                    onClickSwitchAvatar = viewState.onClickSwitchAvatar,
+                    onClickSwitchAvatar = pageViewState.onClickSwitchAvatar,
                     onClickQuitGroup = {
-                        viewState.onClickQuitGroup(localActivity)
+                        pageViewState.onClickQuitGroup(localActivity!!)
                     }
                 )
             }

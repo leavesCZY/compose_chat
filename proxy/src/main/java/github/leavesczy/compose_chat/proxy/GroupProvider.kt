@@ -15,6 +15,7 @@ import github.leavesczy.compose_chat.base.models.GroupMemberProfile
 import github.leavesczy.compose_chat.base.models.GroupProfile
 import github.leavesczy.compose_chat.base.provider.IGroupProvider
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -23,12 +24,14 @@ import kotlin.coroutines.resume
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
-class GroupProvider : IGroupProvider {
+object GroupProvider : IGroupProvider {
 
     override val joinedGroupListFlow = MutableSharedFlow<List<GroupProfile>>()
+
+    private var refreshJob: Job? = null
 
     init {
         V2TIMManager.getInstance().addGroupListener(object : V2TIMGroupListener() {
@@ -146,8 +149,12 @@ class GroupProvider : IGroupProvider {
     }
 
     override fun refreshJoinedGroupList() {
-        AppCoroutineScope.launch {
-            joinedGroupListFlow.emit(value = getJoinedGroupListOrigin().sortedBy { group -> group.name })
+        refreshJob?.cancel()
+        refreshJob = AppCoroutineScope.launch {
+            val groupList = getJoinedGroupListOrigin().sortedBy { group ->
+                group.name
+            }
+            joinedGroupListFlow.emit(value = groupList)
         }
     }
 
@@ -197,7 +204,7 @@ class GroupProvider : IGroupProvider {
                 val pair = getGroupMemberList(
                     groupId = groupId, nextStep = nextStep
                 )
-                memberList.addAll(pair.first)
+                memberList.addAll(elements = pair.first)
                 nextStep = pair.second
                 if (nextStep <= 0) {
                     break
@@ -239,7 +246,7 @@ class GroupProvider : IGroupProvider {
                         }
 
                         override fun onError(code: Int, desc: String?) {
-                            continuation.resume(value = Pair(emptyList(), -111))
+                            continuation.resume(value = Pair(first = emptyList(), second = -111))
                         }
                     })
             }

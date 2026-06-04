@@ -5,13 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.IntentCompat
+import github.leavesczy.compose_chat.base.BaseActivity
 import github.leavesczy.compose_chat.base.models.Chat
-import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.chat.main.logic.ChatViewModel
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 class ChatActivity : BaseActivity() {
@@ -32,15 +32,26 @@ class ChatActivity : BaseActivity() {
 
     }
 
+    private val chat: Chat? by lazy {
+        IntentCompat.getParcelableExtra(intent, KEY_CHAT, Chat::class.java)
+    }
+
     private val chatViewModel by viewModelsInstance {
-        val chat = IntentCompat.getParcelableExtra(intent, KEY_CHAT, Chat::class.java)!!
-        ChatViewModel(chat = chat)
+        ChatViewModel(chat = requireNotNull(chat))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (chat == null) {
+            finish()
+            return
+        }
         setContent {
-            ChatPage(chatViewModel = chatViewModel)
+            ChatPage(
+                pageViewState = chatViewModel.pageViewState,
+                bottomBarViewState = chatViewModel.bottomBarViewState,
+                loadMessageViewState = chatViewModel.loadMessageViewState
+            )
         }
     }
 

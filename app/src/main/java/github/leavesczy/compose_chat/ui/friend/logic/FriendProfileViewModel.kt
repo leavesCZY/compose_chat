@@ -1,44 +1,57 @@
 package github.leavesczy.compose_chat.ui.friend.logic
 
+import android.app.Activity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.R
+import github.leavesczy.compose_chat.base.BaseViewModel
 import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.base.provider.IFriendshipProvider
-import github.leavesczy.compose_chat.proxy.FriendshipProvider
-import github.leavesczy.compose_chat.ui.base.BaseViewModel
-import github.leavesczy.compose_chat.ui.logic.ComposeChat
+import github.leavesczy.compose_chat.ui.chat.main.ChatActivity
+import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
 
-    private val friendshipProvider: IFriendshipProvider = FriendshipProvider()
+    private val friendshipProvider: IFriendshipProvider = ComposeChat.friendshipProvider
 
     var pageViewState by mutableStateOf(
         value = FriendProfilePageViewState(
             personProfile = null,
-            itIsMe = false,
+            isMe = false,
             isFriend = false,
-            showSetFriendRemarkPanel = ::showSetFriendRemarkPanel,
-            addFriend = ::addFriend
+            onClickSetFriendRemark = ::showSetFriendRemarkPanel,
+            onClickAddFriend = ::addFriend,
+            onClickDeleteFriend = ::showDeleteFriendDialog,
+            onClickChat = ::openChat
         )
     )
         private set
 
-    var setFriendRemarkDialogViewState by mutableStateOf(
+    var remarkDialogViewState by mutableStateOf(
         value = SetFriendRemarkDialogViewState(
-            visible = false,
+            isVisible = false,
             remark = "",
-            dismissDialog = ::dismissSetFriendRemarkDialog,
-            setFriendRemark = ::setFriendRemark
+            onDismissDialog = ::dismissSetFriendRemarkDialog,
+            onSetFriendRemark = ::setFriendRemark
+        )
+    )
+        private set
+
+    var deleteFriendDialogViewState by mutableStateOf(
+        value = DeleteFriendDialogViewState(
+            isVisible = false,
+            onDismissDialog = ::dismissDeleteFriendDialog,
+            onDeleteFriend = ::confirmDeleteFriend
         )
     )
         private set
@@ -54,22 +67,20 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
             if (profile == null) {
                 pageViewState = pageViewState.copy(personProfile = null)
             } else {
-                val itIsMe = kotlin.run {
-                    val selfId = ComposeChat.accountProvider.personProfileFlow.value.id
-                    selfId.isBlank() || selfId == friendId
-                }
-                val isFriend = if (itIsMe) {
+                val selfId = ComposeChat.accountProvider.personProfileFlow.value.id
+                val isMe = selfId.isBlank() || selfId == friendId
+                val isFriend = if (isMe) {
                     false
                 } else {
                     profile.isFriend
                 }
                 pageViewState = pageViewState.copy(
                     personProfile = profile,
-                    itIsMe = itIsMe,
+                    isMe = isMe,
                     isFriend = isFriend
                 )
-                setFriendRemarkDialogViewState = setFriendRemarkDialogViewState.copy(
-                    visible = false,
+                remarkDialogViewState = remarkDialogViewState.copy(
+                    isVisible = false,
                     remark = profile.remark
                 )
             }
@@ -93,7 +104,7 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
         }
     }
 
-    suspend fun deleteFriend(): Boolean {
+    private suspend fun deleteFriend(): Boolean {
         return when (val result = friendshipProvider.deleteFriend(friendId = friendId)) {
             is ActionResult.Success -> {
                 showToast(resId = R.string.toast_delete_friend_success)
@@ -108,11 +119,33 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
     }
 
     private fun showSetFriendRemarkPanel() {
-        setFriendRemarkDialogViewState = setFriendRemarkDialogViewState.copy(visible = true)
+        remarkDialogViewState = remarkDialogViewState.copy(isVisible = true)
     }
 
     private fun dismissSetFriendRemarkDialog() {
-        setFriendRemarkDialogViewState = setFriendRemarkDialogViewState.copy(visible = false)
+        remarkDialogViewState = remarkDialogViewState.copy(isVisible = false)
+    }
+
+    private fun showDeleteFriendDialog() {
+        deleteFriendDialogViewState = deleteFriendDialogViewState.copy(isVisible = true)
+    }
+
+    private fun dismissDeleteFriendDialog() {
+        deleteFriendDialogViewState = deleteFriendDialogViewState.copy(isVisible = false)
+    }
+
+    private fun confirmDeleteFriend() {
+        viewModelScope.launch {
+            if (deleteFriend()) {
+                dismissDeleteFriendDialog()
+                (context as? Activity)?.finish()
+            }
+        }
+    }
+
+    private fun openChat() {
+        ChatActivity.navTo(context = context, chat = Chat.C2C(id = friendId))
+        (context as? Activity)?.finish()
     }
 
     private fun setFriendRemark(remark: String) {
@@ -121,8 +154,7 @@ class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
             val result = friendshipProvider.setFriendRemark(friendId = friendId, remark = remark)
             when (result) {
                 is ActionResult.Success -> {
-                    setFriendRemarkDialogViewState =
-                        setFriendRemarkDialogViewState.copy(remark = remark)
+                    remarkDialogViewState = remarkDialogViewState.copy(remark = remark)
                     delay(timeMillis = 300L)
                     getFriendProfile()
                     dismissSetFriendRemarkDialog()

@@ -1,11 +1,11 @@
 package github.leavesczy.compose_chat.base.models
 
 import androidx.compose.runtime.Stable
-import github.leavesczy.compose_chat.base.utils.TimeUtil
+import github.leavesczy.compose_chat.base.utils.TimeUtils
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Stable
@@ -49,7 +49,7 @@ data class GroupMemberProfile(
     val joinTime: Long
 ) {
 
-    val joinTimeFormat = TimeUtil.formatTimeYMDHMS(milliseconds = joinTime)
+    val joinTimeFormat = TimeUtils.formatTimeYMDHMS(milliseconds = joinTime)
 
 }
 
@@ -62,6 +62,6 @@ data class GroupProfile(
     private val createTime: Long
 ) {
 
-    val createTimeFormat = TimeUtil.formatTimeYMDHMS(milliseconds = createTime)
+    val createTimeFormat = TimeUtils.formatTimeYMDHMS(milliseconds = createTime)
 
 }

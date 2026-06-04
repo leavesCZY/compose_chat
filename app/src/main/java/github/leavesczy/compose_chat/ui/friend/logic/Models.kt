@@ -5,22 +5,31 @@ import github.leavesczy.compose_chat.base.models.PersonProfile
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Stable
 data class FriendProfilePageViewState(
     val personProfile: PersonProfile?,
-    val itIsMe: Boolean,
+    val isMe: Boolean,
     val isFriend: Boolean,
-    val showSetFriendRemarkPanel: () -> Unit,
-    val addFriend: () -> Unit
+    val onClickSetFriendRemark: () -> Unit,
+    val onClickAddFriend: () -> Unit,
+    val onClickDeleteFriend: () -> Unit,
+    val onClickChat: () -> Unit
+)
+
+@Stable
+data class DeleteFriendDialogViewState(
+    val isVisible: Boolean,
+    val onDismissDialog: () -> Unit,
+    val onDeleteFriend: () -> Unit
 )
 
 @Stable
 data class SetFriendRemarkDialogViewState(
-    val visible: Boolean,
+    val isVisible: Boolean,
     val remark: String,
-    val setFriendRemark: (remark: String) -> Unit,
-    val dismissDialog: () -> Unit
+    val onSetFriendRemark: (remark: String) -> Unit,
+    val onDismissDialog: () -> Unit
 )

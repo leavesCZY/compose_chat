@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.app.android.library)
-    alias(libs.plugins.app.android.compose)
     alias(libs.plugins.app.kotlin.parcelize)
 }
 
@@ -10,4 +9,6 @@ android {
 
 dependencies {
     implementation(libs.kotlinx.coroutines)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.runtime)
 }

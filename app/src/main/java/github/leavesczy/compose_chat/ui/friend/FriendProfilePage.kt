@@ -24,25 +24,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.R
+import github.leavesczy.compose_chat.theme.AppTheme
+import github.leavesczy.compose_chat.ui.friend.logic.DeleteFriendDialogViewState
 import github.leavesczy.compose_chat.ui.friend.logic.FriendProfilePageViewState
 import github.leavesczy.compose_chat.ui.friend.logic.SetFriendRemarkDialogViewState
-import github.leavesczy.compose_chat.ui.theme.AppTheme
-import github.leavesczy.compose_chat.ui.widgets.AnimatedBottomSheetDialog
-import github.leavesczy.compose_chat.ui.widgets.CommonButton
-import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
-import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
+import github.leavesczy.compose_chat.widgets.AnimatedBottomSheetDialog
+import github.leavesczy.compose_chat.widgets.CommonButton
+import github.leavesczy.compose_chat.widgets.CommonOutlinedTextField
+import github.leavesczy.compose_chat.widgets.ProfilePanel
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Composable
-internal fun FriendProfilePage(
-    pageViewState: FriendProfilePageViewState,
-    openDeleteFriendDialog: () -> Unit,
-    onClickChat: () -> Unit
-) {
+internal fun FriendProfilePage(pageViewState: FriendProfilePageViewState) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -79,24 +76,24 @@ internal fun FriendProfilePage(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(space = 16.dp)
                     ) {
-                        if (!pageViewState.itIsMe) {
+                        if (!pageViewState.isMe) {
                             CommonButton(
                                 text = stringResource(id = R.string.chat_now),
-                                onClick = onClickChat
+                                onClick = pageViewState.onClickChat
                             )
                             if (pageViewState.isFriend) {
                                 CommonButton(
                                     text = stringResource(id = R.string.set_remark),
-                                    onClick = pageViewState.showSetFriendRemarkPanel
+                                    onClick = pageViewState.onClickSetFriendRemark
                                 )
                                 CommonButton(
                                     text = stringResource(id = R.string.delete_friend),
-                                    onClick = openDeleteFriendDialog
+                                    onClick = pageViewState.onClickDeleteFriend
                                 )
                             } else {
                                 CommonButton(
                                     text = stringResource(id = R.string.add_as_friend),
-                                    onClick = pageViewState.addFriend
+                                    onClick = pageViewState.onClickAddFriend
                                 )
                             }
                         }
@@ -108,17 +105,12 @@ internal fun FriendProfilePage(
 }
 
 @Composable
-internal fun DeleteFriendDialog(
-    modifier: Modifier,
-    visible: Boolean,
-    deleteFriend: () -> Unit,
-    onDismissRequest: () -> Unit
-) {
-    if (visible) {
+internal fun DeleteFriendDialog(viewState: DeleteFriendDialogViewState) {
+    if (viewState.isVisible) {
         AlertDialog(
-            modifier = modifier,
+            modifier = Modifier,
             containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF22202A.color,
-            onDismissRequest = onDismissRequest,
+            onDismissRequest = viewState.onDismissDialog,
             text = {
                 Text(
                     modifier = Modifier,
@@ -130,7 +122,7 @@ internal fun DeleteFriendDialog(
             },
             confirmButton = {
                 TextButton(
-                    onClick = onDismissRequest
+                    onClick = viewState.onDismissDialog
                 ) {
                     Text(
                         modifier = Modifier,
@@ -143,10 +135,7 @@ internal fun DeleteFriendDialog(
             },
             dismissButton = {
                 TextButton(
-                    onClick = {
-                        onDismissRequest()
-                        deleteFriend()
-                    }
+                    onClick = viewState.onDeleteFriend
                 ) {
                     Text(
                         modifier = Modifier,
@@ -165,15 +154,15 @@ internal fun DeleteFriendDialog(
 internal fun SetFriendRemarkDialog(viewState: SetFriendRemarkDialogViewState) {
     AnimatedBottomSheetDialog(
         modifier = Modifier,
-        visible = viewState.visible,
-        onDismissRequest = viewState.dismissDialog
+        visible = viewState.isVisible,
+        onDismissRequest = viewState.onDismissDialog
     ) {
-        var remark by remember(key1 = viewState.visible) {
+        var remark by remember(key1 = viewState.isVisible) {
             mutableStateOf(value = viewState.remark)
         }
         Column(
             modifier = Modifier
-                .fillMaxHeight(fraction = 0.80f),
+                .fillMaxHeight(fraction = 0.87f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(space = 24.dp)
         ) {
@@ -188,7 +177,7 @@ internal fun SetFriendRemarkDialog(viewState: SetFriendRemarkDialogViewState) {
                 label = stringResource(id = R.string.input_remark)
             )
             CommonButton(text = stringResource(id = R.string.set_remark)) {
-                viewState.setFriendRemark(remark)
+                viewState.onSetFriendRemark(remark)
             }
         }
     }

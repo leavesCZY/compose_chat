@@ -6,7 +6,7 @@ import org.gradle.kotlin.dsl.configure
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 class TrackConventionPlugin : Plugin<Project> {
@@ -15,7 +15,7 @@ class TrackConventionPlugin : Plugin<Project> {
         with(receiver = target) {
             apply(plugin = "io.github.leavesczy.track")
             extensions.configure<ComposeClickPluginParameter> {
-                onClickClass = "github.leavesczy.compose_chat.extend.ComposeOnClick"
+                onClickClass = "github.leavesczy.compose_chat.extensions.ComposeOnClick"
                 onClickWhiteList = "notCheck"
             }
         }

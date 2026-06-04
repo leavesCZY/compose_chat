@@ -3,11 +3,11 @@ package github.leavesczy.compose_chat.base.models
 import androidx.compose.runtime.Stable
 import github.leavesczy.compose_chat.base.R
 import github.leavesczy.compose_chat.base.utils.StringResources
-import github.leavesczy.compose_chat.base.utils.TimeUtil
+import github.leavesczy.compose_chat.base.utils.TimeUtils
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Stable
@@ -33,7 +33,7 @@ data class MessageDetail(
     val isOwnMessage: Boolean
 ) {
 
-    val conversationTime = TimeUtil.formatConversationTime(milliseconds = milliseconds)
+    val conversationTime = TimeUtils.formatConversationTime(milliseconds = milliseconds)
 
 }
 
@@ -62,7 +62,7 @@ data class ImageMessage(
     private val messageDetail: MessageDetail,
     private val original: ImageElement,
     private val large: ImageElement?,
-    private val thumb: ImageElement?,
+    private val thumb: ImageElement?
 ) : Message(detail = messageDetail) {
 
     @Stable
@@ -105,7 +105,7 @@ data class TimeMessage(val targetMessage: Message) : Message(
     )
 ) {
 
-    override val formatMessage = TimeUtil.formatMessageTime(milliseconds = detail.milliseconds)
+    override val formatMessage = TimeUtils.formatMessageTime(milliseconds = detail.milliseconds)
 
 }
 
@@ -115,7 +115,7 @@ sealed class LoadMessageResult {
     @Stable
     data class Success(
         val messageList: List<Message>,
-        val loadFinish: Boolean
+        val isLoadFinished: Boolean
     ) : LoadMessageResult()
 
     @Stable

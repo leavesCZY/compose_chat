@@ -33,7 +33,7 @@ import kotlin.coroutines.resume
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 internal object Converters {
@@ -154,14 +154,20 @@ internal object Converters {
                 if (!imageList.isNullOrEmpty()) {
                     val imagePath = imageElem.path
                     val origin = imageList[0].toImageElement(imagePath = imagePath)
-                    val large = imageList.getOrNull(index = 1).toImageElement(imagePath = imagePath)
-                    val thumb = imageList.getOrNull(index = 2).toImageElement(imagePath = imagePath)
-                    ImageMessage(
-                        messageDetail = messageDetail,
-                        original = origin!!,
-                        large = large,
-                        thumb = thumb
-                    )
+                    if (origin != null) {
+                        val large =
+                            imageList.getOrNull(index = 1).toImageElement(imagePath = imagePath)
+                        val thumb =
+                            imageList.getOrNull(index = 2).toImageElement(imagePath = imagePath)
+                        ImageMessage(
+                            messageDetail = messageDetail,
+                            original = origin,
+                            large = large,
+                            thumb = thumb
+                        )
+                    } else {
+                        null
+                    }
                 } else {
                     null
                 }

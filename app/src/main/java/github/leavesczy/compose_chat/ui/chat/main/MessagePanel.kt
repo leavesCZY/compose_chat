@@ -1,6 +1,5 @@
 package github.leavesczy.compose_chat.ui.chat.main
 
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,9 +9,11 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,6 +27,10 @@ import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,7 +39,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.base.models.Chat
@@ -44,18 +48,40 @@ import github.leavesczy.compose_chat.base.models.MessageState
 import github.leavesczy.compose_chat.base.models.SystemMessage
 import github.leavesczy.compose_chat.base.models.TextMessage
 import github.leavesczy.compose_chat.base.models.TimeMessage
+import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageViewState
-import github.leavesczy.compose_chat.ui.theme.AppTheme
-import github.leavesczy.compose_chat.ui.widgets.ComponentImage
+import github.leavesczy.compose_chat.widgets.ComponentImage
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Composable
 fun MessagePanel(pageViewState: ChatPageViewState) {
-    val localActivity = LocalActivity.current
+    val isImeVisible = rememberUpdatedState(newValue = WindowInsets.isImeVisible)
+    LaunchedEffect(key1 = pageViewState.listState) {
+        launch {
+            pageViewState.scrollToLatestMessageFlow
+                .collectLatest {
+                    delay(timeMillis = 10L)
+                    pageViewState.listState.animateScrollToItem(index = 0)
+                }
+        }
+        launch {
+            snapshotFlow {
+                isImeVisible.value
+            }.filter {
+                it
+            }.collectLatest {
+                pageViewState.listState.animateScrollToItem(index = 0)
+            }
+        }
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
@@ -84,7 +110,7 @@ fun MessagePanel(pageViewState: ChatPageViewState) {
                         if (message.detail.isOwnMessage) {
                             "ownTextMessage"
                         } else {
-                            "fiendTextMessage"
+                            "friendTextMessage"
                         }
                     }
 
@@ -92,75 +118,93 @@ fun MessagePanel(pageViewState: ChatPageViewState) {
                         if (message.detail.isOwnMessage) {
                             "ownImageMessage"
                         } else {
-                            "fiendImageMessage"
+                            "friendImageMessage"
                         }
                     }
                 }
             }
         ) { message ->
-            when (message) {
-                is TimeMessage -> {
-                    TimeMessage(
-                        modifier = Modifier,
-                        message = message
-                    )
-                }
+            ChatMessageItem(
+                message = message,
+                pageViewState = pageViewState
+            )
+        }
+    }
+}
 
-                is SystemMessage -> {
-                    SystemMessage(
-                        modifier = Modifier,
-                        message = message
-                    )
-                }
+@Composable
+private fun ChatMessageItem(
+    message: Message,
+    pageViewState: ChatPageViewState
+) {
+    when (message) {
+        is TimeMessage -> {
+            TimeMessage(
+                modifier = Modifier,
+                message = message
+            )
+        }
 
-                is TextMessage, is ImageMessage -> {
-                    val messageContent = @Composable {
-                        when (message) {
-                            is TextMessage -> {
-                                TextMessage(
-                                    modifier = Modifier,
-                                    message = message
-                                )
-                            }
+        is SystemMessage -> {
+            SystemMessage(
+                modifier = Modifier,
+                message = message
+            )
+        }
 
-                            is ImageMessage -> {
-                                ImageMessage(
-                                    modifier = Modifier,
-                                    message = message,
-                                    onClickMessage = {
-                                        pageViewState.onClickMessage(localActivity!!, message)
-                                    }
-                                )
-                            }
-
-                            is TimeMessage, is SystemMessage -> {
-                                throw IllegalArgumentException()
-                            }
-                        }
-                    }
-                    if (message.detail.isOwnMessage) {
-                        OwnMessageContainer(
-                            modifier = Modifier,
+        is TextMessage, is ImageMessage -> {
+            if (message.detail.isOwnMessage) {
+                OwnMessageContainer(
+                    modifier = Modifier,
+                    message = message,
+                    onClickAvatar = pageViewState.onClickAvatar,
+                    messageContent = {
+                        MessageBubbleContent(
                             message = message,
-                            onClickAvatar = {
-                                pageViewState.onClickAvatar(localActivity!!, message)
-                            },
-                            messageContent = messageContent
-                        )
-                    } else {
-                        FriendMessageContainer(
-                            modifier = Modifier,
-                            message = message,
-                            onClickAvatar = {
-                                pageViewState.onClickAvatar(localActivity!!, message)
-                            },
-                            showPartName = pageViewState.chat is Chat.Group,
-                            messageContent = messageContent
+                            onClickMessage = pageViewState.onClickMessage
                         )
                     }
-                }
+                )
+            } else {
+                FriendMessageContainer(
+                    modifier = Modifier,
+                    message = message,
+                    onClickAvatar = pageViewState.onClickAvatar,
+                    showPartName = pageViewState.chat is Chat.Group,
+                    messageContent = {
+                        MessageBubbleContent(
+                            message = message,
+                            onClickMessage = pageViewState.onClickMessage
+                        )
+                    }
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun MessageBubbleContent(
+    message: Message,
+    onClickMessage: (Message) -> Unit
+) {
+    when (message) {
+        is TextMessage -> {
+            TextMessage(
+                modifier = Modifier,
+                message = message
+            )
+        }
+
+        is ImageMessage -> {
+            ImageMessage(
+                modifier = Modifier,
+                message = message,
+                onClickMessage = onClickMessage
+            )
+        }
+
+        is TimeMessage, is SystemMessage -> Unit
     }
 }
 
@@ -266,7 +310,7 @@ private fun FriendMessageContainer(
                 }
                 MessageState(
                     modifier = Modifier,
-                    messageState = MessageState.Success
+                    messageState = message.detail.state
                 )
             }
         }
@@ -281,7 +325,7 @@ private fun Avatar(
 ) {
     ComponentImage(
         modifier = modifier
-            .size(size = 40.dp)
+            .size(size = 44.dp)
             .clip(shape = RoundedCornerShape(size = 6.dp))
             .clickable(
                 onClick = {
@@ -372,9 +416,10 @@ private fun TextMessage(
 private fun ImageMessage(
     modifier: Modifier,
     message: ImageMessage,
-    onClickMessage: (message: Message) -> Unit
+    onClickMessage: (Message) -> Unit
 ) {
     val localDensity = LocalDensity.current
+    val previewImage = message.previewImage
     BoxWithConstraints(
         modifier = modifier,
         contentAlignment = if (message.detail.isOwnMessage) {
@@ -383,38 +428,39 @@ private fun ImageMessage(
             Alignment.TopStart
         }
     ) {
-        val imageWidth = message.previewImage.width
-        val imageHeight = message.previewImage.height
+        val imageWidth = previewImage.width
+        val imageHeight = previewImage.height
         val imageMinWidthDp = maxWidth / 10f * 4
-        val isALegalWidthAndHeight = imageWidth > 0 && imageHeight > 0
-        val mRatio: Float
-        val mWidth: Dp
-        if (isALegalWidthAndHeight) {
-            mRatio = 1.0f * imageWidth / imageHeight
-            val imageWidthDp = with(localDensity) {
-                imageWidth.toDp()
-            }
-            val imageMaxWidthDp = maxWidth / 10f * 9
-            mWidth = if (imageWidthDp <= imageMinWidthDp) {
-                imageMinWidthDp
-            } else if (imageWidthDp < imageMaxWidthDp) {
-                imageWidthDp
+        val layout = remember(key1 = message.detail.msgId) {
+            val isALegalWidthAndHeight = imageWidth > 0 && imageHeight > 0
+            if (isALegalWidthAndHeight) {
+                val ratio = 1.0f * imageWidth / imageHeight
+                val imageWidthDp = with(localDensity) {
+                    imageWidth.toDp()
+                }
+                val imageMaxWidthDp = maxWidth / 10f * 9
+                val width = if (imageWidthDp <= imageMinWidthDp) {
+                    imageMinWidthDp
+                } else if (imageWidthDp < imageMaxWidthDp) {
+                    imageWidthDp
+                } else {
+                    imageMaxWidthDp
+                }
+                width to ratio
             } else {
-                imageMaxWidthDp
+                imageMinWidthDp to 1.0f
             }
-        } else {
-            mRatio = 1.0f
-            mWidth = imageMinWidthDp
         }
+        val (mWidth, mRatio) = layout
         ComponentImage(
             modifier = Modifier
                 .width(width = mWidth)
                 .aspectRatio(ratio = mRatio)
                 .clip(shape = RoundedCornerShape(size = 6.dp))
-                .clickable {
+                .clickable(onClick = {
                     onClickMessage(message)
-                },
-            model = message.previewImage.url,
+                }),
+            model = previewImage.url,
             contentScale = ContentScale.Crop,
             alignment = Alignment.Center
         )

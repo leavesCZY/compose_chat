@@ -33,17 +33,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.R
-import github.leavesczy.compose_chat.provider.ToastProvider
+import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.login.logic.LoginPageViewState
-import github.leavesczy.compose_chat.ui.theme.AppTheme
+import github.leavesczy.compose_chat.ui.provider.ToastProvider
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Composable
-internal fun LoginPage(viewState: LoginPageViewState) {
+internal fun LoginPage(pageViewState: LoginPageViewState) {
     val localActivity = LocalActivity.current
     val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
     Scaffold(
@@ -61,7 +61,7 @@ internal fun LoginPage(viewState: LoginPageViewState) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            if (viewState.panelVisible) {
+            if (pageViewState.isPanelVisible) {
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -76,8 +76,8 @@ internal fun LoginPage(viewState: LoginPageViewState) {
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    content = viewState.userId,
-                    onContentChange = viewState.onUserIdInputChanged
+                    content = pageViewState.userId,
+                    onContentChange = pageViewState.onUserIdInputChanged
                 )
                 Spacer(
                     modifier = Modifier
@@ -87,12 +87,14 @@ internal fun LoginPage(viewState: LoginPageViewState) {
                 LoginButton(
                     modifier = Modifier,
                     onClick = {
-                        val input = viewState.userId.text
+                        val input = pageViewState.userId.text
                         if (input.isBlank()) {
                             ToastProvider.showToast(resId = github.leavesczy.compose_chat.base.R.string.login_user_id_required)
                         } else {
                             localSoftwareKeyboardController?.hide()
-                            viewState.onClickLogin(localActivity!!)
+                            localActivity?.let { activity ->
+                                pageViewState.onClickLogin(activity)
+                            }
                         }
                     }
                 )

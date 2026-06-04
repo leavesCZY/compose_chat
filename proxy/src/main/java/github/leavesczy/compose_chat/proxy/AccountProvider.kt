@@ -24,7 +24,7 @@ import kotlin.coroutines.resume
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 class AccountProvider : IAccountProvider {
@@ -32,6 +32,9 @@ class AccountProvider : IAccountProvider {
     override val personProfileFlow = MutableStateFlow(value = PersonProfile.Empty)
 
     override val serverConnectStateFlow = MutableSharedFlow<ServerConnectState>()
+
+    private val generateUserSig =
+        GenerateUserSig(appId = Consts.APP_ID, appSecretKey = Consts.APP_SECRET_KEY)
 
     override fun init(application: Application) {
         val config = V2TIMSDKConfig()
@@ -61,7 +64,7 @@ class AccountProvider : IAccountProvider {
                 updatePersonProfile(userFullInfo = info)
             }
         })
-        V2TIMManager.getInstance().initSDK(application, GenerateUserSig.APP_ID, config)
+        V2TIMManager.getInstance().initSDK(application, Consts.APP_ID, config)
     }
 
     private fun dispatchServerConnectState(connectState: ServerConnectState) {
@@ -76,7 +79,7 @@ class AccountProvider : IAccountProvider {
                 val formatUserId = userId.lowercase()
                 V2TIMManager.getInstance().login(
                     formatUserId,
-                    GenerateUserSig.genUserSig(userId = formatUserId),
+                    generateUserSig.genUserSig(userId = formatUserId),
                     object : V2TIMCallback {
                         override fun onSuccess() {
                             dispatchServerConnectState(connectState = ServerConnectState.Connected)

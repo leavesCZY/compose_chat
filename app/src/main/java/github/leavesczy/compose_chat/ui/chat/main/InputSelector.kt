@@ -24,20 +24,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.R
-import github.leavesczy.compose_chat.extend.clickableNoRipple
+import github.leavesczy.compose_chat.extensions.clickableNoRipple
+import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.chat.main.logic.InputSelector
-import github.leavesczy.compose_chat.ui.theme.AppTheme
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Composable
 fun InputSelector(
     modifier: Modifier,
     inputSelector: InputSelector,
-    onInputSelectorChange: (inputSelector: InputSelector) -> Unit,
+    onInputSelectorChanged: (inputSelector: InputSelector) -> Unit,
     sendMessageEnabled: Boolean,
     onClickSend: () -> Unit
 ) {
@@ -50,9 +50,9 @@ fun InputSelector(
         InputSelector(
             modifier = Modifier,
             icon = Icons.Outlined.Mood,
-            selected = inputSelector == InputSelector.EMOJI,
+            selected = inputSelector == InputSelector.Emoji,
             onClick = {
-                onInputSelectorChange(InputSelector.EMOJI)
+                onInputSelectorChanged(InputSelector.Emoji)
             }
         )
         InputSelector(
@@ -61,7 +61,7 @@ fun InputSelector(
             icon = Icons.Outlined.Topic,
             selected = inputSelector == InputSelector.Picture,
             onClick = {
-                onInputSelectorChange(InputSelector.Picture)
+                onInputSelectorChanged(InputSelector.Picture)
             }
         )
         Spacer(

@@ -4,7 +4,7 @@ import org.gradle.kotlin.dsl.apply
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 class ParcelizeConventionPlugin : Plugin<Project> {

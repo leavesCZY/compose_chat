@@ -1,0 +1,39 @@
+package github.leavesczy.compose_chat.widgets
+
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.theme.AppTheme
+
+/**
+ * @Author: leavesCZY
+ * @Date: 2026/6/4 21:12
+ * @Desc:
+ */
+@Composable
+internal fun ComposeDropdownMenuItem(
+    modifier: Modifier,
+    text: String,
+    onClick: () -> Unit
+) {
+    DropdownMenuItem(
+        modifier = modifier,
+        text = {
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp, vertical = 10.dp),
+                text = text,
+                fontSize = 18.sp,
+                lineHeight = 20.sp,
+                fontWeight = FontWeight.Normal,
+                color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+            )
+        },
+        onClick = onClick
+    )
+}

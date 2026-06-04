@@ -17,19 +17,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.R
-import github.leavesczy.compose_chat.ui.profile.logic.ProfileUpdatePageViewStata
-import github.leavesczy.compose_chat.ui.theme.AppTheme
-import github.leavesczy.compose_chat.ui.widgets.CommonButton
-import github.leavesczy.compose_chat.ui.widgets.CommonOutlinedTextField
-import github.leavesczy.compose_chat.ui.widgets.ProfilePanel
+import github.leavesczy.compose_chat.theme.AppTheme
+import github.leavesczy.compose_chat.ui.profile.logic.ProfileUpdatePageViewState
+import github.leavesczy.compose_chat.widgets.CommonButton
+import github.leavesczy.compose_chat.widgets.CommonOutlinedTextField
+import github.leavesczy.compose_chat.widgets.ProfilePanel
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Composable
-internal fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
+internal fun ProfileUpdatePage(pageViewState: ProfileUpdatePageViewState) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -43,7 +43,7 @@ internal fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
                 .verticalScroll(state = rememberScrollState())
                 .padding(bottom = 30.dp)
         ) {
-            val personProfile = pageViewStata.personProfile
+            val personProfile = pageViewState.personProfile
             if (personProfile != null) {
                 ProfilePanel(
                     title = personProfile.nickname,
@@ -66,7 +66,7 @@ internal fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
                                 if (nickname.length > 16) {
                                     return@CommonOutlinedTextField
                                 }
-                                pageViewStata.onNicknameChanged(nickname)
+                                pageViewState.onNicknameChanged(nickname)
                             }
                         )
                         CommonOutlinedTextField(
@@ -79,16 +79,16 @@ internal fun ProfileUpdatePage(pageViewStata: ProfileUpdatePageViewStata) {
                                 if (signature.length > 60) {
                                     return@CommonOutlinedTextField
                                 }
-                                pageViewStata.onSignatureChanged(signature)
+                                pageViewState.onSignatureChanged(signature)
                             }
                         )
                         CommonButton(
                             text = stringResource(id = R.string.random_avatar),
-                            onClick = pageViewStata.setRandomAvatar
+                            onClick = pageViewState.onClickSetRandomAvatar
                         )
                         CommonButton(
                             text = stringResource(id = R.string.confirm_update),
-                            onClick = pageViewStata.onConfirmUpdate
+                            onClick = pageViewState.onConfirmUpdate
                         )
                     }
                 }

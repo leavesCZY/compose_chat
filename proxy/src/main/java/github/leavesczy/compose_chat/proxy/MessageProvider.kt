@@ -30,10 +30,10 @@ import kotlin.random.Random
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
-class MessageProvider : IMessageProvider {
+object MessageProvider : IMessageProvider {
 
     private val messageListenerMap =
         mutableMapOf<String, SoftReference<IMessageProvider.MessageListener>>()
@@ -64,7 +64,7 @@ class MessageProvider : IMessageProvider {
                     continuation.resume(
                         value = LoadMessageResult.Success(
                             messageList = Converters.convertMessage(messageList = list),
-                            loadFinish = list.size < count
+                            isLoadFinished = list.size < count
                         )
                     )
                 }
@@ -120,9 +120,9 @@ class MessageProvider : IMessageProvider {
             val localTempMessage = ImageMessage(
                 messageDetail = generatePreSendMessageDetail(),
                 original = ImageMessage.ImageElement(
-                    options.outWidth,
-                    options.outHeight,
-                    imagePath
+                    width = options.outWidth,
+                    height = options.outHeight,
+                    url = imagePath
                 ),
                 large = null,
                 thumb = null

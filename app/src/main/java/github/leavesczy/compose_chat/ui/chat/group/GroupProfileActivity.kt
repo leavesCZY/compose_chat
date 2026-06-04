@@ -4,13 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import github.leavesczy.compose_chat.ui.base.BaseActivity
+import github.leavesczy.compose_chat.base.BaseActivity
 import github.leavesczy.compose_chat.ui.chat.group.logic.GroupProfileViewModel
-import github.leavesczy.compose_chat.ui.widgets.LoadingDialog
+import github.leavesczy.compose_chat.widgets.LoadingDialog
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 class GroupProfileActivity : BaseActivity() {
@@ -30,15 +30,22 @@ class GroupProfileActivity : BaseActivity() {
 
     }
 
+    private val groupId by lazy(mode = LazyThreadSafetyMode.NONE) {
+        intent.getStringExtra(KEY_GROUP_ID) ?: ""
+    }
+
     private val groupProfileViewModel by viewModelsInstance {
-        val groupId = intent.getStringExtra(KEY_GROUP_ID) ?: ""
         GroupProfileViewModel(groupId = groupId)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (groupId.isBlank()) {
+            finish()
+            return
+        }
         setContent {
-            GroupProfilePage(viewState = groupProfileViewModel.pageViewState)
+            GroupProfilePage(pageViewState = groupProfileViewModel.pageViewState)
             LoadingDialog(viewState = groupProfileViewModel.loadingDialogViewState)
         }
     }

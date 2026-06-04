@@ -8,76 +8,81 @@ import javax.crypto.spec.SecretKeySpec
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
-internal object GenerateUserSig {
-
-    const val APP_ID = 1400592743
-
-    private const val APP_SECRET_KEY =
-        "9b9d7ea10c1d88a377e31b19320ed8780a12f55451a76461b3a87189ee7339e0"
+internal class GenerateUserSig(
+    private val appId: Int,
+    private val appSecretKey: String
+) {
 
     fun genUserSig(userId: String): String {
         return genTLSSignature(
-            sdkAppId = APP_ID.toLong(),
+            appId = appId,
+            secretKey = appSecretKey,
             userId = userId,
-            expire = 365 * 24 * 60 * 60L,
-            userBuf = null,
-            priKeyContent = APP_SECRET_KEY
+            expireTime = 365 * 24 * 60 * 60L,
+            userBuf = null
         )
     }
 
     @Suppress("SameParameterValue")
     private fun genTLSSignature(
-        sdkAppId: Long,
+        appId: Int,
+        secretKey: String,
         userId: String,
-        expire: Long,
-        userBuf: ByteArray?,
-        priKeyContent: String
+        expireTime: Long,
+        userBuf: ByteArray?
     ): String {
-        val currTime = System.currentTimeMillis() / 1000
+        val currentTime = System.currentTimeMillis() / 1000
         val sigDoc = JSONObject()
         sigDoc.put("TLS.ver", "2.0")
         sigDoc.put("TLS.identifier", userId)
-        sigDoc.put("TLS.sdkappid", sdkAppId)
-        sigDoc.put("TLS.expire", expire)
-        sigDoc.put("TLS.time", currTime)
+        sigDoc.put("TLS.sdkappid", appId)
+        sigDoc.put("TLS.expire", expireTime)
+        sigDoc.put("TLS.time", currentTime)
         var base64UserBuf: String? = null
         if (userBuf != null) {
             base64UserBuf = Base64.encodeToString(userBuf, Base64.NO_WRAP)
             sigDoc.put("TLS.userbuf", base64UserBuf)
         }
-        val sig = hmacSHA256(sdkAppId, userId, currTime, expire, priKeyContent, base64UserBuf)
+        val sig = hmacSHA256(appId, secretKey, userId, currentTime, expireTime, base64UserBuf)
         sigDoc.put("TLS.sig", sig)
         val compressor = Deflater()
         compressor.setInput(sigDoc.toString().toByteArray())
         compressor.finish()
-        val compressedBytes = ByteArray(2048)
+        val compressedBytes = ByteArray(size = 2048)
         val compressedBytesLength = compressor.deflate(compressedBytes)
         compressor.end()
-        return String(base64EncodeUrl(compressedBytes.copyOfRange(0, compressedBytesLength)))
+        return String(
+            base64EncodeUrl(
+                compressedBytes.copyOfRange(
+                    fromIndex = 0,
+                    toIndex = compressedBytesLength
+                )
+            )
+        )
     }
 
     private fun hmacSHA256(
-        sdkAppId: Long,
+        sdkAppId: Int,
+        secretKey: String,
         userId: String,
-        currTime: Long,
-        expire: Long,
-        priKeyContent: String,
+        currentTime: Long,
+        expireTime: Long,
         base64UserBuf: String?
     ): String {
         var contentToBeSigned = """
             TLS.identifier:$userId
             TLS.sdkappid:$sdkAppId
-            TLS.time:$currTime
-            TLS.expire:$expire
+            TLS.time:$currentTime
+            TLS.expire:$expireTime
             
             """.trimIndent()
         if (base64UserBuf != null) {
             contentToBeSigned += "TLS.userbuf:$base64UserBuf\n"
         }
-        val byteKey = priKeyContent.toByteArray(charset("UTF-8"))
+        val byteKey = secretKey.toByteArray(charset("UTF-8"))
         val hmac = Mac.getInstance("HmacSHA256")
         val keySpec = SecretKeySpec(byteKey, "HmacSHA256")
         hmac.init(keySpec)

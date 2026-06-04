@@ -18,22 +18,24 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.base.models.Chat
+import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.chat.group.GroupProfileActivity
+import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageViewState
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
-import github.leavesczy.compose_chat.ui.theme.AppTheme
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Composable
 fun ChatPageTopBar(
     modifier: Modifier,
-    chat: Chat,
-    title: String
+    pageViewState: ChatPageViewState
 ) {
     val localContext = LocalContext.current
+    val chat = pageViewState.chat
+    val title = pageViewState.topBarTitle
     CenterAlignedTopAppBar(
         modifier = modifier
             .shadow(elevation = 0.8.dp),

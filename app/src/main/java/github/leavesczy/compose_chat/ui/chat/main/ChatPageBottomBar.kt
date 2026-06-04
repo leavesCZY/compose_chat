@@ -29,6 +29,7 @@ import androidx.compose.foundation.text.input.maxLength
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,12 +47,13 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageBottomBarViewState
 import github.leavesczy.compose_chat.ui.chat.main.logic.InputSelector
-import github.leavesczy.compose_chat.ui.theme.AppTheme
-import github.leavesczy.compose_chat.ui.widgets.MatisseImageEngine
+import github.leavesczy.compose_chat.widgets.MatisseImageEngine
 import github.leavesczy.matisse.Matisse
 import github.leavesczy.matisse.MatisseCapture
 import github.leavesczy.matisse.MatisseCaptureContract
@@ -61,7 +63,7 @@ import github.leavesczy.matisse.MediaType
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Composable
@@ -76,8 +78,8 @@ fun ChatPageBottomBar(
     val focusRequester = remember {
         FocusRequester()
     }
-    BackHandler(enabled = bottomBarViewState.inputSelector != InputSelector.NONE) {
-        focusRequester.requestFocus()
+    BackHandler(enabled = bottomBarViewState.inputSelector != InputSelector.None) {
+        bottomBarViewState.onInputSelectorChanged(InputSelector.None)
     }
     var keyboardHeightDp by remember {
         mutableStateOf(value = 0.dp)
@@ -89,7 +91,7 @@ fun ChatPageBottomBar(
             val realtimeKeyboardHeightDp = (bottomInset / localDensity.density).dp
             keyboardHeightDp = maxOf(realtimeKeyboardHeightDp, keyboardHeightDp)
             if (realtimeKeyboardHeightDp == keyboardHeightDp) {
-                bottomBarViewState.onInputSelectorChanged(InputSelector.NONE)
+                bottomBarViewState.onInputSelectorChanged(InputSelector.None)
                 localSoftwareKeyboardController?.show()
             }
         }
@@ -98,21 +100,21 @@ fun ChatPageBottomBar(
         contract = MatisseCaptureContract()
     ) { result ->
         if (result != null) {
-            bottomBarViewState.sendImageMessage(result.uri)
+            bottomBarViewState.onSendImageMessage(result.uri)
         }
     }
     val matisseLauncher = rememberLauncherForActivityResult(
         contract = MatisseContract()
     ) { result ->
         if (!result.isNullOrEmpty()) {
-            bottomBarViewState.sendImageMessage(result[0].uri)
+            bottomBarViewState.onSendImageMessage(result[0].uri)
         }
     }
     val pickVisualMediaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         if (uri != null) {
-            bottomBarViewState.sendImageMessage(uri)
+            bottomBarViewState.onSendImageMessage(uri)
         }
     }
     Column(
@@ -126,11 +128,17 @@ fun ChatPageBottomBar(
         )
     ) {
         val textFieldState = rememberTextFieldState(initialText = "")
+        val sendMessageEnabled by remember {
+            derivedStateOf {
+                textFieldState.text.isNotBlank()
+            }
+        }
+
         fun onClickSend() {
             val text = textFieldState.text.toString()
             if (text.isNotBlank()) {
                 focusRequester.requestFocus()
-                bottomBarViewState.sendTextMessage(text)
+                bottomBarViewState.onSendTextMessage(text)
                 textFieldState.clearText()
             }
         }
@@ -145,8 +153,8 @@ fun ChatPageBottomBar(
         InputSelector(
             modifier = Modifier,
             inputSelector = bottomBarViewState.inputSelector,
-            sendMessageEnabled = textFieldState.text.isNotBlank(),
-            onInputSelectorChange = { inputSelector ->
+            sendMessageEnabled = sendMessageEnabled,
+            onInputSelectorChanged = { inputSelector ->
                 localFocusManager.clearFocus(force = true)
                 localSoftwareKeyboardController?.hide()
                 bottomBarViewState.onInputSelectorChanged(inputSelector)
@@ -161,11 +169,11 @@ fun ChatPageBottomBar(
             keyboardHeightDp
         }
         when (bottomBarViewState.inputSelector) {
-            InputSelector.NONE -> {
+            InputSelector.None -> {
                 KeyboardSpace(modifier = Modifier)
             }
 
-            InputSelector.EMOJI -> {
+            InputSelector.Emoji -> {
                 Box(
                     modifier = Modifier
                         .heightIn(
@@ -191,10 +199,10 @@ fun ChatPageBottomBar(
                             max = maxHeight
                         )
                 ) {
-                    ExtendTable(
+                    MediaPickerTable(
                         modifier = Modifier,
                         onClickImagePicker = {
-                            bottomBarViewState.onInputSelectorChanged(InputSelector.NONE)
+                            bottomBarViewState.onInputSelectorChanged(InputSelector.None)
                             if (bottomBarViewState.isPhotoPickerAvailable) {
                                 pickVisualMediaLauncher.launch(
                                     input = PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -212,7 +220,7 @@ fun ChatPageBottomBar(
                             }
                         },
                         onClickTakePicture = {
-                            bottomBarViewState.onInputSelectorChanged(InputSelector.NONE)
+                            bottomBarViewState.onInputSelectorChanged(InputSelector.None)
                             val matisseCapture =
                                 MatisseCapture(captureStrategy = MediaStoreCaptureStrategy())
                             takePictureLauncher.launch(input = matisseCapture)
@@ -251,7 +259,10 @@ private fun TextField(
         cursorBrush = AppTheme.cursorColor,
         textStyle = TextStyle(
             fontSize = 18.sp,
-            lineHeight = 20.sp,
+            lineHeightStyle = LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None
+            ),
             letterSpacing = 1.sp,
             color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
         ),
@@ -275,7 +286,7 @@ private fun TextFieldState.insertAtCursor(insert: String) {
         val currentSelection = selection
         val start = currentSelection.start
         val end = currentSelection.end
-        replace(start, end, insert)
+        replace(start = start, end = end, text = insert)
         val nextCharIndex = start + insert.length
         if (nextCharIndex <= length) {
             placeCursorBeforeCharAt(nextCharIndex)

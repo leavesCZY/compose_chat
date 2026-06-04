@@ -10,6 +10,7 @@ import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.Conversation
 import github.leavesczy.compose_chat.base.models.ConversationType
 import github.leavesczy.compose_chat.base.provider.IConversationProvider
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -17,14 +18,27 @@ import kotlin.coroutines.resume
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
-class ConversationProvider : IConversationProvider {
+object ConversationProvider : IConversationProvider {
 
     override val conversationListFlow = MutableSharedFlow<List<Conversation>>()
 
     override val totalUnreadMessageCountFlow = MutableSharedFlow<Long>()
+
+    private val conversationComparator = Comparator<Conversation> { o1, o2 ->
+        val o1Timestamp = o1.lastMessage.detail.milliseconds
+        val o2Timestamp = o2.lastMessage.detail.milliseconds
+        when {
+            o1.isPinned && o2.isPinned -> o2Timestamp.compareTo(o1Timestamp)
+            o1.isPinned -> -1
+            o2.isPinned -> 1
+            else -> o2Timestamp.compareTo(o1Timestamp)
+        }
+    }
+
+    private var refreshJob: Job? = null
 
     init {
         V2TIMManager.getConversationManager().addConversationListener(
@@ -47,8 +61,10 @@ class ConversationProvider : IConversationProvider {
     }
 
     override fun refreshConversationList() {
-        AppCoroutineScope.launch {
-            dispatchConversationList(conversationList = getConversationListOrigin())
+        refreshJob?.cancel()
+        refreshJob = AppCoroutineScope.launch {
+            val conversationList = getConversationListOrigin()
+            dispatchConversationList(conversationList = conversationList)
         }
     }
 
@@ -151,30 +167,7 @@ class ConversationProvider : IConversationProvider {
     private fun convertConversation(convertersList: List<V2TIMConversation>?): List<Conversation> {
         return convertersList?.mapNotNull { conversation ->
             convertConversation(conversation = conversation)
-        }?.sortedWith(object : Comparator<Conversation> {
-            override fun compare(o1: Conversation, o2: Conversation): Int {
-                val o1Timestamp = o1.lastMessage.detail.milliseconds
-                val o2Timestamp = o2.lastMessage.detail.milliseconds
-                if (o1.isPinned) {
-                    if (o2.isPinned) {
-                        return if (o1Timestamp > o2Timestamp) {
-                            -1
-                        } else {
-                            1
-                        }
-                    }
-                    return -1
-                }
-                if (o2.isPinned) {
-                    return 1
-                }
-                return if (o1Timestamp > o2Timestamp) {
-                    -1
-                } else {
-                    1
-                }
-            }
-        }) ?: emptyList()
+        }?.sortedWith(conversationComparator) ?: emptyList()
     }
 
     private fun convertConversation(conversation: V2TIMConversation): Conversation? {

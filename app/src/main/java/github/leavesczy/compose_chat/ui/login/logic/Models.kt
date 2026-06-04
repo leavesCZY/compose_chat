@@ -6,13 +6,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Stable
 data class LoginPageViewState(
     val userId: TextFieldValue,
-    val panelVisible: Boolean,
+    val isPanelVisible: Boolean,
     val onUserIdInputChanged: (userId: TextFieldValue) -> Unit,
     val onClickLogin: (activity: Activity) -> Unit
 )

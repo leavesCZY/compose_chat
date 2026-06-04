@@ -2,12 +2,12 @@ package github.leavesczy.compose_chat.ui.profile
 
 import android.os.Bundle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import github.leavesczy.compose_chat.ui.base.BaseActivity
+import github.leavesczy.compose_chat.base.BaseActivity
 import github.leavesczy.compose_chat.ui.profile.logic.ProfileUpdateViewModel
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 class ProfileUpdateActivity : BaseActivity() {
@@ -16,7 +16,7 @@ class ProfileUpdateActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val profileUpdateViewModel = viewModel<ProfileUpdateViewModel>()
-            ProfileUpdatePage(pageViewStata = profileUpdateViewModel.profileUpdatePageViewStata)
+            ProfileUpdatePage(pageViewState = profileUpdateViewModel.pageViewState)
         }
     }
 

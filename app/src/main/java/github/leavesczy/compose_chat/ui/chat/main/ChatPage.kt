@@ -1,6 +1,7 @@
 package github.leavesczy.compose_chat.ui.chat.main
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -10,16 +11,22 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import github.leavesczy.compose_chat.ui.chat.main.logic.ChatViewModel
-import github.leavesczy.compose_chat.ui.theme.AppTheme
+import github.leavesczy.compose_chat.theme.AppTheme
+import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageBottomBarViewState
+import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageViewState
+import github.leavesczy.compose_chat.ui.chat.main.logic.LoadMessageViewState
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Composable
-internal fun ChatPage(chatViewModel: ChatViewModel) {
+internal fun ChatPage(
+    pageViewState: ChatPageViewState,
+    bottomBarViewState: ChatPageBottomBarViewState,
+    loadMessageViewState: LoadMessageViewState
+) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -27,38 +34,50 @@ internal fun ChatPage(chatViewModel: ChatViewModel) {
         topBar = {
             ChatPageTopBar(
                 modifier = Modifier,
-                chat = chatViewModel.chatPageViewState.chat,
-                title = chatViewModel.chatPageViewState.topBarTitle
+                pageViewState = pageViewState
             )
         },
         bottomBar = {
             ChatPageBottomBar(
                 modifier = Modifier,
-                bottomBarViewState = chatViewModel.bottomBarViewState
+                bottomBarViewState = bottomBarViewState
             )
         }
     ) { innerPadding ->
-        val pullRefreshState = rememberPullToRefreshState()
-        Box(
-            modifier = Modifier
-                .padding(paddingValues = innerPadding)
-                .fillMaxSize()
-                .pullToRefresh(
-                    state = pullRefreshState,
-                    enabled = !chatViewModel.loadMessageViewState.loadFinish,
-                    isRefreshing = chatViewModel.loadMessageViewState.refreshing,
-                    onRefresh = chatViewModel.loadMessageViewState.loadMoreMessage
-                )
-        ) {
-            MessagePanel(pageViewState = chatViewModel.chatPageViewState)
-            PullToRefreshDefaults.Indicator(
-                modifier = Modifier
-                    .align(alignment = Alignment.TopCenter),
-                isRefreshing = chatViewModel.loadMessageViewState.refreshing,
+        ChatPageBody(
+            innerPadding = innerPadding,
+            pageViewState = pageViewState,
+            loadMessageViewState = loadMessageViewState
+        )
+    }
+}
+
+@Composable
+private fun ChatPageBody(
+    innerPadding: PaddingValues,
+    pageViewState: ChatPageViewState,
+    loadMessageViewState: LoadMessageViewState
+) {
+    val pullRefreshState = rememberPullToRefreshState()
+    Box(
+        modifier = Modifier
+            .padding(paddingValues = innerPadding)
+            .fillMaxSize()
+            .pullToRefresh(
                 state = pullRefreshState,
-                color = AppTheme.colorScheme.c_FF5386E5_FF5386E5.color,
-                containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF45464F.color
+                enabled = !loadMessageViewState.isLoadFinished,
+                isRefreshing = loadMessageViewState.isRefreshing,
+                onRefresh = loadMessageViewState.onLoadMoreMessage
             )
-        }
+    ) {
+        MessagePanel(pageViewState = pageViewState)
+        PullToRefreshDefaults.Indicator(
+            modifier = Modifier
+                .align(alignment = Alignment.TopCenter),
+            isRefreshing = loadMessageViewState.isRefreshing,
+            state = pullRefreshState,
+            color = AppTheme.colorScheme.c_FF5386E5_FF5386E5.color,
+            containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF45464F.color
+        )
     }
 }

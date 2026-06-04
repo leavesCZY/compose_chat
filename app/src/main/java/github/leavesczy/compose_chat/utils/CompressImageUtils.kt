@@ -12,7 +12,7 @@ import java.io.File
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 object CompressImageUtils {
@@ -52,6 +52,9 @@ object CompressImageUtils {
                         maxSize = IMAGE_MAX_SIZE,
                         targetFile = tempFile
                     )
+                    if (!bitmap.isRecycled) {
+                        bitmap.recycle()
+                    }
                     FileUtils.copyExifOrientation(
                         sourceImageFileDescriptor = fileDescriptor,
                         targetImagePath = tempFile.absolutePath
@@ -112,6 +115,9 @@ object CompressImageUtils {
                     targetFile.writeBytes(byteArrayOutputStream.toByteArray())
                     break
                 }
+            }
+            if (!bitmap.isRecycled) {
+                bitmap.recycle()
             }
         }
     }

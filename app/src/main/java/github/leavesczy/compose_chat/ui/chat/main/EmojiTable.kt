@@ -15,12 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import github.leavesczy.compose_chat.extend.clickableNoRippleNotCheck
-import github.leavesczy.compose_chat.ui.theme.AppTheme
+import github.leavesczy.compose_chat.extensions.clickableNoRippleNotCheck
+import github.leavesczy.compose_chat.theme.AppTheme
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 @Composable

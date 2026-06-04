@@ -6,13 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.R
+import github.leavesczy.compose_chat.base.BaseViewModel
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.GroupMemberProfile
 import github.leavesczy.compose_chat.base.provider.IGroupProvider
-import github.leavesczy.compose_chat.proxy.GroupProvider
-import github.leavesczy.compose_chat.ui.MainActivity
-import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
+import github.leavesczy.compose_chat.ui.main.MainActivity
+import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
 import github.leavesczy.compose_chat.utils.randomImage
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -21,12 +21,12 @@ import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
 
-    private val groupProvider: IGroupProvider = GroupProvider()
+    private val groupProvider: IGroupProvider = ComposeChat.groupProvider
 
     var pageViewState by mutableStateOf(
         value = GroupProfilePageViewState(

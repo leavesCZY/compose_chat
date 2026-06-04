@@ -14,6 +14,7 @@ import github.leavesczy.compose_chat.base.models.PersonProfile
 import github.leavesczy.compose_chat.base.provider.IFriendshipProvider
 import github.leavesczy.compose_chat.base.utils.StringResources
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -22,12 +23,14 @@ import kotlin.coroutines.resume
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
-class FriendshipProvider : IFriendshipProvider {
+object FriendshipProvider : IFriendshipProvider {
 
     override val friendListFlow = MutableSharedFlow<List<PersonProfile>>()
+
+    private var refreshJob: Job? = null
 
     init {
         V2TIMManager.getFriendshipManager().addFriendListener(object : V2TIMFriendshipListener() {
@@ -51,10 +54,12 @@ class FriendshipProvider : IFriendshipProvider {
     }
 
     override fun refreshFriendList() {
-        AppCoroutineScope.launch {
-            friendListFlow.emit(value = getFriendListOrigin()?.sortedByDescending { friend ->
+        refreshJob?.cancel()
+        refreshJob = AppCoroutineScope.launch {
+            val friendList = getFriendListOrigin()?.sortedByDescending { friend ->
                 friend.addTime
-            }?.toList() ?: emptyList())
+            }?.toList() ?: emptyList()
+            friendListFlow.emit(value = friendList)
         }
     }
 

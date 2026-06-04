@@ -11,13 +11,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import github.leavesczy.compose_chat.R
-import github.leavesczy.compose_chat.ui.base.BaseActivity
+import github.leavesczy.compose_chat.base.BaseActivity
 import github.leavesczy.compose_chat.utils.AlbumUtils
 import kotlinx.coroutines.launch
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 class PreviewImageActivity : BaseActivity() {

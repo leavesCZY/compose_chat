@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
  * @Author: leavesCZY
- * @Date: 2026/5/20 17:18
+ * @Date: 2026/6/4 21:12
  * @Desc:
  */
 internal fun Project.configureCompose(commonExtension: CommonExtension) {
@@ -21,7 +21,8 @@ internal fun Project.configureCompose(commonExtension: CommonExtension) {
         compilerOptions {
             optIn.addAll(
                 setOf(
-                    "androidx.compose.material3.ExperimentalMaterial3Api"
+                    "androidx.compose.foundation.layout.ExperimentalLayoutApi",
+                    "androidx.compose.material3.ExperimentalMaterial3Api",
                 )
             )
         }
@@ -31,6 +32,7 @@ internal fun Project.configureCompose(commonExtension: CommonExtension) {
         val composeBomPlatform = platform(composeBom)
         add("implementation", composeBomPlatform)
         add("androidTestImplementation", composeBomPlatform)
+        add("implementation", libs.findLibrary("androidx-compose-runtime").get())
         add("implementation", libs.findLibrary("androidx-compose-ui").get())
         add("implementation", libs.findLibrary("androidx-compose-ui-util").get())
         add("debugImplementation", libs.findLibrary("androidx-compose-ui-tooling").get())
