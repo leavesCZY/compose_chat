@@ -56,11 +56,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 fun MessagePanel(pageViewState: ChatPageViewState) {
     val isImeVisible = rememberUpdatedState(newValue = WindowInsets.isImeVisible)

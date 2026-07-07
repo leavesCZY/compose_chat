@@ -23,11 +23,6 @@ import github.leavesczy.compose_chat.ui.chat.group.GroupProfileActivity
 import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageViewState
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 fun ChatPageTopBar(
     modifier: Modifier,

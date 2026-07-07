@@ -2,11 +2,6 @@ package github.leavesczy.compose_chat.base.models
 
 import androidx.compose.runtime.Stable
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Stable
 sealed class ActionResult {
 

@@ -23,11 +23,6 @@ import github.leavesczy.compose_chat.ui.main.logic.MainPageTopBarViewState
 import github.leavesczy.compose_chat.ui.main.person.PersonProfilePage
 import github.leavesczy.compose_chat.ui.main.person.logic.PersonProfilePageViewState
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 fun MainPage(
     drawerViewState: MainPageDrawerViewState,

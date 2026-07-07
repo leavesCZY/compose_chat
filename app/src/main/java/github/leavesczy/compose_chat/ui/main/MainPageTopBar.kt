@@ -27,11 +27,6 @@ import github.leavesczy.compose_chat.ui.main.logic.MainPageTopBarViewState
 import github.leavesczy.compose_chat.widgets.ComposeDropdownMenuItem
 import kotlinx.coroutines.launch
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 fun MainPageTopBar(viewState: MainPageTopBarViewState) {
     var menuExpanded by remember {

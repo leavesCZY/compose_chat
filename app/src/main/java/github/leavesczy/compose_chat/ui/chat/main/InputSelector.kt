@@ -28,11 +28,6 @@ import github.leavesczy.compose_chat.extensions.clickableNoRipple
 import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.chat.main.logic.InputSelector
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 fun InputSelector(
     modifier: Modifier,

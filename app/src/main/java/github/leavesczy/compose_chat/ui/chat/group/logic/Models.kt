@@ -6,11 +6,6 @@ import github.leavesczy.compose_chat.base.models.GroupMemberProfile
 import github.leavesczy.compose_chat.base.models.GroupProfile
 import kotlinx.collections.immutable.PersistentList
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Stable
 data class GroupProfilePageViewState(
     val groupProfile: GroupProfile?,

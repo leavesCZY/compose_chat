@@ -28,11 +28,6 @@ import java.lang.ref.SoftReference
 import kotlin.coroutines.resume
 import kotlin.random.Random
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 object MessageProvider : IMessageProvider {
 
     private val messageListenerMap =

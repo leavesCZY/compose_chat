@@ -5,11 +5,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 object LoginPreferences {
 
     private const val KEY_GROUP = "AccountGroup"

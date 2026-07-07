@@ -24,11 +24,6 @@ import github.leavesczy.compose_chat.ui.main.person.logic.PersonProfilePageViewS
 import github.leavesczy.compose_chat.widgets.AnimateBouncyImage
 import github.leavesczy.compose_chat.widgets.BezierImage
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 fun PersonProfilePage(pageViewState: PersonProfilePageViewState) {
     val personProfile = pageViewState.personProfile

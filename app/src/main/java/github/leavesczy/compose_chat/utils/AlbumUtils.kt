@@ -11,11 +11,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.OutputStream
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 object AlbumUtils {
 
     private const val ALBUM_DIRECTORY_NAME = "compose_chat"

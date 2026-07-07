@@ -5,11 +5,6 @@ import androidx.compose.runtime.Stable
 import github.leavesczy.compose_chat.base.models.PersonProfile
 import github.leavesczy.compose_chat.theme.AppThemeMode
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Stable
 enum class MainPageTab {
     Conversation,

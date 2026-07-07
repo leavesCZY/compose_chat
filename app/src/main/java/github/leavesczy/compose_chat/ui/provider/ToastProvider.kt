@@ -7,11 +7,6 @@ import androidx.annotation.StringRes
 import github.leavesczy.compose_chat.base.utils.ContextProvider
 import github.leavesczy.compose_chat.base.utils.StringResources
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 object ToastProvider {
 
     fun showToast(context: Context = ContextProvider.get(), @StringRes resId: Int) {

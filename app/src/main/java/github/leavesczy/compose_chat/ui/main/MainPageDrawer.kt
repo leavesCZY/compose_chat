@@ -40,11 +40,6 @@ import github.leavesczy.compose_chat.ui.main.logic.MainPageDrawerViewState
 import github.leavesczy.compose_chat.widgets.AnimateBouncyImage
 import kotlinx.coroutines.launch
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 fun MainPageDrawer(viewState: MainPageDrawerViewState) {
     val coroutineScope = rememberCoroutineScope()

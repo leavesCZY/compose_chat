@@ -5,11 +5,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import github.leavesczy.compose_chat.base.BaseActivity
 import github.leavesczy.compose_chat.ui.profile.logic.ProfileUpdateViewModel
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 class ProfileUpdateActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

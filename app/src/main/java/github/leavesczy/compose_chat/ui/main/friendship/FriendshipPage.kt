@@ -31,11 +31,6 @@ import github.leavesczy.compose_chat.ui.main.friendship.logic.FriendshipPageView
 import github.leavesczy.compose_chat.widgets.ComponentImage
 import github.leavesczy.compose_chat.widgets.EmptyPage
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 fun FriendshipPage(pageViewState: FriendshipPageViewState) {
     Box(

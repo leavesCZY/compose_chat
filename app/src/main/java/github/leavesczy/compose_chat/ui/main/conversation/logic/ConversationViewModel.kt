@@ -16,11 +16,6 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 abstract class ConversationViewModel : FriendshipViewModel() {
 
     var conversationPageViewState by mutableStateOf(

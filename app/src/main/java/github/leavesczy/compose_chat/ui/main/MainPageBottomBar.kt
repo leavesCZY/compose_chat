@@ -32,11 +32,6 @@ import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.main.logic.MainPageBottomBarViewState
 import github.leavesczy.compose_chat.ui.main.logic.MainPageTab
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 fun MainPageBottomBar(viewState: MainPageBottomBarViewState) {
     val unreadCountOverflow = stringResource(id = R.string.unread_count_overflow)

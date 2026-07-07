@@ -11,11 +11,6 @@ import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
 import github.leavesczy.compose_chat.utils.randomImage
 import kotlinx.coroutines.launch
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 class ProfileUpdateViewModel : BaseViewModel() {
 
     var pageViewState by mutableStateOf(

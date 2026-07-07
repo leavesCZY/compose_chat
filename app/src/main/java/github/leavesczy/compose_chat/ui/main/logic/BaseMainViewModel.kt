@@ -6,11 +6,6 @@ import github.leavesczy.compose_chat.base.provider.IAccountProvider
 import github.leavesczy.compose_chat.base.provider.IConversationProvider
 import github.leavesczy.compose_chat.base.provider.IFriendshipProvider
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 abstract class BaseMainViewModel : BaseViewModel() {
 
     protected val accountProvider: IAccountProvider = ComposeChat.accountProvider

@@ -9,11 +9,6 @@ import github.leavesczy.compose_chat.base.BaseActivity
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.ui.chat.main.logic.ChatViewModel
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 class ChatActivity : BaseActivity() {
 
     companion object {

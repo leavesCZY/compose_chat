@@ -9,11 +9,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 internal fun Project.configureAndroidApplication(applicationExtension: ApplicationExtension) {
     val buildTimeProvider = providers.provider {
         formattedTime(pattern = "yyyy-MM-dd HH:mm:ss")

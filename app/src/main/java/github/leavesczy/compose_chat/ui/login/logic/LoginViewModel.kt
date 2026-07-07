@@ -14,11 +14,6 @@ import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
 import github.leavesczy.compose_chat.ui.provider.LoginPreferences
 import kotlinx.coroutines.launch
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 class LoginViewModel : BaseViewModel() {
 
     var pageViewState by mutableStateOf(

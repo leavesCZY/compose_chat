@@ -10,11 +10,6 @@ import androidx.compose.runtime.setValue
 import androidx.core.content.edit
 import github.leavesczy.compose_chat.theme.AppThemeMode
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 object AppThemeProvider {
 
     private const val KEY_GROUP = "AppThemeGroup"

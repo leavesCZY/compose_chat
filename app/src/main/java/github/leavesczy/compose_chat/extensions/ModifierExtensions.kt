@@ -5,11 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 fun Modifier.scrim(color: Color): Modifier {
     return drawWithContent {
         drawContent()

@@ -46,11 +46,6 @@ import github.leavesczy.compose_chat.extensions.clickableNoRipple
 import github.leavesczy.compose_chat.theme.AppTheme
 import kotlin.math.roundToInt
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 fun AnimatedBottomSheetDialog(
     modifier: Modifier = Modifier,

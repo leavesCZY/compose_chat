@@ -13,11 +13,6 @@ import github.leavesczy.compose_chat.ui.provider.LoginPreferences
 import github.leavesczy.compose_chat.widgets.LoadingDialog
 import kotlinx.coroutines.launch
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 class MainActivity : BaseActivity() {
 
     private val mainViewModel by viewModels<MainViewModel>()

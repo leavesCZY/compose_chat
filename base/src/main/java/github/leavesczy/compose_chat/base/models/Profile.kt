@@ -3,11 +3,6 @@ package github.leavesczy.compose_chat.base.models
 import androidx.compose.runtime.Stable
 import github.leavesczy.compose_chat.base.utils.TimeUtils
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Stable
 data class PersonProfile(
     val id: String,

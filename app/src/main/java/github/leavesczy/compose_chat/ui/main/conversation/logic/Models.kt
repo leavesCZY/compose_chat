@@ -6,11 +6,6 @@ import github.leavesczy.compose_chat.base.models.Conversation
 import github.leavesczy.compose_chat.base.models.ServerConnectState
 import kotlinx.collections.immutable.PersistentList
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Stable
 data class ConversationPageViewState(
     val listState: LazyListState,

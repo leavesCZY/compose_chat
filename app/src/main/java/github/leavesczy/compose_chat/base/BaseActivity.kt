@@ -17,11 +17,6 @@ import github.leavesczy.compose_chat.theme.AppThemeMode
 import github.leavesczy.compose_chat.ui.provider.AppThemeProvider
 import github.leavesczy.compose_chat.ui.provider.ToastProvider
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 abstract class BaseActivity : AppCompatActivity() {
 
     protected inline fun <reified T : ViewModel> viewModelsInstance(crossinline create: () -> T): Lazy<T> {

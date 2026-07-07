@@ -2,11 +2,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 class ParcelizeConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {

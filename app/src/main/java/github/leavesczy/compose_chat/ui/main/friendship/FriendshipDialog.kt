@@ -23,11 +23,6 @@ import github.leavesczy.compose_chat.widgets.AnimatedBottomSheetDialog
 import github.leavesczy.compose_chat.widgets.CommonButton
 import github.leavesczy.compose_chat.widgets.CommonOutlinedTextField
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 fun FriendshipDialog(viewState: FriendshipDialogViewState) {
     AnimatedBottomSheetDialog(

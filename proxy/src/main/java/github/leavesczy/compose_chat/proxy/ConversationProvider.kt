@@ -16,11 +16,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 object ConversationProvider : IConversationProvider {
 
     override val conversationListFlow = MutableSharedFlow<List<Conversation>>()

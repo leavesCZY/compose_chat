@@ -31,11 +31,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 class ChatViewModel(private val chat: Chat) : BaseViewModel() {
 
     private val messageMinInterval = 60 * 1000L

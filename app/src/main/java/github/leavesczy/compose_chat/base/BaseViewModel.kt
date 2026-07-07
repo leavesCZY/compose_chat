@@ -10,11 +10,6 @@ import github.leavesczy.compose_chat.base.utils.StringResources
 import github.leavesczy.compose_chat.ui.provider.ToastProvider
 import github.leavesczy.compose_chat.widgets.LoadingDialogViewState
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 abstract class BaseViewModel : ViewModel() {
 
     protected val context: Context

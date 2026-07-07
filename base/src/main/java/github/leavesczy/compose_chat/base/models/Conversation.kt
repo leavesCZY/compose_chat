@@ -4,11 +4,6 @@ import androidx.compose.runtime.Stable
 import github.leavesczy.compose_chat.base.R
 import github.leavesczy.compose_chat.base.utils.StringResources
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Stable
 data class Conversation(
     val id: String,

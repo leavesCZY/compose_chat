@@ -30,11 +30,6 @@ import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.unit.Density
 import github.leavesczy.compose_chat.ui.provider.AppThemeProvider
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Stable
 enum class AppThemeMode {
     Light,

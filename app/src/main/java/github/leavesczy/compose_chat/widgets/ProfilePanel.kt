@@ -23,11 +23,6 @@ import github.leavesczy.compose_chat.extensions.scrim
 import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 fun ProfilePanel(
     title: String,

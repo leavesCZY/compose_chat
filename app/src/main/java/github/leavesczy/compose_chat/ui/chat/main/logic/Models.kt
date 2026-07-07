@@ -8,11 +8,6 @@ import github.leavesczy.compose_chat.base.models.Message
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.flow.Flow
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Stable
 data class ChatPageViewState(
     val chat: Chat,

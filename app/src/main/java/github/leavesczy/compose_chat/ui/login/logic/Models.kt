@@ -4,11 +4,6 @@ import android.app.Activity
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.input.TextFieldValue
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Stable
 data class LoginPageViewState(
     val userId: TextFieldValue,

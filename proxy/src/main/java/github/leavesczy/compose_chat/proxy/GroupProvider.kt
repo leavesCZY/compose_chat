@@ -22,11 +22,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 object GroupProvider : IGroupProvider {
 
     override val joinedGroupListFlow = MutableSharedFlow<List<GroupProfile>>()

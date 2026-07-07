@@ -4,11 +4,6 @@ import android.os.Parcelable
 import androidx.compose.runtime.Stable
 import kotlinx.parcelize.Parcelize
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Parcelize
 @Stable
 sealed class Chat(open val id: String) : Parcelable {

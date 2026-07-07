@@ -1,10 +1,5 @@
 package github.leavesczy.compose_chat.proxy
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 internal object Consts {
 
     const val APP_ID = 1400592743

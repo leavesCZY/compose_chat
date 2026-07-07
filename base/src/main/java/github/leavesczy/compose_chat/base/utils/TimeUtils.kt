@@ -6,11 +6,6 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 internal object TimeUtils {
 
     private val formatters = mutableMapOf<Int, SimpleDateFormat>()

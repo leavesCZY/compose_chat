@@ -4,11 +4,6 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 class TrackConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {

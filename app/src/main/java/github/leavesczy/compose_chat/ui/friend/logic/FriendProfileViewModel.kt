@@ -15,11 +15,6 @@ import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 class FriendProfileViewModel(private val friendId: String) : BaseViewModel() {
 
     private val friendshipProvider: IFriendshipProvider = ComposeChat.friendshipProvider

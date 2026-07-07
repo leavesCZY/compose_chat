@@ -23,11 +23,6 @@ import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.extensions.clickableNoRipple
 import github.leavesczy.compose_chat.theme.AppTheme
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Stable
 data class LoadingDialogViewState(
     val isVisible: MutableState<Boolean> = mutableStateOf(value = false),

@@ -31,11 +31,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 internal object Converters {
 
     suspend fun getSelfProfileOrigin(): V2TIMUserFullInfo? {

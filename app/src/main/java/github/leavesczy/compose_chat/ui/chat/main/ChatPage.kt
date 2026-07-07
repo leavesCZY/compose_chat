@@ -16,11 +16,6 @@ import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageBottomBarViewSta
 import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageViewState
 import github.leavesczy.compose_chat.ui.chat.main.logic.LoadMessageViewState
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 internal fun ChatPage(
     pageViewState: ChatPageViewState,

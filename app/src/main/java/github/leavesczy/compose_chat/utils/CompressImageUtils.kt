@@ -10,11 +10,6 @@ import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 object CompressImageUtils {
 
     private const val IMAGE_MAX_SIZE = (1.0 * 1024 * 1024).toInt()

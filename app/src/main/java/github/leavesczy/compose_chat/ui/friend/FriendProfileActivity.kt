@@ -8,11 +8,6 @@ import github.leavesczy.compose_chat.base.BaseActivity
 import github.leavesczy.compose_chat.ui.friend.logic.FriendProfileViewModel
 import github.leavesczy.compose_chat.widgets.LoadingDialog
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 class FriendProfileActivity : BaseActivity() {
 
     companion object {

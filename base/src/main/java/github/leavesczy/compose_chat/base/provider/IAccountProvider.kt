@@ -7,11 +7,6 @@ import github.leavesczy.compose_chat.base.models.ServerConnectState
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 interface IAccountProvider {
 
     val personProfileFlow: StateFlow<PersonProfile>

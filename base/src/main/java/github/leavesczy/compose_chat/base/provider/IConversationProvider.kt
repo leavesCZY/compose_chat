@@ -4,11 +4,6 @@ import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.Conversation
 import kotlinx.coroutines.flow.SharedFlow
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 interface IConversationProvider {
 
     val conversationListFlow: SharedFlow<List<Conversation>>

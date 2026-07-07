@@ -19,11 +19,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 class MainViewModel : ConversationViewModel() {
 
     private val _serverConnectState = MutableStateFlow(value = ServerConnectState.Connected)

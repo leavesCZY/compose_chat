@@ -62,11 +62,6 @@ import github.leavesczy.compose_chat.widgets.ComponentImage
 import github.leavesczy.compose_chat.widgets.ComposeDropdownMenuItem
 import kotlin.math.abs
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 internal fun GroupProfilePage(pageViewState: GroupProfilePageViewState) {
     val localActivity = LocalActivity.current

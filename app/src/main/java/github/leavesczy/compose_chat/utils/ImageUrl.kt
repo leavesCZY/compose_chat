@@ -2,11 +2,6 @@ package github.leavesczy.compose_chat.utils
 
 import kotlin.random.Random
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 private val imageUrlList = listOf(
     "https://p6-passport.byteacctimg.com/img/user-avatar/016451ccd2477ee0378c70ffe2cc3bb6~500x500.awebp",
     "https://p6-passport.byteacctimg.com/img/user-avatar/047e80823dc2ee0d4c4a9db7dfd7f47b~500x500.awebp",

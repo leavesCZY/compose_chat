@@ -15,11 +15,6 @@ import github.leavesczy.compose_chat.base.BaseActivity
 import github.leavesczy.compose_chat.utils.AlbumUtils
 import kotlinx.coroutines.launch
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 class PreviewImageActivity : BaseActivity() {
 
     companion object {

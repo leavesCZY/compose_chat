@@ -37,11 +37,6 @@ import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.login.logic.LoginPageViewState
 import github.leavesczy.compose_chat.ui.provider.ToastProvider
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 internal fun LoginPage(pageViewState: LoginPageViewState) {
     val localActivity = LocalActivity.current

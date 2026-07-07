@@ -5,11 +5,6 @@ import github.leavesczy.compose_chat.base.R
 import github.leavesczy.compose_chat.base.utils.StringResources
 import github.leavesczy.compose_chat.base.utils.TimeUtils
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Stable
 sealed class MessageState {
 

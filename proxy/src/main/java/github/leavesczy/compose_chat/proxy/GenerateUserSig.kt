@@ -6,11 +6,6 @@ import java.util.zip.Deflater
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 internal class GenerateUserSig(
     private val appId: Int,
     private val appSecretKey: String

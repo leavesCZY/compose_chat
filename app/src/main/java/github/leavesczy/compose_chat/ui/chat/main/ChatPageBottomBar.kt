@@ -61,11 +61,6 @@ import github.leavesczy.matisse.MatisseContract
 import github.leavesczy.matisse.MediaStoreCaptureStrategy
 import github.leavesczy.matisse.MediaType
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 fun ChatPageBottomBar(
     modifier: Modifier,

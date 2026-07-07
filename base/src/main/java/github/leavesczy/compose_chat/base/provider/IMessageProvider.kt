@@ -5,11 +5,6 @@ import github.leavesczy.compose_chat.base.models.LoadMessageResult
 import github.leavesczy.compose_chat.base.models.Message
 import kotlinx.coroutines.channels.Channel
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 interface IMessageProvider {
 
     interface MessageListener {

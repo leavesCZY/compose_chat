@@ -21,11 +21,6 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 abstract class FriendshipViewModel : PersonProfileViewModel() {
 
     private val groupProvider: IGroupProvider = ComposeChat.groupProvider

@@ -33,11 +33,6 @@ import github.leavesczy.compose_chat.widgets.CommonButton
 import github.leavesczy.compose_chat.widgets.CommonOutlinedTextField
 import github.leavesczy.compose_chat.widgets.ProfilePanel
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 @Composable
 internal fun FriendProfilePage(pageViewState: FriendProfilePageViewState) {
     Scaffold(

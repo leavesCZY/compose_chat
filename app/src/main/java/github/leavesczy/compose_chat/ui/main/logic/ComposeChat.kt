@@ -11,11 +11,6 @@ import github.leavesczy.compose_chat.proxy.FriendshipProvider
 import github.leavesczy.compose_chat.proxy.GroupProvider
 import github.leavesczy.compose_chat.proxy.MessageProvider
 
-/**
- * @Author: leavesCZY
- * @Date: 2026/6/4 21:12
- * @Desc:
- */
 object ComposeChat {
 
     val accountProvider: IAccountProvider = AccountProvider()
