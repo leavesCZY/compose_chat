@@ -2,8 +2,6 @@ package github.leavesczy.compose_chat.ui.chat.main
 
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -105,13 +103,6 @@ fun ChatPageBottomBar(
             bottomBarViewState.onSendImageMessage(result[0].uri)
         }
     }
-    val pickVisualMediaLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        if (uri != null) {
-            bottomBarViewState.onSendImageMessage(uri)
-        }
-    }
     Column(
         modifier = modifier
             .background(color = AppTheme.colorScheme.c_FFEFF1F3_FF22202A.color)
@@ -198,21 +189,15 @@ fun ChatPageBottomBar(
                         modifier = Modifier,
                         onClickImagePicker = {
                             bottomBarViewState.onInputSelectorChanged(InputSelector.None)
-                            if (bottomBarViewState.isPhotoPickerAvailable) {
-                                pickVisualMediaLauncher.launch(
-                                    input = PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
-                                )
-                            } else {
-                                val matisse = Matisse(
-                                    maxSelectable = 1,
-                                    gridColumns = 4,
-                                    fastSelect = false,
-                                    mediaType = MediaType.ImageOnly,
-                                    imageEngine = MatisseImageEngine(),
-                                    captureStrategy = MediaStoreCaptureStrategy()
-                                )
-                                matisseLauncher.launch(input = matisse)
-                            }
+                            val matisse = Matisse(
+                                maxSelectable = 1,
+                                gridColumns = 4,
+                                fastSelect = false,
+                                mediaType = MediaType.ImageOnly,
+                                imageEngine = MatisseImageEngine(),
+                                captureStrategy = MediaStoreCaptureStrategy()
+                            )
+                            matisseLauncher.launch(input = matisse)
                         },
                         onClickTakePicture = {
                             bottomBarViewState.onInputSelectorChanged(InputSelector.None)

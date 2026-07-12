@@ -55,7 +55,7 @@ import kotlin.random.Random
 
 @Composable
 fun ComponentImage(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     model: Any?,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Crop,
@@ -90,7 +90,10 @@ fun ComponentImage(
 }
 
 @Composable
-fun BezierImage(modifier: Modifier, model: Any) {
+fun BezierImage(
+    modifier: Modifier,
+    model: Any
+) {
     val animateFloat by rememberInfiniteTransition()
         .animateFloat(
             initialValue = 0f,

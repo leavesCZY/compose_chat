@@ -28,7 +28,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -39,6 +38,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.base.models.Chat
@@ -48,6 +49,7 @@ import github.leavesczy.compose_chat.base.models.MessageState
 import github.leavesczy.compose_chat.base.models.SystemMessage
 import github.leavesczy.compose_chat.base.models.TextMessage
 import github.leavesczy.compose_chat.base.models.TimeMessage
+import github.leavesczy.compose_chat.extensions.clickableNoRipple
 import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageViewState
 import github.leavesczy.compose_chat.widgets.ComponentImage
@@ -413,7 +415,7 @@ private fun ImageMessage(
     message: ImageMessage,
     onClickMessage: (Message) -> Unit
 ) {
-    val localDensity = LocalDensity.current
+    val density = LocalDensity.current
     val previewImage = message.previewImage
     BoxWithConstraints(
         modifier = modifier,
@@ -423,43 +425,48 @@ private fun ImageMessage(
             Alignment.TopStart
         }
     ) {
-        val imageWidth = previewImage.width
-        val imageHeight = previewImage.height
-        val imageMinWidthDp = maxWidth / 10f * 4
-        val layout = remember(key1 = message.detail.msgId) {
-            val isALegalWidthAndHeight = imageWidth > 0 && imageHeight > 0
-            if (isALegalWidthAndHeight) {
-                val ratio = 1.0f * imageWidth / imageHeight
-                val imageWidthDp = with(localDensity) {
-                    imageWidth.toDp()
-                }
-                val imageMaxWidthDp = maxWidth / 10f * 9
-                val width = if (imageWidthDp <= imageMinWidthDp) {
-                    imageMinWidthDp
-                } else if (imageWidthDp < imageMaxWidthDp) {
-                    imageWidthDp
-                } else {
-                    imageMaxWidthDp
-                }
-                width to ratio
-            } else {
-                imageMinWidthDp to 1.0f
-            }
-        }
-        val (mWidth, mRatio) = layout
+        val (width, ratio) = calculateImageMessageLayout(
+            imageWidthPx = previewImage.width,
+            imageHeightPx = previewImage.height,
+            maxWidth = maxWidth,
+            density = density
+        )
         ComponentImage(
             modifier = Modifier
-                .width(width = mWidth)
-                .aspectRatio(ratio = mRatio)
-                .clip(shape = RoundedCornerShape(size = 6.dp))
-                .clickable(onClick = {
+                .width(width = width)
+                .aspectRatio(ratio = ratio)
+                .clip(shape = RoundedCornerShape(size = 10.dp))
+                .clickableNoRipple(onClick = {
                     onClickMessage(message)
                 }),
             model = previewImage.url,
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Fit,
             alignment = Alignment.Center
         )
     }
+}
+
+private fun calculateImageMessageLayout(
+    imageWidthPx: Int,
+    imageHeightPx: Int,
+    maxWidth: Dp,
+    density: Density
+): Pair<Dp, Float> {
+    val minWidth = maxWidth * 0.4f
+    if (imageWidthPx <= 0 || imageHeightPx <= 0) {
+        return minWidth to 1f
+    }
+    val ratio = imageWidthPx.toFloat() / imageHeightPx
+    val imageWidthDp = with(density) {
+        imageWidthPx.toDp()
+    }
+    val maxImageWidth = maxWidth * 0.9f
+    val width = when {
+        imageWidthDp <= minWidth -> minWidth
+        imageWidthDp < maxImageWidth -> imageWidthDp
+        else -> maxImageWidth
+    }
+    return width to ratio
 }
 
 @Composable

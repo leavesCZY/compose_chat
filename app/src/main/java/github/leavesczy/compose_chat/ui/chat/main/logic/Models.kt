@@ -21,7 +21,6 @@ data class ChatPageViewState(
 
 @Stable
 data class ChatPageBottomBarViewState(
-    val isPhotoPickerAvailable: Boolean,
     val inputSelector: InputSelector,
     val onInputSelectorChanged: (inputSelector: InputSelector) -> Unit,
     val onSendTextMessage: (text: String) -> Unit,

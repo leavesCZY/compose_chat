@@ -1,8 +1,6 @@
 package github.leavesczy.compose_chat.ui.chat.main.logic
 
 import android.net.Uri
-import android.os.Build
-import android.os.ext.SdkExtensions.getExtensionVersion
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,7 +66,6 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
 
     var bottomBarViewState by mutableStateOf(
         value = ChatPageBottomBarViewState(
-            isPhotoPickerAvailable = isPhotoPickerAvailable(),
             inputSelector = InputSelector.None,
             onInputSelectorChanged = ::onInputSelectorChanged,
             onSendTextMessage = ::sendTextMessage,
@@ -96,7 +93,6 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
     }
 
     override fun onCleared() {
-        super.onCleared()
         messageProvider.stopReceive(messageListener = messageListener)
         markMessageAsRead()
     }
@@ -355,16 +351,6 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
             is TextMessage, is SystemMessage, is TimeMessage -> {
 
             }
-        }
-    }
-
-    private fun isPhotoPickerAvailable(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            true
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getExtensionVersion(Build.VERSION_CODES.R) >= 2
-        } else {
-            false
         }
     }
 
