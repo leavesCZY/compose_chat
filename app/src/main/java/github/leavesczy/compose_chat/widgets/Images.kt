@@ -214,7 +214,7 @@ private fun BouncyImage(modifier: Modifier, model: Any) {
             .clip(shape = CircleShape)
             .border(
                 width = 2.dp,
-                color = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(alpha = 0.8f),
+                color = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color.copy(alpha = 0.8f),
                 shape = CircleShape
             )
             .zIndex(zIndex = Float.MAX_VALUE)

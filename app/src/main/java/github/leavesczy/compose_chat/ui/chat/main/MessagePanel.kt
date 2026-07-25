@@ -346,7 +346,7 @@ private fun Nickname(
         textAlign = TextAlign.Start,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+        color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
     )
 }
 
@@ -389,9 +389,9 @@ private fun TextMessage(
                 )
                 .background(
                     color = if (isOwnMessage) {
-                        AppTheme.colorScheme.c_FFE2E1EC_FF45464F.color
+                        AppTheme.colorScheme.c_FFD4E6FF_FF243044.color
                     } else {
-                        AppTheme.colorScheme.c_FF5386E5_FF5386E5.color
+                        AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color
                     }
                 )
                 .padding(horizontal = 8.dp, vertical = 6.dp),
@@ -401,7 +401,7 @@ private fun TextMessage(
             softWrap = true,
             textAlign = TextAlign.Start,
             color = if (isOwnMessage) {
-                AppTheme.colorScheme.c_FF3A3D4D_FFFFFFFF.color
+                AppTheme.colorScheme.c_FF0B1F3A_FFFFFFFF.color
             } else {
                 AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
             }
@@ -478,14 +478,14 @@ private fun TimeMessage(
         modifier = modifier
             .padding(top = 20.dp)
             .background(
-                color = AppTheme.colorScheme.c_66CCCCCC_66CCCCCC.color,
+                color = AppTheme.colorScheme.c_6684A9D6_6684A9D6.color,
                 shape = RoundedCornerShape(size = 4.dp)
             )
             .padding(horizontal = 4.dp, vertical = 3.dp),
         text = message.formatMessage,
         fontSize = 11.sp,
         lineHeight = 12.sp,
-        color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+        color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
     )
 }
 
@@ -497,14 +497,14 @@ private fun SystemMessage(
     Text(
         modifier = modifier
             .background(
-                color = AppTheme.colorScheme.c_66CCCCCC_66CCCCCC.color,
+                color = AppTheme.colorScheme.c_6684A9D6_6684A9D6.color,
                 shape = RoundedCornerShape(size = 4.dp)
             )
             .padding(horizontal = 6.dp, vertical = 4.dp),
         text = message.formatMessage,
         fontSize = 12.sp,
         lineHeight = 14.sp,
-        color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+        color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
     )
 }
 
@@ -522,7 +522,7 @@ private fun MessageState(
                 CircularProgressIndicator(
                     modifier = Modifier
                         .fillMaxSize(),
-                    color = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
+                    color = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color,
                     strokeWidth = 2.dp
                 )
             }

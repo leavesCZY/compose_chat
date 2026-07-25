@@ -39,17 +39,17 @@ fun CommonOutlinedTextField(
                 text = label,
                 fontSize = 14.sp,
                 lineHeight = 16.sp,
-                color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
             )
         },
         textStyle = TextStyle(
             fontSize = 17.sp,
-            color = AppTheme.colorScheme.c_FF1C1B1F_FFFFFFFF.color
+            color = AppTheme.colorScheme.c_FF0B1F3A_FFFFFFFF.color
         ),
         colors = OutlinedTextFieldDefaults.colors(
-            cursorColor = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
-            focusedBorderColor = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(alpha = 0.7f),
-            unfocusedBorderColor = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(alpha = 0.5f)
+            cursorColor = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color,
+            focusedBorderColor = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color.copy(alpha = 0.7f),
+            unfocusedBorderColor = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color.copy(alpha = 0.5f)
         )
     )
 }
@@ -65,7 +65,7 @@ fun CommonButton(
             .padding(horizontal = 20.dp)
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(size = 22.dp))
-            .background(color = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color)
+            .background(color = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {

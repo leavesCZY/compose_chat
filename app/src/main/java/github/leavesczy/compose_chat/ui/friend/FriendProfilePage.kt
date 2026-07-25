@@ -38,7 +38,7 @@ internal fun FriendProfilePage(pageViewState: FriendProfilePageViewState) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color,
+        containerColor = AppTheme.colorScheme.c_FFEAF2FF_FF0B1220.color,
         contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
         Box(
@@ -104,7 +104,7 @@ internal fun DeleteFriendDialog(viewState: DeleteFriendDialogViewState) {
     if (viewState.isVisible) {
         AlertDialog(
             modifier = Modifier,
-            containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF22202A.color,
+            containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF162033.color,
             onDismissRequest = viewState.onDismissDialog,
             text = {
                 Text(
@@ -112,7 +112,7 @@ internal fun DeleteFriendDialog(viewState: DeleteFriendDialogViewState) {
                     text = stringResource(id = R.string.confirm_delete_friend),
                     fontSize = 17.sp,
                     lineHeight = 18.sp,
-                    color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                    color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
                 )
             },
             confirmButton = {
@@ -124,7 +124,7 @@ internal fun DeleteFriendDialog(viewState: DeleteFriendDialogViewState) {
                         text = stringResource(id = R.string.cancel),
                         fontSize = 15.sp,
                         lineHeight = 16.sp,
-                        color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                        color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
                     )
                 }
             },
@@ -137,7 +137,7 @@ internal fun DeleteFriendDialog(viewState: DeleteFriendDialogViewState) {
                         text = stringResource(id = R.string.delete),
                         fontSize = 15.sp,
                         lineHeight = 16.sp,
-                        color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                        color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
                     )
                 }
             }

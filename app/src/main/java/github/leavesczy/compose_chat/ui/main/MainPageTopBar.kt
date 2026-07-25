@@ -35,7 +35,7 @@ fun MainPageTopBar(viewState: MainPageTopBarViewState) {
     val coroutineScope = rememberCoroutineScope()
     CenterAlignedTopAppBar(
         modifier = Modifier,
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = AppTheme.colorScheme.c_FFEAF2FF_FF0B1220.color),
         title = {
 
         },
@@ -80,7 +80,7 @@ fun MainPageTopBar(viewState: MainPageTopBarViewState) {
                 ) {
                     DropdownMenu(
                         modifier = Modifier,
-                        containerColor = AppTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
+                        containerColor = AppTheme.colorScheme.c_FFDCEBFF_FF162033.color,
                         expanded = menuExpanded,
                         onDismissRequest = {
                             menuExpanded = false

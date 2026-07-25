@@ -34,7 +34,7 @@ fun ChatPageTopBar(
     CenterAlignedTopAppBar(
         modifier = modifier
             .shadow(elevation = 0.8.dp),
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = AppTheme.colorScheme.c_FFEAF2FF_FF0B1220.color),
         title = {
             Text(
                 modifier = Modifier,
@@ -43,7 +43,7 @@ fun ChatPageTopBar(
                 lineHeight = 20.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
             )
         },
         navigationIcon = {

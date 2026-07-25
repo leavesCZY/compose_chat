@@ -80,9 +80,9 @@ private fun InputSelector(
 ) {
     val color by animateColorAsState(
         targetValue = if (selected) {
-            AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color
+            AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color
         } else {
-            AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(alpha = 0.46f)
+            AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color.copy(alpha = 0.46f)
         }
     )
     Icon(
@@ -107,12 +107,12 @@ private fun SendButton(
             .then(
                 other = if (isEnabled) {
                     Modifier
-                        .background(color = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color)
+                        .background(color = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color)
                         .clickable(onClick = onClick)
                 } else {
                     Modifier
                         .background(
-                            color = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color.copy(
+                            color = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color.copy(
                                 alpha = 0.46f
                             )
                         )

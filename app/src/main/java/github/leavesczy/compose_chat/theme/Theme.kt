@@ -54,106 +54,133 @@ data class AppColor(
 
 @Stable
 data class AppColorScheme(private val darkTheme: Boolean) {
-    val c_FF42A5F5_FF26A69A = AppColor(
-        day = Color(color = 0xFF42A5F5),
-        night = Color(color = 0xFF26A69A),
+    /** Primary brand — buttons, FAB, selected tab, links */
+    val c_FF5BA3F7_FF60A5FA = AppColor(
+        day = Color(color = 0xFF5BA3F7),
+        night = Color(color = 0xFF60A5FA),
         darkTheme = darkTheme
     )
-    val c_FF001018_DEFFFFFF = AppColor(
-        day = Color(color = 0xFF001018),
+
+    /** Primary text */
+    val c_FF0B1F3A_DEFFFFFF = AppColor(
+        day = Color(color = 0xFF0B1F3A),
         night = Color(color = 0xDEFFFFFF),
         darkTheme = darkTheme
     )
-    val c_FFFFFFFF_FF101010 = AppColor(
-        day = Color(color = 0xFFFFFFFF),
-        night = Color(color = 0xFF101010),
+
+    /** Page / scaffold background — soft blue wash for day */
+    val c_FFEAF2FF_FF0B1220 = AppColor(
+        day = Color(color = 0xFFEAF2FF),
+        night = Color(color = 0xFF0B1220),
         darkTheme = darkTheme
     )
+
+    /** Always white — icons on brand surfaces */
     val c_FFFFFFFF_FFFFFFFF = AppColor(
         day = Color(color = 0xFFFFFFFF),
         night = Color(color = 0xFFFFFFFF),
         darkTheme = darkTheme
     )
-    val c_FF384F60_99FFFFFF = AppColor(
-        day = Color(color = 0xFF384F60),
+
+    /** Secondary / hint text */
+    val c_FF3D5A80_99FFFFFF = AppColor(
+        day = Color(color = 0xFF3D5A80),
         night = Color(color = 0x99FFFFFF),
         darkTheme = darkTheme
     )
-    val c_FFFFFFFF_FF161616 = AppColor(
+
+    /** Drawer / side panel surface — soft blue in day */
+    val c_FFE3EDFF_FF0F1726 = AppColor(
+        day = Color(color = 0xFFE3EDFF),
+        night = Color(color = 0xFF0F1726),
+        darkTheme = darkTheme
+    )
+
+    /** Cursor / selection accent */
+    val c_FF4C9EFF_FF60A5FA = AppColor(
+        day = Color(color = 0xFF4C9EFF),
+        night = Color(color = 0xFF60A5FA),
+        darkTheme = darkTheme
+    )
+
+    /** Peer message bubble / soft divider */
+    val c_FFD4E6FF_FF243044 = AppColor(
+        day = Color(color = 0xFFD4E6FF),
+        night = Color(color = 0xFF243044),
+        darkTheme = darkTheme
+    )
+
+    /** Soft container (peer bubble shell) */
+    val c_FFFFFFFF_FF243044 = AppColor(
         day = Color(color = 0xFFFFFFFF),
-        night = Color(color = 0xFF161616),
+        night = Color(color = 0xFF243044),
         darkTheme = darkTheme
     )
-    val c_FF5386E5_FF5386E5 = AppColor(
-        day = Color(color = 0xFF5386E5),
-        night = Color(color = 0xFF5386E5),
-        darkTheme = darkTheme
-    )
-    val c_FF1BA2E6_FF1BA2E6 = AppColor(
-        day = Color(color = 0xFF1BA2E6),
-        night = Color(color = 0xFF1BA2E6),
-        darkTheme = darkTheme
-    )
-    val c_FFE2E1EC_FF45464F = AppColor(
-        day = Color(color = 0xFFE2E1EC),
-        night = Color(color = 0xFF45464F),
-        darkTheme = darkTheme
-    )
-    val c_FFFFFFFF_FF45464F = AppColor(
-        day = Color(color = 0xFFFFFFFF),
-        night = Color(color = 0xFF45464F),
-        darkTheme = darkTheme
-    )
-    val c_FF3A3D4D_FFFFFFFF = AppColor(
-        day = Color(color = 0xFF3A3D4D),
+
+    /** Text on light bubbles / input label */
+    val c_FF0B1F3A_FFFFFFFF = AppColor(
+        day = Color(color = 0xFF0B1F3A),
         night = Color(color = 0xFFFFFFFF),
         darkTheme = darkTheme
     )
-    val c_333A3D4D_B3FFFFFF = AppColor(
-        day = Color(color = 0x333A3D4D),
+
+    /** Handle / muted chrome */
+    val c_330B1F3A_B3FFFFFF = AppColor(
+        day = Color(color = 0x330B1F3A),
         night = Color(color = 0xB3FFFFFF),
         darkTheme = darkTheme
     )
-    val c_FFFFFFFF_FF22202A = AppColor(
+
+    /** Card / sheet elevated surface */
+    val c_FFFFFFFF_FF162033 = AppColor(
         day = Color(color = 0xFFFFFFFF),
-        night = Color(color = 0xFF22202A),
+        night = Color(color = 0xFF162033),
         darkTheme = darkTheme
     )
+
+    /** Modal scrim */
     val c_80000000_99000000 = AppColor(
         day = Color(color = 0x80000000),
         night = Color(color = 0x99000000),
         darkTheme = darkTheme
     )
-    val c_FF1C1B1F_FFFFFFFF = AppColor(
-        day = Color(color = 0xFF1C1B1F),
-        night = Color(color = 0xFFFFFFFF),
+
+    /** Immersive dark surface (preview) */
+    val c_FF0B1220_FF0B1220 = AppColor(
+        day = Color(color = 0xFF0B1220),
+        night = Color(color = 0xFF0B1220),
         darkTheme = darkTheme
     )
-    val c_FF22202A_FF22202A = AppColor(
-        day = Color(color = 0xFF22202A),
-        night = Color(color = 0xFF22202A),
-        darkTheme = darkTheme
-    )
+
+    /** Danger / error */
     val c_FFFF545C_FFFA525A = AppColor(
         day = Color(color = 0xFFFF545C),
         night = Color(color = 0xFFFA525A),
         darkTheme = darkTheme
     )
-    val c_66CCCCCC_66CCCCCC = AppColor(
-        day = Color(color = 0x66CCCCCC),
-        night = Color(color = 0x66CCCCCC),
+
+    /** Soft blue-gray overlay */
+    val c_6684A9D6_6684A9D6 = AppColor(
+        day = Color(color = 0x6684A9D6),
+        night = Color(color = 0x6684A9D6),
         darkTheme = darkTheme
     )
-    val c_33CCCCCC_33CCCCCC = AppColor(
-        day = Color(color = 0x33CCCCCC),
-        night = Color(color = 0x33CCCCCC),
+
+    /** Lighter blue-gray overlay */
+    val c_3384A9D6_3384A9D6 = AppColor(
+        day = Color(color = 0x3384A9D6),
+        night = Color(color = 0x3384A9D6),
         darkTheme = darkTheme
     )
-    val c_FFEFF1F3_FF22202A = AppColor(
-        day = Color(color = 0xFFEFF1F3),
-        night = Color(color = 0xFF22202A),
+
+    /** Bottom bar / secondary panel */
+    val c_FFDCEBFF_FF162033 = AppColor(
+        day = Color(color = 0xFFDCEBFF),
+        night = Color(color = 0xFF162033),
         darkTheme = darkTheme
     )
+
+    /** Image scrim */
     val c_33000000_33000000 = AppColor(
         day = Color(color = 0x33000000),
         night = Color(color = 0x33000000),
@@ -169,20 +196,13 @@ private val LocalAppCursorColor = staticCompositionLocalOf<Brush> {
     error("CompositionLocal LocalAppCursorColor not present")
 }
 
-private val LightColorScheme = lightColorScheme(background = Color(color = 0xFFFFFFFF))
+private val LightColorScheme = lightColorScheme(background = Color(color = 0xFFEAF2FF))
 
-private val DarkColorScheme = darkColorScheme(background = Color(color = 0xFF101010))
+private val DarkColorScheme = darkColorScheme(background = Color(color = 0xFF0B1220))
 
 private val LightAppColorScheme = AppColorScheme(darkTheme = false)
 
 private val DarkAppColorScheme = AppColorScheme(darkTheme = true)
-
-private val customTextSelectionColors = TextSelectionColors(
-    handleColor = Color(color = 0xFF1BA2E6),
-    backgroundColor = Color(color = 0x661BA2E6)
-)
-
-private val customCursorColor = SolidColor(value = Color(color = 0xFF1BA2E6))
 
 object AppTheme {
 
@@ -223,14 +243,24 @@ fun AppTheme(
             appColorScheme = DarkAppColorScheme
         }
     }
+    val accent = appColorScheme.c_FF4C9EFF_FF60A5FA.color
+    val textSelectionColors = remember(key1 = accent) {
+        TextSelectionColors(
+            handleColor = accent,
+            backgroundColor = accent.copy(alpha = 0.4f)
+        )
+    }
+    val cursorBrush = remember(key1 = accent) {
+        SolidColor(value = accent)
+    }
     MaterialTheme(
         colorScheme = colorScheme,
         content = {
             CompositionLocalProvider(
                 LocalDensity provides density,
                 LocalAppColorScheme provides appColorScheme,
-                LocalTextSelectionColors provides customTextSelectionColors,
-                LocalAppCursorColor provides customCursorColor
+                LocalTextSelectionColors provides textSelectionColors,
+                LocalAppCursorColor provides cursorBrush
             ) {
                 when (appThemeMode) {
                     AppThemeMode.Light,

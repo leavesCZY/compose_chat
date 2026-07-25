@@ -28,7 +28,7 @@ internal fun ProfileUpdatePage(pageViewState: ProfileUpdatePageViewState) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color,
+        containerColor = AppTheme.colorScheme.c_FFEAF2FF_FF0B1220.color,
         contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
         Box(

@@ -72,7 +72,7 @@ private fun MediaPickerAction(
             modifier = Modifier
                 .size(size = 42.dp),
             imageVector = icon,
-            tint = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
+            tint = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color,
             contentDescription = null
         )
         Text(
@@ -82,7 +82,7 @@ private fun MediaPickerAction(
             fontSize = 14.sp,
             lineHeight = 16.sp,
             textAlign = TextAlign.Center,
-            color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+            color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
         )
     }
 }

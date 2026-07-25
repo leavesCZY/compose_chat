@@ -218,7 +218,7 @@ object MessageProvider : IMessageProvider {
     }
 
     override fun stopReceive(messageListener: IMessageProvider.MessageListener) {
-        removeReduceListener(listener = messageListener, listenerMap = messageListenerMap)
+        removeReduceListener(listener = messageListener)
     }
 
     override fun cleanUnreadMessageCount(chat: Chat) {
@@ -231,16 +231,13 @@ object MessageProvider : IMessageProvider {
     }
 
     private fun checkListener() {
-        removeReduceListener(listener = null, listenerMap = messageListenerMap)
+        removeReduceListener(listener = null)
     }
 
-    private fun removeReduceListener(
-        listener: IMessageProvider.MessageListener?,
-        listenerMap: MutableMap<String, SoftReference<IMessageProvider.MessageListener>>
-    ) {
-        val filter = listenerMap.filter { entry -> entry.value.get() == listener }
+    private fun removeReduceListener(listener: IMessageProvider.MessageListener?) {
+        val filter = messageListenerMap.filter { entry -> entry.value.get() == listener }
         for (entry in filter) {
-            listenerMap.remove(entry.key)
+            messageListenerMap.remove(entry.key)
         }
     }
 

@@ -75,7 +75,7 @@ fun LoadingDialog(
                     .size(size = 36.dp),
                 trackColor = Color.Transparent,
                 strokeWidth = 2.5.dp,
-                color = AppTheme.colorScheme.c_FF1BA2E6_FF1BA2E6.color,
+                color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color,
                 strokeCap = ProgressIndicatorDefaults.CircularDeterminateStrokeCap
             )
         }

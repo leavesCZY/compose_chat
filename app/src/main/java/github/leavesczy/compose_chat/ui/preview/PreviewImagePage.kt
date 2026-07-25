@@ -59,7 +59,7 @@ internal fun PreviewImagePage(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        containerColor = AppTheme.colorScheme.c_FF22202A_FF22202A.color,
+        containerColor = AppTheme.colorScheme.c_FF0B1220_FF0B1220.color,
         contentWindowInsets = WindowInsets()
     ) { innerPadding ->
         Box(

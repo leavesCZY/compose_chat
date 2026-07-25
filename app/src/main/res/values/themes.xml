@@ -6,9 +6,9 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:enforceStatusBarContrast" tools:ignore="NewApi">false</item>
         <item name="android:enforceNavigationBarContrast" tools:ignore="NewApi">false</item>
-        <item name="android:windowBackground">@color/color_ffffffff_ff101010</item>
+        <item name="android:windowBackground">@color/color_ffeaf2ff_ff0b1220</item>
         <item name="android:windowSplashScreenBackground" tools:targetApi="s">
-            @color/color_ffffffff_ff101010
+            @color/color_ffeaf2ff_ff0b1220
         </item>
         <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="s">300</item>
         <item name="android:windowAnimationStyle">@style/activityAnimationTransverse</item>

@@ -34,7 +34,7 @@ fun PersonProfilePage(pageViewState: PersonProfilePageViewState) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color)
+            .background(color = AppTheme.colorScheme.c_FFEAF2FF_FF0B1220.color)
     ) {
         BezierImage(
             modifier = Modifier

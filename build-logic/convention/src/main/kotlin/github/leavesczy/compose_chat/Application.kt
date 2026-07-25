@@ -79,6 +79,7 @@ internal fun Project.configureAndroidApplication(applicationExtension: Applicati
         packaging {
             jniLibs {
                 excludes.add(element = "META-INF/{AL2.0,LGPL2.1}")
+                useLegacyPackaging = true
             }
             resources {
                 excludes.addAll(
@@ -94,7 +95,12 @@ internal fun Project.configureAndroidApplication(applicationExtension: Applicati
                         "**/app-metadata.properties",
                         "**/kotlin-tooling-metadata.json",
                         "**/version-control-info.textproto",
-                        "**/androidsupportmultidexversion.txt"
+                        "**/androidsupportmultidexversion.txt",
+                        "META-INF/versions/**",
+                        "META-INF/*.kotlin_module",
+                        "META-INF/DEPENDENCIES",
+                        "META-INF/NOTICE*",
+                        "META-INF/LICENSE*"
                     )
                 )
             }

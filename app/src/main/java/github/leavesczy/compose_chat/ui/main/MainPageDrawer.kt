@@ -51,7 +51,7 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
     Box(
         modifier = Modifier
             .fillMaxWidth(fraction = 0.80f)
-            .background(color = AppTheme.colorScheme.c_FFFFFFFF_FF161616.color)
+            .background(color = AppTheme.colorScheme.c_FFE3EDFF_FF0F1726.color)
             .navigationBarsPadding()
     ) {
         Column(
@@ -80,21 +80,21 @@ fun MainPageDrawer(viewState: MainPageDrawerViewState) {
                     text = viewState.personProfile.id,
                     fontSize = 20.sp,
                     lineHeight = 20.sp,
-                    color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                    color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
                 )
                 Text(
                     modifier = Modifier,
                     text = viewState.personProfile.nickname,
                     fontSize = 16.sp,
                     lineHeight = 16.sp,
-                    color = AppTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                    color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color
                 )
                 Text(
                     modifier = Modifier,
                     text = viewState.personProfile.signature,
                     fontSize = 16.sp,
                     lineHeight = 16.sp,
-                    color = AppTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                    color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color
                 )
             }
             Column(
@@ -153,7 +153,7 @@ private fun SelectableItem(text: String, icon: ImageVector, onClick: () -> Unit)
             modifier = Modifier
                 .size(size = 22.dp),
             imageVector = icon,
-            tint = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color,
+            tint = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color,
             contentDescription = null
         )
         Text(
@@ -162,7 +162,7 @@ private fun SelectableItem(text: String, icon: ImageVector, onClick: () -> Unit)
             text = text,
             fontSize = 17.sp,
             lineHeight = 18.sp,
-            color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+            color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
         )
     }
 }
@@ -181,6 +181,6 @@ private fun Copyright(modifier: Modifier) {
         fontSize = 14.sp,
         lineHeight = 16.sp,
         textAlign = TextAlign.Center,
-        color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+        color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
     )
 }

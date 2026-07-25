@@ -38,7 +38,7 @@ fun MainPageBottomBar(viewState: MainPageBottomBarViewState) {
     Row(
         modifier = Modifier
             .shadow(elevation = 28.dp)
-            .background(color = AppTheme.colorScheme.c_FFEFF1F3_FF22202A.color)
+            .background(color = AppTheme.colorScheme.c_FFDCEBFF_FF162033.color)
             .fillMaxWidth()
             .navigationBarsPadding()
             .height(height = 54.dp),
@@ -98,7 +98,7 @@ private fun RowScope.NavigationBarItem(
                         .offset(x = 18.dp, y = (-10).dp)
                         .size(size = 22.dp)
                         .background(
-                            color = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
+                            color = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color,
                             shape = CircleShape
                         )
                         .wrapContentSize(align = Alignment.Center),
@@ -116,8 +116,8 @@ private fun RowScope.NavigationBarItem(
         },
         selected = selected,
         colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
-            unselectedIconColor = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+            selectedIconColor = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color,
+            unselectedIconColor = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
         ),
         onClick = onClick
     )

@@ -29,7 +29,7 @@ fun LazyItemScope.EmptyPage(modifier: Modifier) {
             lineHeight = 70.sp,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
-            color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+            color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
         )
     }
 }

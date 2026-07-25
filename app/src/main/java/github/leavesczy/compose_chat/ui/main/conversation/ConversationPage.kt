@@ -111,7 +111,7 @@ private fun ConversationItem(
             .then(
                 other = if (conversation.isPinned) {
                     Modifier
-                        .scrim(color = AppTheme.colorScheme.c_33CCCCCC_33CCCCCC.color)
+                        .scrim(color = AppTheme.colorScheme.c_3384A9D6_3384A9D6.color)
                 } else {
                     Modifier
                 }
@@ -150,14 +150,14 @@ private fun ConversationItem(
                         lineHeight = 18.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                        color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
                     )
                     Text(
                         modifier = Modifier,
                         text = conversation.lastMessage.detail.conversationTime,
                         fontSize = 12.sp,
                         lineHeight = 12.sp,
-                        color = AppTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                        color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color
                     )
                 }
                 Text(
@@ -167,7 +167,7 @@ private fun ConversationItem(
                     lineHeight = 15.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = AppTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                    color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color
                 )
             }
         }
@@ -231,7 +231,7 @@ private fun UnreadMessageCount(
         modifier = modifier
             .size(size = 20.dp)
             .background(
-                color = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
+                color = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color,
                 shape = CircleShape
             )
             .wrapContentSize(align = Alignment.Center),
@@ -258,7 +258,7 @@ private fun MoreActionDropdownMenu(
     Box(modifier = modifier) {
         DropdownMenu(
             modifier = Modifier,
-            containerColor = AppTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
+            containerColor = AppTheme.colorScheme.c_FFDCEBFF_FF162033.color,
             expanded = expanded,
             onDismissRequest = onDismissRequest
         ) {
@@ -309,7 +309,7 @@ private fun LazyListScope.serverConnectState(
                     modifier = modifier
                         .animateItem()
                         .fillMaxWidth()
-                        .background(color = AppTheme.colorScheme.c_66CCCCCC_66CCCCCC.color)
+                        .background(color = AppTheme.colorScheme.c_6684A9D6_6684A9D6.color)
                 ) {
                     Text(
                         modifier = Modifier
@@ -320,7 +320,7 @@ private fun LazyListScope.serverConnectState(
                         ),
                         fontSize = 12.sp,
                         lineHeight = 12.sp,
-                        color = AppTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                        color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color
                     )
                 }
             }

@@ -45,7 +45,7 @@ fun FriendshipPage(pageViewState: FriendshipPageViewState) {
             modifier = Modifier
                 .align(alignment = Alignment.BottomEnd)
                 .padding(bottom = 30.dp, end = 30.dp),
-            containerColor = AppTheme.colorScheme.c_FF42A5F5_FF26A69A.color,
+            containerColor = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color,
             onClick = pageViewState.onClickShowFriendshipDialog
         ) {
             Icon(
@@ -162,7 +162,7 @@ private fun FriendshipItem(
                     lineHeight = 18.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                    color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
                 )
             }
             if (!subtitle.isNullOrBlank()) {
@@ -173,7 +173,7 @@ private fun FriendshipItem(
                     lineHeight = 14.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = AppTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                    color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color
                 )
             }
         }

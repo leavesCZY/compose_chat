@@ -105,7 +105,7 @@ fun ChatPageBottomBar(
     }
     Column(
         modifier = modifier
-            .background(color = AppTheme.colorScheme.c_FFEFF1F3_FF22202A.color)
+            .background(color = AppTheme.colorScheme.c_FFDCEBFF_FF162033.color)
             .padding(top = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(
@@ -244,14 +244,14 @@ private fun TextField(
                 trim = LineHeightStyle.Trim.None
             ),
             letterSpacing = 1.sp,
-            color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+            color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
         ),
         decorator = { innerTextField ->
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(shape = RoundedCornerShape(size = 10.dp))
-                    .background(color = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color)
+                    .background(color = AppTheme.colorScheme.c_FFEAF2FF_FF0B1220.color)
                     .padding(horizontal = 8.dp, vertical = 12.dp),
                 contentAlignment = Alignment.TopStart
             ) {

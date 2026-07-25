@@ -95,7 +95,7 @@ internal fun GroupProfilePage(pageViewState: GroupProfilePageViewState) {
         Scaffold(
             modifier = Modifier
                 .fillMaxSize(),
-            containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color,
+            containerColor = AppTheme.colorScheme.c_FFEAF2FF_FF0B1220.color,
             contentWindowInsets = WindowInsets.navigationBars
         ) { innerPadding ->
             Box(
@@ -228,7 +228,7 @@ private fun PageTopBar(
             modifier = Modifier
                 .alpha(alpha = alpha)
                 .fillMaxWidth()
-                .background(color = AppTheme.colorScheme.c_FFFFFFFF_FF161616.color)
+                .background(color = AppTheme.colorScheme.c_FFE3EDFF_FF0F1726.color)
                 .statusBarsPadding()
                 .height(height = topBarHeight)
         ) {
@@ -238,7 +238,7 @@ private fun PageTopBar(
                 text = title,
                 fontSize = 20.sp,
                 lineHeight = 21.sp,
-                color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
             )
         }
         IconButton(
@@ -282,7 +282,7 @@ private fun PageTopBar(
     ) {
         DropdownMenu(
             modifier = Modifier,
-            containerColor = AppTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
+            containerColor = AppTheme.colorScheme.c_FFDCEBFF_FF162033.color,
             expanded = menuExpanded,
             onDismissRequest = {
                 menuExpanded = false
@@ -365,7 +365,7 @@ private fun GroupMemberItem(
                     lineHeight = 18.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                    color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
                 )
             }
             if (!subtitle.isNullOrBlank()) {
@@ -376,7 +376,7 @@ private fun GroupMemberItem(
                     lineHeight = 14.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = AppTheme.colorScheme.c_FF384F60_99FFFFFF.color
+                    color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color
                 )
             }
         }

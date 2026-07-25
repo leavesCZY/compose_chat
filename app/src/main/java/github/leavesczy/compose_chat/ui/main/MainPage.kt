@@ -45,7 +45,7 @@ fun MainPage(
                 modifier = Modifier
                     .fillMaxSize(),
                 contentWindowInsets = WindowInsets(),
-                containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color,
+                containerColor = AppTheme.colorScheme.c_FFEAF2FF_FF0B1220.color,
                 topBar = {
                     if (bottomBarViewState.selectedTab != MainPageTab.Person) {
                         MainPageTopBar(viewState = topBarViewState)

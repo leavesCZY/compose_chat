@@ -25,7 +25,7 @@ internal fun ChatPage(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF101010.color,
+        containerColor = AppTheme.colorScheme.c_FFEAF2FF_FF0B1220.color,
         topBar = {
             ChatPageTopBar(
                 modifier = Modifier,
@@ -71,8 +71,8 @@ private fun ChatPageBody(
                 .align(alignment = Alignment.TopCenter),
             isRefreshing = loadMessageViewState.isRefreshing,
             state = pullRefreshState,
-            color = AppTheme.colorScheme.c_FF5386E5_FF5386E5.color,
-            containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF45464F.color
+            color = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color,
+            containerColor = AppTheme.colorScheme.c_FFFFFFFF_FF243044.color
         )
     }
 }

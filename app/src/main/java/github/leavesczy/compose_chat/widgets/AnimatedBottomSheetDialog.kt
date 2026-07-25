@@ -53,7 +53,7 @@ fun AnimatedBottomSheetDialog(
     onDismissRequest: () -> Unit,
     isCancelable: Boolean = true,
     shape: Shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-    backgroundColor: Color = AppTheme.colorScheme.c_FFEFF1F3_FF22202A.color,
+    backgroundColor: Color = AppTheme.colorScheme.c_FFDCEBFF_FF162033.color,
     navigationBarsColor: Color = backgroundColor,
     shadowElevation: Dp = 6.dp,
     dragHandle: (@Composable () -> Unit)? = {
@@ -239,7 +239,7 @@ private fun DragHandle() {
                 .padding(top = 12.dp)
                 .size(width = 60.dp, height = 4.dp)
                 .clip(shape = RoundedCornerShape(size = 6.dp))
-                .background(color = AppTheme.colorScheme.c_333A3D4D_B3FFFFFF.color)
+                .background(color = AppTheme.colorScheme.c_330B1F3A_B3FFFFFF.color)
         )
     }
 }

@@ -26,7 +26,7 @@ internal fun ComposeDropdownMenuItem(
                 fontSize = 18.sp,
                 lineHeight = 20.sp,
                 fontWeight = FontWeight.Normal,
-                color = AppTheme.colorScheme.c_FF001018_DEFFFFFF.color
+                color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
             )
         },
         onClick = onClick
