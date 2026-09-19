@@ -6,7 +6,7 @@ android-min-sdk = "23"
 android-target-sdk = "37"
 android-build-tools = "37.0.0"
 
-android-plugin = "9.4.0"
+android-plugin = "9.4.1"
 kotlin-plugin = "2.4.20"
 track-plugin = "1.1.7"
 
@@ -22,9 +22,9 @@ kotlinx-coroutines = "1.11.0"
 kotlinx-collections-immutable = "0.5.2"
 
 junit = "4.13.2"
-coil = "3.6.2"
+coil = "3.6.3"
 squareup-okhttp = "5.5.0"
-tencent-imsdk = "9.0.7667"
+tencent-imsdk = "9.1.7818"
 leavesczy-matisse = "2.3.2"
 
 [plugins]
