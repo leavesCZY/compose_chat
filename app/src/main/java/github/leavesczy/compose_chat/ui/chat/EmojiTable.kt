@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.main
+package github.leavesczy.compose_chat.ui.chat
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,7 +19,7 @@ import github.leavesczy.compose_chat.extensions.clickableNoRippleNotCheck
 import github.leavesczy.compose_chat.theme.AppTheme
 
 @Composable
-fun EmojiTable(
+internal fun EmojiTable(
     modifier: Modifier,
     appendEmoji: (emoji: String) -> Unit
 ) {
@@ -75,46 +75,46 @@ private fun Emoji(
 }
 
 private val emojis = listOf(
-    "🙂", // 微笑
-    "😊", // 愉快
-    "😁", // 呲牙
-    "😄", // 喜悦
-    "🤭", // 偷笑
-    "🤩", // 憨笑
-    "😍", // 色
-    "😎", // 得意
-    "😜", // 调皮
-    "😂", // 破涕为笑
-    "🤤", // 流口水
-    "😳", // 发呆
-    "😔", // 闭嘴
-    "🙁", // 难过
-    "😭", // 流泪
-    "😅", // 尴尬
-    "😓", // 流汗
-    "😰", // 惊恐
-    "🤢", // 吐
-    "😱", // 抓狂
-    "😤", // 气愤
-    "🙄", // 白眼
-    "😏", // 冷笑
-    "😫", // 疲惫
-    "😡", // 发怒
-    "😠", // 生气
-    "😈", // 微笑的恶魔
-    "👿", // 愤怒的恶魔
-    "👹", // 鬼
-    "👺", // 天狗
-    "🤡", // 小丑
-    "💀", // 骷髅头
-    "👽", // 外星人
-    "👻", // 幽灵
-    "👾", // 怪物
-    "🤖", // 机器人
-    "🎉", // 庆祝
-    "💣", // 炸弹
-    "💩", // 便便
-    "❤️", // 爱心
-    "💔", // 心碎
-    "🎂", // 蛋糕
+    "🙂",
+    "😊",
+    "😁",
+    "😄",
+    "🤭",
+    "🤩",
+    "😍",
+    "😎",
+    "😜",
+    "😂",
+    "🤤",
+    "😳",
+    "😔",
+    "🙁",
+    "😭",
+    "😅",
+    "😓",
+    "😰",
+    "🤢",
+    "😱",
+    "😤",
+    "🙄",
+    "😏",
+    "😫",
+    "😡",
+    "😠",
+    "😈",
+    "👿",
+    "👹",
+    "👺",
+    "🤡",
+    "💀",
+    "👽",
+    "👻",
+    "👾",
+    "🤖",
+    "🎉",
+    "💣",
+    "💩",
+    "❤️",
+    "💔",
+    "🎂",
 )

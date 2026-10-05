@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.provider
+package github.leavesczy.compose_chat.provider
 
 import android.app.Application
 import android.content.Context

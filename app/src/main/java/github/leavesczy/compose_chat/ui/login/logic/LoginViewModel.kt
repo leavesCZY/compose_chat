@@ -7,11 +7,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
-import github.leavesczy.compose_chat.base.BaseViewModel
 import github.leavesczy.compose_chat.base.models.ActionResult
+import github.leavesczy.compose_chat.di.ComposeChat
+import github.leavesczy.compose_chat.provider.LoginPreferences
+import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.main.MainActivity
-import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
-import github.leavesczy.compose_chat.ui.provider.LoginPreferences
 import kotlinx.coroutines.launch
 
 class LoginViewModel : BaseViewModel() {
@@ -20,6 +20,8 @@ class LoginViewModel : BaseViewModel() {
         value = buildLoginPageViewState()
     )
         private set
+
+    private var isLoggingIn = false
 
     private fun buildLoginPageViewState(): LoginPageViewState {
         val lastLoginUserId = LoginPreferences.lastLoginUserId
@@ -39,7 +41,7 @@ class LoginViewModel : BaseViewModel() {
     private fun onUserIdInputChanged(input: TextFieldValue) {
         val trimText = input.text.trim()
         val isAvailable = trimText.length <= 12 && trimText.all { char ->
-            char.isLowerCase() || char.isUpperCase()
+            char.isLetterOrDigit()
         }
         if (isAvailable) {
             pageViewState = pageViewState.copy(userId = input.copy(text = trimText))
@@ -47,35 +49,51 @@ class LoginViewModel : BaseViewModel() {
     }
 
     fun tryAutoLogin(activity: Activity) {
+        if (isLoggingIn) {
+            return
+        }
         viewModelScope.launch {
             val viewState = pageViewState
             val isPanelVisible = viewState.isPanelVisible
             val userId = viewState.userId.text
             if (!isPanelVisible && userId.isNotBlank()) {
+                isLoggingIn = true
                 showLoadingDialog()
-                val isSuccess = login(userId = userId)
-                if (isSuccess) {
-                    navToMainActivityAndFinish(activity = activity)
-                } else {
-                    pageViewState = viewState.copy(isPanelVisible = true)
+                try {
+                    val isSuccess = login(userId = userId)
+                    if (isSuccess) {
+                        navToMainActivityAndFinish(activity = activity)
+                    } else {
+                        pageViewState = viewState.copy(isPanelVisible = true)
+                    }
+                } finally {
+                    dismissLoadingDialog()
+                    isLoggingIn = false
                 }
-                dismissLoadingDialog()
             }
         }
     }
 
     private fun onClickLogin(activity: Activity) {
+        if (isLoggingIn) {
+            return
+        }
         viewModelScope.launch {
             val userId = pageViewState.userId.text
             if (userId.isBlank()) {
                 return@launch
             }
+            isLoggingIn = true
             showLoadingDialog()
-            val isSuccess = login(userId = userId)
-            if (isSuccess) {
-                navToMainActivityAndFinish(activity = activity)
+            try {
+                val isSuccess = login(userId = userId)
+                if (isSuccess) {
+                    navToMainActivityAndFinish(activity = activity)
+                }
+            } finally {
+                dismissLoadingDialog()
+                isLoggingIn = false
             }
-            dismissLoadingDialog()
         }
     }
 

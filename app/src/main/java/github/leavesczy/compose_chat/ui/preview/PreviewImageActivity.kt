@@ -11,7 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import github.leavesczy.compose_chat.R
-import github.leavesczy.compose_chat.base.BaseActivity
+import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.utils.AlbumUtils
 import kotlinx.coroutines.launch
 
@@ -53,10 +53,16 @@ class PreviewImageActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val uriList = imageUriList
+        if (uriList.isEmpty()) {
+            finish()
+            return
+        }
+        val safeInitialPage = initialPage.coerceIn(0, uriList.lastIndex)
         setContent {
             PreviewImagePage(
-                imageUriList = imageUriList,
-                initialPage = initialPage,
+                imageUriList = uriList,
+                initialPage = safeInitialPage,
                 insertImageToAlbum = ::insertImageToAlbum
             )
         }

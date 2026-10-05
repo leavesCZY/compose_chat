@@ -12,9 +12,12 @@ data class FriendshipPageViewState(
     val listState: LazyListState,
     val joinedGroupList: PersistentList<GroupProfile>,
     val friendList: PersistentList<PersonProfile>,
+    val isLoading: Boolean,
+    val loadError: String?,
     val onClickGroupItem: (group: GroupProfile) -> Unit,
     val onClickFriendItem: (friend: PersonProfile) -> Unit,
-    val onClickShowFriendshipDialog: () -> Unit
+    val onClickShowFriendshipDialog: () -> Unit,
+    val onRetryLoad: () -> Unit
 )
 
 @Stable

@@ -6,13 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.R
-import github.leavesczy.compose_chat.base.BaseViewModel
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.GroupMemberProfile
 import github.leavesczy.compose_chat.base.provider.IGroupProvider
+import github.leavesczy.compose_chat.di.ComposeChat
+import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
 import github.leavesczy.compose_chat.ui.main.MainActivity
-import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
 import github.leavesczy.compose_chat.utils.randomImage
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -26,6 +26,7 @@ class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
     var pageViewState by mutableStateOf(
         value = GroupProfilePageViewState(
             groupProfile = null,
+            loadFailed = false,
             memberList = persistentListOf(),
             onClickMember = ::onClickMember,
             onClickSwitchAvatar = ::onClickSwitchAvatar,
@@ -45,10 +46,20 @@ class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
             }
             val groupProfile = groupProfileAsync.await()
             val memberList = memberListAsync.await()
-            if (groupProfile != null) {
+            if (groupProfile == null) {
+                pageViewState = pageViewState.copy(
+                    groupProfile = null,
+                    loadFailed = true,
+                    memberList = persistentListOf()
+                )
+            } else {
+                if (memberList == null) {
+                    showToast(resId = github.leavesczy.compose_chat.base.R.string.error_load_group_members)
+                }
                 pageViewState = pageViewState.copy(
                     groupProfile = groupProfile,
-                    memberList = memberList.toPersistentList()
+                    loadFailed = false,
+                    memberList = (memberList ?: emptyList()).toPersistentList()
                 )
             }
             dismissLoadingDialog()
@@ -102,6 +113,7 @@ class GroupProfileViewModel(private val groupId: String) : BaseViewModel() {
                 ActionResult.Success -> {
                     showToast(resId = R.string.toast_quit_group_success)
                     activity.startActivity<MainActivity>()
+                    activity.finish()
                 }
 
                 is ActionResult.Failed -> {

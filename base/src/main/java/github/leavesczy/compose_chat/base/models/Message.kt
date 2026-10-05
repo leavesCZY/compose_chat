@@ -1,25 +1,19 @@
 package github.leavesczy.compose_chat.base.models
 
-import androidx.compose.runtime.Stable
 import github.leavesczy.compose_chat.base.R
 import github.leavesczy.compose_chat.base.utils.StringResources
 import github.leavesczy.compose_chat.base.utils.TimeUtils
 
-@Stable
 sealed class MessageState {
 
-    @Stable
     data object Sending : MessageState()
 
-    @Stable
     data class Failed(val reason: String) : MessageState()
 
-    @Stable
     data object Success : MessageState()
 
 }
 
-@Stable
 data class MessageDetail(
     val msgId: String,
     val milliseconds: Long,
@@ -32,16 +26,12 @@ data class MessageDetail(
 
 }
 
-@Stable
 sealed class Message(val detail: MessageDetail) {
 
     abstract val formatMessage: String
 
-    var tag: Any? = null
-
 }
 
-@Stable
 data class TextMessage(
     private val messageDetail: MessageDetail,
     private val text: String
@@ -52,7 +42,6 @@ data class TextMessage(
 
 }
 
-@Stable
 data class ImageMessage(
     private val messageDetail: MessageDetail,
     private val original: ImageElement,
@@ -60,7 +49,6 @@ data class ImageMessage(
     private val thumb: ImageElement?
 ) : Message(detail = messageDetail) {
 
-    @Stable
     data class ImageElement(
         val width: Int,
         val height: Int,
@@ -76,9 +64,20 @@ data class ImageMessage(
     val previewImageUrl: String
         get() = previewImage.url
 
+    val isLocalPreview: Boolean
+        get() {
+            val url = previewImageUrl
+            return url.isNotBlank() &&
+                    !url.startsWith(prefix = "http://") &&
+                    !url.startsWith(prefix = "https://")
+        }
+
+    fun withPreservedPreview(messageDetail: MessageDetail): ImageMessage {
+        return copy(messageDetail = messageDetail)
+    }
+
 }
 
-@Stable
 data class SystemMessage(
     private val messageDetail: MessageDetail,
     private val tips: String
@@ -89,7 +88,6 @@ data class SystemMessage(
 
 }
 
-@Stable
 data class TimeMessage(val targetMessage: Message) : Message(
     detail = MessageDetail(
         msgId = (targetMessage.detail.milliseconds + targetMessage.detail.msgId.hashCode()).toString(),
@@ -104,16 +102,13 @@ data class TimeMessage(val targetMessage: Message) : Message(
 
 }
 
-@Stable
 sealed class LoadMessageResult {
 
-    @Stable
     data class Success(
         val messageList: List<Message>,
         val isLoadFinished: Boolean
     ) : LoadMessageResult()
 
-    @Stable
     data class Failed(val reason: String) : LoadMessageResult()
 
 }

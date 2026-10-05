@@ -1,13 +1,13 @@
-package github.leavesczy.compose_chat.ui.chat.main
+package github.leavesczy.compose_chat.ui.chat
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.IntentCompat
-import github.leavesczy.compose_chat.base.BaseActivity
 import github.leavesczy.compose_chat.base.models.Chat
-import github.leavesczy.compose_chat.ui.chat.main.logic.ChatViewModel
+import github.leavesczy.compose_chat.ui.base.BaseActivity
+import github.leavesczy.compose_chat.ui.chat.logic.ChatViewModel
 
 class ChatActivity : BaseActivity() {
 
@@ -18,6 +18,7 @@ class ChatActivity : BaseActivity() {
         fun navTo(context: Context, chat: Chat) {
             val intent = Intent(context, ChatActivity::class.java)
             intent.putExtra(KEY_CHAT, chat)
+            // standard + CLEAR_TOP：结束栈顶旧 Chat 并重建，避免错会话
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             if (context !is Activity) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

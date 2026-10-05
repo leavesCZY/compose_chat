@@ -8,7 +8,7 @@ android-build-tools = "37.0.0"
 
 android-plugin = "9.4.1"
 kotlin-plugin = "2.4.20"
-track-plugin = "1.1.7"
+track-plugin = "2.0.0"
 
 androidx-junit = "1.3.0"
 androidx-espresso = "3.7.0"
@@ -25,7 +25,7 @@ junit = "4.13.2"
 coil = "3.6.3"
 squareup-okhttp = "5.5.0"
 tencent-imsdk = "9.1.7818"
-leavesczy-matisse = "2.3.2"
+leavesczy-matisse = "3.0.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
@@ -69,6 +69,7 @@ kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collec
 
 coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-video = { module = "io.coil-kt.coil3:coil-video", version.ref = "coil" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 
 junit = { module = "junit:junit", version.ref = "junit" }

@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.R
-import github.leavesczy.compose_chat.base.BaseViewModel
 import github.leavesczy.compose_chat.base.models.ActionResult
-import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
+import github.leavesczy.compose_chat.di.ComposeChat
+import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.utils.randomImage
 import kotlinx.coroutines.launch
 
@@ -16,6 +16,7 @@ class ProfileUpdateViewModel : BaseViewModel() {
     var pageViewState by mutableStateOf(
         value = ProfileUpdatePageViewState(
             personProfile = null,
+            loadFailed = false,
             onNicknameChanged = ::onNicknameChanged,
             onSignatureChanged = ::onSignatureChanged,
             onClickSetRandomAvatar = ::setRandomAvatar,
@@ -24,10 +25,18 @@ class ProfileUpdateViewModel : BaseViewModel() {
     )
         private set
 
+    private var isUpdating = false
+
     init {
         viewModelScope.launch {
+            showLoadingDialog()
             val profile = ComposeChat.accountProvider.getPersonProfile()
-            pageViewState = pageViewState.copy(personProfile = profile)
+            pageViewState = if (profile == null) {
+                pageViewState.copy(personProfile = null, loadFailed = true)
+            } else {
+                pageViewState.copy(personProfile = profile, loadFailed = false)
+            }
+            dismissLoadingDialog()
         }
     }
 
@@ -59,26 +68,34 @@ class ProfileUpdateViewModel : BaseViewModel() {
     }
 
     private fun onConfirmUpdate() {
+        if (isUpdating) {
+            return
+        }
         viewModelScope.launch {
+            isUpdating = true
             showLoadingDialog()
-            val personProfile = pageViewState.personProfile
-            if (personProfile != null) {
-                val result = ComposeChat.accountProvider.updateProfile(
-                    avatarUrl = personProfile.avatarUrl,
-                    nickname = personProfile.nickname,
-                    signature = personProfile.signature
-                )
-                when (result) {
-                    is ActionResult.Success -> {
-                        showToast(resId = R.string.toast_update_success)
-                    }
+            try {
+                val personProfile = pageViewState.personProfile
+                if (personProfile != null) {
+                    val result = ComposeChat.accountProvider.updateProfile(
+                        avatarUrl = personProfile.avatarUrl,
+                        nickname = personProfile.nickname,
+                        signature = personProfile.signature
+                    )
+                    when (result) {
+                        is ActionResult.Success -> {
+                            showToast(resId = R.string.toast_update_success)
+                        }
 
-                    is ActionResult.Failed -> {
-                        showToast(msg = result.desc)
+                        is ActionResult.Failed -> {
+                            showToast(msg = result.desc)
+                        }
                     }
                 }
+            } finally {
+                dismissLoadingDialog()
+                isUpdating = false
             }
-            dismissLoadingDialog()
         }
     }
 

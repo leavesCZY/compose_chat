@@ -2,17 +2,23 @@ package github.leavesczy.compose_chat.base.provider
 
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.Conversation
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 interface IConversationProvider {
 
-    val conversationListFlow: SharedFlow<List<Conversation>>
+    val conversationListFlow: StateFlow<List<Conversation>>
 
-    val totalUnreadMessageCountFlow: SharedFlow<Long>
+    val totalUnreadMessageCountFlow: StateFlow<Long>
+
+    val conversationLoadErrorFlow: StateFlow<String?>
+
+    val conversationLoadingFlow: StateFlow<Boolean>
 
     fun refreshConversationList()
 
     fun refreshTotalUnreadMessageCount()
+
+    fun clearSessionState()
 
     suspend fun pinConversation(conversation: Conversation, pin: Boolean): ActionResult
 

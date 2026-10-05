@@ -7,7 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission
         android:name="android.permission.READ_MEDIA_IMAGES"
-        tools:ignore="PhotoAndVideoPolicy,SelectedPhotoAccess" />
+        tools:ignore="PhotoAndVideoPolicy" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
@@ -50,14 +51,12 @@
             android:name=".ui.chat.group.GroupProfileActivity"
             android:configChanges="orientation|screenSize|screenLayout|layoutDirection|keyboard|keyboardHidden|locale|uiMode"
             android:exported="false"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
             android:name=".ui.friend.FriendProfileActivity"
             android:configChanges="orientation|screenSize|screenLayout|layoutDirection|keyboard|keyboardHidden|locale|uiMode"
             android:exported="false"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
@@ -70,7 +69,7 @@
             android:windowSoftInputMode="adjustResize"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
-            android:name=".ui.chat.main.ChatActivity"
+            android:name=".ui.chat.ChatActivity"
             android:configChanges="orientation|screenSize|screenLayout|layoutDirection|keyboard|keyboardHidden|locale|uiMode"
             android:exported="false"
             android:screenOrientation="portrait"
@@ -80,7 +79,6 @@
             android:name=".ui.preview.PreviewImageActivity"
             android:configChanges="orientation|screenSize|screenLayout|layoutDirection|keyboard|keyboardHidden|locale|uiMode"
             android:exported="false"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
     </application>

@@ -6,6 +6,7 @@ import github.leavesczy.compose_chat.base.models.PersonProfile
 @Stable
 data class ProfileUpdatePageViewState(
     val personProfile: PersonProfile?,
+    val loadFailed: Boolean,
     val onNicknameChanged: (nickname: String) -> Unit,
     val onSignatureChanged: (signature: String) -> Unit,
     val onClickSetRandomAvatar: () -> Unit,

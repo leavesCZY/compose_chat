@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.main
+package github.leavesczy.compose_chat.ui.chat
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -26,10 +26,10 @@ import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.extensions.clickableNoRipple
 import github.leavesczy.compose_chat.theme.AppTheme
-import github.leavesczy.compose_chat.ui.chat.main.logic.InputSelector
+import github.leavesczy.compose_chat.ui.chat.logic.InputSelector
 
 @Composable
-fun InputSelector(
+internal fun InputSelectorBar(
     modifier: Modifier,
     inputSelector: InputSelector,
     onInputSelectorChanged: (inputSelector: InputSelector) -> Unit,
@@ -42,18 +42,20 @@ fun InputSelector(
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        InputSelector(
+        InputSelectorIcon(
             modifier = Modifier,
             icon = Icons.Outlined.Mood,
+            contentDescription = stringResource(id = R.string.cd_emoji),
             selected = inputSelector == InputSelector.Emoji,
             onClick = {
                 onInputSelectorChanged(InputSelector.Emoji)
             }
         )
-        InputSelector(
+        InputSelectorIcon(
             modifier = Modifier
                 .padding(start = 16.dp),
             icon = Icons.Outlined.Topic,
+            contentDescription = stringResource(id = R.string.cd_media),
             selected = inputSelector == InputSelector.Picture,
             onClick = {
                 onInputSelectorChanged(InputSelector.Picture)
@@ -72,9 +74,10 @@ fun InputSelector(
 }
 
 @Composable
-private fun InputSelector(
+private fun InputSelectorIcon(
     modifier: Modifier,
     icon: ImageVector,
+    contentDescription: String,
     selected: Boolean,
     onClick: () -> Unit
 ) {
@@ -91,7 +94,7 @@ private fun InputSelector(
             .clickableNoRipple(onClick = onClick),
         imageVector = icon,
         tint = color,
-        contentDescription = null
+        contentDescription = contentDescription
     )
 }
 

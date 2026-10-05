@@ -1,10 +1,8 @@
 package github.leavesczy.compose_chat.base.models
 
-import androidx.compose.runtime.Stable
 import github.leavesczy.compose_chat.base.R
 import github.leavesczy.compose_chat.base.utils.StringResources
 
-@Stable
 data class Conversation(
     val id: String,
     val name: String,
@@ -58,7 +56,6 @@ data class Conversation(
 
 }
 
-@Stable
 enum class ConversationType {
     C2C,
     Group;

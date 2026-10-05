@@ -1,7 +1,9 @@
 package github.leavesczy.compose_chat.widgets
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -9,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.theme.AppTheme
@@ -30,6 +33,23 @@ fun LazyItemScope.EmptyPage(modifier: Modifier) {
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
             color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
+        )
+    }
+}
+
+@Composable
+fun LazyItemScope.LoadingPage(modifier: Modifier) {
+    Box(
+        modifier = modifier
+            .animateItem()
+            .fillParentMaxWidth()
+            .fillParentMaxHeight(fraction = 0.85f),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .size(size = 36.dp),
+            color = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color
         )
     }
 }

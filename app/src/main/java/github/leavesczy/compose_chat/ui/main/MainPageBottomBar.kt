@@ -33,7 +33,7 @@ import github.leavesczy.compose_chat.ui.main.logic.MainPageBottomBarViewState
 import github.leavesczy.compose_chat.ui.main.logic.MainPageTab
 
 @Composable
-fun MainPageBottomBar(viewState: MainPageBottomBarViewState) {
+internal fun MainPageBottomBar(viewState: MainPageBottomBarViewState) {
     val unreadCountOverflow = stringResource(id = R.string.unread_count_overflow)
     Row(
         modifier = Modifier
@@ -47,24 +47,29 @@ fun MainPageBottomBar(viewState: MainPageBottomBarViewState) {
         for (pageTab in MainPageTab.entries) {
             val icon: ImageVector
             val unreadMessageCount: Long
+            val contentDescription: String
             when (pageTab) {
                 MainPageTab.Conversation -> {
                     icon = Icons.Rounded.WbSunny
                     unreadMessageCount = viewState.unreadMessageCount
+                    contentDescription = stringResource(id = R.string.cd_tab_conversation)
                 }
 
                 MainPageTab.Friendship -> {
                     icon = Icons.Filled.Sailing
                     unreadMessageCount = 0
+                    contentDescription = stringResource(id = R.string.cd_tab_friendship)
                 }
 
                 MainPageTab.Person -> {
                     icon = Icons.Rounded.ColorLens
                     unreadMessageCount = 0
+                    contentDescription = stringResource(id = R.string.cd_tab_person)
                 }
             }
             NavigationBarItem(
                 icon = icon,
+                contentDescription = contentDescription,
                 selected = viewState.selectedTab == pageTab,
                 unreadMessageCount = unreadMessageCount,
                 unreadCountOverflow = unreadCountOverflow,
@@ -79,6 +84,7 @@ fun MainPageBottomBar(viewState: MainPageBottomBarViewState) {
 @Composable
 private fun RowScope.NavigationBarItem(
     icon: ImageVector,
+    contentDescription: String,
     selected: Boolean,
     unreadMessageCount: Long,
     unreadCountOverflow: String,
@@ -90,7 +96,7 @@ private fun RowScope.NavigationBarItem(
                 modifier = Modifier
                     .size(size = 22.dp),
                 imageVector = icon,
-                contentDescription = null
+                contentDescription = contentDescription
             )
             if (unreadMessageCount > 0) {
                 Text(

@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.base
+package github.leavesczy.compose_chat.ui.base
 
 import android.os.Bundle
 import androidx.activity.compose.LocalActivity
@@ -12,10 +12,10 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import github.leavesczy.compose_chat.provider.AppThemeProvider
+import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.theme.AppThemeMode
-import github.leavesczy.compose_chat.ui.provider.AppThemeProvider
-import github.leavesczy.compose_chat.ui.provider.ToastProvider
 
 abstract class BaseActivity : AppCompatActivity() {
 

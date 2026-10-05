@@ -5,11 +5,11 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import github.leavesczy.compose_chat.R
-import github.leavesczy.compose_chat.base.BaseActivity
 import github.leavesczy.compose_chat.base.models.ServerConnectState
+import github.leavesczy.compose_chat.provider.LoginPreferences
+import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.login.LoginActivity
 import github.leavesczy.compose_chat.ui.main.logic.MainViewModel
-import github.leavesczy.compose_chat.ui.provider.LoginPreferences
 import github.leavesczy.compose_chat.widgets.LoadingDialog
 import kotlinx.coroutines.launch
 
@@ -23,11 +23,7 @@ class MainActivity : BaseActivity() {
             MainPage(
                 drawerViewState = mainViewModel.drawerViewState,
                 topBarViewState = mainViewModel.topBarViewState,
-                bottomBarViewState = mainViewModel.bottomBarViewState,
-                conversationPageViewState = mainViewModel.conversationPageViewState,
-                friendshipPageViewState = mainViewModel.friendshipPageViewState,
-                friendshipDialogViewState = mainViewModel.friendshipDialogViewState,
-                personProfilePageViewState = mainViewModel.profilePageViewState
+                bottomBarViewState = mainViewModel.bottomBarViewState
             )
             LoadingDialog(viewState = mainViewModel.loadingDialogViewState)
         }
@@ -44,8 +40,13 @@ class MainActivity : BaseActivity() {
                         navToLoginPage()
                     }
 
-                    ServerConnectState.Logout,
                     ServerConnectState.UserSigExpired -> {
+                        showToast(resId = R.string.server_user_sig_expired)
+                        LoginPreferences.onUserLogout()
+                        navToLoginPage()
+                    }
+
+                    ServerConnectState.Logout -> {
                         navToLoginPage()
                     }
 

@@ -42,9 +42,10 @@ import github.leavesczy.compose_chat.ui.main.conversation.logic.ConversationPage
 import github.leavesczy.compose_chat.widgets.ComponentImage
 import github.leavesczy.compose_chat.widgets.ComposeDropdownMenuItem
 import github.leavesczy.compose_chat.widgets.EmptyPage
+import github.leavesczy.compose_chat.widgets.LoadingPage
 
 @Composable
-fun ConversationPage(pageViewState: ConversationPageViewState) {
+internal fun ConversationPage(pageViewState: ConversationPageViewState) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
@@ -55,19 +56,33 @@ fun ConversationPage(pageViewState: ConversationPageViewState) {
             modifier = Modifier,
             serverConnectState = pageViewState.serverConnectState
         )
+        loadErrorBanner(
+            modifier = Modifier,
+            loadError = pageViewState.loadError,
+            onRetryLoad = pageViewState.onRetryLoad
+        )
         val conversationList = pageViewState.conversationList
-        if (conversationList.isEmpty()) {
-            item(
-                key = "EmptyPage",
-                contentType = "EmptyPage"
-            ) {
-                EmptyPage(modifier = Modifier)
+        if (conversationList.isEmpty() && pageViewState.loadError == null) {
+            if (pageViewState.isLoading) {
+                item(
+                    key = "LoadingPage",
+                    contentType = "LoadingPage"
+                ) {
+                    LoadingPage(modifier = Modifier)
+                }
+            } else {
+                item(
+                    key = "EmptyPage",
+                    contentType = "EmptyPage"
+                ) {
+                    EmptyPage(modifier = Modifier)
+                }
             }
         } else {
             items(
                 items = conversationList,
                 key = { conversation ->
-                    conversation.id
+                    "${conversation.type.name}_${conversation.id}"
                 },
                 contentType = {
                     "ConversationItem"
@@ -203,7 +218,8 @@ private fun Avatar(
                 .padding(end = 12.dp, top = 8.dp, bottom = 8.dp)
                 .size(size = 54.dp)
                 .clip(shape = RoundedCornerShape(size = 6.dp)),
-            model = avatarUrl
+            model = avatarUrl,
+            contentDescription = stringResource(id = R.string.cd_avatar)
         )
         if (unreadMessageCount > 0) {
             UnreadMessageCount(
@@ -290,40 +306,77 @@ private fun LazyListScope.serverConnectState(
     modifier: Modifier,
     serverConnectState: ServerConnectState
 ) {
-    when (serverConnectState) {
+    val messageResId = when (serverConnectState) {
         ServerConnectState.Idle,
         ServerConnectState.Connected -> {
             return
         }
 
-        ServerConnectState.Logout,
-        ServerConnectState.Connecting,
-        ServerConnectState.ConnectFailed,
-        ServerConnectState.UserSigExpired,
-        ServerConnectState.KickedOffline -> {
-            item(
-                key = "serverConnectState",
-                contentType = "serverConnectState"
-            ) {
-                Box(
-                    modifier = modifier
-                        .animateItem()
-                        .fillMaxWidth()
-                        .background(color = AppTheme.colorScheme.c_6684A9D6_6684A9D6.color)
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 8.dp),
-                        text = stringResource(
-                            id = R.string.server_connect_state,
-                            serverConnectState
-                        ),
-                        fontSize = 12.sp,
-                        lineHeight = 12.sp,
-                        color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color
-                    )
-                }
-            }
+        ServerConnectState.Connecting -> R.string.server_connecting
+        ServerConnectState.ConnectFailed -> R.string.server_connect_failed
+        ServerConnectState.Logout -> R.string.server_logout
+        ServerConnectState.UserSigExpired -> R.string.server_user_sig_expired
+        ServerConnectState.KickedOffline -> R.string.server_kicked_offline
+    }
+    item(
+        key = "serverConnectState",
+        contentType = "serverConnectState"
+    ) {
+        Box(
+            modifier = modifier
+                .animateItem()
+                .fillMaxWidth()
+                .background(color = AppTheme.colorScheme.c_6684A9D6_6684A9D6.color)
+        ) {
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                text = stringResource(id = messageResId),
+                fontSize = 12.sp,
+                lineHeight = 12.sp,
+                color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color
+            )
+        }
+    }
+}
+
+private fun LazyListScope.loadErrorBanner(
+    modifier: Modifier,
+    loadError: String?,
+    onRetryLoad: () -> Unit
+) {
+    if (loadError.isNullOrBlank()) {
+        return
+    }
+    item(
+        key = "conversationLoadError",
+        contentType = "conversationLoadError"
+    ) {
+        Row(
+            modifier = modifier
+                .animateItem()
+                .fillMaxWidth()
+                .background(color = AppTheme.colorScheme.c_6684A9D6_6684A9D6.color)
+                .combinedClickable(onClick = onRetryLoad)
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier
+                    .weight(weight = 1f),
+                text = stringResource(id = R.string.conversation_load_failed, loadError),
+                fontSize = 12.sp,
+                lineHeight = 14.sp,
+                color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color
+            )
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp),
+                text = stringResource(id = R.string.retry),
+                fontSize = 12.sp,
+                lineHeight = 12.sp,
+                color = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color
+            )
         }
     }
 }

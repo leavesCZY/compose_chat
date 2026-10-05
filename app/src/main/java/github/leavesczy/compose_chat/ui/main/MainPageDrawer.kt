@@ -41,7 +41,7 @@ import github.leavesczy.compose_chat.widgets.AnimateBouncyImage
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainPageDrawer(viewState: MainPageDrawerViewState) {
+internal fun MainPageDrawer(viewState: MainPageDrawerViewState) {
     val coroutineScope = rememberCoroutineScope()
     BackHandler(enabled = viewState.drawerState.isOpen) {
         coroutineScope.launch {

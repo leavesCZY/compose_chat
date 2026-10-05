@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.base
+package github.leavesczy.compose_chat.ui.base
 
 import android.app.Activity
 import android.content.Context
@@ -7,7 +7,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import github.leavesczy.compose_chat.base.utils.ContextProvider
 import github.leavesczy.compose_chat.base.utils.StringResources
-import github.leavesczy.compose_chat.ui.provider.ToastProvider
+import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.widgets.LoadingDialogViewState
 
 abstract class BaseViewModel : ViewModel() {

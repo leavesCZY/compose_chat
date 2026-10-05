@@ -1,5 +1,6 @@
 package github.leavesczy.compose_chat.ui.friend
 
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -35,6 +41,7 @@ import github.leavesczy.compose_chat.widgets.ProfilePanel
 
 @Composable
 internal fun FriendProfilePage(pageViewState: FriendProfilePageViewState) {
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -94,6 +101,33 @@ internal fun FriendProfilePage(pageViewState: FriendProfilePageViewState) {
                         }
                     }
                 }
+            } else if (pageViewState.loadFailed) {
+                Text(
+                    modifier = Modifier
+                        .align(alignment = Alignment.Center)
+                        .padding(horizontal = 24.dp),
+                    text = stringResource(id = R.string.profile_load_failed),
+                    fontSize = 16.sp,
+                    color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color
+                )
+            }
+            IconButton(
+                modifier = Modifier
+                    .align(alignment = Alignment.TopStart)
+                    .statusBarsPadding(),
+                onClick = {
+                    onBackPressedDispatcher?.onBackPressed()
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBackIosNew,
+                    contentDescription = stringResource(id = R.string.cd_back),
+                    tint = if (personProfile != null) {
+                        AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color
+                    } else {
+                        AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
+                    }
+                )
             }
         }
     }
@@ -117,11 +151,11 @@ internal fun DeleteFriendDialog(viewState: DeleteFriendDialogViewState) {
             },
             confirmButton = {
                 TextButton(
-                    onClick = viewState.onDismissDialog
+                    onClick = viewState.onDeleteFriend
                 ) {
                     Text(
                         modifier = Modifier,
-                        text = stringResource(id = R.string.cancel),
+                        text = stringResource(id = R.string.delete),
                         fontSize = 15.sp,
                         lineHeight = 16.sp,
                         color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
@@ -130,11 +164,11 @@ internal fun DeleteFriendDialog(viewState: DeleteFriendDialogViewState) {
             },
             dismissButton = {
                 TextButton(
-                    onClick = viewState.onDeleteFriend
+                    onClick = viewState.onDismissDialog
                 ) {
                     Text(
                         modifier = Modifier,
-                        text = stringResource(id = R.string.delete),
+                        text = stringResource(id = R.string.cancel),
                         fontSize = 15.sp,
                         lineHeight = 16.sp,
                         color = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
@@ -167,7 +201,9 @@ internal fun SetFriendRemarkDialog(viewState: SetFriendRemarkDialogViewState) {
                     .padding(start = 20.dp, end = 20.dp, top = 12.dp),
                 value = remark,
                 onValueChange = { value ->
-                    remark = value
+                    if (value.length <= 32) {
+                        remark = value
+                    }
                 },
                 label = stringResource(id = R.string.input_remark)
             )

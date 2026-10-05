@@ -28,7 +28,10 @@ import github.leavesczy.compose_chat.widgets.ComposeDropdownMenuItem
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainPageTopBar(viewState: MainPageTopBarViewState) {
+internal fun MainPageTopBar(
+    viewState: MainPageTopBarViewState,
+    onClickShowFriendshipDialog: () -> Unit
+) {
     var menuExpanded by remember {
         mutableStateOf(value = false)
     }
@@ -47,7 +50,7 @@ fun MainPageTopBar(viewState: MainPageTopBarViewState) {
                         modifier = Modifier
                             .size(size = 26.dp),
                         imageVector = Icons.Filled.Menu,
-                        contentDescription = null
+                        contentDescription = stringResource(id = R.string.cd_open_drawer)
                     )
                 },
                 onClick = {
@@ -66,7 +69,7 @@ fun MainPageTopBar(viewState: MainPageTopBarViewState) {
                             modifier = Modifier
                                 .size(size = 26.dp),
                             imageVector = Icons.Filled.MoreVert,
-                            contentDescription = null
+                            contentDescription = stringResource(id = R.string.cd_more_actions)
                         )
                     },
                     onClick = {
@@ -91,7 +94,7 @@ fun MainPageTopBar(viewState: MainPageTopBarViewState) {
                             text = stringResource(id = R.string.add_friend),
                             onClick = {
                                 menuExpanded = false
-                                viewState.onClickShowFriendshipDialog()
+                                onClickShowFriendshipDialog()
                             }
                         )
                         ComposeDropdownMenuItem(
@@ -99,7 +102,7 @@ fun MainPageTopBar(viewState: MainPageTopBarViewState) {
                             text = stringResource(id = R.string.join_group_chat),
                             onClick = {
                                 menuExpanded = false
-                                viewState.onClickShowFriendshipDialog()
+                                onClickShowFriendshipDialog()
                             }
                         )
                     }

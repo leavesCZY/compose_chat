@@ -6,11 +6,18 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -20,17 +27,24 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.core.content.ContextCompat
+import coil3.request.ImageRequest
+import coil3.size.Size
 import github.leavesczy.compose_chat.R
+import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.theme.AppTheme
-import github.leavesczy.compose_chat.ui.provider.ToastProvider
 import github.leavesczy.compose_chat.widgets.ComponentImage
 import kotlin.math.absoluteValue
 
@@ -113,6 +127,7 @@ private fun Image(
     ) {
         Box(
             modifier = Modifier
+                .fillMaxSize()
                 .graphicsLayer {
                     val pageOffset =
                         ((pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction).absoluteValue
@@ -130,14 +145,67 @@ private fun Image(
                         stop = 1f,
                         fraction = fraction
                     )
-                },
-            contentAlignment = Alignment.Center
+                }
+        ) {
+            PreviewImageContent(imageUrl = imageUrl)
+        }
+    }
+}
+
+@Composable
+private fun PreviewImageContent(imageUrl: String) {
+    val localContext = LocalContext.current
+    val imageRequest = remember(key1 = imageUrl) {
+        ImageRequest.Builder(context = localContext)
+            .data(data = imageUrl)
+            .size(size = Size.ORIGINAL)
+            .build()
+    }
+    var imageRatio by remember(key1 = imageUrl) {
+        mutableStateOf<Float?>(value = null)
+    }
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        val ratio = imageRatio
+        val imageHeight = if (ratio != null && ratio > 0f) {
+            maxWidth / ratio
+        } else {
+            null
+        }
+        val scrollEnabled = imageHeight != null && imageHeight > maxHeight
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(
+                    state = rememberScrollState(),
+                    enabled = scrollEnabled
+                ),
+            verticalArrangement = if (scrollEnabled) {
+                Arrangement.Top
+            } else {
+                Arrangement.Center
+            },
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ComponentImage(
-                modifier = Modifier
-                    .fillMaxSize(),
-                model = imageUrl,
-                contentScale = ContentScale.FillWidth
+                modifier = if (ratio == null) {
+                    Modifier
+                        .fillMaxSize()
+                } else {
+                    Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(ratio = ratio)
+                },
+                model = imageRequest,
+                contentScale = ContentScale.FillWidth,
+                onSuccess = { state ->
+                    val image = state.result.image
+                    if (image.width > 0 && image.height > 0) {
+                        imageRatio = image.width.toFloat() / image.height.toFloat()
+                    }
+                }
             )
         }
     }
@@ -155,7 +223,7 @@ private fun DownloadIcon(
                 modifier = Modifier,
                 imageVector = Icons.Filled.SaveAlt,
                 tint = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color,
-                contentDescription = null
+                contentDescription = stringResource(id = R.string.cd_save_image)
             )
         },
         onClick = onClick

@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.main
+package github.leavesczy.compose_chat.ui.chat
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,6 +28,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -36,12 +37,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.base.models.ImageMessage
 import github.leavesczy.compose_chat.base.models.Message
@@ -51,7 +54,7 @@ import github.leavesczy.compose_chat.base.models.TextMessage
 import github.leavesczy.compose_chat.base.models.TimeMessage
 import github.leavesczy.compose_chat.extensions.clickableNoRipple
 import github.leavesczy.compose_chat.theme.AppTheme
-import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageViewState
+import github.leavesczy.compose_chat.ui.chat.logic.ChatPageViewState
 import github.leavesczy.compose_chat.widgets.ComponentImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -59,7 +62,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @Composable
-fun MessagePanel(pageViewState: ChatPageViewState) {
+internal fun MessagePanel(pageViewState: ChatPageViewState) {
     val isImeVisible = rememberUpdatedState(newValue = WindowInsets.isImeVisible)
     LaunchedEffect(key1 = pageViewState.listState) {
         launch {
@@ -91,7 +94,11 @@ fun MessagePanel(pageViewState: ChatPageViewState) {
         items(
             items = pageViewState.messageList,
             key = { message ->
-                message.detail.msgId
+                if (message is ImageMessage && message.isLocalPreview) {
+                    message.previewImageUrl
+                } else {
+                    message.detail.msgId
+                }
             },
             contentType = { message ->
                 when (message) {
@@ -155,6 +162,7 @@ private fun ChatMessageItem(
                     modifier = Modifier,
                     message = message,
                     onClickAvatar = pageViewState.onClickAvatar,
+                    onResendMessage = pageViewState.onResendMessage,
                     messageContent = {
                         MessageBubbleContent(
                             message = message,
@@ -163,11 +171,11 @@ private fun ChatMessageItem(
                     }
                 )
             } else {
-                FriendMessageContainer(
+                PeerMessageContainer(
                     modifier = Modifier,
                     message = message,
                     onClickAvatar = pageViewState.onClickAvatar,
-                    showPartName = pageViewState.chat is Chat.Group,
+                    showPeerName = pageViewState.chat is Chat.Group,
                     messageContent = {
                         MessageBubbleContent(
                             message = message,
@@ -201,7 +209,9 @@ private fun MessageBubbleContent(
             )
         }
 
-        is TimeMessage, is SystemMessage -> Unit
+        is TimeMessage, is SystemMessage -> {
+
+        }
     }
 }
 
@@ -210,6 +220,7 @@ private fun OwnMessageContainer(
     modifier: Modifier,
     message: Message,
     onClickAvatar: (message: Message) -> Unit,
+    onResendMessage: (message: Message) -> Unit,
     messageContent: @Composable () -> Unit
 ) {
     Row(
@@ -240,7 +251,8 @@ private fun OwnMessageContainer(
             ) {
                 MessageState(
                     modifier = Modifier,
-                    messageState = message.detail.state
+                    message = message,
+                    onResendMessage = onResendMessage
                 )
                 messageContent()
             }
@@ -255,10 +267,10 @@ private fun OwnMessageContainer(
 }
 
 @Composable
-private fun FriendMessageContainer(
+private fun PeerMessageContainer(
     modifier: Modifier,
     message: Message,
-    showPartName: Boolean,
+    showPeerName: Boolean,
     onClickAvatar: (message: Message) -> Unit,
     messageContent: @Composable () -> Unit
 ) {
@@ -283,7 +295,7 @@ private fun FriendMessageContainer(
             Nickname(
                 modifier = Modifier
                     .padding(end = 6.dp),
-                nickname = if (showPartName) {
+                nickname = if (showPeerName) {
                     message.detail.sender.showName
                 } else {
                     ""
@@ -307,7 +319,8 @@ private fun FriendMessageContainer(
                 }
                 MessageState(
                     modifier = Modifier,
-                    messageState = message.detail.state
+                    message = message,
+                    onResendMessage = null
                 )
             }
         }
@@ -329,7 +342,8 @@ private fun Avatar(
                     onClickAvatar(message)
                 }
             ),
-        model = message.detail.sender.avatarUrl
+        model = message.detail.sender.avatarUrl,
+        contentDescription = stringResource(id = R.string.cd_avatar)
     )
 }
 
@@ -418,55 +432,81 @@ private fun ImageMessage(
     val density = LocalDensity.current
     val previewImage = message.previewImage
     BoxWithConstraints(
-        modifier = modifier,
-        contentAlignment = if (message.detail.isOwnMessage) {
-            Alignment.TopEnd
-        } else {
-            Alignment.TopStart
-        }
+        modifier = modifier
     ) {
-        val (width, ratio) = calculateImageMessageLayout(
-            imageWidthPx = previewImage.width,
-            imageHeightPx = previewImage.height,
-            maxWidth = maxWidth,
-            density = density
-        )
-        ComponentImage(
+        val layout = remember(
+            key1 = previewImage.url,
+            key2 = maxWidth
+        ) {
+            resolveImageMessageLayout(
+                sdkWidthPx = previewImage.width,
+                sdkHeightPx = previewImage.height,
+                remainingWidth = maxWidth,
+                density = density
+            )
+        }
+        Box(
             modifier = Modifier
-                .width(width = width)
-                .aspectRatio(ratio = ratio)
+                .width(width = layout.width)
+                .aspectRatio(ratio = layout.ratio)
                 .clip(shape = RoundedCornerShape(size = 10.dp))
                 .clickableNoRipple(onClick = {
                     onClickMessage(message)
-                }),
-            model = previewImage.url,
-            contentScale = ContentScale.Fit,
-            alignment = Alignment.Center
-        )
+                })
+        ) {
+            ComponentImage(
+                modifier = Modifier
+                    .fillMaxSize(),
+                model = previewImage.url,
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.Center,
+                contentDescription = stringResource(id = R.string.cd_image_message)
+            )
+        }
     }
 }
 
-private fun calculateImageMessageLayout(
-    imageWidthPx: Int,
-    imageHeightPx: Int,
-    maxWidth: Dp,
+private data class ImageMessageLayout(
+    val width: Dp,
+    val ratio: Float
+)
+
+private fun resolveImageMessageLayout(
+    sdkWidthPx: Int,
+    sdkHeightPx: Int,
+    remainingWidth: Dp,
     density: Density
-): Pair<Dp, Float> {
-    val minWidth = maxWidth * 0.4f
-    if (imageWidthPx <= 0 || imageHeightPx <= 0) {
-        return minWidth to 1f
+): ImageMessageLayout {
+    val maxImageWidth = remainingWidth * 8f / 10f
+    val ratio = if (sdkWidthPx > 0 && sdkHeightPx > 0) {
+        sdkWidthPx.toFloat() / sdkHeightPx.toFloat()
+    } else {
+        1f
     }
-    val ratio = imageWidthPx.toFloat() / imageHeightPx
-    val imageWidthDp = with(density) {
-        imageWidthPx.toDp()
+    val width = resolveImageMessageWidth(
+        sdkWidthPx = sdkWidthPx,
+        maxImageWidth = maxImageWidth,
+        density = density
+    )
+    return ImageMessageLayout(width = width, ratio = ratio)
+}
+
+private fun resolveImageMessageWidth(
+    sdkWidthPx: Int,
+    maxImageWidth: Dp,
+    density: Density
+): Dp {
+    if (sdkWidthPx <= 0) {
+        return maxImageWidth
     }
-    val maxImageWidth = maxWidth * 0.9f
-    val width = when {
-        imageWidthDp <= minWidth -> minWidth
-        imageWidthDp < maxImageWidth -> imageWidthDp
-        else -> maxImageWidth
+    val sdkWidthDp = with(density) {
+        sdkWidthPx.toDp()
     }
-    return width to ratio
+    return if (sdkWidthDp < maxImageWidth) {
+        sdkWidthDp
+    } else {
+        maxImageWidth
+    }
 }
 
 @Composable
@@ -511,13 +551,14 @@ private fun SystemMessage(
 @Composable
 private fun MessageState(
     modifier: Modifier,
-    messageState: MessageState
+    message: Message,
+    onResendMessage: ((message: Message) -> Unit)?
 ) {
     Box(
         modifier = modifier
             .size(size = 20.dp)
     ) {
-        when (messageState) {
+        when (message.detail.state) {
             MessageState.Sending -> {
                 CircularProgressIndicator(
                     modifier = Modifier
@@ -530,10 +571,21 @@ private fun MessageState(
             is MessageState.Failed -> {
                 Image(
                     modifier = Modifier
-                        .fillMaxSize(),
+                        .fillMaxSize()
+                        .then(
+                            other = if (onResendMessage != null) {
+                                Modifier.clickable(
+                                    onClick = {
+                                        onResendMessage(message)
+                                    }
+                                )
+                            } else {
+                                Modifier
+                            }
+                        ),
                     imageVector = Icons.Outlined.Error,
                     colorFilter = ColorFilter.tint(color = AppTheme.colorScheme.c_FFFF545C_FFFA525A.color),
-                    contentDescription = null
+                    contentDescription = stringResource(id = R.string.cd_resend_message)
                 )
             }
 

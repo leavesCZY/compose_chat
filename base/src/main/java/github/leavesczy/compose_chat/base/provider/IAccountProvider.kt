@@ -4,16 +4,17 @@ import android.app.Application
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.PersonProfile
 import github.leavesczy.compose_chat.base.models.ServerConnectState
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
 interface IAccountProvider {
 
     val personProfileFlow: StateFlow<PersonProfile>
 
-    val serverConnectStateFlow: SharedFlow<ServerConnectState>
+    val serverConnectStateFlow: StateFlow<ServerConnectState>
 
     fun init(application: Application)
+
+    fun clearSessionState()
 
     suspend fun login(userId: String): ActionResult
 

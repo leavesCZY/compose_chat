@@ -10,22 +10,28 @@ import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.base.models.GroupProfile
 import github.leavesczy.compose_chat.base.models.PersonProfile
-import github.leavesczy.compose_chat.base.provider.IGroupProvider
-import github.leavesczy.compose_chat.ui.chat.main.ChatActivity
+import github.leavesczy.compose_chat.base.models.ServerConnectState
+import github.leavesczy.compose_chat.di.ComposeChat
+import github.leavesczy.compose_chat.ui.base.BaseViewModel
+import github.leavesczy.compose_chat.ui.chat.ChatActivity
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
-import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
-import github.leavesczy.compose_chat.ui.main.person.logic.PersonProfileViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-abstract class FriendshipViewModel : PersonProfileViewModel() {
+class FriendshipViewModel : BaseViewModel() {
 
-    private val groupProvider: IGroupProvider = ComposeChat.groupProvider
+    private val friendshipProvider = ComposeChat.friendshipProvider
 
-    var friendshipPageViewState by mutableStateOf(
+    private val groupProvider = ComposeChat.groupProvider
+
+    private var isAddingFriend = false
+
+    private var isJoiningGroup = false
+
+    var pageViewState by mutableStateOf(
         value = FriendshipPageViewState(
             listState = LazyListState(
                 firstVisibleItemIndex = 0,
@@ -33,9 +39,12 @@ abstract class FriendshipViewModel : PersonProfileViewModel() {
             ),
             joinedGroupList = persistentListOf(),
             friendList = persistentListOf(),
+            isLoading = false,
+            loadError = null,
             onClickGroupItem = ::onClickGroupItem,
             onClickFriendItem = ::onClickFriendItem,
-            onClickShowFriendshipDialog = ::showFriendshipDialog
+            onClickShowFriendshipDialog = ::showFriendshipDialog,
+            onRetryLoad = ::retryLoad
         )
     )
         private set
@@ -51,23 +60,90 @@ abstract class FriendshipViewModel : PersonProfileViewModel() {
     )
         private set
 
+    private var lastServerConnectState = ServerConnectState.Idle
+
     init {
         viewModelScope.launch {
             launch {
                 groupProvider.joinedGroupListFlow.collect { joinedGroupList ->
-                    friendshipPageViewState =
-                        friendshipPageViewState.copy(joinedGroupList = joinedGroupList.toPersistentList())
+                    pageViewState =
+                        pageViewState.copy(joinedGroupList = joinedGroupList.toPersistentList())
                 }
             }
             launch {
                 friendshipProvider.friendListFlow.collect { friendList ->
-                    friendshipPageViewState =
-                        friendshipPageViewState.copy(friendList = friendList.toPersistentList())
+                    pageViewState =
+                        pageViewState.copy(friendList = friendList.toPersistentList())
+                }
+            }
+            launch {
+                groupProvider.joinedGroupListLoadingFlow.collect { groupLoading ->
+                    refreshLoadingState(groupLoading = groupLoading)
+                }
+            }
+            launch {
+                friendshipProvider.friendListLoadingFlow.collect { friendLoading ->
+                    refreshLoadingState(friendLoading = friendLoading)
+                }
+            }
+            launch {
+                groupProvider.joinedGroupListLoadErrorFlow.collect { groupError ->
+                    refreshErrorState(groupError = groupError)
+                }
+            }
+            launch {
+                friendshipProvider.friendListLoadErrorFlow.collect { friendError ->
+                    refreshErrorState(friendError = friendError)
+                }
+            }
+            launch {
+                ComposeChat.accountProvider.serverConnectStateFlow.collect { serverConnectState ->
+                    if (serverConnectState == ServerConnectState.Connected &&
+                        lastServerConnectState != ServerConnectState.Connected &&
+                        lastServerConnectState != ServerConnectState.Idle
+                    ) {
+                        refreshLists()
+                    }
+                    lastServerConnectState = serverConnectState
                 }
             }
         }
+        refreshLists()
+    }
+
+    private fun refreshLoadingState(
+        groupLoading: Boolean = groupProvider.joinedGroupListLoadingFlow.value,
+        friendLoading: Boolean = friendshipProvider.friendListLoadingFlow.value
+    ) {
+        pageViewState = pageViewState.copy(
+            isLoading = groupLoading || friendLoading
+        )
+    }
+
+    private fun refreshErrorState(
+        groupError: String? = groupProvider.joinedGroupListLoadErrorFlow.value,
+        friendError: String? = friendshipProvider.friendListLoadErrorFlow.value
+    ) {
+        val messages = buildList {
+            if (!groupError.isNullOrBlank()) {
+                add(getString(resId = R.string.toast_group_load_failed, groupError))
+            }
+            if (!friendError.isNullOrBlank()) {
+                add(getString(resId = R.string.toast_friendship_load_failed, friendError))
+            }
+        }
+        pageViewState = pageViewState.copy(
+            loadError = messages.joinToString(separator = "\n").ifBlank { null }
+        )
+    }
+
+    private fun refreshLists() {
         groupProvider.refreshJoinedGroupList()
         friendshipProvider.refreshFriendList()
+    }
+
+    private fun retryLoad() {
+        refreshLists()
     }
 
     private fun onClickGroupItem(groupProfile: GroupProfile) {
@@ -84,15 +160,8 @@ abstract class FriendshipViewModel : PersonProfileViewModel() {
         )
     }
 
-    override fun showFriendshipDialog() {
-        val ids = listOf(
-            "@TGS#3SSMB3WHI",
-            "@TGS#3VOZA3WHT",
-            "@TGS#3W42A3WHP",
-            "@TGS#3DMJIK6MS",
-            "@TGS#3YCNIK6MC"
-        )
-        val groupIds = ids.mapIndexed { index, id ->
+    fun showFriendshipDialog() {
+        val groupIds = ComposeChat.demoSampleGroupIds.mapIndexed { index, id ->
             GroupId(
                 id = id,
                 name = getString(resId = R.string.join_group_template, index + 1)
@@ -109,42 +178,58 @@ abstract class FriendshipViewModel : PersonProfileViewModel() {
     }
 
     private fun addFriend(userId: String) {
+        if (isAddingFriend) {
+            return
+        }
         viewModelScope.launch {
-            val formatUserId = userId.lowercase()
-            when (val result = friendshipProvider.addFriend(friendId = formatUserId)) {
-                is ActionResult.Success -> {
-                    delay(timeMillis = 400L)
-                    showToast(resId = R.string.toast_add_friend_success)
-                    ChatActivity.navTo(
-                        context = context,
-                        chat = Chat.C2C(id = formatUserId)
-                    )
-                    dismissFriendshipDialog()
-                }
+            isAddingFriend = true
+            try {
+                val formatUserId = userId.lowercase()
+                when (val result = friendshipProvider.addFriend(friendId = formatUserId)) {
+                    is ActionResult.Success -> {
+                        delay(timeMillis = 400L)
+                        showToast(resId = R.string.toast_add_friend_success)
+                        ChatActivity.navTo(
+                            context = context,
+                            chat = Chat.C2C(id = formatUserId)
+                        )
+                        dismissFriendshipDialog()
+                    }
 
-                is ActionResult.Failed -> {
-                    showToast(msg = result.desc)
+                    is ActionResult.Failed -> {
+                        showToast(msg = result.desc)
+                    }
                 }
+            } finally {
+                isAddingFriend = false
             }
         }
     }
 
     private fun joinGroup(groupId: String) {
+        if (isJoiningGroup) {
+            return
+        }
         viewModelScope.launch {
+            isJoiningGroup = true
             showLoadingDialog()
-            when (val result = groupProvider.joinGroup(groupId = groupId)) {
-                is ActionResult.Success -> {
-                    delay(timeMillis = 800L)
-                    showToast(resId = R.string.toast_join_group_success)
-                    groupProvider.refreshJoinedGroupList()
-                    dismissFriendshipDialog()
-                }
+            try {
+                when (val result = groupProvider.joinGroup(groupId = groupId)) {
+                    is ActionResult.Success -> {
+                        delay(timeMillis = 800L)
+                        showToast(resId = R.string.toast_join_group_success)
+                        groupProvider.refreshJoinedGroupList()
+                        dismissFriendshipDialog()
+                    }
 
-                is ActionResult.Failed -> {
-                    showToast(msg = result.desc)
+                    is ActionResult.Failed -> {
+                        showToast(msg = result.desc)
+                    }
                 }
+            } finally {
+                dismissLoadingDialog()
+                isJoiningGroup = false
             }
-            dismissLoadingDialog()
         }
     }
 

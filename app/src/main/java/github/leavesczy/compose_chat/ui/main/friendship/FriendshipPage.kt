@@ -23,16 +23,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.main.friendship.logic.FriendshipPageViewState
 import github.leavesczy.compose_chat.widgets.ComponentImage
 import github.leavesczy.compose_chat.widgets.EmptyPage
+import github.leavesczy.compose_chat.widgets.LoadingPage
 
 @Composable
-fun FriendshipPage(pageViewState: FriendshipPageViewState) {
+internal fun FriendshipPage(pageViewState: FriendshipPageViewState) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -52,7 +55,7 @@ fun FriendshipPage(pageViewState: FriendshipPageViewState) {
                 modifier = Modifier,
                 imageVector = Icons.Filled.Favorite,
                 tint = AppTheme.colorScheme.c_FFFFFFFF_FFFFFFFF.color,
-                contentDescription = null
+                contentDescription = stringResource(id = R.string.cd_add_friendship)
             )
         }
     }
@@ -69,20 +72,58 @@ private fun FriendshipList(
         state = pageViewState.listState,
         contentPadding = PaddingValues(bottom = 30.dp)
     ) {
+        val loadError = pageViewState.loadError
+        if (!loadError.isNullOrBlank()) {
+            item(
+                key = "LoadError",
+                contentType = "LoadError"
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        modifier = Modifier,
+                        text = loadError,
+                        fontSize = 14.sp,
+                        color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color
+                    )
+                    Text(
+                        modifier = Modifier
+                            .clickable(onClick = pageViewState.onRetryLoad)
+                            .padding(top = 8.dp),
+                        text = stringResource(id = R.string.retry),
+                        fontSize = 15.sp,
+                        color = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color
+                    )
+                }
+            }
+        }
         val joinedGroupList = pageViewState.joinedGroupList
         val friendList = pageViewState.friendList
-        if (joinedGroupList.isEmpty() && friendList.isEmpty()) {
-            item(
-                key = "EmptyPage",
-                contentType = "EmptyPage"
-            ) {
-                EmptyPage(modifier = Modifier)
+        if (joinedGroupList.isEmpty() && friendList.isEmpty() && loadError.isNullOrBlank()) {
+            if (pageViewState.isLoading) {
+                item(
+                    key = "LoadingPage",
+                    contentType = "LoadingPage"
+                ) {
+                    LoadingPage(modifier = Modifier)
+                }
+            } else {
+                item(
+                    key = "EmptyPage",
+                    contentType = "EmptyPage"
+                ) {
+                    EmptyPage(modifier = Modifier)
+                }
             }
         } else {
             items(
                 items = joinedGroupList,
                 key = { group ->
-                    group.id
+                    "group_${group.id}"
                 },
                 contentType = {
                     "FriendshipItem"
@@ -102,7 +143,7 @@ private fun FriendshipList(
             items(
                 items = pageViewState.friendList,
                 key = { friend ->
-                    friend.id
+                    "friend_${friend.id}"
                 },
                 contentType = {
                     "FriendshipItem"
@@ -143,7 +184,8 @@ private fun FriendshipItem(
                 .size(size = 54.dp)
                 .clip(shape = RoundedCornerShape(size = 6.dp))
                 .align(alignment = Alignment.CenterStart),
-            model = imageUrl
+            model = imageUrl,
+            contentDescription = stringResource(id = R.string.cd_avatar)
         )
         Column(
             modifier = Modifier

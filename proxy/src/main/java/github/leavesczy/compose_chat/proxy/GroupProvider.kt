@@ -1,6 +1,5 @@
 package github.leavesczy.compose_chat.proxy
 
-import com.tencent.imsdk.v2.V2TIMCallback
 import com.tencent.imsdk.v2.V2TIMGroupChangeInfo
 import com.tencent.imsdk.v2.V2TIMGroupInfo
 import com.tencent.imsdk.v2.V2TIMGroupInfoResult
@@ -9,24 +8,40 @@ import com.tencent.imsdk.v2.V2TIMGroupMemberFullInfo
 import com.tencent.imsdk.v2.V2TIMGroupMemberInfo
 import com.tencent.imsdk.v2.V2TIMGroupMemberInfoResult
 import com.tencent.imsdk.v2.V2TIMManager
-import com.tencent.imsdk.v2.V2TIMValueCallback
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.GroupMemberProfile
 import github.leavesczy.compose_chat.base.models.GroupProfile
 import github.leavesczy.compose_chat.base.provider.IGroupProvider
+import github.leavesczy.compose_chat.base.utils.StringResources
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.resume
 
 object GroupProvider : IGroupProvider {
 
-    override val joinedGroupListFlow = MutableSharedFlow<List<GroupProfile>>()
+    private val _joinedGroupListFlow = MutableStateFlow<List<GroupProfile>>(value = emptyList())
+
+    override val joinedGroupListFlow: StateFlow<List<GroupProfile>> =
+        _joinedGroupListFlow.asStateFlow()
+
+    private val _joinedGroupListLoadErrorFlow = MutableStateFlow<String?>(value = null)
+
+    override val joinedGroupListLoadErrorFlow: StateFlow<String?> =
+        _joinedGroupListLoadErrorFlow.asStateFlow()
+
+    private val _joinedGroupListLoadingFlow = MutableStateFlow(value = false)
+
+    override val joinedGroupListLoadingFlow: StateFlow<Boolean> =
+        _joinedGroupListLoadingFlow.asStateFlow()
 
     private var refreshJob: Job? = null
+
+    @Volatile
+    private var refreshGeneration = 0
 
     init {
         V2TIMManager.getInstance().addGroupListener(object : V2TIMGroupListener() {
@@ -48,6 +63,45 @@ object GroupProvider : IGroupProvider {
                 }
             }
 
+            override fun onGroupDismissed(groupID: String?, opUser: V2TIMGroupMemberInfo?) {
+                refreshJoinedGroupList()
+                if (!groupID.isNullOrBlank()) {
+                    AppCoroutineScope.launch {
+                        Converters.deleteGroupConversation(groupId = groupID)
+                    }
+                }
+            }
+
+            override fun onGroupRecycled(groupID: String?, opUser: V2TIMGroupMemberInfo?) {
+                refreshJoinedGroupList()
+                if (!groupID.isNullOrBlank()) {
+                    AppCoroutineScope.launch {
+                        Converters.deleteGroupConversation(groupId = groupID)
+                    }
+                }
+            }
+
+            override fun onMemberKicked(
+                groupID: String?,
+                opUser: V2TIMGroupMemberInfo?,
+                memberList: MutableList<V2TIMGroupMemberInfo>?
+            ) {
+                refreshJoinedGroupList()
+                val selfId = V2TIMManager.getInstance().loginUser.orEmpty()
+                val kickedSelf = memberList?.any { member ->
+                    member.userID == selfId
+                } == true
+                if (kickedSelf && !groupID.isNullOrBlank()) {
+                    AppCoroutineScope.launch {
+                        Converters.deleteGroupConversation(groupId = groupID)
+                    }
+                }
+            }
+
+            override fun onMemberLeave(groupID: String?, member: V2TIMGroupMemberInfo?) {
+                refreshJoinedGroupList()
+            }
+
             override fun onGroupInfoChanged(
                 groupID: String?,
                 changeInfos: MutableList<V2TIMGroupChangeInfo>?
@@ -59,117 +113,103 @@ object GroupProvider : IGroupProvider {
 
     override suspend fun joinGroup(groupId: String): ActionResult {
         return withContext(context = Dispatchers.Main.immediate) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getInstance().joinGroup(groupId, "", object : V2TIMCallback {
-                    override fun onSuccess() {
-                        continuation.resume(value = ActionResult.Success)
-                    }
-
-                    override fun onError(code: Int, desc: String?) {
-                        continuation.resume(
-                            value = ActionResult.Failed(
-                                code = code,
-                                reason = desc
-                            )
-                        )
-                    }
-                })
+            suspendTimCallback { callback ->
+                V2TIMManager.getInstance().joinGroup(groupId, "", callback)
             }
         }
     }
 
     override suspend fun quitGroup(groupId: String): ActionResult {
         return withContext(context = Dispatchers.Main.immediate) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getInstance().quitGroup(groupId, object : V2TIMCallback {
-                    override fun onSuccess() {
-                        continuation.resume(value = ActionResult.Success)
-                    }
-
-                    override fun onError(code: Int, desc: String?) {
-                        continuation.resume(
-                            value = ActionResult.Failed(
-                                code = code,
-                                reason = desc
-                            )
-                        )
-                    }
-                })
+            suspendTimCallback { callback ->
+                V2TIMManager.getInstance().quitGroup(groupId, callback)
             }
         }
     }
 
     override suspend fun setAvatar(groupId: String, avatarUrl: String): ActionResult {
         return withContext(context = Dispatchers.Main.immediate) {
-            suspendCancellableCoroutine { continuation ->
-                val v2TIMGroupInfo = V2TIMGroupInfo()
-                v2TIMGroupInfo.groupID = groupId
-                v2TIMGroupInfo.faceUrl = avatarUrl
-                V2TIMManager.getGroupManager().setGroupInfo(v2TIMGroupInfo, object : V2TIMCallback {
-                    override fun onSuccess() {
-                        continuation.resume(value = ActionResult.Success)
-                    }
-
-                    override fun onError(code: Int, desc: String?) {
-                        continuation.resume(
-                            value = ActionResult.Failed(
-                                code = code,
-                                reason = desc
-                            )
-                        )
-                    }
-                })
+            val v2TIMGroupInfo = V2TIMGroupInfo()
+            v2TIMGroupInfo.groupID = groupId
+            v2TIMGroupInfo.faceUrl = avatarUrl
+            suspendTimCallback { callback ->
+                V2TIMManager.getGroupManager().setGroupInfo(v2TIMGroupInfo, callback)
             }
         }
     }
 
     override suspend fun getGroupInfo(groupId: String): GroupProfile? {
         return withContext(context = Dispatchers.Main.immediate) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getGroupManager().getGroupsInfo(
-                    listOf(groupId),
-                    object : V2TIMValueCallback<List<V2TIMGroupInfoResult>> {
-                        override fun onSuccess(t: List<V2TIMGroupInfoResult>) {
-                            continuation.resume(
-                                value = convertGroup(groupProfile = t[0].groupInfo)
-                            )
-                        }
-
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(value = null)
-                        }
-                    })
+            suspendTimValueOrNull<List<V2TIMGroupInfoResult>> { callback ->
+                V2TIMManager.getGroupManager().getGroupsInfo(listOf(groupId), callback)
+            }?.firstOrNull()?.let { result ->
+                convertGroup(groupProfile = result.groupInfo)
             }
         }
     }
 
     override fun refreshJoinedGroupList() {
         refreshJob?.cancel()
+        val generation = ++refreshGeneration
         refreshJob = AppCoroutineScope.launch {
-            val groupList = getJoinedGroupListOrigin().sortedBy { group ->
-                group.name
+            _joinedGroupListLoadingFlow.value = _joinedGroupListFlow.value.isEmpty()
+            try {
+                when (val result = getJoinedGroupListOrigin()) {
+                    is GroupListFetchResult.Success -> {
+                        if (generation != refreshGeneration) {
+                            return@launch
+                        }
+                        _joinedGroupListLoadErrorFlow.value = null
+                        _joinedGroupListFlow.value = result.groupList.sortedBy { group ->
+                            group.name
+                        }
+                    }
+
+                    is GroupListFetchResult.Failed -> {
+                        if (generation != refreshGeneration) {
+                            return@launch
+                        }
+                        _joinedGroupListLoadErrorFlow.value = result.reason
+                        if (_joinedGroupListFlow.value.isEmpty()) {
+                            _joinedGroupListFlow.value = emptyList()
+                        }
+                    }
+                }
+            } finally {
+                if (generation == refreshGeneration) {
+                    _joinedGroupListLoadingFlow.value = false
+                }
             }
-            joinedGroupListFlow.emit(value = groupList)
         }
     }
 
-    private suspend fun getJoinedGroupListOrigin(): List<GroupProfile> {
-        return withContext(context = Dispatchers.Main.immediate) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getGroupManager()
-                    .getJoinedGroupList(object : V2TIMValueCallback<List<V2TIMGroupInfo>> {
-                        override fun onSuccess(infoList: List<V2TIMGroupInfo>) {
-                            continuation.resume(
-                                value = convertGroup(groupProfileList = infoList.filter { groupInfo ->
-                                    !groupInfo.groupID.isNullOrBlank()
-                                })
-                            )
-                        }
+    override fun clearSessionState() {
+        refreshJob?.cancel()
+        refreshGeneration++
+        _joinedGroupListFlow.value = emptyList()
+        _joinedGroupListLoadErrorFlow.value = null
+        _joinedGroupListLoadingFlow.value = false
+    }
 
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(value = emptyList())
+    private suspend fun getJoinedGroupListOrigin(): GroupListFetchResult {
+        return withContext(context = Dispatchers.Main.immediate) {
+            val infoList = suspendTimValueOrNull<List<V2TIMGroupInfo>> { callback ->
+                V2TIMManager.getGroupManager().getJoinedGroupList(callback)
+            }
+            if (infoList == null) {
+                GroupListFetchResult.Failed(
+                    reason = StringResources.getString(
+                        resId = github.leavesczy.compose_chat.base.R.string.error_load_group_list
+                    )
+                )
+            } else {
+                GroupListFetchResult.Success(
+                    groupList = convertGroup(
+                        groupProfileList = infoList.filter { groupInfo ->
+                            !groupInfo.groupID.isNullOrBlank()
                         }
-                    })
+                    )
+                )
             }
         }
     }
@@ -191,60 +231,52 @@ object GroupProvider : IGroupProvider {
         } ?: emptyList()
     }
 
-    override suspend fun getGroupMemberList(groupId: String): List<GroupMemberProfile> {
+    override suspend fun getGroupMemberList(groupId: String): List<GroupMemberProfile>? {
         return withContext(context = Dispatchers.Main.immediate) {
             var nextStep = 0L
             val memberList = mutableListOf<GroupMemberProfile>()
             while (true) {
-                val pair = getGroupMemberList(
-                    groupId = groupId, nextStep = nextStep
-                )
-                memberList.addAll(elements = pair.first)
-                nextStep = pair.second
+                val page = getGroupMemberListPage(
+                    groupId = groupId,
+                    nextStep = nextStep
+                ) ?: return@withContext null
+                memberList.addAll(elements = page.first)
+                nextStep = page.second
                 if (nextStep <= 0) {
                     break
                 }
             }
-            val sorted = memberList.sortedByDescending { member ->
+            memberList.sortedByDescending { member ->
                 if (member.isOwner) {
                     Long.MAX_VALUE
                 } else {
                     member.joinTime
                 }
             }
-            sorted
         }
     }
 
-    private suspend fun getGroupMemberList(
+    private suspend fun getGroupMemberListPage(
         groupId: String,
         nextStep: Long
-    ): Pair<List<GroupMemberProfile>, Long> {
+    ): Pair<List<GroupMemberProfile>, Long>? {
         return withContext(context = Dispatchers.Main.immediate) {
-            suspendCancellableCoroutine { continuation ->
+            val result = suspendTimValueOrNull<V2TIMGroupMemberInfoResult> { callback ->
                 V2TIMManager.getGroupManager().getGroupMemberList(
                     groupId,
                     V2TIMGroupMemberFullInfo.V2TIM_GROUP_MEMBER_FILTER_ALL,
                     nextStep,
-                    object : V2TIMValueCallback<V2TIMGroupMemberInfoResult> {
-                        override fun onSuccess(t: V2TIMGroupMemberInfoResult) {
-                            continuation.resume(
-                                value = Pair(
-                                    first = convertGroupMember(
-                                        groupMemberList = t.memberInfoList.filter { memberInfo ->
-                                            memberInfo.userID.isNotBlank()
-                                        }
-                                    ),
-                                    second = t.nextSeq
-                                )
-                            )
-                        }
-
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(value = Pair(first = emptyList(), second = -111))
-                        }
-                    })
-            }
+                    callback
+                )
+            } ?: return@withContext null
+            Pair(
+                first = convertGroupMember(
+                    groupMemberList = result.memberInfoList.filter { memberInfo ->
+                        memberInfo.userID.isNotBlank()
+                    }
+                ),
+                second = result.nextSeq
+            )
         }
     }
 
@@ -252,6 +284,11 @@ object GroupProvider : IGroupProvider {
         return groupMemberList?.map { memberFullInfo ->
             Converters.convertGroupMember(memberFullInfo = memberFullInfo)
         } ?: emptyList()
+    }
+
+    private sealed class GroupListFetchResult {
+        data class Success(val groupList: List<GroupProfile>) : GroupListFetchResult()
+        data class Failed(val reason: String) : GroupListFetchResult()
     }
 
 }

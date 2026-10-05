@@ -1,6 +1,6 @@
-package github.leavesczy.compose_chat.ui.chat.main
+package github.leavesczy.compose_chat.ui.chat
 
-import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -14,21 +14,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import github.leavesczy.compose_chat.R
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.chat.group.GroupProfileActivity
-import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageViewState
+import github.leavesczy.compose_chat.ui.chat.logic.ChatPageViewState
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
 
 @Composable
-fun ChatPageTopBar(
+internal fun ChatPageTopBar(
     modifier: Modifier,
     pageViewState: ChatPageViewState
 ) {
     val localContext = LocalContext.current
+    val localActivity = LocalActivity.current
     val chat = pageViewState.chat
     val title = pageViewState.topBarTitle
     CenterAlignedTopAppBar(
@@ -53,11 +56,11 @@ fun ChatPageTopBar(
                         modifier = Modifier
                             .size(size = 22.dp),
                         imageVector = Icons.Default.ArrowBackIosNew,
-                        contentDescription = null
+                        contentDescription = stringResource(id = R.string.cd_back)
                     )
                 },
                 onClick = {
-                    (localContext as Activity).finish()
+                    localActivity?.finish()
                 }
             )
         },
@@ -68,7 +71,7 @@ fun ChatPageTopBar(
                         modifier = Modifier
                             .size(size = 24.dp),
                         imageVector = Icons.Filled.MoreVert,
-                        contentDescription = null
+                        contentDescription = stringResource(id = R.string.cd_chat_profile)
                     )
                 },
                 onClick = {

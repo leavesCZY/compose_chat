@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.main.logic
+package github.leavesczy.compose_chat.ui.chat.logic
 
 import android.net.Uri
 import androidx.compose.foundation.lazy.LazyListState
@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.R
-import github.leavesczy.compose_chat.base.BaseViewModel
 import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.base.models.ImageMessage
 import github.leavesczy.compose_chat.base.models.LoadMessageResult
@@ -17,8 +16,9 @@ import github.leavesczy.compose_chat.base.models.SystemMessage
 import github.leavesczy.compose_chat.base.models.TextMessage
 import github.leavesczy.compose_chat.base.models.TimeMessage
 import github.leavesczy.compose_chat.base.provider.IMessageProvider
+import github.leavesczy.compose_chat.di.ComposeChat
+import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.friend.FriendProfileActivity
-import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
 import github.leavesczy.compose_chat.utils.CompressImageUtils
 import kotlinx.collections.immutable.persistentListOf
@@ -59,7 +59,8 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
             topBarTitle = "",
             messageList = persistentListOf(),
             onClickAvatar = ::onClickAvatar,
-            onClickMessage = ::onClickMessage
+            onClickMessage = ::onClickMessage,
+            onResendMessage = ::resendMessage
         )
     )
         private set
@@ -78,7 +79,9 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
         value = LoadMessageViewState(
             isRefreshing = false,
             isLoadFinished = false,
-            onLoadMoreMessage = ::loadMoreMessage
+            loadError = null,
+            onLoadMoreMessage = ::loadMoreMessage,
+            onRetryLoad = ::loadMoreMessage
         )
     )
         private set
@@ -88,16 +91,17 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
             chat = chat,
             messageListener = messageListener
         )
-        initPartyName()
+        initPeerName()
         loadMoreMessage()
     }
 
     override fun onCleared() {
         messageProvider.stopReceive(messageListener = messageListener)
         markMessageAsRead()
+        CompressImageUtils.cleanupOldTempFiles(context = context)
     }
 
-    private fun initPartyName() {
+    private fun initPeerName() {
         viewModelScope.launch {
             val name = when (chat) {
                 is Chat.C2C -> {
@@ -113,9 +117,12 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
     }
 
     private fun loadMoreMessage() {
+        val viewState = loadMessageViewState
+        if (viewState.isRefreshing || viewState.isLoadFinished) {
+            return
+        }
+        loadMessageViewState = viewState.copy(isRefreshing = true, loadError = null)
         viewModelScope.launch {
-            val viewState = loadMessageViewState
-            loadMessageViewState = viewState.copy(isRefreshing = true)
             val lastMessage = allMessage.lastOrNull { message ->
                 message !is TimeMessage
             }
@@ -123,20 +130,46 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                 chat = chat,
                 lastMessage = lastMessage
             )
-            val isLoadFinished = when (loadResult) {
+            when (loadResult) {
                 is LoadMessageResult.Success -> {
                     addMessageToFooter(newMessageList = loadResult.messageList)
-                    loadResult.isLoadFinished
+                    loadMessageViewState = loadMessageViewState.copy(
+                        isRefreshing = false,
+                        isLoadFinished = loadResult.isLoadFinished,
+                        loadError = null
+                    )
                 }
 
                 is LoadMessageResult.Failed -> {
-                    false
+                    val cursorLost = loadResult.reason == getString(
+                        resId = github.leavesczy.compose_chat.base.R.string.error_load_message_cursor_lost
+                    )
+                    if (cursorLost && lastMessage != null) {
+                        resetMessageListForReload()
+                        loadMessageViewState = loadMessageViewState.copy(
+                            isRefreshing = false,
+                            isLoadFinished = false,
+                            loadError = null
+                        )
+                        loadMoreMessage()
+                        return@launch
+                    }
+                    loadMessageViewState = loadMessageViewState.copy(
+                        isRefreshing = false,
+                        isLoadFinished = false,
+                        loadError = loadResult.reason
+                    )
+                    showToast(msg = loadResult.reason)
                 }
             }
-            loadMessageViewState = viewState.copy(
-                isRefreshing = false,
-                isLoadFinished = isLoadFinished
-            )
+        }
+    }
+
+    private suspend fun resetMessageListForReload() {
+        withContext(context = Dispatchers.Main.immediate) {
+            allMessage.clear()
+            imageUrlList.clear()
+            pageViewState = pageViewState.copy(messageList = persistentListOf())
         }
     }
 
@@ -167,15 +200,41 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
             if (imagePath.isNullOrBlank()) {
                 showToast(resId = R.string.toast_image_fetch_failed)
             } else {
-                val messageChannel = messageProvider.sendImage(chat = chat, imagePath = imagePath)
-                handleMessageChannel(messageChannel = messageChannel)
+                var sendSucceeded = false
+                try {
+                    val messageChannel =
+                        messageProvider.sendImage(chat = chat, imagePath = imagePath)
+                    sendSucceeded = handleMessageChannel(messageChannel = messageChannel)
+                } finally {
+                    if (!sendSucceeded) {
+                        CompressImageUtils.protectTempFile(file = imageFile)
+                    }
+                }
             }
         }
     }
 
-    private suspend fun handleMessageChannel(messageChannel: Channel<Message>) {
-        withContext(context = Dispatchers.Main.immediate) {
-            lateinit var sendingMessage: Message
+    private fun resendMessage(message: Message) {
+        if (message.detail.state !is MessageState.Failed) {
+            return
+        }
+        viewModelScope.launch {
+            resetMessageState(
+                msgId = message.detail.msgId,
+                messageState = MessageState.Sending
+            )
+            val messageChannel = messageProvider.resendMessage(chat = chat, message = message)
+            handleResendMessageChannel(
+                msgId = message.detail.msgId,
+                messageChannel = messageChannel
+            )
+        }
+    }
+
+    private suspend fun handleMessageChannel(messageChannel: Channel<Message>): Boolean {
+        return withContext(context = Dispatchers.Main.immediate) {
+            var sendingMessage: Message? = null
+            var succeeded = false
             for (message in messageChannel) {
                 when (val messageState = message.detail.state) {
                     MessageState.Sending -> {
@@ -186,15 +245,61 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                     }
 
                     MessageState.Success -> {
+                        succeeded = true
+                        val oldMsgId = sendingMessage?.detail?.msgId
+                        if (oldMsgId.isNullOrBlank()) {
+                            attachNewMessage(newMessage = message)
+                        } else {
+                            replaceMessage(
+                                oldMsgId = oldMsgId,
+                                newMessage = message
+                            )
+                        }
+                    }
+
+                    is MessageState.Failed -> {
+                        val oldMsgId = sendingMessage?.detail?.msgId
+                        if (!oldMsgId.isNullOrBlank()) {
+                            resetMessageState(
+                                msgId = oldMsgId,
+                                messageState = messageState
+                            )
+                        }
+                        val failReason = messageState.reason
+                        if (failReason.isNotBlank()) {
+                            showToast(msg = failReason)
+                        }
+                    }
+                }
+            }
+            succeeded
+        }
+    }
+
+    private suspend fun handleResendMessageChannel(
+        msgId: String,
+        messageChannel: Channel<Message>
+    ) {
+        withContext(context = Dispatchers.Main.immediate) {
+            for (message in messageChannel) {
+                when (val messageState = message.detail.state) {
+                    MessageState.Sending -> {
                         resetMessageState(
-                            msgId = sendingMessage.detail.msgId,
+                            msgId = msgId,
                             messageState = messageState
+                        )
+                    }
+
+                    MessageState.Success -> {
+                        replaceMessage(
+                            oldMsgId = msgId,
+                            newMessage = message
                         )
                     }
 
                     is MessageState.Failed -> {
                         resetMessageState(
-                            msgId = sendingMessage.detail.msgId,
+                            msgId = msgId,
                             messageState = messageState
                         )
                         val failReason = messageState.reason
@@ -231,12 +336,65 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                 }
             }
             allMessage[messageIndex] = newMessage
-            publishMessageList()
+            publishMessageUpdate(index = messageIndex, message = newMessage)
         }
+    }
+
+    private suspend fun replaceMessage(oldMsgId: String, newMessage: Message) {
+        withContext(context = Dispatchers.Main.immediate) {
+            val messageIndex = allMessage.indexOfFirst { message ->
+                message.detail.msgId == oldMsgId
+            }
+            if (messageIndex < 0) {
+                if (allMessage.none { message -> message.detail.msgId == newMessage.detail.msgId }) {
+                    attachNewMessage(newMessage = newMessage)
+                }
+                return@withContext
+            }
+            val oldMessage = allMessage[messageIndex]
+            val resolvedMessage = preserveLocalImagePreview(
+                oldMessage = oldMessage,
+                newMessage = newMessage
+            )
+            if (oldMessage is ImageMessage && resolvedMessage !is ImageMessage) {
+                imageUrlList.remove(element = oldMessage.previewImageUrl)
+            }
+            allMessage[messageIndex] = resolvedMessage
+            if (resolvedMessage is ImageMessage) {
+                val oldUrl = (oldMessage as? ImageMessage)?.previewImageUrl
+                if (!oldUrl.isNullOrBlank()) {
+                    val urlIndex = imageUrlList.indexOf(element = oldUrl)
+                    if (urlIndex >= 0) {
+                        imageUrlList[urlIndex] = resolvedMessage.previewImageUrl
+                    } else {
+                        imageUrlList.add(element = resolvedMessage.previewImageUrl)
+                    }
+                } else {
+                    imageUrlList.add(element = resolvedMessage.previewImageUrl)
+                }
+            }
+            publishMessageUpdate(index = messageIndex, message = resolvedMessage)
+        }
+    }
+
+    private fun preserveLocalImagePreview(oldMessage: Message, newMessage: Message): Message {
+        if (oldMessage is ImageMessage && newMessage is ImageMessage && oldMessage.isLocalPreview) {
+            return oldMessage.withPreservedPreview(messageDetail = newMessage.detail)
+        }
+        return newMessage
     }
 
     private suspend fun attachNewMessage(newMessage: Message) {
         withContext(context = Dispatchers.Main.immediate) {
+            val existIndex = allMessage.indexOfFirst { message ->
+                message.detail.msgId == newMessage.detail.msgId
+            }
+            if (existIndex >= 0) {
+                allMessage[existIndex] = newMessage
+                publishMessageUpdate(index = existIndex, message = newMessage)
+                return@withContext
+            }
+            val prepended = mutableListOf<Message>()
             val firstMessage = allMessage.getOrNull(index = 0)
             if (firstMessage == null ||
                 newMessage.detail.milliseconds - firstMessage.detail.milliseconds > messageMinInterval ||
@@ -254,13 +412,16 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                     }
                 }
             ) {
-                allMessage.add(index = 0, element = TimeMessage(targetMessage = newMessage))
+                val timeMessage = TimeMessage(targetMessage = newMessage)
+                allMessage.add(index = 0, element = timeMessage)
+                prepended.add(element = timeMessage)
             }
             allMessage.add(index = 0, element = newMessage)
+            prepended.add(index = 0, element = newMessage)
             if (newMessage is ImageMessage) {
                 imageUrlList.add(element = newMessage.previewImageUrl)
             }
-            publishMessageList()
+            publishMessagePrepend(messages = prepended)
         }
     }
 
@@ -269,15 +430,27 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
             return
         }
         withContext(context = Dispatchers.Main.immediate) {
+            val existingIds = allMessage.asSequence()
+                .map { message -> message.detail.msgId }
+                .filter { msgId -> msgId.isNotBlank() }
+                .toHashSet()
+            val filteredList = newMessageList.filter { message ->
+                val msgId = message.detail.msgId
+                msgId.isBlank() || existingIds.add(msgId)
+            }
+            if (filteredList.isEmpty()) {
+                return@withContext
+            }
+            val startIndex = allMessage.size
             if (allMessage.isNotEmpty()) {
-                if (allMessage[allMessage.size - 1].detail.milliseconds - newMessageList[0].detail.milliseconds > messageMinInterval) {
+                if (allMessage[allMessage.size - 1].detail.milliseconds - filteredList[0].detail.milliseconds > messageMinInterval) {
                     allMessage.add(element = TimeMessage(targetMessage = allMessage[allMessage.size - 1]))
                 }
             }
             var filteredMsg = 1
-            for (index in newMessageList.indices) {
-                val currentMsg = newMessageList[index]
-                val preMsg = newMessageList.getOrNull(index + 1)
+            for (index in filteredList.indices) {
+                val currentMsg = filteredList[index]
+                val preMsg = filteredList.getOrNull(index + 1)
                 allMessage.add(element = currentMsg)
                 if (preMsg == null ||
                     currentMsg.detail.milliseconds - preMsg.detail.milliseconds > messageMinInterval ||
@@ -290,12 +463,42 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                 }
             }
             rebuildImageUrlList()
-            publishMessageList()
+            publishMessageAppend(fromIndex = startIndex)
         }
     }
 
-    private fun publishMessageList() {
-        pageViewState = pageViewState.copy(messageList = allMessage.toPersistentList())
+    private fun publishMessageUpdate(index: Int, message: Message) {
+        val currentList = pageViewState.messageList
+        pageViewState = pageViewState.copy(
+            messageList = if (index in currentList.indices) {
+                currentList.replacingAt(index = index, element = message)
+            } else {
+                allMessage.toPersistentList()
+            }
+        )
+    }
+
+    private fun publishMessagePrepend(messages: List<Message>) {
+        if (messages.isEmpty()) {
+            return
+        }
+        pageViewState = pageViewState.copy(
+            messageList = pageViewState.messageList.addingAllAt(index = 0, c = messages)
+        )
+    }
+
+    private fun publishMessageAppend(fromIndex: Int) {
+        if (fromIndex >= allMessage.size) {
+            return
+        }
+        pageViewState = pageViewState.copy(
+            messageList = pageViewState.messageList.addingAll(
+                elements = allMessage.subList(
+                    fromIndex,
+                    allMessage.size
+                )
+            )
+        )
     }
 
     private fun rebuildImageUrlList() {
@@ -339,7 +542,9 @@ class ChatViewModel(private val chat: Chat) : BaseViewModel() {
                 val initialImageUrl = message.previewImageUrl
                 if (imageUrlList.isNotEmpty() && initialImageUrl.isNotBlank()) {
                     val initialPage = imageUrlList.indexOf(element = initialImageUrl)
-                        .coerceAtLeast(minimumValue = 0)
+                    if (initialPage < 0) {
+                        return
+                    }
                     PreviewImageActivity.navTo(
                         context = context,
                         imageUriList = imageUrlList,

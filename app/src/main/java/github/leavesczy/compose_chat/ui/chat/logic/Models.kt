@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.main.logic
+package github.leavesczy.compose_chat.ui.chat.logic
 
 import android.net.Uri
 import androidx.compose.foundation.lazy.LazyListState
@@ -16,7 +16,8 @@ data class ChatPageViewState(
     val topBarTitle: String,
     val messageList: PersistentList<Message>,
     val onClickAvatar: (message: Message) -> Unit,
-    val onClickMessage: (message: Message) -> Unit
+    val onClickMessage: (message: Message) -> Unit,
+    val onResendMessage: (message: Message) -> Unit
 )
 
 @Stable
@@ -38,5 +39,7 @@ enum class InputSelector {
 data class LoadMessageViewState(
     val isRefreshing: Boolean,
     val isLoadFinished: Boolean,
-    val onLoadMoreMessage: () -> Unit
+    val loadError: String?,
+    val onLoadMoreMessage: () -> Unit,
+    val onRetryLoad: () -> Unit
 )

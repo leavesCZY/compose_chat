@@ -21,8 +21,12 @@ interface IMessageProvider {
 
     suspend fun sendImage(chat: Chat, imagePath: String): Channel<Message>
 
+    suspend fun resendMessage(chat: Chat, message: Message): Channel<Message>
+
     suspend fun getHistoryMessage(chat: Chat, lastMessage: Message?): LoadMessageResult
 
     fun cleanUnreadMessageCount(chat: Chat)
+
+    fun clearSessionState()
 
 }

@@ -25,7 +25,7 @@ import github.leavesczy.compose_chat.widgets.AnimateBouncyImage
 import github.leavesczy.compose_chat.widgets.BezierImage
 
 @Composable
-fun PersonProfilePage(pageViewState: PersonProfilePageViewState) {
+internal fun PersonProfilePage(pageViewState: PersonProfilePageViewState) {
     val personProfile = pageViewState.personProfile
     val avatarUrl = personProfile.avatarUrl
     val title = personProfile.showName

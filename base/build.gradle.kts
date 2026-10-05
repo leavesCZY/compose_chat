@@ -9,6 +9,4 @@ android {
 
 dependencies {
     implementation(libs.kotlinx.coroutines)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.runtime)
 }

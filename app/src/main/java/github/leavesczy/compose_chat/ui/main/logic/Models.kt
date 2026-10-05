@@ -14,8 +14,7 @@ enum class MainPageTab {
 
 @Stable
 data class MainPageTopBarViewState(
-    val onClickOpenDrawer: suspend () -> Unit,
-    val onClickShowFriendshipDialog: () -> Unit
+    val onClickOpenDrawer: suspend () -> Unit
 )
 
 @Stable

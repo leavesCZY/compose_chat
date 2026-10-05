@@ -17,14 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import github.leavesczy.compose_chat.R
+import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.ui.main.friendship.logic.FriendshipDialogViewState
-import github.leavesczy.compose_chat.ui.provider.ToastProvider
 import github.leavesczy.compose_chat.widgets.AnimatedBottomSheetDialog
 import github.leavesczy.compose_chat.widgets.CommonButton
 import github.leavesczy.compose_chat.widgets.CommonOutlinedTextField
 
 @Composable
-fun FriendshipDialog(viewState: FriendshipDialogViewState) {
+internal fun FriendshipDialog(viewState: FriendshipDialogViewState) {
     AnimatedBottomSheetDialog(
         modifier = Modifier,
         visible = viewState.isVisible,
@@ -37,7 +37,7 @@ fun FriendshipDialog(viewState: FriendshipDialogViewState) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(space = 10.dp)
         ) {
-            var userId by remember {
+            var userId by remember(key1 = viewState.isVisible) {
                 mutableStateOf(value = "")
             }
             CommonOutlinedTextField(
@@ -47,7 +47,7 @@ fun FriendshipDialog(viewState: FriendshipDialogViewState) {
                 value = userId,
                 onValueChange = { id ->
                     val realValue = id.trimStart().trimEnd()
-                    if (realValue.all { char -> char.isLowerCase() || char.isUpperCase() }) {
+                    if (realValue.length <= 12 && realValue.all { char -> char.isLetterOrDigit() }) {
                         userId = realValue
                     }
                 },
@@ -57,7 +57,7 @@ fun FriendshipDialog(viewState: FriendshipDialogViewState) {
             )
             CommonButton(text = stringResource(id = R.string.add_friend)) {
                 if (userId.isBlank()) {
-                    ToastProvider.showToast(resId = github.leavesczy.compose_chat.base.R.string.login_user_id_required)
+                    ToastProvider.showToast(resId = R.string.input_user_id_required)
                 } else {
                     viewState.onAddFriend(userId)
                 }

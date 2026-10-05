@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import coil3.compose.AsyncImagePainter
 import coil3.compose.SubcomposeAsyncImage
 import github.leavesczy.compose_chat.theme.AppTheme
 import kotlinx.coroutines.delay
@@ -62,7 +63,8 @@ fun ComponentImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     contentDescription: String? = null,
-    backgroundColor: Color = Color(color = 0x66888888)
+    backgroundColor: Color = Color(color = 0x66888888),
+    onSuccess: ((AsyncImagePainter.State.Success) -> Unit)? = null
 ) {
     SubcomposeAsyncImage(
         modifier = modifier,
@@ -72,6 +74,7 @@ fun ComponentImage(
         alpha = alpha,
         colorFilter = colorFilter,
         contentDescription = contentDescription,
+        onSuccess = onSuccess,
         loading = {
             Spacer(
                 modifier = Modifier

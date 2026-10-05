@@ -1,6 +1,6 @@
 package github.leavesczy.compose_chat.proxy
 
-internal object Consts {
+internal object Constants {
 
     const val APP_ID = 1400592743
 

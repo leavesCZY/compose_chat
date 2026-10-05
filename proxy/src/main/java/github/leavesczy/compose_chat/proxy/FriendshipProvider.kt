@@ -1,13 +1,11 @@
 package github.leavesczy.compose_chat.proxy
 
-import com.tencent.imsdk.v2.V2TIMCallback
 import com.tencent.imsdk.v2.V2TIMFriendAddApplication
 import com.tencent.imsdk.v2.V2TIMFriendInfo
 import com.tencent.imsdk.v2.V2TIMFriendInfoResult
 import com.tencent.imsdk.v2.V2TIMFriendOperationResult
 import com.tencent.imsdk.v2.V2TIMFriendshipListener
 import com.tencent.imsdk.v2.V2TIMManager
-import com.tencent.imsdk.v2.V2TIMValueCallback
 import github.leavesczy.compose_chat.base.R
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.PersonProfile
@@ -15,17 +13,31 @@ import github.leavesczy.compose_chat.base.provider.IFriendshipProvider
 import github.leavesczy.compose_chat.base.utils.StringResources
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.resume
 
 object FriendshipProvider : IFriendshipProvider {
 
-    override val friendListFlow = MutableSharedFlow<List<PersonProfile>>()
+    private val _friendListFlow = MutableStateFlow<List<PersonProfile>>(value = emptyList())
+
+    override val friendListFlow: StateFlow<List<PersonProfile>> = _friendListFlow.asStateFlow()
+
+    private val _friendListLoadErrorFlow = MutableStateFlow<String?>(value = null)
+
+    override val friendListLoadErrorFlow: StateFlow<String?> =
+        _friendListLoadErrorFlow.asStateFlow()
+
+    private val _friendListLoadingFlow = MutableStateFlow(value = false)
+
+    override val friendListLoadingFlow: StateFlow<Boolean> = _friendListLoadingFlow.asStateFlow()
 
     private var refreshJob: Job? = null
+
+    @Volatile
+    private var refreshGeneration = 0
 
     init {
         V2TIMManager.getFriendshipManager().addFriendListener(object : V2TIMFriendshipListener() {
@@ -50,12 +62,43 @@ object FriendshipProvider : IFriendshipProvider {
 
     override fun refreshFriendList() {
         refreshJob?.cancel()
+        val generation = ++refreshGeneration
         refreshJob = AppCoroutineScope.launch {
-            val friendList = getFriendListOrigin()?.sortedByDescending { friend ->
-                friend.addTime
-            }?.toList() ?: emptyList()
-            friendListFlow.emit(value = friendList)
+            _friendListLoadingFlow.value = _friendListFlow.value.isEmpty()
+            try {
+                when (val result = getFriendListOrigin()) {
+                    is FriendListFetchResult.Success -> {
+                        if (generation != refreshGeneration) {
+                            return@launch
+                        }
+                        _friendListLoadErrorFlow.value = null
+                        _friendListFlow.value = result.friendList
+                    }
+
+                    is FriendListFetchResult.Failed -> {
+                        if (generation != refreshGeneration) {
+                            return@launch
+                        }
+                        _friendListLoadErrorFlow.value = result.reason
+                        if (_friendListFlow.value.isEmpty()) {
+                            _friendListFlow.value = emptyList()
+                        }
+                    }
+                }
+            } finally {
+                if (generation == refreshGeneration) {
+                    _friendListLoadingFlow.value = false
+                }
+            }
         }
+    }
+
+    override fun clearSessionState() {
+        refreshJob?.cancel()
+        refreshGeneration++
+        _friendListFlow.value = emptyList()
+        _friendListLoadErrorFlow.value = null
+        _friendListLoadingFlow.value = false
     }
 
     override suspend fun getFriendProfile(friendId: String): PersonProfile? {
@@ -64,25 +107,25 @@ object FriendshipProvider : IFriendshipProvider {
         }
     }
 
-    private suspend fun getFriendListOrigin(): List<PersonProfile>? {
+    private suspend fun getFriendListOrigin(): FriendListFetchResult {
         return withContext(context = Dispatchers.Main.immediate) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getFriendshipManager()
-                    .getFriendList(object : V2TIMValueCallback<List<V2TIMFriendInfo>> {
-                        override fun onSuccess(result: List<V2TIMFriendInfo>) {
-                            continuation.resume(
-                                value = convertFriend(
-                                    friendInfoList = result.filter { friendInfo ->
-                                        !friendInfo.userID.isNullOrBlank()
-                                    }
-                                )
-                            )
+            val friendInfoList = suspendTimValueOrNull<List<V2TIMFriendInfo>> { callback ->
+                V2TIMManager.getFriendshipManager().getFriendList(callback)
+            }
+            if (friendInfoList == null) {
+                FriendListFetchResult.Failed(
+                    reason = StringResources.getString(resId = R.string.error_load_friend_list)
+                )
+            } else {
+                FriendListFetchResult.Success(
+                    friendList = convertFriend(
+                        friendInfoList = friendInfoList.filter { friendInfo ->
+                            !friendInfo.userID.isNullOrBlank()
                         }
-
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(value = null)
-                        }
-                    })
+                    ).sortedByDescending { friend ->
+                        friend.addTime
+                    }
+                )
             }
         }
     }
@@ -95,20 +138,12 @@ object FriendshipProvider : IFriendshipProvider {
 
     private suspend fun getFriendInfo(friendId: String): V2TIMFriendInfoResult? {
         return withContext(context = Dispatchers.Main.immediate) {
-            suspendCancellableCoroutine { continuation ->
+            suspendTimValueOrNull<List<V2TIMFriendInfoResult>> { callback ->
                 V2TIMManager.getFriendshipManager().getFriendsInfo(
                     listOf(friendId),
-                    object : V2TIMValueCallback<List<V2TIMFriendInfoResult>> {
-                        override fun onSuccess(t: List<V2TIMFriendInfoResult>?) {
-                            continuation.resume(value = t?.getOrNull(index = 0))
-                        }
-
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(value = null)
-                        }
-                    }
+                    callback
                 )
-            }
+            }?.firstOrNull()
         }
     }
 
@@ -125,35 +160,18 @@ object FriendshipProvider : IFriendshipProvider {
             )
         }
         return withContext(context = Dispatchers.Main.immediate) {
-            suspendCancellableCoroutine { continuation ->
-                val requiresOpt = V2TIMFriendAddApplication(formatUserId)
-                requiresOpt.setAddType(V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH)
-                V2TIMManager.getFriendshipManager().addFriend(
-                    requiresOpt,
-                    object : V2TIMValueCallback<V2TIMFriendOperationResult> {
-                        override fun onSuccess(result: V2TIMFriendOperationResult) {
-                            val resultCode = result.resultCode
-                            if (resultCode == 0) {
-                                continuation.resume(value = ActionResult.Success)
-                            } else {
-                                continuation.resume(
-                                    value = ActionResult.Failed(
-                                        code = resultCode,
-                                        reason = result.resultInfo
-                                    )
-                                )
-                            }
-                        }
-
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(
-                                value = ActionResult.Failed(
-                                    code = code,
-                                    reason = desc
-                                )
-                            )
-                        }
-                    }
+            val friendApplication = V2TIMFriendAddApplication(formatUserId)
+            friendApplication.setAddType(V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH)
+            val result = suspendTimValueOrNull<V2TIMFriendOperationResult> { callback ->
+                V2TIMManager.getFriendshipManager().addFriend(friendApplication, callback)
+            } ?: return@withContext ActionResult.Failed(reason = null)
+            val resultCode = result.resultCode
+            if (resultCode == 0) {
+                ActionResult.Success
+            } else {
+                ActionResult.Failed(
+                    code = resultCode,
+                    reason = result.resultInfo
                 )
             }
         }
@@ -161,25 +179,12 @@ object FriendshipProvider : IFriendshipProvider {
 
     override suspend fun deleteFriend(friendId: String): ActionResult {
         return withContext(context = Dispatchers.Main.immediate) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getFriendshipManager()
-                    .deleteFromFriendList(
-                        listOf(friendId),
-                        V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH,
-                        object : V2TIMValueCallback<List<V2TIMFriendOperationResult>> {
-                            override fun onSuccess(t: List<V2TIMFriendOperationResult>) {
-                                continuation.resume(value = ActionResult.Success)
-                            }
-
-                            override fun onError(code: Int, desc: String?) {
-                                continuation.resume(
-                                    value = ActionResult.Failed(
-                                        code = code,
-                                        reason = desc
-                                    )
-                                )
-                            }
-                        })
+            suspendTimValueResult<List<V2TIMFriendOperationResult>> { callback ->
+                V2TIMManager.getFriendshipManager().deleteFromFriendList(
+                    listOf(friendId),
+                    V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH,
+                    callback
+                )
             }
         }
     }
@@ -191,24 +196,15 @@ object FriendshipProvider : IFriendshipProvider {
             )
         return withContext(context = Dispatchers.Main.immediate) {
             friendProfile.friendRemark = remark
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getFriendshipManager()
-                    .setFriendInfo(friendProfile, object : V2TIMCallback {
-                        override fun onSuccess() {
-                            continuation.resume(value = ActionResult.Success)
-                        }
-
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(
-                                value = ActionResult.Failed(
-                                    code = code,
-                                    reason = desc
-                                )
-                            )
-                        }
-                    })
+            suspendTimCallback { callback ->
+                V2TIMManager.getFriendshipManager().setFriendInfo(friendProfile, callback)
             }
         }
+    }
+
+    private sealed class FriendListFetchResult {
+        data class Success(val friendList: List<PersonProfile>) : FriendListFetchResult()
+        data class Failed(val reason: String) : FriendListFetchResult()
     }
 
 }

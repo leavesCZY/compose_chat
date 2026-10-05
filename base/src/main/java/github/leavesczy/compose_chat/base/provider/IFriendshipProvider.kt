@@ -2,13 +2,19 @@ package github.leavesczy.compose_chat.base.provider
 
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.PersonProfile
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 interface IFriendshipProvider {
 
-    val friendListFlow: SharedFlow<List<PersonProfile>>
+    val friendListFlow: StateFlow<List<PersonProfile>>
+
+    val friendListLoadErrorFlow: StateFlow<String?>
+
+    val friendListLoadingFlow: StateFlow<Boolean>
 
     fun refreshFriendList()
+
+    fun clearSessionState()
 
     suspend fun getFriendProfile(friendId: String): PersonProfile?
 

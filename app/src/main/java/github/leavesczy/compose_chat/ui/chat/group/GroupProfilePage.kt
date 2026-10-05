@@ -64,17 +64,18 @@ import kotlin.math.abs
 
 @Composable
 internal fun GroupProfilePage(pageViewState: GroupProfilePageViewState) {
-    val localActivity = LocalActivity.current
+    val localActivity = LocalActivity.current ?: return
     val localDensity = LocalDensity.current
     val headerHeight = 280.dp
     val topBarHeight = 44.dp
     val listState = rememberLazyListState()
-    val maxOffsetHeightPx = remember {
-        with(receiver = localDensity) {
-            (headerHeight - topBarHeight - 30.dp).roundToPx()
+    val maxOffsetHeightPx =
+        remember(key1 = localDensity, key2 = headerHeight, key3 = topBarHeight) {
+            with(receiver = localDensity) {
+                (headerHeight - topBarHeight - 30.dp).roundToPx()
+            }
         }
-    }
-    val topBarAlpha by remember {
+    val topBarAlpha by remember(key1 = listState, key2 = maxOffsetHeightPx) {
         derivedStateOf {
             val visibleItemsInfo = listState.layoutInfo.visibleItemsInfo
             if (visibleItemsInfo.isEmpty()) {
@@ -132,7 +133,7 @@ internal fun GroupProfilePage(pageViewState: GroupProfilePageViewState) {
                             GroupMemberItem(
                                 memberProfile = member,
                                 onClick = {
-                                    pageViewState.onClickMember(localActivity!!, member)
+                                    pageViewState.onClickMember(localActivity, member)
                                 }
                             )
                         }
@@ -144,8 +145,53 @@ internal fun GroupProfilePage(pageViewState: GroupProfilePageViewState) {
                     topBarHeight = topBarHeight,
                     onClickSwitchAvatar = pageViewState.onClickSwitchAvatar,
                     onClickQuitGroup = {
-                        pageViewState.onClickQuitGroup(localActivity!!)
+                        pageViewState.onClickQuitGroup(localActivity)
                     }
+                )
+            }
+        }
+    } else if (pageViewState.loadFailed) {
+        val onBackPressedDispatcher =
+            LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+        Scaffold(
+            modifier = Modifier
+                .fillMaxSize(),
+            containerColor = AppTheme.colorScheme.c_FFEAF2FF_FF0B1220.color,
+            contentWindowInsets = WindowInsets.navigationBars,
+            topBar = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                ) {
+                    IconButton(
+                        modifier = Modifier
+                            .align(alignment = Alignment.CenterStart),
+                        onClick = {
+                            onBackPressedDispatcher?.onBackPressed()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBackIosNew,
+                            contentDescription = stringResource(id = R.string.cd_back),
+                            tint = AppTheme.colorScheme.c_FF0B1F3A_DEFFFFFF.color
+                        )
+                    }
+                }
+            }
+        ) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .padding(paddingValues = innerPadding)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp),
+                    text = stringResource(id = R.string.profile_load_failed),
+                    fontSize = 16.sp,
+                    color = AppTheme.colorScheme.c_FF3D5A80_99FFFFFF.color
                 )
             }
         }
@@ -254,7 +300,7 @@ private fun PageTopBar(
                 modifier = Modifier
                     .size(size = 22.dp),
                 imageVector = Icons.Default.ArrowBackIosNew,
-                contentDescription = null
+                contentDescription = stringResource(id = R.string.cd_back)
             )
         }
         IconButton(
@@ -270,7 +316,7 @@ private fun PageTopBar(
                 modifier = Modifier
                     .size(size = 24.dp),
                 imageVector = Icons.Default.MoreVert,
-                contentDescription = null
+                contentDescription = stringResource(id = R.string.cd_more_actions)
             )
         }
     }

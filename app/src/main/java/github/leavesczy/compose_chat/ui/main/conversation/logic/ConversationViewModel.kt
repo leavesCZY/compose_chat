@@ -10,41 +10,71 @@ import github.leavesczy.compose_chat.base.models.Chat
 import github.leavesczy.compose_chat.base.models.Conversation
 import github.leavesczy.compose_chat.base.models.ConversationType
 import github.leavesczy.compose_chat.base.models.ServerConnectState
-import github.leavesczy.compose_chat.ui.chat.main.ChatActivity
-import github.leavesczy.compose_chat.ui.main.friendship.logic.FriendshipViewModel
+import github.leavesczy.compose_chat.di.ComposeChat
+import github.leavesczy.compose_chat.ui.base.BaseViewModel
+import github.leavesczy.compose_chat.ui.chat.ChatActivity
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-abstract class ConversationViewModel : FriendshipViewModel() {
+class ConversationViewModel : BaseViewModel() {
 
-    var conversationPageViewState by mutableStateOf(
+    private val conversationProvider = ComposeChat.conversationProvider
+
+    private val accountProvider = ComposeChat.accountProvider
+
+    var pageViewState by mutableStateOf(
         value = ConversationPageViewState(
             listState = LazyListState(),
             serverConnectState = ServerConnectState.Idle,
             conversationList = persistentListOf(),
+            isLoading = false,
+            loadError = null,
             onClickConversation = ::onClickConversation,
             onDeleteConversation = ::deleteConversation,
-            onPinConversation = ::pinConversation
+            onPinConversation = ::pinConversation,
+            onRetryLoad = ::retryLoad
         )
     )
         private set
 
+    private var lastServerConnectState = ServerConnectState.Idle
+
     init {
         viewModelScope.launch {
             launch {
-                conversationProvider.conversationListFlow.collect { conversationList ->
-                    conversationPageViewState =
-                        conversationPageViewState.copy(conversationList = conversationList.toPersistentList())
+                combine(
+                    conversationProvider.conversationListFlow,
+                    conversationProvider.conversationLoadingFlow,
+                    conversationProvider.conversationLoadErrorFlow
+                ) { conversationList, isLoading, loadError ->
+                    Triple(conversationList, isLoading, loadError)
+                }.collect { (conversationList, isLoading, loadError) ->
+                    pageViewState = pageViewState.copy(
+                        conversationList = conversationList.toPersistentList(),
+                        isLoading = isLoading,
+                        loadError = loadError
+                    )
                 }
             }
             launch {
                 accountProvider.serverConnectStateFlow.collect { serverConnectState ->
-                    conversationPageViewState =
-                        conversationPageViewState.copy(serverConnectState = serverConnectState)
+                    pageViewState = pageViewState.copy(serverConnectState = serverConnectState)
+                    if (serverConnectState == ServerConnectState.Connected &&
+                        lastServerConnectState != ServerConnectState.Connected &&
+                        lastServerConnectState != ServerConnectState.Idle
+                    ) {
+                        conversationProvider.refreshConversationList()
+                    }
+                    lastServerConnectState = serverConnectState
                 }
             }
         }
+        conversationProvider.refreshConversationList()
+    }
+
+    private fun retryLoad() {
         conversationProvider.refreshConversationList()
     }
 

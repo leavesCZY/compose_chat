@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
-import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import androidx.exifinterface.media.ExifInterface
 import kotlinx.coroutines.Dispatchers
@@ -17,38 +16,6 @@ import java.util.Date
 import java.util.Locale
 
 object FileUtils {
-
-    suspend fun getFilePathFromUri(context: Context, uri: Uri): String? {
-        return withContext(context = Dispatchers.Default) {
-            val filePath = when (uri.scheme) {
-                ContentResolver.SCHEME_CONTENT -> {
-                    var filePath: String? = null
-                    val dataColumn = MediaStore.MediaColumns.DATA
-                    val cursor =
-                        context.contentResolver.query(uri, arrayOf(dataColumn), null, null, null)
-                    if (cursor != null && cursor.moveToFirst()) {
-                        val columnIndex = cursor.getColumnIndex(dataColumn)
-                        filePath = cursor.getString(columnIndex)
-                    }
-                    cursor?.close()
-                    filePath
-                }
-
-                ContentResolver.SCHEME_FILE -> {
-                    uri.path
-                }
-
-                else -> {
-                    null
-                }
-            }
-            return@withContext if (filePath.isNullOrBlank()) {
-                null
-            } else {
-                filePath
-            }
-        }
-    }
 
     suspend fun getMimeType(filePath: String): String? {
         return withContext(context = Dispatchers.IO) {

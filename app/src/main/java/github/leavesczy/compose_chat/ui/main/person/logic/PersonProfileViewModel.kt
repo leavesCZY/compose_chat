@@ -5,14 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.models.PersonProfile
-import github.leavesczy.compose_chat.ui.main.logic.BaseMainViewModel
-import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
+import github.leavesczy.compose_chat.di.ComposeChat
+import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
 import kotlinx.coroutines.launch
 
-abstract class PersonProfileViewModel : BaseMainViewModel() {
+class PersonProfileViewModel : BaseViewModel() {
 
-    var profilePageViewState by mutableStateOf(
+    var pageViewState by mutableStateOf(
         value = PersonProfilePageViewState(
             personProfile = PersonProfile.Empty,
             onClickPreviewImage = ::previewImage
@@ -23,7 +23,7 @@ abstract class PersonProfileViewModel : BaseMainViewModel() {
     init {
         viewModelScope.launch {
             ComposeChat.accountProvider.personProfileFlow.collect { personProfile ->
-                profilePageViewState = profilePageViewState.copy(personProfile = personProfile)
+                pageViewState = pageViewState.copy(personProfile = personProfile)
             }
         }
     }

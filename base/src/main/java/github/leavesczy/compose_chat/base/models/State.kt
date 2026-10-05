@@ -1,14 +1,9 @@
 package github.leavesczy.compose_chat.base.models
 
-import androidx.compose.runtime.Stable
-
-@Stable
 sealed class ActionResult {
 
-    @Stable
     data object Success : ActionResult()
 
-    @Stable
     data class Failed(
         private val code: Int,
         private val reason: String?
@@ -22,7 +17,6 @@ sealed class ActionResult {
 
 }
 
-@Stable
 enum class ServerConnectState {
     Idle,
     Logout,

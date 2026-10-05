@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.main
+package github.leavesczy.compose_chat.ui.chat
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +24,7 @@ import github.leavesczy.compose_chat.extensions.clickableNoRipple
 import github.leavesczy.compose_chat.theme.AppTheme
 
 @Composable
-fun MediaPickerTable(
+internal fun MediaPickerTable(
     modifier: Modifier,
     onClickImagePicker: () -> Unit,
     onClickTakePicture: () -> Unit
@@ -73,7 +73,7 @@ private fun MediaPickerAction(
                 .size(size = 42.dp),
             imageVector = icon,
             tint = AppTheme.colorScheme.c_FF5BA3F7_FF60A5FA.color,
-            contentDescription = null
+            contentDescription = text
         )
         Text(
             modifier = Modifier

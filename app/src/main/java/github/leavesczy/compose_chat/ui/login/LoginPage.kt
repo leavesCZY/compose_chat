@@ -33,9 +33,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.R
+import github.leavesczy.compose_chat.provider.ToastProvider
 import github.leavesczy.compose_chat.theme.AppTheme
 import github.leavesczy.compose_chat.ui.login.logic.LoginPageViewState
-import github.leavesczy.compose_chat.ui.provider.ToastProvider
 
 @Composable
 internal fun LoginPage(pageViewState: LoginPageViewState) {

@@ -79,7 +79,6 @@ internal fun Project.configureAndroidApplication(applicationExtension: Applicati
         packaging {
             jniLibs {
                 excludes.add(element = "META-INF/{AL2.0,LGPL2.1}")
-                useLegacyPackaging = true
             }
             resources {
                 excludes.addAll(

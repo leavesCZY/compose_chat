@@ -1,7 +1,6 @@
-package github.leavesczy.compose_chat.ui.provider
+package github.leavesczy.compose_chat.provider
 
 import android.content.Context
-import android.view.Gravity
 import android.widget.Toast
 import androidx.annotation.StringRes
 import github.leavesczy.compose_chat.base.utils.ContextProvider
@@ -18,9 +17,7 @@ object ToastProvider {
         if (msg.isNullOrBlank()) {
             return
         }
-        val toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.CENTER, 0, 0)
-        toast.show()
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 
 }

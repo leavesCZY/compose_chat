@@ -8,9 +8,12 @@ import java.util.Locale
 
 internal object TimeUtils {
 
-    private val formatters = mutableMapOf<Int, SimpleDateFormat>()
+    private val formatterCache = ThreadLocal.withInitial {
+        mutableMapOf<Int, SimpleDateFormat>()
+    }
 
     private fun formatTime(milliseconds: Long, patternResId: Int): String {
+        val formatters = formatterCache.get() ?: mutableMapOf()
         val formatter = formatters.getOrPut(key = patternResId) {
             SimpleDateFormat(StringResources.getString(resId = patternResId), Locale.ENGLISH)
         }

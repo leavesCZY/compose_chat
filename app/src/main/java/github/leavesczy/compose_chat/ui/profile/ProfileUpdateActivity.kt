@@ -1,17 +1,20 @@
 package github.leavesczy.compose_chat.ui.profile
 
 import android.os.Bundle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import github.leavesczy.compose_chat.base.BaseActivity
+import androidx.activity.viewModels
+import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.profile.logic.ProfileUpdateViewModel
+import github.leavesczy.compose_chat.widgets.LoadingDialog
 
 class ProfileUpdateActivity : BaseActivity() {
+
+    private val profileUpdateViewModel by viewModels<ProfileUpdateViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val profileUpdateViewModel = viewModel<ProfileUpdateViewModel>()
             ProfileUpdatePage(pageViewState = profileUpdateViewModel.pageViewState)
+            LoadingDialog(viewState = profileUpdateViewModel.loadingDialogViewState)
         }
     }
 

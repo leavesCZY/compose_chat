@@ -1,6 +1,5 @@
 package github.leavesczy.compose_chat.proxy
 
-import com.tencent.imsdk.v2.V2TIMCallback
 import com.tencent.imsdk.v2.V2TIMFriendCheckResult
 import com.tencent.imsdk.v2.V2TIMFriendInfo
 import com.tencent.imsdk.v2.V2TIMFriendInfoResult
@@ -11,7 +10,6 @@ import com.tencent.imsdk.v2.V2TIMImageElem
 import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMMessage
 import com.tencent.imsdk.v2.V2TIMUserFullInfo
-import com.tencent.imsdk.v2.V2TIMValueCallback
 import github.leavesczy.compose_chat.base.R
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.Chat
@@ -27,28 +25,28 @@ import github.leavesczy.compose_chat.base.models.SystemMessage
 import github.leavesczy.compose_chat.base.models.TextMessage
 import github.leavesczy.compose_chat.base.utils.StringResources
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.resume
+import java.util.UUID
 
 internal object Converters {
 
+    private const val TIM_IMAGE_TYPE_ORIGIN = 0
+
+    private const val TIM_IMAGE_TYPE_THUMB = 1
+
+    private const val TIM_IMAGE_TYPE_LARGE = 2
+
     suspend fun getSelfProfileOrigin(): V2TIMUserFullInfo? {
         return withContext(context = Dispatchers.Main.immediate) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getInstance().getUsersInfo(
-                    listOf(V2TIMManager.getInstance().loginUser),
-                    object : V2TIMValueCallback<List<V2TIMUserFullInfo>> {
-                        override fun onSuccess(t: List<V2TIMUserFullInfo>) {
-                            continuation.resume(value = t[0])
-                        }
-
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(value = null)
-                        }
-                    }
-                )
-            }
+            suspendTimValue(
+                onError = { _, _ -> emptyList() },
+                block = { callback ->
+                    V2TIMManager.getInstance().getUsersInfo(
+                        listOf(V2TIMManager.getInstance().loginUser),
+                        callback
+                    )
+                }
+            ).firstOrNull()
         }
     }
 
@@ -58,17 +56,21 @@ internal object Converters {
             if (profile == null) {
                 null
             } else {
-                PersonProfile(
-                    id = profile.userID ?: "",
-                    nickname = profile.nickName?.trim() ?: "",
-                    remark = profile.nickName?.trim() ?: "",
-                    avatarUrl = profile.faceUrl ?: "",
-                    addTime = 0,
-                    signature = profile.selfSignature?.trim() ?: "",
-                    isFriend = false
-                )
+                convertSelfProfile(profile = profile)
             }
         }
+    }
+
+    fun convertSelfProfile(profile: V2TIMUserFullInfo): PersonProfile {
+        return PersonProfile(
+            id = profile.userID ?: "",
+            nickname = profile.nickName?.trim() ?: "",
+            remark = "",
+            avatarUrl = profile.faceUrl ?: "",
+            addTime = 0,
+            signature = profile.selfSignature?.trim() ?: "",
+            isFriend = false
+        )
     }
 
     fun convertFriendProfile(friendInfo: V2TIMFriendInfo): PersonProfile {
@@ -129,7 +131,7 @@ internal object Converters {
             isFriend = false
         )
         val messageDetail = MessageDetail(
-            msgId = timMessage.msgID ?: "",
+            msgId = resolveMessageId(timMessage = timMessage),
             state = convertMessageState(state = timMessage.status),
             milliseconds = timMessage.timestamp * 1000L,
             sender = senderProfile,
@@ -148,15 +150,30 @@ internal object Converters {
                 val imageList = imageElem?.imageList
                 if (!imageList.isNullOrEmpty()) {
                     val imagePath = imageElem.path
-                    val origin = imageList[0].toImageElement(imagePath = imagePath)
-                    if (origin != null) {
-                        val large =
-                            imageList.getOrNull(index = 1).toImageElement(imagePath = imagePath)
-                        val thumb =
-                            imageList.getOrNull(index = 2).toImageElement(imagePath = imagePath)
+                    var origin: ImageMessage.ImageElement? = null
+                    var large: ImageMessage.ImageElement? = null
+                    var thumb: ImageMessage.ImageElement? = null
+                    imageList.forEach { image ->
+                        val element = image.toImageElement(imagePath = imagePath) ?: return@forEach
+                        when (image.type) {
+                            TIM_IMAGE_TYPE_ORIGIN -> {
+                                origin = element
+                            }
+
+                            TIM_IMAGE_TYPE_LARGE -> {
+                                large = element
+                            }
+
+                            TIM_IMAGE_TYPE_THUMB -> {
+                                thumb = element
+                            }
+                        }
+                    }
+                    val resolvedOrigin = origin ?: large ?: thumb
+                    if (resolvedOrigin != null) {
                         ImageMessage(
                             messageDetail = messageDetail,
-                            original = origin,
+                            original = resolvedOrigin,
                             large = large,
                             thumb = thumb
                         )
@@ -182,7 +199,7 @@ internal object Converters {
                 timMessage.elemType
             )
         )
-        message.tag = timMessage
+        TimMessageStore.put(msgId = message.detail.msgId, timMessage = timMessage)
         return message
     }
 
@@ -205,7 +222,7 @@ internal object Converters {
             }
 
             val messageDetail = MessageDetail(
-                msgId = timMessage.msgID ?: "",
+                msgId = resolveMessageId(timMessage = timMessage),
                 state = MessageState.Success,
                 milliseconds = timMessage.timestamp * 1000L,
                 sender = PersonProfile(
@@ -305,6 +322,14 @@ internal object Converters {
         )
     }
 
+    private fun resolveMessageId(timMessage: V2TIMMessage): String {
+        val remoteId = timMessage.msgID
+        if (!remoteId.isNullOrBlank()) {
+            return remoteId
+        }
+        return "local_${timMessage.timestamp}_${UUID.randomUUID()}"
+    }
+
     private fun convertMessageState(state: Int): MessageState {
         return when (state) {
             V2TIMMessage.V2TIM_MSG_STATUS_SENDING -> {
@@ -329,22 +354,8 @@ internal object Converters {
 
     private suspend fun deleteConversation(key: String): ActionResult {
         return withContext(context = Dispatchers.Main.immediate) {
-            suspendCancellableCoroutine { continuation ->
-                V2TIMManager.getConversationManager()
-                    .deleteConversation(key, object : V2TIMCallback {
-                        override fun onSuccess() {
-                            continuation.resume(value = ActionResult.Success)
-                        }
-
-                        override fun onError(code: Int, desc: String?) {
-                            continuation.resume(
-                                value = ActionResult.Failed(
-                                    code = code,
-                                    reason = desc
-                                )
-                            )
-                        }
-                    })
+            suspendTimCallback { callback ->
+                V2TIMManager.getConversationManager().deleteConversation(key, callback)
             }
         }
     }
@@ -382,11 +393,11 @@ internal object Converters {
     }
 
     private fun getC2CConversationKey(userId: String): String {
-        return String.format("c2c_%s", userId)
+        return "c2c_$userId"
     }
 
     private fun getGroupConversationKey(groupId: String): String {
-        return String.format("group_%s", groupId)
+        return "group_$groupId"
     }
 
 }

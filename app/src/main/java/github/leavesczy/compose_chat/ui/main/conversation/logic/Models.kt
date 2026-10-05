@@ -11,7 +11,10 @@ data class ConversationPageViewState(
     val listState: LazyListState,
     val serverConnectState: ServerConnectState,
     val conversationList: PersistentList<Conversation>,
+    val isLoading: Boolean,
+    val loadError: String?,
     val onClickConversation: (conversation: Conversation) -> Unit,
     val onDeleteConversation: (conversation: Conversation) -> Unit,
-    val onPinConversation: (conversation: Conversation, pin: Boolean) -> Unit
+    val onPinConversation: (conversation: Conversation, pin: Boolean) -> Unit,
+    val onRetryLoad: () -> Unit
 )

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import github.leavesczy.compose_chat.base.BaseActivity
+import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.chat.group.logic.GroupProfileViewModel
 import github.leavesczy.compose_chat.widgets.LoadingDialog
 

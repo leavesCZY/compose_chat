@@ -4,9 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import github.leavesczy.compose_chat.base.BaseActivity
+import androidx.lifecycle.lifecycleScope
+import github.leavesczy.compose_chat.ui.base.BaseActivity
+import github.leavesczy.compose_chat.ui.friend.logic.FriendProfilePageEvent
 import github.leavesczy.compose_chat.ui.friend.logic.FriendProfileViewModel
 import github.leavesczy.compose_chat.widgets.LoadingDialog
+import kotlinx.coroutines.launch
 
 class FriendProfileActivity : BaseActivity() {
 
@@ -44,6 +47,15 @@ class FriendProfileActivity : BaseActivity() {
             SetFriendRemarkDialog(viewState = friendProfileViewModel.remarkDialogViewState)
             DeleteFriendDialog(viewState = friendProfileViewModel.deleteFriendDialogViewState)
             LoadingDialog(viewState = friendProfileViewModel.loadingDialogViewState)
+        }
+        lifecycleScope.launch {
+            friendProfileViewModel.pageEvent.collect { event ->
+                when (event) {
+                    FriendProfilePageEvent.Finish -> {
+                        finish()
+                    }
+                }
+            }
         }
     }
 

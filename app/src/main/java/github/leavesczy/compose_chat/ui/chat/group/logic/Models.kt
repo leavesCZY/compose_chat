@@ -9,6 +9,7 @@ import kotlinx.collections.immutable.PersistentList
 @Stable
 data class GroupProfilePageViewState(
     val groupProfile: GroupProfile?,
+    val loadFailed: Boolean,
     val memberList: PersistentList<GroupMemberProfile>,
     val onClickMember: (activity: Activity, member: GroupMemberProfile) -> Unit,
     val onClickSwitchAvatar: () -> Unit,

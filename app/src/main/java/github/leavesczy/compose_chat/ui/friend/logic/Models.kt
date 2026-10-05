@@ -6,6 +6,7 @@ import github.leavesczy.compose_chat.base.models.PersonProfile
 @Stable
 data class FriendProfilePageViewState(
     val personProfile: PersonProfile?,
+    val loadFailed: Boolean,
     val isMe: Boolean,
     val isFriend: Boolean,
     val onClickSetFriendRemark: () -> Unit,
@@ -28,3 +29,9 @@ data class SetFriendRemarkDialogViewState(
     val onSetFriendRemark: (remark: String) -> Unit,
     val onDismissDialog: () -> Unit
 )
+
+sealed interface FriendProfilePageEvent {
+
+    data object Finish : FriendProfilePageEvent
+
+}

@@ -2,9 +2,10 @@ package github.leavesczy.compose_chat
 
 import android.app.Application
 import github.leavesczy.compose_chat.base.utils.ContextProvider
-import github.leavesczy.compose_chat.ui.main.logic.ComposeChat
-import github.leavesczy.compose_chat.ui.provider.AppThemeProvider
-import github.leavesczy.compose_chat.ui.provider.LoginPreferences
+import github.leavesczy.compose_chat.di.ComposeChat
+import github.leavesczy.compose_chat.provider.AppThemeProvider
+import github.leavesczy.compose_chat.provider.LoginPreferences
+import github.leavesczy.compose_chat.utils.CompressImageUtils
 import github.leavesczy.compose_chat.utils.ImageUtils
 
 class ChatApplication : Application() {
@@ -16,6 +17,7 @@ class ChatApplication : Application() {
         LoginPreferences.init(application = this)
         ComposeChat.accountProvider.init(application = this)
         ImageUtils.init()
+        CompressImageUtils.cleanupOldTempFiles(context = this)
     }
 
 }

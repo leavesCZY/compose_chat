@@ -1,4 +1,4 @@
-package github.leavesczy.compose_chat.ui.chat.main
+package github.leavesczy.compose_chat.ui.chat
 
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -49,9 +49,9 @@ import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import github.leavesczy.compose_chat.theme.AppTheme
-import github.leavesczy.compose_chat.ui.chat.main.logic.ChatPageBottomBarViewState
-import github.leavesczy.compose_chat.ui.chat.main.logic.InputSelector
-import github.leavesczy.compose_chat.widgets.MatisseImageEngine
+import github.leavesczy.compose_chat.ui.chat.logic.ChatPageBottomBarViewState
+import github.leavesczy.compose_chat.ui.chat.logic.InputSelector
+import github.leavesczy.matisse.CoilImageEngine
 import github.leavesczy.matisse.Matisse
 import github.leavesczy.matisse.MatisseCapture
 import github.leavesczy.matisse.MatisseCaptureContract
@@ -60,7 +60,7 @@ import github.leavesczy.matisse.MediaStoreCaptureStrategy
 import github.leavesczy.matisse.MediaType
 
 @Composable
-fun ChatPageBottomBar(
+internal fun ChatPageBottomBar(
     modifier: Modifier,
     bottomBarViewState: ChatPageBottomBarViewState
 ) {
@@ -136,7 +136,7 @@ fun ChatPageBottomBar(
                 onClickSend()
             }
         )
-        InputSelector(
+        InputSelectorBar(
             modifier = Modifier,
             inputSelector = bottomBarViewState.inputSelector,
             sendMessageEnabled = sendMessageEnabled,
@@ -191,10 +191,9 @@ fun ChatPageBottomBar(
                             bottomBarViewState.onInputSelectorChanged(InputSelector.None)
                             val matisse = Matisse(
                                 maxSelectable = 1,
-                                gridColumns = 4,
-                                fastSelect = false,
+                                gridColumns = 3,
                                 mediaType = MediaType.ImageOnly,
-                                imageEngine = MatisseImageEngine(),
+                                imageEngine = CoilImageEngine(),
                                 captureStrategy = MediaStoreCaptureStrategy()
                             )
                             matisseLauncher.launch(input = matisse)

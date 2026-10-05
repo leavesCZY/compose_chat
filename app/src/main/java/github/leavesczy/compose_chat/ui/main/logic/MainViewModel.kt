@@ -9,26 +9,30 @@ import androidx.lifecycle.viewModelScope
 import github.leavesczy.compose_chat.base.models.ActionResult
 import github.leavesczy.compose_chat.base.models.PersonProfile
 import github.leavesczy.compose_chat.base.models.ServerConnectState
+import github.leavesczy.compose_chat.di.ComposeChat
+import github.leavesczy.compose_chat.provider.AppThemeProvider
+import github.leavesczy.compose_chat.provider.LoginPreferences
 import github.leavesczy.compose_chat.theme.AppThemeMode
-import github.leavesczy.compose_chat.ui.main.conversation.logic.ConversationViewModel
+import github.leavesczy.compose_chat.ui.base.BaseViewModel
 import github.leavesczy.compose_chat.ui.preview.PreviewImageActivity
 import github.leavesczy.compose_chat.ui.profile.ProfileUpdateActivity
-import github.leavesczy.compose_chat.ui.provider.AppThemeProvider
-import github.leavesczy.compose_chat.ui.provider.LoginPreferences
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class MainViewModel : ConversationViewModel() {
+class MainViewModel : BaseViewModel() {
+
+    private val accountProvider = ComposeChat.accountProvider
+
+    private val conversationProvider = ComposeChat.conversationProvider
 
     private val _serverConnectState = MutableStateFlow(value = ServerConnectState.Connected)
 
-    val serverConnectState: SharedFlow<ServerConnectState> = _serverConnectState
+    val serverConnectState: StateFlow<ServerConnectState> = _serverConnectState
 
     var topBarViewState by mutableStateOf(
         value = MainPageTopBarViewState(
-            onClickOpenDrawer = ::openDrawer,
-            onClickShowFriendshipDialog = ::showFriendshipDialog
+            onClickOpenDrawer = ::openDrawer
         )
     )
         private set
@@ -72,7 +76,7 @@ class MainViewModel : ConversationViewModel() {
             }
             launch {
                 accountProvider.serverConnectStateFlow.collect { state ->
-                    _serverConnectState.emit(value = state)
+                    _serverConnectState.value = state
                     if (state == ServerConnectState.Connected) {
                         requestData()
                     }

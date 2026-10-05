@@ -2,7 +2,7 @@ package github.leavesczy.compose_chat.ui.login
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import github.leavesczy.compose_chat.base.BaseActivity
+import github.leavesczy.compose_chat.ui.base.BaseActivity
 import github.leavesczy.compose_chat.ui.login.logic.LoginViewModel
 import github.leavesczy.compose_chat.widgets.LoadingDialog
 
